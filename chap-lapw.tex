@@ -1,0 +1,108 @@
+
+Madelung\cite{PZ19-524_1918}最早研究了晶体中Coulomb势求和问题。1921年Ewald\cite{AP64-253_1921}发展了一般的晶体Coulomb势求和技术，此后Ewald方法得到了进一步的改进和推广\cite{Tosi,PR117-1466_1960,PR181-1020_1969}。
+
+文献\cite{JMP22-2433_1981}提出了根据电荷密度多极展开和MT球面上的Dirichlet问题求解Poisson方程的全势(Full-Potential)方法：
+%MT球半径$R_{MT}$外点$\vec r$处的Coulomb势为\cite{Landau-Lifshitz}
+%\begin{equation}
+%  V_I(\vec r)=\sum_L\frac{4\pi}{2l+1}q_l\frac{Y_L(\hat{\vec r})}{r^{l+1}}
+%  \label{eq:solid-65}
+%\end{equation}
+%这里I表示间隙区；$Y_L(\hat{\vec r})$是球谐函数，$L\hat=l,m$；$q_l$是多极矩，
+%\begin{equation}
+%   q_l=\int_{\Omega_0}Y_L^{\ast}(\hat{\vec r})r^l\rho(\vec r)d^3r
+%  \label{eq:solid-66}
+%\end{equation}
+将电子密度$\rho(\vec r)$分为MT球内部分$\rho_s(\vec r)$和间隙区部分$\rho_I(\vec r)$，$\rho(\vec r)=\rho_I(\vec r)\theta(r\in I)+\rho_s(\vec r)\theta(r\in \Omega_s)$
+%\begin{equation}
+%  \rho(\vec r)=\rho_I(\vec r)\theta(r\in I)+\rho_s(\vec r)\theta(r\in \Omega_s)
+%  \label{eq:solid-67}
+%\end{equation}
+%在推导Coulomb势的时候，首先确定间隙区势能，再对MT球面解Dirichlet边条件得到球内的Coulomb势。
+间隙区电子密度$\rho_I(\vec r)$是平缓函数，可以表示为快速收敛的Fourier级数。MT球内的的电子密度是强烈振荡的函数，其Fourier展开级数收敛缓慢。注意到间隙区Coulomb势对通过多极矩$q_L$依赖于MT球内电子密度\cite{Landau-Lifshitz}。因此可以用一个平缓的赝电子密度(Pseudo-density)函数替代MT球内的真实电子密度，使得两者具有相同的多极矩$q_L$。%：
+%\begin{equation}
+%  \rho(\vec r)\rightarrow\tilde\rho(\vec r)=\rho_I\theta(r\in I)+\tilde\rho_s(\vec r)\theta(r\in \Omega_s)
+%  \label{eq:solid-68}
+%\end{equation}
+%要求赝电荷密度$\tilde\rho(\vec r)$可以用快速收敛的Fourier级数表示：
+%\begin{equation}
+%  \tilde\rho(\vec r)=\sum_{\vec G}[\rho_I(\vec G)+\tilde\rho_s(\vec G)]e^{i\vec G\cdot\vec r}
+%  \label{eq:solid-69}
+%\end{equation}
+求解Poisson方程，通过赝电荷密度得到正确的间隙区Coulomb势，
+\begin{equation}
+  V_I(\vec r)=\sum_{\vec G}\frac{4\pi}{G^2}[\rho_I(\vec G)+\tilde\rho_s(\vec G)]e^{i\vec G\cdot\vec r}
+  \label{eq:solid-70}
+\end{equation}
+%必须得到MT球内的赝电荷的Fourier展开$\tilde\rho_s(\vec G)$。
+
+%将晶体中的电子密度表示为
+%\begin{equation}
+%   \rho(\vec r)=\rho_I(\vec r)+[\rho_s(\vec r)-\rho_I(\vec r)]\theta(r\in \Omega_s)
+%  \label{eq:solid-71}
+%\end{equation}
+%这里第一项$\rho_I(\vec r)$定义在整个WS原胞内。MT球内的赝电荷密度可以表示成级数：
+%\begin{equation}
+%   \tilde\rho_s(\vec r)=\sum_LQ_LY_L(\hat{\vec r})\sum_{\nu}a_{\nu}r^{l+2\nu},\quad v=0,1,2,\cdots
+%  \label{eq:solid-72}
+%\end{equation}
+%其中$a_{\nu}$是参数，$Q_L$是常数，它使得赝电荷与实际电荷的多极矩相匹配，即
+%\begin{equation}
+%  \tilde q_L=\sum_{L'}Q_{L'}\int_{\Omega_s}Y_L^{\ast}(\hat{\vec r})Y_{L'}(\hat{\vec r})d\Omega\int_0^{R_{MT}}\sum_{\nu}a_{\nu}r^{2(l+\nu+1)}dr
+%  \label{eq:solid-73}
+%\end{equation}
+%或者
+%\begin{equation}
+%  Q_L=\tilde q_L\left[\sum_{\nu}\dfrac{R_{MT}^{2(l+\nu)+3}}{2(l+\nu)+3}\right]^{-1}
+%  \label{eq:solid-74}
+%\end{equation}
+%这里$\tilde q_L$是电子密度\eqref{eq:solid-71}在MT球内的多极矩，$\tilde q_L=-Z\delta_{l0}+q_L-q_L^I$。$q_L$由式\eqref{eq:solid-66}计算得到，$q_L^I$是平面波电荷密度的多极矩
+%\begin{equation}
+%  \begin{split}
+%   q_L^I=&\frac{\sqrt{4\pi}}3R_{MT}^3\rho_I(\vec G)\delta_{l0}\delta_{G0} \\
+%   &+\sum_{\vec G\neq0}4\pi i^l\rho_I(\vec G)R_{MT}^{l+3}\dfrac{j_{l+1}(GR_{MT})}{GR_{MT}}Y_L^{\ast}(\vec G)
+%  \end{split}
+%  \label{eq:solid-75}
+%\end{equation}
+%其中$R_{MT}$是球半径。
+
+MT球内赝电荷密度%\eqref{eq:solid-72}
+的Fourier展开$\tilde\rho_s(\vec G)$%=\dfrac1{\Omega_0}\displaystyle\int_{\Omega_s}\tilde\rho_s(\vec r)e^{-i\vec G\cdot\vec r}d^3\vec r$
+可以表示为\cite{JMP22-2433_1981}：
+\begin{equation}
+  \tilde\rho_s(\vec G)=\frac{4\pi}{\Omega_0}\sum_L\dfrac{(-i)^l(2l+2n+3)!!}{R_{MT}^l(2l+1)!!}\dfrac{j_{l+n+1}(GR_{MT})}{(GR_{MT})^{n+1}}\tilde q_Le^{-i\vec G\cdot\vec r}Y_L(\vec G)
+  \label{eq:solid-76}
+\end{equation}
+其中$\Omega_0$是WS原胞体积。$n$是使得MT球内赝电荷平缓的参数。文献\cite{JMP22-2433_1981}给出了参数$n$的推荐值。
+
+式\eqref{eq:solid-70}表明，MT球内赝电荷密度决定了间隙区Coulomb势能，
+%但是不能用它来求解Poisson方程。
+为了求得MT球内的Coulomb势，使用Dirichlet的球边界条件\cite{Landau-Lifshitz}和MT球面上的势能$V_I(\vec r_{MT})$，可以得到MT球内的Coulomb势：
+\begin{displaymath}
+%\begin{equation}
+  V_s(\vec r)=\int_{\Omega_s}\rho_s(\vec r')G(\vec r,\vec r')d^3\vec r'-\dfrac{R_{MT}^2}{4\pi}\ointop\nolimits_sV_I(\vec r_{MT}')\frac{\partial G}{\partial n'}dS'
+  \label{eq:solid-77}
+%\end{equation}
+\end{displaymath}
+$\vec r_{MT}$表示MT球面上的点，G是格林函数。%：
+%\begin{equation}
+%  G(\vec r,\vec r')=4\pi\sum_L\dfrac{Y_L^{\ast}(\vec r')Y_L(\vec r)}{2l+1}\dfrac{r_<^l}{r_>^{l+1}}\left[1-\biggl(\dfrac{r_>}{R_{MT}}\biggr)^{2l+1}\right]
+%  \label{eq:Green-function}
+%\end{equation}
+%其中$r_>$($r_<$)是$r$和$r'$中较大(较小)的一项。格林函数的导数：
+%\begin{equation}
+%  \frac{\partial G}{\partial n'}=\left.\frac{\partial G}{\partial r'}\right|_{r'=R_{MT}}=-\frac{4\pi}{R_{MT}^2}\sum_L\biggl(\dfrac r{R_{MT}}\biggr)^lY_L^{\ast}(\vec r')Y_L(\vec r)
+%  \label{eq:derivative-Green}
+%\end{equation}
+%最后，
+MT球内的Coulomb势可以表示为：
+\begin{displaymath}
+%\begin{equation}
+  \begin{split}
+    V_C(\vec r)=&\sum_LY_L(\vec r)\left[\frac{4\pi}{2l+1}\left\{\dfrac1{r^{l+1}}\int_0^rdr'(r')^{l+2}\rho_L(r')+r^l\int_r^{R_{MT}}dr'(r')^{1-l}\rho_L(r')\right\}\right.\\
+    &+\biggl(\dfrac r{R_{MT}}\biggr)^l4\pi i^l\sum_{\vec G\neq0}\frac{4\pi}{G^2}\tilde\rho(\vec G)Y_L^{\ast}(\vec G)\left.\dfrac{GR_{MT}j_{l-1}(GR_{MT})}{2l+1}\right]
+  \end{split}
+%  \label{eq:solid-78}
+%\end{equation}
+\end{displaymath}
+选定能带计算方法和波函数后，即可计算得到$\rho_L(\vec r)$和$\rho_I(\vec G)$的解析表达式。
+
