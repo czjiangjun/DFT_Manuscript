@@ -13,9 +13,10 @@
   \psi(\vec r+\vec R_n)=e^{i\vec k\cdot\vec R_n}\psi(\vec r)
   \label{eq:bloch}
 \end{equation}
-$k$是与平移对称性相应的量子数，因此理想晶体的电子波函数除了与势函数具有相同的平移周期性，还受到平面波的相位控制。密度泛函理论发展起来之后，为包括能带在内的电子结构计算提供了坚实的基础，可以通过选定交换-相关泛函(主要是LDA或GGA)，自洽迭代求解Kohn-Sham方程直接得到电子能带。在具体应用DFT求解能带时，还需要考虑各种近似，不同近似方法的差别在于单电子有效势和波函数形式的选取两方面。
+$k$是与平移对称性相应的量子数，因此理想晶体的电子波函数除了与势函数具有相同的平移周期性，还受到平面波的相位控制。密度泛函理论发展起来之后，为包括能带计算在内的电子结构模拟提供了坚实的基础，可以通过选定交换-相关泛函(主要是LDA或GGA)，自洽迭代求解Kohn-Sham方程直接得到电子能带。在具体应用DFT求解能带时，除了泛函的选择，还需要考虑各种近似，不同近似方法的差别在于单电子有效势和波函数形式的选取两方面。
 
 \section{Muffin-Tin近似与非Muffin-tin校正}
+\textbf{周期体系中的势函数特征}:~原子+周期特征
 最早的能带计算方法是Wigner-Seitz(WS)原胞方法\cite{PR43-804_1933}。该方法假定晶体势场有球对称性，即$V(\vec r)=V(r)$，波函数为中心力场Schr\"odinger方程标准的线性组合，边条件为$\left(\dfrac{\partial\psi_{\vec k}(r)}{\partial r}\right)_{r_0}$，$r_0$为球半径。该方法在碱金属能带计算取得了很大的成功。将原胞简化为球，结果仅依赖于每个原子平均占据的体积，忽略实际晶体结构的影响。如果采用真实的多面体WS原胞，为了满足表面边边界条件，计算将变得十分复杂，同时也会导致中心力场在原胞边界上导数的不连续。为了克服WS原胞方法的缺陷，1937年，Slater提出Muffin-Tin(MT)近似\cite{PR51-846_1937}。MT近似的主要思想是将WS原胞分为两个区域，一个是以原胞中的每个原子{\it i}\,为中心，半径为$r_i$的彼此不相交叠的球形区，此区域内具有球对称性势$V(r_i)$，在接近原子核区域，势能变化非常较大；球形区以外为第二部分(间隙区)，此处势能近似为一常数，如图\ref{Muffin_tin-1}所示:
 \begin{figure}[h!]
 \centering
@@ -126,6 +127,7 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 	\item 基函数的选取的不同
 	\item 根据研究对象性质的不同对晶体的势能作合理的近似
 \end{itemize}
+\textbf{不同的计算方法主要通过基函数为特征命名的}
 \subsection{正交平面波(Orthogonalized Plane Wave, OPW)方法}
 对于周期性体系，平面波$\exp[i(\vec k+\vec G_i)\cdot\vec r]$是最简单的正交、完备基函数。原则上，晶体中单电子波函数(Bloch函数)总可以用平面波展开得到：
 \begin{equation}
@@ -237,9 +239,10 @@ OPW方法的重要的不足是其基组的非正交性和过完备。因为基�
 %  \label{eq:solid-95}
 %\end{equation}
 %基组\eqref{eq:solid-91}也是过渡金属中引入赝势的有力工具。
+\textbf{在实际应用中，OPW方法很少直接作为基函数使用，但它几乎是其他方法的思想根源。}
 
 \subsection{赝势(Pseudo Potential, PP)方法}
-赝势方法是使用最多的计算晶体电子结构和物理性质的方法。1934年，Fermi为了解释碱金属的原子光谱的谱线移动提出了原子赝势的概念(见图\ref{Pseudo-scatter-2})\cite{nc11-157_1934,ajp52-695_1984}。Hellman等将赝势应用到原子和分子能级的计算上\cite{jcp3-61_1935}。赝势理论的一个重要发展是在1960年代之前，该方法被应用到简单金属的能带结构计算上。Phullips和Kleinman借助Herring的OPW方法导出了能带计算中的赝势\cite{pr116-287_1959}。
+赝势方法是使用最多的计算晶体电子结构和物理性质的方法。1934年，Fermi为了解释碱金属的原子光谱的谱线移动提出了原子赝势的概念(见图\ref{Pseudo-scatter-2})\cite{nc11-157_1934,ajp52-695_1984}。Hellman等将赝势应用到原子和分子能级的计算上\cite{jcp3-61_1935}，见图\ref{Pseudo-scatter-2}。
 \begin{figure}[h!]
 \centering
 \vspace*{-0.25in}
@@ -248,7 +251,7 @@ OPW方法的重要的不足是其基组的非正交性和过完备。因为基�
 \label{Pseudo-scatter-2}
 \end{figure}
 
-用正交平面波为基础展开波函数：
+赝势理论的一个重要发展是在1960年代之前，该方法被应用到简单金属的能带结构计算上，Phullips和Kleinman借助Herring的OPW方法导出了能带计算中的赝势\cite{pr116-287_1959}。用正交平面波为基础展开波函数：
 \begin{equation}
   \psi=\Phi-\sum_c\langle\chi_c|\chi\rangle\chi_c,
   \label{eq:solid-108}
@@ -291,7 +294,7 @@ $V_R$的定义为$V_R\Phi\equiv\sum\limits_c(E-E_c)\langle\chi_c|\Phi\rangle\chi
 通过构造必要的赝势，求解本征方程，可以从第一原理求解能量$E(\vec k)$分布。但是这样的赝势方法相比OPW没有明显的优势。赝势方法由OPW变换得到，两者是完全等价的。因为需要求解非局域势$V_p(\vec r,\vec r',E)$，赝势方法求解过程比OPW方法更复杂。而且为了计算其他物理性质，必须根据求解的赝波函数得到真实的波函数。此外，根据OPW方法变换得到的赝势\eqref{eq:solid-99}，其中$V_R$的表达式\eqref{eq:solid-101}并不唯一。%式\eqref{eq:solid-101}中的能量差$(E-E_c)$原则上可以用任意能量函数和指标$c$代替，即$f(E,c)$。
 赝势方程式\eqref{eq:solid-98}的能量本征值与真实的本征函数的解相同\cite{Harrison}。$V_R$表达式的不唯一性根源在于OPW基组的过完备性。这样得到的赝势一般称为经验赝势，通常选择赝势的Fourier分量参数使得计算结果与实验一致。
 
-基于半经验的更广泛使用的是模型赝势。根据实验数据提出了大量的模型势能\cite{PM9-451_1964,PM12-529_1965,JPF2-270_1972,PRB11-2717_1975,PRB11-2726_1975,JPF6-L271_1976,PR174-769_1968}(参见图\ref{Pseudo-model})。模型赝势的一般形式为：
+基于半经验的更广泛使用的是模型赝势，根据实验数据提出了大量的模型势能\cite{PM9-451_1964,PM12-529_1965,JPF2-270_1972,PRB11-2717_1975,PRB11-2726_1975,JPF6-L271_1976,PR174-769_1968}(参见图\ref{Pseudo-model})。模型赝势的一般形式为：
 \begin{equation}
   V_p(q)=\frac{a_1}{q^2}[\cos(a_2q)+a_3]\exp(a_4q^4)
   \label{eq:solid-102}
@@ -368,13 +371,19 @@ $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Ph
 这里$V_{nonlocal,l}(r)$是半局域势[式\eqref{eq:solid-107}]，$\Phi_l^{PP,0}(r)$是用以计算赝势的原子角动量$l$的参考赝波函数。选择特定的非局域表象，可以很大程度上节省计算时间。
 
 \subsection{超软赝势}
-赝势构造的模守恒条件很好地解决了赝势可移植性问题，但对$1s$、$2p$、$3d$等轨道，模守恒方案构造的赝势过于“硬”，所需平面波基组依然非常大。超软\textrm{(Ultra-soft)}赝势，解除模守恒条件，实现对第一、第二周期元素的高效计算。
+赝势构造的模守恒条件很好地解决了赝势可移植性问题，但对$1s$、$2p$、$3d$等轨道，因为径向波函数本身没有节点，用模守恒方案获得的赝势过于“硬”，所需平面波基组依然非常大。\textrm{Vanderbelt}提出的超软\textrm{(Ultra-soft)}赝势\textbf{标注文献}，解除了模守恒约束，实现对$1s$、$2p$、$3d$为价电子元素的高效计算。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.35in,width=1.40in,viewport=30 55 415 500,clip]{Norm-US-wave.pdf}
 \caption{\small \textrm{Oxygen 2} \textit{p} \textrm{radical wave function (solid), NC-pseudo-wave (dottde) and US-pseudo-wave (dashed).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Norm-US-wave}
 \end{figure}
+
+\textbf{Vanderbelt建议},用平缓函数构造赝波函数时，放弃模守恒条件，但是记录赝波函数与真实波函数的电荷密度差\footnote{脚注!!!}
+\begin{equation}
+	Q_{nm}(\vec r)=\varphi_n^{\ast}(\vec r)\varphi_m(\vec r)-\tilde\varphi_n^{\ast}(\vec r)\tilde\varphi_m(\vec r)
+  \label{eq:uspp_4}
+\end{equation}
 超软赝势在平缓的局域势函数$V^L(\vec r)$和赝波函数$|\phi_{lmj}(\vec r)\rangle$的基础上，构造函数
 \begin{equation}
 	|\chi_{lmj}(\vec r)\rangle=\bigg[\varepsilon_{lj}-\dfrac12\nabla^2-V^L(\vec r)\bigg]|\phi_{lmj}(\vec r)\rangle
@@ -389,11 +398,6 @@ $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Ph
 \begin{equation}
 	V_{NL}=\dfrac{|\chi_i\rangle\langle\chi_i|}{\langle\chi_i|\phi_i\rangle}=\sum_{i,j}\mathbf{D}_{ij}|\beta_i\rangle\langle\beta_j|
   \label{eq:uspp_3}
-\end{equation}
-用平缓函数构造赝波函数与真实波函数的电荷密度差
-\begin{equation}
-	Q_{nm}(\vec r)=\varphi_n^{\ast}(\vec r)\varphi_m(\vec r)-\tilde\varphi_n^{\ast}(\vec r)\tilde\varphi_m(\vec r)
-  \label{eq:uspp_4}
 \end{equation}
 	\begin{equation}
 		\begin{aligned}
