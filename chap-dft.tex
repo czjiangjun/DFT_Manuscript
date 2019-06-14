@@ -415,7 +415,7 @@ E_X^{NL}=-b\sum_{\sigma}\int\rho_{\sigma}^{4/3}\dfrac{x_{\sigma}^2}{1+6bx_{\sigm
 \end{equation}
 
 最常用的相关能非局域校正{$E_C^{NL}$}是Perdew和Wang\cite{PRB33-8822_1986}提出的%形})
-{表达}式以及把$E_C^{NL}$\linebreak 和$E_C^{LDA}$合{并}在一起计算的LYP%形})
+{表达}式以及把$E_C^{NL}$和$E_C^{LDA}$合{并}在一起计算的LYP%形})
 {表达}式\cite{PRB37-785_1988}。Perdew和Wang的表达式为：
 \begin{equation} 
   \label{eq:dft-10}
@@ -450,7 +450,7 @@ LYP相关能泛函是%利用})
 \end{equation}
 其中$\Psi_i$是含自旋的轨道。
 
-van Voorhis和Scuseria于1998年提出了基于密度矩阵展开理论\cite{PRC5-1472_1972,PRC11-1030_1975}的VSXC泛\linebreak 函\cite{JCP109-400_1998}，得到的交换能密度泛函为：
+van~Voorhis和Scuseria于1998年提出了基于密度矩阵展开理论\cite{PRC5-1472_1972,PRC11-1030_1975}的VSXC泛函\cite{JCP109-400_1998}，得到的交换能密度泛函为：
 \begin{equation}
   \begin{aligned}
     E_X[\rho_{\alpha},\rho_{\beta}]&=\sum_{\sigma}\int\rho_{\sigma}^{4/3}{f(x_{\sigma},z_{\sigma})
@@ -476,7 +476,7 @@ van Voorhis和Scuseria于1998年提出了基于密度矩阵展开理论\cite{PRC
 $$D_{\sigma}=1-\dfrac{x_{\sigma}^2}{4(z_{\sigma}+C_F)}$$
 
 1989年Becke和Roussel从类氢原子的密度矩阵表达式出发，提出%了})
-BR89交换能泛\linebreak 函\cite{PRA39-3761_1989}。
+BR89交换能泛函\cite{PRA39-3761_1989}。
 交换势为：
 $$U_{X\sigma}=-4\pi\int_0^{\infty}\rho_X^H(a,b,s)s\textrm{d}s=-\left(1-\textrm{e}^{-x}-\frac12x\textrm{e}^{-x}\right)/b$$
 其中$\rho_X^H(a,b,s)$是类氢原子的交换孔函数，%$x$})
@@ -488,7 +488,7 @@ $$\dfrac{x\textrm{e}^{-2/3}}{x-2}=\dfrac23\pi^{2/3}\dfrac{\rho_{\sigma}^{5/3}}{Q
 {，$a=x/b$。}%最后得到})
 总的交换能为：$E_{X\sigma}=\dfrac12\displaystyle\int\rho_{\sigma}U_{X\sigma}\textrm{d}\vec r$
 
-对于分子体系，交换孔函数比较离域，BR89模型往往高估交换能密度，Becke\linebreak 用LDA动能与精确动能密度的比值为参数，提出了B00修正模型\cite{JCP112-4020_2000}。修正后的交换能泛函形式为：
+对于分子体系，交换孔函数比较离域，BR89模型往往高估交换能密度，Becke用LDA动能与精确动能密度的比值为参数，提出了B00修正模型\cite{JCP112-4020_2000}。修正后的交换能泛函形式为：
 \begin{equation}
   E_{X\sigma}^{BR89}=\int e_{X\sigma}^{BR89}[1+f_{X\sigma}(t_{\sigma})
   ]\textrm{d}\vec r

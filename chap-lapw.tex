@@ -1,4 +1,5 @@
-\section{缀加平面波(Augmented Plane Wave, APW)方法}
+\section{线性缀加平面波(Linear Augmented Plane Wave, LAPW)方法}
+\subsection{APW与LAPW}
 APW是Slater提出MT球近似时设计的周期体系的波函数展开方法\cite{PR51-846_1937,PR91-528_1953}，如图\ref{Muffin_tin_0}所示。%后来Slater又对APW方法进行“简化”\cite{}%，但实际上原始的APW思想更直接。
 \begin{figure}[h!]
 \centering
@@ -100,7 +101,503 @@ APW+lo基函数式\eqref{eq:APW-lo}形式上与标准LAPW式\eqref{eq:LAPW-basis
 
 %WIEN2K程序包建议\cite{CPC59-399_1990,WIEN2K-UG_2001,CPC147-71_2002}一般平面波基函数收敛缓慢的轨道(比如过渡金属的3d态波函数)或MT球半径特别小的体系用APW+lo基组展开，其余价电子轨道用LAPW基组展开，此外对必要的半芯层可以用LO基组展开。用这样的方式可以同时考虑价态和半芯态。
 
-\section{Green函数方法和muffin-tin轨道(muttin-tin orbitals, MTO)}
+\subsection{FP-LAPW的总能计算}
+根据\textrm{APW}方法的基本思想，原子的芯电子的运动限于\textrm{MT}球内，价电子的运动范围遍及\textrm{MT}球区和间隙区。材料的物理和化学性质主要取决于体系的价电子状态，\textrm{WIEN2k}程序处理价电子时，对应的基函数在空间的不同位置采用不同的表示。
+
+所谓全势(\textrm{Full-potential})方法的思想，简言之，就是无论价电子在\textrm{MT}球区，还是在间隙区，感受到的都是包括芯层电子在内的其他电子的排斥势和各格点原子核的吸引势。原则上，对于周期性体系，已知体系的电荷密度分布，由\textrm{Poisson}方程，可以直接求得体系的\textrm{Coulomb}势。众所周知，由于靠近原子核的区域，电荷密度(及相应的\textrm{Coulomb}势)变化剧烈，因此直接的\textrm{Fourier}级数展开不易收敛。为了克服这一困难，\textrm{Weinert}\cite{JMP22-2433_1981}注意到\textbf{间隙区的电子\textrm{Coulomb}相互作用只和间隙区的电荷密度及\textrm{MT}球区的电荷多极矩(\textrm{multipole moments})有关。}它的基本思想是\textbf{利用电荷多极矩和球形边界\textrm{Dirichlet}边值问题求解\textrm{MT}球内的\textrm{Coulomb}势分布，进而得到间隙区\textrm{Coulomb}势的分布。}
+
+注意到\textrm{MT}球内电荷对间隙区势能的贡献\cite{Jackson}：
+\begin{equation}
+	V(r)=\sum_{l=0}^{\infty}\sum_{m=-l}^{l}\dfrac{4\pi}{2l+1}q_{lm}\dfrac{Y_{lm}(\hat r)}{r^{l+1}}
+	\label{eq_V-multi-mom}
+\end{equation}
+这里，$q_{lm}$是\textrm{MT}球内的电荷多极矩。
+%\begin{equation}
+%	\rho_I(\vec r)=\sum_{\vec K}\rho_I(\vec K)\mathrm{e}^{\mathrm{i}\vec K\cdot\vec r}
+%	\label{eq_rho_i_four}
+%\end{equation}
+
+在实际计算中，\textrm{MT}区球内的电荷多极矩$q_{lm}$由下式给出：
+\begin{equation}
+	q_{lm}=\int_{S}Y_{lm}^{\ast}(\hat r)r^l\rho(r)\mathrm{d}^3r
+	\label{eq_multi-mom}
+\end{equation}
+因此有可能\textbf{重构\textrm{MT}球区的电荷密度分布，使它既有与实际电荷密度分布相同的电荷多极矩，又能有较好的\textrm{Fourier}收敛行为}。
+\begin{equation}
+	\rho(\vec r)\rightarrow\tilde\rho(\vec r)=\rho_I(\vec r)\theta(\vec r\in I)+\sum_{spheres}\tilde\rho_i(\vec r)\theta(\vec r\in S_i)
+	\label{eq_pseudo-rho}
+\end{equation}
+间隙区电荷密度$\rho_I(\vec r)$变化平缓，可用方便地作\textrm{Fourier}级数展开：
+\begin{equation}
+	\rho_I(\vec r)=\sum_{\vec K}\rho_I(\vec K)\mathrm{e}^{\mathrm{i}\vec K\cdot\vec r}
+	\label{eq_rho_i_four}
+\end{equation}
+
+如果\textbf{将间隙区的电荷密度延伸到\textrm{MT}球内}，于是体系的电荷密度表示为：
+\begin{equation}
+	\rho(\vec r)=\rho_I(\vec r)+\sum_{spheres}\big[\rho_i(\vec r)-\rho_I(\vec r)\big]\theta(\vec r\in S_i) 
+	\label{eq_rho_rean}
+\end{equation}
+此时$\rho_I(\vec r)$可在整个空间作\textrm{Fourier}展开。其中延伸到\textrm{MT}球内(球心位置记作$\xi_i$)的间隙区电荷密度表示为：
+\begin{equation}
+	\rho_I(\vec r)=\sum_{\vec K}\rho_I(\vec K)\mathrm{e}^{\mathrm{i}\vec K\cdot\vec\xi_i}\mathrm{e}^{\mathrm{i}\vec K\cdot\vec r_i} 
+	\label{eq_rho_i_four_i}
+\end{equation}
+这里$\vec r_i=\vec r-\xi_i$。
+
+如果已知\textrm{MT}球内的真实电荷密度分布，第$i$个\textrm{MT}球内多极矩记作$q_{lm}^i$。
+%\begin{equation}
+%	q_{lm}^{Ii}=\biggl\{
+%	\begin{aligned}
+%		&\dfrac{\sqrt{4\pi}}3R_i^3\rho_I(K=0)\delta_{l0}\quadd \\
+%		&4\pi\mathrm{i}^l\sum_{\vec K\neq 0}\rho_I(\vec K)\dfrac{R_i^{l+3}j_{l+1}(\vec K\cdot\vec R)}{KR_i}\mathrm{e}^{\mathrm{i}\vec K\cdot\xi_i}Y_{lm}^{\ast}(\hat K)
+%	\end{aligned}\biggr.
+%	\label{eq_multi_PW}
+%\end{equation}
+\textbf{延伸到球内的间隙区电荷对球内多极矩的贡献}即为:
+\begin{equation}
+	q_{lm}^{Ii}=\dfrac{\sqrt{4\pi}}3R_i^3\rho_I(K=0)\delta_{l0}+4\pi\mathrm{i}^l\sum_{\vec K\neq 0}\rho_I(\vec K)\dfrac{R_i^{l+3}j_{l+1}(\vec K\cdot\vec R)}{KR_i}\mathrm{e}^{\mathrm{i}\vec K\cdot\xi_i}Y_{lm}^{\ast}(\hat K)
+	\label{eq_multi_PW}
+\end{equation}
+这里利用了平面波在球心$\xi_i$处的球谐函数展开关系：
+\begin{equation}
+	\mathrm{e}^{\mathrm{i}\vec K\cdot \vec r}=\sum_{lm}4\pi\mathrm{i}^lj_l(\vec K\cdot\vec r)Y_{lm}^{\ast}(\hat{\vec K})Y_{lm}(\hat{\vec r})
+	\label{eq_PW_Bessel}
+\end{equation}
+和积分表达式：
+\begin{equation}
+	\int_0^R r^{l+2}j_l(\vec K\cdot\vec r)\mathrm{d}r=\left\{
+	\begin{aligned}
+		&\dfrac{R^3}3\delta_{l,0}\quad &\vec K=0\\ 
+		&\dfrac{R^{l+3}j_{l+1}(\vec K\cdot\vec R)}{KR} &\vec K\neq 0
+	\end{aligned}\right.
+	\label{eq_int_r_j}
+\end{equation}
+
+因此，重构方程\eqref{eq_rho_rean}在\textrm{MT}球内的电荷密度分布，其多极矩满足：
+\begin{equation}
+	\tilde q_{lm}^i=q_{lm}^i-q_{lm}^{Ii}
+	\label{eq_psmult}
+\end{equation}
+根据文献\onlinecite{JMP22-2433_1981}，可以得到重构的\textrm{MT}球内的赝电荷密度的\textrm{Fourier}展开系数为：
+\begin{equation}
+	\tilde\rho_s(\vec K)=\dfrac{4\pi}{\Omega}\sum_{lm,i}\dfrac{(-\mathrm{i})^l(2l+2n+3)!!}{(2l+1)!!}\times\dfrac{j_{l+n+1}(\vec K\cdot\vec R_i)}{(KR_i)^{n+1}}\tilde q_{lm}^i\mathrm{e}^{-\mathrm{i}\vec K\cdot\vec\xi_i}Y_{lm}(\hat K)
+	\label{eq_psrho}
+\end{equation}
+这里$n$是整数。$\tilde\rho_s(\vec K)$可以视为$n$的函数，文献\onlinecite{JMP22-2433_1981}讨论了对于不同的$l$和$(\vec K\cdot\vec R_i)_{max}$，优化$n$值得到最佳收敛的$\tilde\rho_s(\vec K)$的情况。一般取$n=\big[\dfrac12(\vec K\cdot\vec R_i)_{max}\big]$，\textrm{WIEN2k}程序中取$n=9$。
+
+当$\vec K=0$，有
+$$\tilde\rho_s(\vec K=0)=\dfrac{\sqrt{4\pi}}{\Omega}\sum\limits_i\tilde q_{00}^i$$
+因此，用于计算间隙区\textrm{Coulomb}势的赝电荷密度(较平缓)可写成\textrm{Fourier}展开形式：
+\begin{equation}
+	\tilde\rho(\vec r)=\sum_{\vec K}\big[\rho_I(\vec K)+\tilde\rho_s(\vec K)\big]\mathrm{e}^{\mathrm{i}\vec K\cdot\vec r}
+	\label{eq_psrho_four}
+\end{equation}
+求解\textrm{Poisson}方程，间隙区的\textrm{Coulomb}势表达式为：
+\begin{equation}
+	V_I(\vec r)=\sum_{\vec K}\dfrac{4\pi}{K^2}\big[\rho_I(\vec K)+\tilde\rho_s(\vec K)\big]\mathrm{e}^{\mathrm{i}\vec K\cdot\vec r}
+	\label{eq_Vcou_I}
+\end{equation}
+与此同时，根据文献\onlinecite{JMP22-2433_1981}，已知球面上的\textrm{Coulomb}势，根据\textrm{Dirichlet}的球形边值问题\cite{Jackson}，可知\textrm{MT}球内的\textrm{Coulomb}势的表达式\cite{Singh,Nemoshkalenko-Antonov}为：
+\begin{equation}
+	\begin{aligned}
+		V_s(\vec r)=&\sum_{lm}Y_{lm}(\hat r)\left[\dfrac{4\pi}{2l+1}\left\{\dfrac1{r^{l+1}}\int_0^r\mathrm{d}r^{\prime}(r^{\prime})^{l+2}\rho_{lm}(r^{\prime})+r^l\int_r^{R_i}\mathrm{d}r^{\prime}(r^{\prime})^{1-l}\rho_{lm}(r^{\prime})\right\}\right.\\
+		&\left.+\left(\dfrac r{R_i}\right)^l4\pi\mathrm{i}^l\sum_{\vec K\neq0}\dfrac{4\pi}{K^2}\tilde\rho_s(\vec K)Y_{lm}^{\ast}(\vec K)\dfrac{\vec K\cdot\vec R_ij_{l-1}(\vec K\cdot\vec R_i)}{2l+1}\right]
+	\end{aligned}
+	\label{eq_Vcou_s}
+\end{equation}
+%球面$R_i$上的\textrm{Coulomb}势可以表达为
+%\begin{equation}
+%	V_{l=0}(R_i)=4\pi\sum_{\vec K\neq0}\dfrac{\vec K\cdot\vec R_i\tilde\rho_s(\vec K)}{K^2}Y_{00}^{\ast}(\vec K)j_0(\vec K\cdot\vec R_i)
+%	\label{eq_Vcou_S}
+%\end{equation}
+
+注意到由于\textrm{MT}球的存在，倒空间不连续，即
+\begin{equation}
+	V_I(\vec r)=\left\{\sum_{\vec K}\dfrac{4\pi}{K^2}\bigg[\tilde\rho_I(\vec K)+\tilde\rho_s(\vec K)\bigg]\mathrm{e}^{\mathrm{i}\vec K\cdot\vec r}\right\}\theta(r)\qquad(r\in \mathrm{Interstitial})
+	\label{eq_Vcou_I_theta}
+\end{equation}
+%由于间隙区的势能变化平缓，基函数是平面波，因此可以\textbf{重新定义能量零点，先将$V_C(\vec K=0)$置为零。}
+倒空间中的势能表示为：
+\begin{equation}
+	V_I(\vec K)=\left\{
+	\begin{aligned}
+		&\mathrm{divergence} \qquad &\vec K=0 \\
+		\dfrac{(4\pi)^2}{K^3}\bigg[\rho_I(\vec K)+&\tilde\rho_s(\vec K)\bigg]\sum_i\dfrac{R_i^2j_1(\vec K\cdot\vec R_i)}{\Omega}\mathrm{e}^{-\mathrm{i}\vec K\cdot\vec\xi_i}\quad &\vec K\neq0
+	\end{aligned}\right.
+	\label{eq_Vcou_KI_theta}
+\end{equation}
+显然，由于$\vec K=0$项的存在，使得间隙区的电子\textrm{Coulomb}势具有发散性。
+%在\textrm{MT}球内，按照原子\textrm{Coulomb}相互作用表达式可以参考文献\onlinecite{Singh,Nemoshkalenko-Antonov}。
+
+综上所述，\textrm{LAPW}方法中\textbf{在\textrm{MT}球内和间隙区分别采用\eqref{eq_Vcou_s}和\eqref{eq_Vcou_I_theta}的势函数形式}，实现全势(\textrm{full potential})\cite{PRB26-4571_1982,PRB33-823_1986}计算。
+%一般是在每个\textrm{MT}球内，势函数用球谐函数(或者是满足晶体对称性的球谐函数)展开，MT球外的势函数用\textrm{Fourier}级数展开\cite{PRB13-5362_1976}
+
+引入\textrm{Madelung}势，完成总能量的计算过程\cite{JMP22-2433_1981}：
+\begin{equation}
+	\begin{aligned}
+	E_T[\rho]=&T_s[\rho]+U[\rho]+E_{xc}[\rho]\\
+	=&T_s[\rho]+\dfrac12\biggl[\int\dfrac{\rho(\vec r)\rho(\vec r^{\prime}){}}{|\vec r-\vec r^{\prime}|}\mathrm{d}\vec r\mathrm{d}\vec r^{\prime}-2\sum_{\alpha}Z_{\alpha}\int\dfrac{\rho(\vec r)\mathrm{d}\vec r}{|\vec r-\vec R_{\alpha}|}+\sideset{}{^\prime}\sum_{\alpha,\beta}\dfrac{Z_{\alpha}Z_{\beta}}{|\vec R_{\alpha}-\vec R_{\beta}|}\biggr]\\
+	&+E_{xc}[\rho]\\
+	=&T_s[\rho]+\dfrac{N}2\bigg[\int_{\Omega}\rho(\vec r)V_c(\vec r)\mathrm{d}\vec r-\sum_{\nu}Z_{\nu}V_M(\vec\gamma_{\nu})\biggr]+E_{xc}[\rho]
+	\end{aligned}
+	\label{eq_E_total}
+\end{equation}
+这里$V_c(\vec r)$是\textrm{Coulomb}势：
+\begin{equation}
+	V_c(\vec r)=\int\dfrac{\rho(\vec r^{\prime})}{|\vec r-\vec r^{\prime}|}\mathrm{d}\vec r^{\prime}-\sum_{\alpha}\dfrac{Z_{\alpha}}{|\vec r-\vec R_{\alpha}|}
+	\label{eq_Vcou_WIEN}
+\end{equation}
+$V_M(\vec\gamma_{\nu})$是\textrm{Madelung}势：
+\begin{equation}
+	V_M(\vec\gamma_{\nu})=\int\dfrac{\rho(\vec r)\mathrm{d}\vec r}{|\vec r-\vec\gamma_{\nu}|}-\sideset{}{^\prime}\sum_{\alpha}\dfrac{Z_{\alpha}}{|\vec R_{\alpha}-\vec\gamma_{\nu}|}
+	\label{eq_Vmadelung}
+\end{equation}
+即将离子相互作用、电子间相互作用和离子-电子相互作用分为电子感受的\textrm{Coulomb}势和原子核位置的\textrm{Madelung}势贡献。因此\textbf{利用电子的\textrm{Coulomb}势与\textrm{Madelung}势在球心处的贡献的球形部分彼此抵消来排除奇点}：
+
+球心位于$\vec\gamma_{\nu}$、半径为$R_{\nu}$的\textrm{MT}球球面上的势能平均值$S_0(R)$可由式\eqref{eq_Vcou_s}计算，因此除去球心核电荷以外所有电荷在MT球面上产生的势能平均为：
+\begin{equation}
+  S(R_{\nu})\equiv S_0(R_{\nu})+Z_{\nu}/R_{\nu}
+  \label{eq:solid-79}
+\end{equation}
+因此球心$\vec\gamma_{\nu}$处的\textrm{Madelung}势的球对称部分贡献为\cite{PRB26-4571_1982}：
+\begin{equation}
+  \begin{split}
+	  V_M(\vec\gamma_{\nu})&=\frac1{R_{\nu}}\big[R_{\nu}S_0(R_{\nu})+Z_{\nu}-Q_{\nu}\big]+\sqrt{4\pi}\int_0^{R_{\nu}}\mathrm{d}rr\rho_{00}(r)\\
+	   &=\frac1{R_{\nu}}\big[R_{\nu}S_0(R_{\nu})+Z_{\nu}-Q_{\nu}\big]+\bigg\langle\frac1r\rho(\vec r)\bigg\rangle_{\nu}
+  \end{split}
+   \label{eq:Madelung}
+\end{equation}
+其中$Q_{\nu}$表示\textrm{MT}球内的电子电荷之和。$\rho(\vec r)$是\textrm{MT}球内的电荷密度，可以用球谐函数表示为：
+\begin{equation}
+  \rho(\vec r_{\nu})=\sum_{lm}\rho_{lm}(r_{\nu})Y_{lm}(\hat r_{\nu})
+  \label{eq:solid-80}
+\end{equation}
+因此\textrm{MT}球内的总能量贡献为：
+\begin{equation}
+  \begin{split}
+	  E_T=\sum_i\varepsilon_i&-\frac12\int_{\Omega}\rho(\vec r)\big[V_c(\vec r)+\mu_{xc}(\vec r)\big]\mathrm{d}\vec r-\frac12\sum_{\nu}Z_{\nu}V_M(\vec\gamma_{\nu})+E_{xc}[\rho] \\
+   =\sum_i\varepsilon_i&-\frac12\left(\int_{\Omega}\rho(\vec r)V_c(\vec r)\mathrm{d}\vec r+\sum_{\nu}Z_{\nu}\bigg\langle\frac1r\rho(\vec r)\bigg\rangle_{\nu}\right)-\dfrac12\int_{\Omega}\rho(\vec r)\mu_{xc}(\vec r)\mathrm{d}\vec r\\
+   &-\frac12\sum_{\nu}\frac{Z_{\nu}}{R_{\nu}}\big[R_{\nu}S_0(R_{\nu})+Z_{\nu}-Q_{\nu}\big]+E_{xc}[\rho]
+  \end{split}
+  \label{eq:solid-81}
+\end{equation}
+这里$V_c(\vec r)=\displaystyle\int\dfrac{\rho(\vec r\,^\prime)}{|\vec r-\vec r\,^\prime|}\mathrm{d}\vec r\,^\prime-\sum\limits_{\alpha}\dfrac{Z_{\alpha}}{|\vec r-\vec R_{\alpha}|}$。总能量写成这样的形式，原子核位置的\textrm{Coulomb}势奇点可以排除。将势能和电荷密度在各原子核附近作球谐展开，在原子核附近，有
+\begin{equation}
+  \begin{split}
+	  &\int_{\Omega}\rho(\vec r)V_c(\vec r)\mathrm{d}\vec r+Z_{\nu}\sqrt{4\pi}\int_0^{R_{\nu}}\mathrm{d}rr^2\frac{\rho_{00}(r)}r\\
+	  =&\sqrt{4\pi}\int\mathrm{d}rr^2\rho_{00}(r)\left[V_{00}(r)Y_{00}(\hat r)+\frac{Z_{\nu}}r\right]+\sum_{lm>0}\int\mathrm{d}rr^2\rho_{lm}(r)V_{lm}(r)
+  \end{split}
+\end{equation}
+\textrm{Coulomb}势的奇点只出现在$V_{00}(r)$中，将$V_{00}(r)$写成核的点电荷势与源于电子的平滑势两部分之和，有
+$$V_{00}(r)=-\sqrt{4\pi}\frac{Z_{\nu}}r+\hat V_{00}(r)$$
+通过这样的方式，可以将总能量中的奇点排除，但同样单独\textrm{Coulomb}势和\textrm{Madelung}势每一项在原子核位置能量仍然是发散的。
+
+%如果采用标准的\textrm{LDA}近似，式\eqref{eq:solid-81}交换-相关能可以写成：
+%\begin{equation}
+%  E_{xc}[\rho]\approx\int_{\Omega}\rho(\vec r)\varepsilon_{xc}(\vec r)d\vec r
+%  \label{eq:solid-82}
+%\end{equation}
+基于\textrm{LAPW}方法的总能量计算，在空间中不同的区域采用不同的表示。%间隙区(\textrm{I})的电荷密度用平面波展开，有
+%$$\rho(\vec r)=\sum_{\vec G}\rho(\vec G)e^{i\vec G\cdot\vec r},\quad \vec r\in\mathrm{I}$$
+%在\textrm{MT}球内，电荷密度用球谐函数展开，在动量空间中的展开形式为：
+%$$\bar\rho_{lm}(r_{\nu})=4\pi i^l\sum_{\vec G}\rho(\vec G)e^{i\vec G\cdot\vec r_{\nu}}j_l(Gr_{\nu})Y_{lm}^{\ast}(\vec G)$$ 
+首先，\textbf{将间隙区$V_C(\vec K=0)$置零}，排除间隙区的\textrm{Coulomb}势$V_I(\vec K)$的奇点：
+\begin{equation}
+	\tilde V_I(\vec K)=\left\{
+	\begin{aligned}
+		&0 \qquad &\vec K=0 \\
+		\dfrac{(4\pi)^2}{K^3}\big[\rho_I(\vec K)+&\tilde\rho_s(\vec K)\big]\sum_i\dfrac{R_i^2j_1(\vec K\cdot\vec R_i)}{\Omega}\mathrm{e}^{\mathrm{i}\vec K\cdot(\vec r-\vec\xi_i)}\quad &\vec K\neq0
+	\end{aligned}\right.
+	\label{eq_Vcou_KI_theta_2}
+\end{equation}
+%在总能量计算中补偿这一平移。
+\textrm{MT}球内对总能量的贡献部分在正空间中按上述式\eqref{eq:solid-81}计算。
+
+因此\textrm{LAPW}方法的原胞内的晶体总能量可以写成：
+\begin{equation}
+  \begin{split}
+	  E=&\sum_i\varepsilon_i-\sum_{\vec K}\Omega\rho_I(\vec K)\tilde V_I^{\ast}(\vec K)-\frac12\sum_{\nu}\dfrac{Z_{\nu}}{R_{\nu}}[Z_{\nu}-Q_{\nu}+R_{\nu}S_0(R_{\nu})]\\
+    &-\sum_{\nu}\sum_{lm}\int_0^{R_{\nu}}\mathrm{d}rr^2\left[\rho_{lm}(r_{\nu})\left(\tilde V_{lm}^{\ast}(r_{\nu})+\dfrac{\sqrt{4\pi}}{2r_{\nu}}Z_{\nu}\delta_{l0}\right)-\bar\rho_{lm}(\vec r_{\nu})\bar V_{lm}^{\ast}(\vec r_{\nu})\right]
+  \end{split}
+  \label{eq:solid-83}
+\end{equation}
+这里$\tilde V(\vec r)$和$\bar V_{lm}(\vec r)$根据都按下式计算：
+$$\tilde V(\vec r)=\frac12V_c(\vec r)-\varepsilon_{xc}(\vec r)+\mu_{xc}(\vec r)$$
+
+%\textrm{WIEN2k}程序中，\textbf{程序\textrm{lapw0}部分完成式\eqref{eq:solid-83}中除$\sum\limits_i\varepsilon_i$之外的所有各项的计算}。
+%\subsection{LDA+U和GW近似}
+%\subsubsection{GW近似}
+%Landau的Fermi液体理论是研究群体激发和多体Fermi子体系物理性质的重要方法\cite{Landau}。Fermi液体的特征是准粒子分布$\varepsilon=\varepsilon(\vec k)$由体系总能量$E$对分布函数的变分，即
+%\begin{equation}
+%  \frac{\delta E}{\delta n(\vec k)}=\varepsilon(\vec k)
+%  \label{eq:solid-219}
+%\end{equation}
+%关联函数$f(\vec k,\vec k^\prime)$由准粒子能量对整个$\vec k$空间粒子分布变分得到
+%\begin{equation}
+%  \frac{\delta\varepsilon(\vec k)}{\delta n(\vec k^\prime)}=\frac{\delta^2E}{\delta n(\vec k)\delta n(\vec k^\prime)}=f(\vec k,\vec k^\prime)
+%  \label{eq:solid-220}
+%\end{equation}
+%考虑准粒子间相互作用，体系激发能记作
+%\begin{equation}
+%  W=\sum_{\vec k}\varepsilon(\vec k)\delta n(\vec k)+\frac12\sum_{\vec k}\sum_{\vec k^\prime}f(\vec k,\vec k^\prime)\delta n(\vec k)\delta(\veck^\prime)
+%  \label{eq:solid-221}
+%\end{equation}
+%
+%Green函数是研究Fermi液体的重要数学工具。对宏观体系，Green函数定义为\cite{Lifshitz}
+%\begin{equation}
+%  \tilde G(x,x^\prime)=-i\langle T\hat\Psi(x)\hat\Psi^{\ast}(x^\prime)\rangle
+%  \label{eq:solid-222}
+%\end{equation}
+%这里$x$表示时间$t$和位置$\vec r$，$\langle\cdots\rangle$表示对体系基态求平均，$T$表示按时间先后乘积算符。$\hat\Psi$是Heisenberg算符，对式\eqref{eq:solid-222}进行Fourier变换，得到以$\vec r$，$E$为表象的Green函数$\tilde G(\vec r,\vec r\,^\prime;E)$是Dyson方程\cite{Lifshitz}
+%\begin{equation}
+%  (\nabla^2+E)\tilde G(\vec r,\vec r\,^\prime;E)-\int d\vec r^{\prime\prime}\Sigma(\vec r,\vec r^{\prime\prime};E)\tilde G(\vec r^{\prime\prime},\vec r\,^\prime;E)=\delta(\vec r-\vec r\,^\prime)
+%  \label{eq:solid-223}
+%\end{equation}
+%的解。这里$\Sigma(\vec r,\vec r\,^\prime;E)$是描述交换和相关效应的质量或自能算符，这是个与能量有关的非定域的非-Hermitian算符，考虑到粒子与体系中其他粒子的相互作用。晶体中的质量具有平移对称性，
+%\begin{equation}
+%  \Sigma(\vec r+\vec a,\vec r+\vec a;E)=\Sigma(\vec r,\vec r\,^\prime;E),
+%  \label{eq:solid:224}
+%\end{equation}
+%这里$\vec a$是晶体平移格矢。
+%
+%临近Green函数的极点，式\eqref{eq:solid-223}右面的$\delta$函数为0，所得积分-微分方程的本征值确定体系激发能谱\cite{Lifshitz,PR145-561_1966}
+%\begin{equation}
+%  -\delta^2\Phi_{\vec k}(\vec r,E)+\int d\vec r\,^\prime\Sigma(\vec r,\vec r\,^\prime;E)\Phi_{\vec k}(\vec r\,^\prime,E)=\varepsilon_{\vec k}\Phi_{\vec k}(\vec r,E) 
+%  \label{eq:solid-225}
+%\end{equation}
+%这里函数$\Phi_{\vec k}(\vec r,E)$类似于周期场中的单电子Bloch波函数。对金属中的Fermi电子液体中用式\eqref{eq:solid-225}替代一般Schr\"odinger方程。与一般的Schr\"odinger方程不同，式\eqref{eq:solid-225}的能量本征值是复数，因为质量算符$\Sigma(\vec r,\vec r\,^\prime;E)$是复数。
+%
+%由式(\ref{eq:solid-223},\ref{eq:solid-225})得到Green函数
+%\begin{equation}
+%  \tilde G(\vec r,\vec r\,^\prime;E)=\sum_{\vec k}\frac{\Phi_{\vec k}(\vec r,E)\Phi_{\vec k}^{\ast}(\vec r\,^\prime,E)}{E-\varepsilon_{\vec k}(E)+i0\mathrm{sign}E}
+%  \label{eq:solid-226}
+%\end{equation}
+%$\varepsilon_{\vec k}(E)$是体系中加入一个粒子引起的能量改变。如果将单个准粒子改变引起得能量变化$\varepsilon_{\vec k}(E)$定义为式\eqref{eq:solid-219}中的准粒子能量，对临近Fermi面的态，函数$\tilde G(\vec r,\vec r\,^\prime;E)$在$E=\varepsilon_{\vec k}(E)$有极值。因此Green函数极值确定了多Fermi子体系的元激发能谱。一般说，因为和其他粒子相互作用，准粒子能量为复数。复数能量使得体系激发态的寿命有限$(\tau\sim1/|\mathrm{Im}\varepsilon|)$\cite{Landau-Lifshitz}。能量宽度由$\mathrm{Im}\varepsilon$确定。
+%
+%%临近Fermi能级，$\mathrm{Im}\varepsilon_{\vec k}(E)\rightarrow0$，相应的$\mathrm{Im}\Sigma\rightarrow0$，于是解方程\eqref{eq:solid-225}得到$\mathrm{Re}\varepsilon_{\vec k}(E)$和实数形式的$\Sigma(\vec r,\vec r\,^\prime;E)$和$\epsilon_{\vec k}(E)$。
+%
+%根据Hohenberg-Kohn定理，本征值$\Sigma(\vec r,\vec r\,^\prime;E)$由体系基态确定，它也是电子密度的函数。Sham和Kohn建议可用局域电子密度近似表示$\Sigma(\vec r,\vec r\,^\prime;E)$\cite{PR145-561_1966}：
+%\begin{equation}
+%  \Sigma(\vec r,\vec r\,^\prime;E)=V_C(\vec r)\delta(\vec r-\vec r\,^\prime)+\Sigma_0(\vec r-\vec r\,^\prime;E-V_C(\vec r_0);\rho(\vec r_0))
+%  \label{eq:solid-227}
+%\end{equation}
+%这里$\Sigma_0$是密度为$\rho$的无相互作用电子气的本征能量，$V_C(\vec r_0)$是位于$\vec r_0=(\vec r+\vec r\,^\prime)/2$的静电Coulomb势。此外式\eqref{eq:solid-227}已将能量$\Sigma$中的局域部分以Hartree势的形式分离出来，因此可以利用$\Sigma_0$的短程效应。
+%
+%对本征函数$\Phi_{\vec k}$作近似
+%$$\Phi_{\vec k}(\vec r,E)=A(\vec k)\exp[i\vec p(\vec r)\vec r]$$
+%并认为$A$和电子动量与$\vec r$无关，将式\eqref{eq:solid-225}称为类似Kohn-Sham方程的表达式\cite{JPC4-2064_1971}，
+%\begin{equation}
+%  [-\nabla^2+V_C(\vec r)+\Sigma_{xc}(\rho(\vec r),E)]\Phi_{\vec k}(\vec r,E)=\varepsilon_{\vec k}(\vec r,E)
+%  \label{eq:solid-228}
+%\end{equation}
+%若$E=\mu$，$\Sigma_{xc}(\rho(\vec r),\mu)\equiv\mu_{xc}(\rho(\vec r))$我们因此得到符合局域密度近似的DFT方程，两者的交换-相关势$\mu_{xc}$是相同的。因此对于低激发能，可以使用近似$\Sigma_{xc}(\rho(\vec r),E)\simeq\mu_{xc}$，此结果对应于忽略准粒子间的相互作用，即Landau函数$f(\vec k,\vec k^\prime)=0$。
+%
+%因此基于DFT的能带计算，如果充分考虑交换-相关效应，可以计算多电子体系的元激发能量。注意，采用单电子近似，要求能带比较宽，即中心位于不同格点的波函数有较大的重叠，电子间相互作用不是很强。
+%
+%Hedin和Lundqvist详细回顾了用Green函数技术解决电子相关的问题\cite{Hedin-Lundqvist}。在单粒子近似下的Green函数，准粒子与谱函数的峰联系在一起。如果峰足够尖锐，表明存在一个明确的准粒子能量，对一般的非均匀体系，准粒子能量和波函数可以通过解Dyson方程\eqref{eq:solid-225}求得。对于准粒子问题，核心问题是对自能算符$\Sigma(\vec r,\vec r\,^\prime;E)$的足够好的近似。常用的方法是GW近似\cite{PR139-A796_1965}，自能用屏蔽相互作用$W$计算到最低阶。
+%\begin{equation}
+%  \Sigma(\vec r,\vec r\,^\prime;E)=\frac i{2\pi}\int_{-\infty}^{\infty}dE^\prime\tilde G(\vec r,\vec r\,^\prime;E+E^\prime)W(\vec r,\vec r\,^\prime;E^\prime)
+%  \label{eq:solid-229}
+%\end{equation}
+%Green函数$\tilde G$由准粒子的波函数和能量表示，屏蔽Coulomb作用$W$
+%\begin{equation}
+%  W(\vec r,\vec r\,^\prime;E)=\frac1{\Omega}\int d^3r^{\prime\prime}\varepsilon^{-1}(\vec r,\vec r^{\prime\prime};E)V(\vec r^{\prime\prime}-\vec r\,^\prime)
+%  \label{eq:solid-230}
+%\end{equation}
+%这里$V$是未屏蔽的Coulomb势，$\varepsilon^{-1}$是介电函数矩阵的逆阵，
+%\begin{equation}
+%  \varepsilon^{-1}(\vec r,\vec r\,^\prime;E)=\delta(\vec r-\vec r\,^\prime)+\int d^3r^{\prime\prime} V(\vec r\,^\prime-\vec r^{\prime\prime})P(\vec r^{\prime\prime},\vec r\,^\prime;E)
+%  \label{eq:solid-231}
+%\end{equation}
+%这里$P$是完全响应函数，于是
+%\begin{equation}
+%  W(\vec r,\vec r\,^\prime;E)=V(\vec r-\vec r\,^\prime)+W_c(\vec r,\vec r\,^\prime;E)
+%  \label{eq:solid-232}
+%\end{equation}
+%这里
+%\begin{equation}
+%  W_c(\vec r,\vec r;E)=\int d^3r_1d^3r_2V(\vec r\,^\prime-\vec r_1)P(\vec r_1,\vec r_2;E)V(\vec r_2-\vec r\,^\prime)
+%  \label{eq:solid-233}
+%\end{equation}
+%Green函数可以写成谱表示
+%\begin{equation}
+%  G(\vec r,\vec r\,^\prime;E)=\int_{-\infty}^{\mu}dE^\prime\frac{A(\vec r,\vec r\,^\prime;E^\prime)}{E-E^\prime-i\delta}+\int_{\mu}^{\infty}dE^\prime\frac{A(\vec r,\vec r\,^\prime;E^\prime)}{E-E^\prime+i\delta}
+%  \label{eq:solid-234}
+%\end{equation}
+%这里$A(\vec r,\vec r\,^\prime;E)=-\frac1{\pi}\mathrm{Im}G(\vec r,\vec r\,^\prime;E)\mathrm{sgn}(E-\mu)$
+%
+%实际计算中，取零阶Green函数，有
+%\begin{equation}
+%  A(\vec r,\vec r\,^\prime;E)=\sum_{kn}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r\,^\prime)\delta(E-E_{kn})
+%  \label{eq:solid-235}
+%\end{equation}
+%于是自能可以写成
+%\begin{equation}
+%  \Sigma(\vec r,\vec r\,^\prime;E)=\Sigma_x(\vec r,\vec r\,^\prime)+\Sigma_c(\vec r,\vec r\,^\prime;E)
+%  \label{eq:solid-236}
+%\end{equation}
+%这里$\Sigma_x$是净的交换势，
+%\begin{equation}
+%  \Sigma_x(\vec r,\vec r\,^\prime)=-\sum_{kn}^{occ}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r\,^\prime)V(\vec r-\vec r\,^\prime)
+%  \label{eq:solid-254}
+%\end{equation}
+%$E_c$自能的相关部分，
+%\begin{equation}
+%  \begin{split}
+%    \Sigma_c(\vec r,\vec r\,^\prime;E)=&\sum_{kn}^{occ}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r\,^\prime)W_c^-(\vec r,\vec r\,^\prime;E-E_{kn})\\
+%    &+\sum_{kn}^{occ}\psi_{kn}(\vec r)\psi_{\vec r}^{\ast}(\vec r\,^\prime)W_c^+(\vec r,\vec r\,^\prime;E-E_{kn})
+%  \end{split}
+%  \label{eq:solid-237}
+%\end{equation}
+%其中$W_c^{\pm}(\vec r,\vec r\,^\prime;E)=\dfrac i{2\pi}\displaystyle\int_{-\infty}^{+\infty}dE^\prime\frac{W_c(\vec r,\vec r\,^\prime;E^\prime)}{E+E^\prime\pm i\delta}$。于是$\Sigma(\vec r,\vec r\,^\prime;E)$可以记作\cite{JPCM9-767_1997}，
+%\begin{displaymath}
+%  \Sigma(\vec r,\vec r\,^\prime;E)=-\sum_{kn}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r\,^\prime)W_0(\vec r,\vec r\,^\prime;E-E_{kn})
+%\end{displaymath}
+%其中
+%\begin{displaymath}
+%  \begin{split}
+%    W_0(\vec r,\vec r\,^\prime;E-E_{kn})\equiv&[V(\vec r-\vec r\,^\prime)-W_c^-(\vec r,\vec r\,^\prime;E-E_{kn})]\theta(\mu-E_{kn})\\
+%    &-W_c^+(\vec r,\vec r\,^\prime;E-E_{kn})\theta(E_{kn}-\mu)
+%  \end{split}
+%\end{displaymath}
+%这样的GWA近似的自能与Hartree-Fock方法具有相同的形式，但是自能是能量的函数且因为包含相关作用，因此也依赖于未占据态。GWA可以看作是包含动态屏蔽Coulomb势$W_0$的推广Hartree-Fock方法，注意这里的$W_0$与动态屏蔽势$W$不同。
+%
+%在各种能带计算方法中引入GW近似，包括赝势方法\cite{PRB34-5390_1986}，LMTO-TB方法\cite{PRL74-3221_1995}。GWA校正主要应用于简单金属和过渡金属体系，但由于计算过程比较复杂所以目前还没有广泛应用到复杂体系的计算中。GWA校正的另一个问题是计算屏蔽相互作用所需的响应函数，要借助LDA得到的波函数和能带来计算得到\cite{JPCM9-767_1997}。但是这样的方法只适用于电子相关较小的体系(比如绝缘体或者半导体)；对电子强相关体系，则需要采用比LDA近似更好的Hamiltonian，一般可以通过自洽迭代来计算自能\cite{PRL74-3221_1995}。
+%
+%\subsubsection{LDA+U和GWA校正的关系}
+%尽管GWA是由多体微扰理论导出的最简单的自能近似，但是计算量已经很大。GWA和LDA+U可以分别看作包含依赖于频率和轨道屏蔽Coulomb作用的Hartree-Fock方法。至少对含有局域的{\it d}\,或{\it f}\,轨道的过渡金属和稀土金属离子，LDA+U可以看作是对GWA的近似\cite{JPCM9-767_1997}。
+%
+%LDA+U是针对包含在离域态中的定域态轨道的自能校正，定域态的强Coulomb相关用参数$U$校正，而离域态可以用LDA很好的描述。为了确定LDA+U和GWA之间的关系，对态$\psi_d$，考虑GWA中自能的相关部分
+%\begin{equation}
+%  \begin{split}
+%    \langle\psi_d|\Sigma_c(E_d)|\psi_d\rangle=&\langle\psi_d\psi_d|W_c^-|\psi_d\psi_d\rangle\\
+%    &+\sum_{kn\neq d}^{occ}\langle\psi_d\psi_{kn}|W_c^-(E_d-E_{kn})|\psi_{kn}\psi_d\rangle\\
+%    &+\sum_{kn}^{unocc}\langle\psi_d\psi_{kn}|W_c^+(E_d-E_{kn})|\psi_{kn}\psi_d\rangle
+%  \end{split}
+%  \label{eq:solid-238}
+%\end{equation}
+%严格地说，自能应该是$\tilde E_d=E_d+$自能校正。如果$\psi_d$是局域的而且能量与其他态很好的分离，则式\eqref{eq:solid-238}第一项比剩下的其余项大得多，最后一项含未占据的$\psi_d$态，但因为这些项与占据态正交，因此这一项比第一项小得多。可作近似\cite{JPCM9-767_1997}
+%\begin{equation}
+%  \langle\psi_d|\Sigma_c(E_d)|\psi_d\rangle\approx\langle\psi_d\psi_d|W_c^-(0)|\psi_d\psi_d\rangle=-\frac12\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle
+%  \label{eq:solid-239}
+%\end{equation}
+%将屏蔽势关联部分写成谱函数表象，
+%\begin{equation}
+%  W_c(E)=\int_{-\infty}^0dE^\prime\frac{B(E^\prime)}{E-E^\prime-i\delta}+\int_0^{\infty}dE^\prime\frac{B(E^\prime)}{E-E^\prime+i\delta}
+%  \label{eq:solid-240}
+%\end{equation}
+%这里$B(E)=-\dfrac1{\pi}W_c(E)\mathrm{sgn}(E)$。
+%$W_c$是$E$的偶函数，因此$B(E)$是奇函数，因此$W_c^-(0)=-1/2W_c(0)$，类似的对未占据的{\it d}\,态，有$+1/2\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle$，因此能量差为
+%\begin{equation}
+%  \begin{split}
+%    \Delta&=E_2^{HF}-E_1^{HF}+\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle\\
+%    &=\langle\psi_d\psi_d|V|\psi_d\psi_d\rangle+\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle\\
+%    &=\langle\psi_d\psi_d|W(0)|\psi_d\psi_d\rangle
+%  \end{split}
+%  \label{eq:solid-241}
+%\end{equation}
+%这符合屏蔽Coulomb相互作用$\Delta=U\approx W(0)$。
+%
+%上述近似中，局域态的GW自能为
+%\begin{equation}
+%  \Sigma(\vec r,\vec r\,^\prime;E_d)=\Sigma_x(\vec r,\vec r\,^\prime)+\sum_{kn=d}\psi(\vec r)\psi_{kn}^{\ast}(\vec r\,^\prime)W_c^0(\vec r,\vec r\,^\prime;E_d)
+%  \label{eq:solid-242}
+%\end{equation}
+%这里$$W_c^0(\vec r,\vec r\,^\prime;E)=-\frac12W_c(\vec r,\vec r\,^\prime;0)[\theta(\mu-E_d)-\theta(E_d-\mu)]$$
+%LDA的自能校正
+%\begin{equation}
+%  \Delta\Sigma(\vec r,\vec r\,^\prime;E_d)=\Sigma(\vec r,\vec r\,^\prime;E_d)-V_{xc}^{LDA}(\vec r)\delta(\vec r-\vec r\,^\prime)
+%  \label{eq:solid-243}
+%\end{equation}
+%应该与LDA+U方法的$U$值相等。按照LDA+U思想，将空间分为定域部分$\phi_m$(一般是{\it d}\,和{\it f}\,态)和离域部分$\psi_{kn}$
+%$$\delta(\vec r-\vec r\,^\prime)=\sum_m\phi_m(\vec r)\phi_m^{\ast}(\vec r\,^\prime)+\sum_{kn}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r\,^\prime)$$
+%自能校正可以写成
+%\begin{equation}
+%  \begin{split}
+%    \Delta(\vec r,\vec r\,^\prime;E_d)=&\sum_{mm^\prime}\phi_m(\vec r)\Delta\Sigma_{mm^\prime}(E_d)\phi_{m^\prime}^{\ast}(\vec r\,^\prime)+\sum_{knn^\prime}\psi_{kn}(\vec r)\Delta\Sigma_{nn^\prime}(E_d)\psi_{kn}^{\ast}(\vec r\,^\prime)\\
+%    &+\sum_{knm}\psi_{kn}(\vec r)\delta\Sigma_{nm}(\vec k,E_d)\phi_m^{\ast}(\vec r\,^\prime)+\sum_{kmn}\phi_m(\vec r)\Delta\Sigma_{mn}(\vec k,E_d)\psi_{kn}^{\ast}(\vec r\,^\prime)
+%  \end{split}
+%  \label{eq:solid-244}
+%\end{equation}
+%其中第一项是主要的，有近似
+%$$\Delta\Sigma(\vec r,\vec r;E_d)\approx\sum_{mm^\prime}\phi_m(\vec r)\Delta\Sigma_{mm^\prime}(E_d)\phi_{m^\prime}^{\ast}(\vec r\,^\prime)$$
+%这里$$\Delta\Sigma_{mm^\prime}(E_d)=\langle\phi_m|\Sigma_x-V_{xc}|\phi_m\rangle+\sum_{m^{\prime\prime}m^{\prime\prime\prime}}\langle m,m^{\prime\prime}|W_c^0|m^{\prime\prime\prime},m^\prime\rangle n_{m^{\prime\prime},m^{\prime\prime\prime}}$$
+%这里$$n_{m^{\prime\prime},m^{\prime\prime\prime}}=\sum_{kn=d}\langle\phi_{m^{\prime\prime}}|\psi_{kn}\rangle\langle\psi_{kn}|\phi_{m^{\prime\prime\prime}}\rangle$$
+%注意到选择的$\phi_m$是原子内的局域轨道，剩下的自能很小，可以包含在单电子项中。
+%
+%假设只有一个{\it d}\,轨道$\psi_{m\sigma}$的{\it d}\,离子，根据上述近似，局域态的GWA自能为
+%\begin{equation}
+%  \Sigma(\vec r,\vec r\,^\prime;E_{m\sigma})=\Sigma_x(\vec r,\vec r\,^\prime)+\sum_{m^\prime\omega^\prime}\psi_{m^\prime\omega^\prime}(\vec r)\psi_{m^\prime\sigma^\prime}^{\ast}(\vec r\,^\prime)W_c^0(\vec r,\vec r\,^\prime;E_{m\sigma})
+%  \label{eq:solid-245}
+%\end{equation}
+%这里$$W_c^0(\vec r,\vec r\,^\prime;E_{m\sigma})=-\frac12W_c(\vec r,\vec r\,^\prime;0)[\theta(\mu-E_{m\omega})-\theta(E_{m\sigma}-\mu)]$$
+%GWA中的电子-电子相互作用的总势能的矩阵元可以写成
+%\begin{equation}
+%  \begin{split}
+%    \langle\psi_{m\sigma}&|V_{Hartree}+\Sigma_x+\Sigma_c|\psi_{m\sigma}\rangle\\
+%    =&\sum_{m^\prime\sigma^\prime}^{occup}\iint d\vec rd\vec r\,^\prime\psi_{m\omega}^{\ast}(\vec r)\psi_{m\omega}(\vec r)V(\vec r-\vec r\,^\prime)\psi_{m^\prime\sigma^\prime}^{\ast}(\vec r\,^\prime)\psi_{m^\prime\sigma^\prime}(\vec r\,^\prime)\\
+%    &-\sum_{m^\prime}^{occup}\iint d\vec rd\vec r\,^\prime\psi_{m\omega}^{\ast}(\vec r)\psi_{m^\prime\omega^\prime}(\vec r)V(\vec r-\vec r\,^\prime)\psi_{m\sigma}^{\ast}(\vec r\,^\prime)\psi_{m^\prime\sigma^\prime}(\vec r\,^\prime)\\
+%    &+\left(\frac12-n_{m\sigma}\right)\sum_{m^\prime}\iint d\vec rd\vec r\,^\prime\psi_{m\omega}^{\ast}(\vec r)\psi_{m^\prime\omega^\prime}(\vec r)W_c(\vec r,\vec r\,^\prime;0)\psi_{m\sigma}^{\ast}(\vec r\,^\prime)\psi_{m^\prime\sigma^\prime}(\vec r\,^\prime)
+%  \end{split}
+%  \label{eq:solid-246}
+%\end{equation}
+%这里$n_{m\sigma}$是$m\sigma$轨道占据状态，如$\mu-E_{m\sigma}>0$则$n_{m\sigma}=1$；$\mu-E_{m\sigma}<0$，有$n_{m\sigma}=0$。上述矩阵元可以写成
+%$$V_{m\sigma}^{GWA}=\sum_{m^\prime\sigma^\prime}U_{mm^\prime}^0n_{m^\prime\sigma^\prime}-U_{mm}^0n_{m\sigma}-\sum_{m^\prime\neq m}J_{mm^\prime}n_{m^\prime\sigma}+\left(\frac12-n_{m\sigma}\right)\sum_{m^\prime}W_{mm^\prime}$$
+%这里$U_{mm^\prime}^0$是未屏蔽的Coulomb相互作用矩阵元。$J_{mm^\prime}$是交换矩阵，$W_{mm^\prime}$是交换势$W_c(\vec r,\vec r\,^\prime;0)$矩阵元。将屏蔽参数定义为$W=-\sum\limits_{m^\prime}W_{mm^\prime}$，最终GWA的势能矩阵元表达式为\cite{JPCM9-767_1997}
+%\begin{equation}
+%  V_{m\sigma}^{GWA}=\sum_{m^\prime\sigma^\prime}U_{mm^\prime}^0n_{m^\prime\sigma^\prime}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^\prime\neq m}J_{mm^\prime}n_{m^\prime\sigma}-\frac12W
+%  \label{eq:solid-247}
+%\end{equation}
+%为了将LDA的校正写成GWA形式，必须将LSDA的势能矩阵元写成上述相似的形式，因为LSDA并非由轨道-轨道相互作用导出，而由类似于均匀电子气的处理方式，用与Coulomb相互作用能有关的电荷密度计算得到的与轨道无关的有效局域势，无法严格处理。{\it d}\,电子的相互作用能作为总的{\it d}\,电子数$N$的函数，$E_{LSDA}[\rho(\vec r)]=E_{LSDA}[N|\psi_{m\sigma}(\vec r)|^2]$。已知LSDA中单电子本征能不是很准确，但是总能量比较准确，于是假设Hartree-Fock计算是好的近似
+%\begin{equation}
+%  \begin{split}
+%   E_{LSDA}[\rho_{\sigma}(\vec r)]&=E_{LSDA}[N_{\sigma}|\psi_{m\sigma}(\vec r)|^2]\\
+%   &=\frac12F^0N(N-1)-\frac14JN(N-2)\frac14J(N_{\uparrow}-N_{\downarrow})^2
+% \end{split}
+%  \label{eq:solid-248}
+%\end{equation}
+%这里$F^0$是第一Slater积分，$J$是交换能参数，$N_{\sigma}=\sum\nolimits_mn_{m\sigma}$，$N=N_{\uparrow}+N_{\downarrow}$
+%
+%LSDA的电子相互作用势能是总能量对电荷密度$\rho(\vec r)$的变分导数，相互作用能作为总的{\it d}\,电子总数$N_{\sigma}$的变分导数为：
+%\begin{equation}
+%  \begin{split}
+%    \frac{\partial E_{LSDA}[N_{\sigma}|\psi_{m\sigma}(\vec r)|^2]}{\partial N_{\sigma}}&=\int d\vec r\frac{\delta E_{LSDA}[\rho(\vec r)]}{\delta\rho_{\sigma}(\vec r)}\frac{\partial\rho_{\sigma}(\vec r)}{\partial N_{\sigma}}\\
+%    &=\int d\vec rV_{LSDA}^{\sigma}(\rho(\vec r))|\psi_{m\sigma}(\vec r)|^2\\
+%    &=F^0N-\frac12(F^0-J)-JN_{\sigma}
+%  \end{split}
+%  \label{eq:solid-257}
+%\end{equation}
+%由此可有LSDA的势能矩阵元为$V_{m\sigma}^{LSDA}=F^0N-\frac12(F^0-J)-JN_{\sigma}$。
+%GWA对LSDA的势能校正为\cite{JPCM9-767_1997}
+%\begin{equation}
+%  \begin{split}
+%    \delta V_{m\sigma}=&V_{m\sigma}^{GWA}-V_{m\sigma}^{LSDA}\\
+%    =&\sum_{m^\prime\sigma^\prime}U_{mm^\prime}^0n_{m^\prime\sigma^\prime}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^\prime\neq m}j_{mm^\prime}n_{m^\prime\sigma}-\frac12W\\
+%    &-F^0\sum_{m^\prime\sigma^\prime}n_{m^\prime\sigma^\prime}+J\sum_mn_{m\sigma}+\frac12(F^0-J)\\
+%    =&\sum_{m^\prime\sigma^\prime}(U_{mm^\prime}^0-F^0)n_{m^\prime\sigma^\prime}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^\prime\neq m}j_{mm^\prime}n_{m^\prime\sigma}\\
+%    &-\frac12W+J\sum_mn_{n\sigma}+\frac12(F^0-J)
+%  \end{split}
+%  \label{eq:solid-249}
+%\end{equation}
+%差值$U_{mm^\prime}^0-F^0$与Slater积分$F^0$无关(只与Slater积分$F^k$且$k\neq0$有关)，而且有$U_{mm^\prime}^0-F^0=U_{mm^\prime}-U$，这里$U=F^0-W$是屏蔽Coulomb参数，$U_{mm^\prime}$是屏蔽Coulomb矩阵元。
+%\begin{equation}
+%  \begin{split}
+%    \delta V_{m\sigma}=&V_{m\sigma}^{GWA}-V_{m\sigma}^{LSDA}\\
+%    =&\sum_{m^\prime}U_{mm^\prime}n_{m^\prime-\sigma}+\sum_{m^\prime\neq m}(U_{mm^\prime}-J_{mm^\prime})n_{m^\prime\sigma}\\
+%    &-U(N-\frac12)+J(N_{\sigma}-\frac12)
+%  \end{split}
+%  \label{eq:solid-250}
+%\end{equation}
+%如果占据矩阵是对角化的，式\eqref{eq:solid-250}等价于LDA+U势校正\eqref{eq:solid-215}。GWA和LDA+U的本质差别在于计算屏蔽Coulomb势参数$U$，在LDA+U中，$U$是通过构造LSDA超晶胞计算的，在GWA中则是通过计算响应函数得到的。
+%%\newpage
+%\bibliographystyle{mythesis}
+%%  \phantomsection\addcontentsline{toc}{section}{bibliography}
+%  {\small\bibliography{bib/Myref}}
+%%  \nocite{*}
+
+\section{KKR方法、muffin-tin轨道(muttin-tin orbitals, MTO)和LMTO}
+\subsection{KKR方法}
 Green函数方法%与APW方法非常相似，
 是由Korringa\cite{P13-392_1947}与Kohn和Rostoker\cite{PR94-1111_1954}独立提出，因此又被称为KKR方法。KKR方法的基本思想是多重散射理论(multiple scattering theory，如图\ref{Multi-scattering}所示)，与前面介绍的OPW方法和APW方法最大的不同，KKR方法是将Schr\"odinger方程变换成齐次积分方程的形式，而不是将晶体波函数按照某种选定的基函数展开求解久期方程\cite{Ziman,Lizhengzhong}：
 \begin{figure}[h!]
@@ -226,7 +723,7 @@ $q_0=\sqrt E$；$\tilde G_n$是倒格矢；$\vec R_n$是晶格平移格矢。
   \det|S_{l'm',lm}^{\vec k}-\delta_{l'm',lm}P_l(E)|=0
   \label{eq:solid-135}
 \end{equation}
-其中势能为
+其中势能函数为
 \begin{equation}
   P_l(E)=2(2l+1)\frac{D_l(E)+l+1}{D_l(E)-l}
   \label{eq:solid-136}
@@ -254,45 +751,70 @@ KKR方法比APW方法更适用于计算具有近自由电子型的晶体能带�
 
 %(1)原子球近似(Atomic sphere approximation, ASA)
 
-\section{MTO与LMTO}
-KKR方法的核心思想是构造Green函数，用积分方程代替Schr\"odinger方程的求解，因此要求Green函数满足Bloch定理的周期边界条件，在KKR方法中，体系电子波函数的基函数展开是由散射理论确定的，基函数的径向部分用式\eqref{eq:solid-125}表示。散射理论的基函数展开，实质上就是波函数的分波(partial waves)表示。实际上，完全可以选择分波作为基函数，用APW方法类似的思想构造基函数求解偏微分方程，这就是MTO方法，但是在数学表示形式上，MTO方法与KKR方法关系更密切。
+\subsection{MTO与LMTO}
+KKR方法中，体系电子波函数的展开方式由散射理论确定，也就是波函数的分波(partial waves)表示。KKR方法的核心思想是构造Green函数，用积分方程代替Schr\"odinger方程的求解，因此要求Green函数满足Bloch定理的周期边界条件。实际上也可以选择分波作为基函数，用APW方法类似的思想构造基函数求解偏微分方程，这就是MTO方法\cite{Andersen,PRB4-1064_1971,SSC11-799_1972,Andersen-unpub-1,Skriver,Xu-Li-II}，在数学表示形式上，MTO方法与KKR方法关系更密切。
 
 根据电子散射和WS原胞的思想\cite{PR43-804_1933}，%结构常数$A_{lm,l'm'}^{\vec k}(E)$
 满足任意能量$E$的Schr\"odinger方程的波函数可以用分波展开：
 \begin{equation}
-  \Psi_{\vec k}(\vec r,E)=\sum_{lm}C_{lm}(\vec k)\sum_{\vec R}e^{i\vec k\cdot\vec R}\theta(\vec r-\vec R)\Phi_{lm}(E,\vec r-\vec R)
+	\Psi_{\vec k}(\vec r,E)=\sum_{lm}C_{lm}(\vec k)\sum_{\vec R}e^{\mathrm{i}\vec k\cdot\vec R}\theta(\vec r-\vec R)\Phi_{lm}(E,\vec r-\vec R)
   \label{eq:solid-131}
 \end{equation}
-其中分波的形式为
+式\eqref{eq:solid-131}中$\vec R$是晶格格矢，$\theta(\vec r)$是阶梯函数，在WS原胞内是1，原胞外为0。实际应用中，给定能量$E$和波矢$\vec k$，并要求波函数$\Psi_{\vec k}(\vec r,E)$通过WS原胞边界与其他原胞连续到一阶，由此确定系数$C_{lm}$。
+
+具体地，根据散射理论，在MT近似下，分波的形式为
 \begin{equation}
-	\Phi_{lm}(E,\vec r)\equiv \mathrm{i}^lu_l(E,r)Y_{lm}(\hat{\vec r})
+	\Phi_{lm}(E,\vec r)\equiv \mathrm{i}^lu_l(E,r)Y_{lm}(\hat{\vec r})=\mathrm{i}^lY_{lm}(\hat{\vec r})\left\{
+  \begin{aligned}
+    &\phi_l(r,E),&r\leqslant s\\
+    &q_0[n_l(q_0 r)-\cot(\eta_l(E))j_l(q_0 r)],\quad&r>s
+  \end{aligned}\right.
   \label{eq:solid-130}
 \end{equation}
-这里$u_l$是径向Schr\"odinger方程的解。
-式\eqref{eq:solid-131}中$\vec R$是晶格格矢，$\theta(\vec r)$是阶梯函数，在WS原胞内是1，原胞外为0。实际应用中，给定能量$E$和波矢$\vec k$，并要求波函数$\Psi_{\vec k}(\vec r,E)$通过WS原胞边界与其他原胞连续到一阶，由此确定系数$C_{lm}$。%式\eqref{eq:solid-131}是晶体的Schr\"odinger方程的解。此时$E$是给定波矢$\vec k$的能量本征值。显然，边界条件依赖于$\vec k$和晶体结构。
+MT球的球内势是球对称性的，球外间隙区电子动能$q_0^2=E-V_c=0$，因此$\phi_l$在MT球内是满足Schr\"odinger方程的解;~间隙区则服从Laplace方程$\nabla^2\Psi=0$一般解的径向波函数形式，$\cot(\eta_l(E))$的表达式则确定了分波在球面上连续到一阶，因此取式\eqref{eq:solid-129}的形式，如图\ref{MTO-envelope}所示。事实上，式\eqref{eq:solid-130}并不合适作为基函数，当$q_0^2>0$，分波表示会发散；$q_0^2<0$时，Neumann函数$n_l$可用Hankel函数$-\mathrm{i}h_l^{(1)}$代替，只有当$\cot(\eta_l)(E)=0$时，分波才能正交归一的。
+%式\eqref{eq:solid-131}是晶体的Schr\"odinger方程的解。此时$E$是给定波矢$\vec k$的能量本征值。显然，边界条件依赖于$\vec k$和晶体结构。
 
-如果采用原子球近似(atomic sphere approximation, ASA)，WS原胞将由一个等体积的球代替，边界连续条件可以简化为径向函数的对数导数连续。径向函数的对数导数为：
+\textrm{O.~K.~Andersen~}根据散射理论，将式\eqref{eq:solid-130}的分波设计成为用\textrm{MTO}轨道表示的形式：
+\begin{equation}
+	\tilde\Phi_{lm}(r,E)=\mathrm{i}^lY_{lm}(\hat{\vec r})\left\{
+  \begin{aligned}
+    &u_l(r,E)+q_0\cot(\eta_l(E))j_l(q_0 r),&r\leqslant s\\
+    &q_0 n_l(q_0 r),\quad&r>s
+  \end{aligned}\right.
+  \label{eq:solid-Andersen}
+\end{equation}
+这样选择分波，通过$\Phi_{lm}(r,E,q_0)$上叠加球Bessel函数，主要的考虑有：
+\begin{itemize}
+	\item Bessel函数可以抵消球内函数的发散部分，同时也降低球外函数对能量和势函数的依赖
+	\item Bessel函数的性质:~球外的Neumann函数$n_l$可以用球Bessel函数$j_l$很方便地展开
+	\item 要求$\Phi_{lm}(E,\vec r)$与$\tilde\Phi_{lm}(E,\vec r)$的Bloch求和相等
+\end{itemize}
+
+如果采用原子球近似(atomic sphere approximation, ASA)，WS原胞将由一个等体积的球代替，边界连续条件可以简化为径向函数的对数导数连续。引入径向函数的对数导数：
 \begin{equation}
   D_l(E)=su_l'(E,s)/u_l(E,s)
   \label{eq:solid-132}
 \end{equation}
 这里球半径由条件$s=(3\Omega_0/4\pi)^{1/3}$得到；$\Omega_0$为WS原胞体积。
-
 %由于对一般$\vec k$点，WS边界条件很难满足，如果采用各向同性的球形近似，这样的$\vec k$空间过于粗略。为了克服WS原胞方法的困难，Slater提出了MT球的假设\cite{PR51-846_1937}。根据MT近似，间隙区的势能为常数$V_c$，间隙区电子动能为：
 %$$q_0^2=E-V)c$$
 %用MT球之间的电子波的多极散射(multiple scattering)可以计算能带结构。
-
-假设MT球的球内势是球对称性的，球外间隙区电子动能$q_0^2=E-V_c=0$，因此MT球内电子波函数满足Schr\"odinger方程；间隙区则服从Laplace方程$\nabla^2\Psi=0$，考虑到Laplace方程一般解的径向波函数形式为$\Phi_l=a_lr^l+b_lr^{-l-1}$，系数$a_l$和$b_l$由波函数在MT球面上连续并且可导条件确定。因此MT轨道基函数的径向部分为：
-\begin{displaymath}
-  \Phi_l(r,E)=\left\{
-  \begin{aligned}
-    &u_l(r,E),&r\leqslant s\\
-    &\left[\frac{D_l+l+1}{2l+1}\left(\frac rs\right)^l+\frac{l-D_l}{2l+1}\left(\frac rs\right)^{-l-1}\right]u_l(s,E),\quad&r>s
-  \end{aligned}\right.
-\end{displaymath}
-这里$u_l(r,E)$是半径为$s$的MT球内归一化的径向Schr\"odinger方程的解。
-
-该函数不能直接用作基函数，因为$r>s$部分包含发散的函数(如图\ref{MTO-envelope}所示)，为得到合适的基函数形式，写出新的函数
+%因此MT轨道基函数的径向部分为：
+%\begin{displaymath}
+%  \Phi_l(r,E)=\left\{
+%  \begin{aligned}
+%    &u_l(r,E),&r\leqslant s\\
+%    &\left[\frac{D_l+l+1}{2l+1}\left(\frac rs\right)^l+\frac{l-D_l}{2l+1}\left(\frac rs\right)^{-l-1}\right]u_l(s,E),\quad&r>s
+%  \end{aligned}\right.
+%\end{displaymath}
+%这里$u_l(r,E)$是半径为$s$的MT球内归一化的径向Schr\"odinger方程的解。
+%该函数不能直接用作基函数，因为$r>s$部分包含发散的函数为得到合适的基函数形式，
+同时注意到$q_0\rightarrow0$极限下，球\textrm{Bessel~}函数和\textrm{Neumann~}函数的渐近行为:
+\begin{itemize}
+	\item ~MT球内$j_l\rightarrow(r/s)^l$，并且$D_l=l$；
+	\item ~MT球外$n_l\rightarrow(r/s)^{-l-1}$，并且$D_l=-l-1$。
+\end{itemize}
+并利用局域态波函数节点已知时的常用等价变换：即$r\leqslant s$将函数$(r/s)^l$代换为$\Phi_l(r,l)/\Phi_l(s,l)$，变量$E$替换为能量$E$处的对数导数$D$，可将式\eqref{eq:solid-Andersen}改写成函数
 \begin{equation}
    \tilde\Phi_l(r,D)=\left\{
   \begin{aligned}
@@ -301,29 +823,29 @@ KKR方法的核心思想是构造Green函数，用积分方程代替Schr\"odinge
   \end{aligned}\right.
  \label{eq:solid-139}
 \end{equation}
-该表达式为函数$\Phi_l(r,E)$扣除发散部分$(D+l+1)(r/s)^l/(2l+1)$的形式，而且对$r\leqslant s$将函数$(r/s)^l$代换为$\Phi_l(r,l)/\Phi_l(s,l)$，变量$E$替换为能量$E$对应的导数对数$D$，这是局域态波函数节点已知时常用的等价变换。注意到函数\eqref{eq:solid-139}中MT球内部分不再是Schr\"odinger方程的解，但在整个空间中，该函数是平滑的并在球外衰减，因此该函数可作为分波基函数的径向部分。%将基函数写成：
+%该表达式为函数$\Phi_l(r,E)$扣除发散部分$(D+l+1)(r/s)^l/(2l+1)$的形式，
+式\eqref{eq:solid-139}称为ASA近似下，式\eqref{eq:solid-Andersen}的等价表示。同样，函数\eqref{eq:solid-139}中MT球内部分不再是Schr\"odinger方程的解，但在整个空间中，该函数是平滑的并在球外衰减，因此该函数可作为分波基函数的径向部分。%将基函数写成：
 \begin{equation}
 	\bar\Phi_{lm}(\vec r,D)=\mathrm{i}^lY_{lm}(\hat{\vec r})\bar\Phi_l(r,D)
   \label{eq:solid-140}
 \end{equation}
 
-以下讨论MTO基函数的具体表达式，为简单起见，仍采用ASA近似，显然，在$r\leqslant s$区域，应该包含周期体系中其余各WS原胞的原子波函数延伸的“尾巴”的贡献，因此写出基函数的Bloch求和
+以下讨论MTO基函数更具体的表达式，为简单起见，仍采用ASA近似，显然，在$r\leqslant s$区域，应该包含周期体系中其余各WS原胞的原子波函数延伸的“尾巴”的贡献，因此写出基函数的Bloch求和
 \begin{equation}
 	\chi_{lm}^{\vec k}(\vec r,D)=\sum_{\vec R\neq0}e^{\mathrm{i}\vec k\cdot\vec R}\bar\Phi_{lm}(\vec r-\vec R,D)
   \label{eq:solid-141}
 \end{equation}
-其中的“函数尾巴”贡献为$$\bar\Phi_{lm}(\vec r-\vec R,D)=i^lY_{lm}(\hat{\vec r}-\hat{\vec R})\left|\frac{\vec r-\vec R}s\right|^{-l-1}\frac{l-D}{2l+1}\Phi_l(s,D)$$
-与APW方法类似，可将“函数尾巴”贡献按中心原子的角动量分解，
+因此球心位于$\vec R$的MT球，其“函数尾巴”贡献$$\bar\Phi_{lm}(\vec r-\vec R,D)=\mathrm{i}^lY_{lm}(\hat{\vec r}-\hat{\vec R})\left|\frac{\vec r-\vec R}s\right|^{-l-1}\frac{l-D}{2l+1}\Phi_l(s,D)$$
+在原点处可展开为
 \begin{equation}
   \begin{split}
 	  \mathrm{i}^lY_{lm}(\hat{\vec r}-\hat{\vec R})\left|\frac{\vec r-\vec R}s\right|^{-l-1}=&4\pi\sum_{l''m'',l'm'}^{l''=l+l'}C_{lm,l''m'',l'm'}\frac{(2l''-1)!!}{(2l-1)!!(2l'+1)!!}\\
-	  &\times(-\mathrm{i})^{l''}\left(\frac Rs\right)^{-l''-1}Y_{l''m''}^{\ast}(\hat{\vec R})\times i^{l'}\left(\frac rs\right)^{l'}Y_{l'm'}(\hat{\vec r})
+	  &\times(-\mathrm{i})^{l''}\left(\frac Rs\right)^{-l''-1}Y_{l''m''}^{\ast}(\hat{\vec R})\times\mathrm{i}^{l'}\left(\frac rs\right)^{l'}Y_{l'm'}(\hat{\vec r})
   \end{split}
   \label{eq:solid-142}
 \end{equation}
-%为了
-用$\Phi_{l'}(r,l')/\Phi_{l'}(s,l')$%\eqref{eq:solid-142}
-替换$(r/s)^{l'}$，要求函数在MT球面上连续可导，最后得到基函数\cite{Nemoshkalenko-Antonov}：
+为了确保函数在球面上连续到一阶，用$\Phi_{l'}(r,l')/\Phi_{l'}(s,l')$%\eqref{eq:solid-142}
+替换$(r/s)^{l'}$，最后得到一般的基函数表达式\cite{Nemoshkalenko-Antonov}：
 \begin{equation}
   \chi_{lm}^{\vec k}(\vec r,D)=\left\{
   \begin{aligned}
@@ -335,7 +857,7 @@ KKR方法的核心思想是构造Green函数，用积分方程代替Schr\"odinge
   \end{aligned}\right.
   \label{eq:solid-143}
 \end{equation}
-这里$S_{l'm',lm}^{\vec k}$由式\eqref{eq:solid-137}确定。这就是MTO方法的主要思想，式\eqref{eq:solid-143}用作MTO方法的基函数，因此整个晶体的Schr\"odinger方程的解可表示为
+为简化表示，这里引入式\eqref{eq:solid-137}定义的$S_{l'm',lm}^{\vec k}$，这就是MTO方法的主要思想。式\eqref{eq:solid-143}用作MTO方法的基函数，因此整个晶体的Schr\"odinger方程的解可表示为
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.70in,width=2.15in,viewport=0 0 845 635,clip]{MTO-envelope-1.png}
@@ -344,8 +866,7 @@ KKR方法的核心思想是构造Green函数，用积分方程代替Schr\"odinge
 \label{MTO-envelope}
 \end{figure}
 $$\Psi_{\vec k}(\vec r)=\sum_{lm}C_{lm}(\vec k)\sum_{\vec R}e^{i\vec k\cdot\vec R}\chi_{lm}(\vec k,\vec r-\vec R,D_l(E))$$
-
-在ASA近似下，该式与式\eqref{eq:solid-131}等价，换句话说，在每个中心原子球内，来自其他原子的“函数尾部”必须彼此抵消(如图\ref{MTO-tail-candellation}所示)，%原子MT球内的非球形部分正比于$\mathrm{i}^lY_{lm}(\hat{\vec k})r^l$，
+在ASA近似下，式\eqref{eq:solid-143}与式\eqref{eq:solid-131}等价意味着在每个原子球内，所有来自其他原子的“函数尾部”贡献必须彼此抵消(如图\ref{MTO-tail-candellation}所示)，%原子MT球内的非球形部分正比于$\mathrm{i}^lY_{lm}(\hat{\vec k})r^l$，
 \begin{figure}[h!]
 \centering
 \includegraphics[height=2.55in,width=3.15in,viewport=0 0 845 635,clip]{MTO-Tail_cancellation.png}
@@ -423,7 +944,7 @@ $$\Phi_{\nu}(r)\equiv u_l(E_{\nu},r);\quad\dot\Phi_{\nu}\equiv\left.\frac{\parti
 \end{equation}
 最终的基函数形式为
 \begin{equation}
-  \Phi_{lm}(D,\vec r)=i^lY_{lm}(\hat{\vec r})\Phi_l(D,r)
+	\Phi_{lm}(D,\vec r)=\mathrm{i}^lY_{lm}(\hat{\vec r})\Phi_l(D,r)
   \label{eq:solid-153}
 \end{equation}
 %球内的Hamiltonian矩阵元和重叠矩阵元可以表示为
@@ -487,7 +1008,7 @@ ASA近似下，MT轨道\eqref{eq:solid-143}写成：
 
 式\eqref{eq:solid-162}的更一般的单中心展开的表达式为：
 \begin{equation}
-  \chi_{lm}^{\vec k}(D_{l2},\vec r)=\Phi_{lm}(D_{l2},\vec r)-\sum_{l'm'}\frac{\Phi_{l'm'}(l',\vec r)}{\omega_{l'}(D_{l_2'})-\omega_{l'}(l')}T_{l'm',lm}^{\vec k}
+  \chi_{lm}^{\vec k}(D_{l_2},\vec r)=\Phi_{lm}(D_{l_2},\vec r)-\sum_{l'm'}\frac{\Phi_{l'm'}(l',\vec r)}{\omega_{l'}(D_{l_2'})-\omega_{l'}(l')}T_{l'm',lm}^{\vec k}
   \label{eq:solid-164}
 \end{equation}
 这里$D_{l_2}$是任意不等于$l$的对数导数；$T_{l'm',lm}^{\vec k}$是矩阵
@@ -527,7 +1048,7 @@ Hamiltonian和重叠矩阵元表示为
   \end{split}
   \label{eq:solid-169}
 \end{equation}
-这里式\eqref{eq:solid-167}和\eqref{eq:solid-168}中形式为$S_{l'm',lm}^0$，$S_{l'm',lm}^1$和$S_{l'm',lm}^2$分别为单中心、双中心和三中心积分。式(\ref{eq:solid-167},\ref{eq:solid-168})是原子球近似的LMTO(LMTO-ASA)方法的基本表达式。该方法与LCAO方法很相似，不过LCAO方法主要困难在于处理多中心积分，而LMTO-ASA中，这些积分容易处理得多。
+这里式\eqref{eq:solid-167}和\eqref{eq:solid-168}中形式为$S_{l'm',lm}^0$，$S_{l'm',lm}^1$和$S_{l'm',lm}^2$分别为单中心、双中心和三中心积分。式(\ref{eq:solid-167},\ref{eq:solid-168})是原子球近似的LMTO(LMTO-ASA)方法的基本表达式。所以本质上LMTO方法与LCAO方法很相似，不过LCAO方法主要困难在于处理多中心积分，而LMTO-ASA中，这些积分容易处理得多。
 
 放弃原子球近似采用APW或者KKR方法中的MT球近似，可以得到更精确的LMTO方法。将WS原胞分为半径为s的彼此不相重叠的MT球区(区域I)和间隙区(区域II)两部分，MT球内具有球对称势，间隙区电子动能$q_0^2=E-V_c=0$，据此Hamiltonian和重叠矩阵为
 \begin{equation}
@@ -624,10 +1145,11 @@ $$\bar H_{lm}^{(i)}=H_{lm}^{(i)}-V_cC_{lm}^{(i)},\quad\bar O_{lm}^{(i)}=O_{lm}^{
 注意势能参数和结构参数都在MT球面上计算。类似的可以推导WS原胞内含有多个原子的体系\cite{Nemoshkalenko-Antonov}。
 
 与LAPW方法类似，%平行的还有紧束缚(Tight-binding)LMTO方法\cite{Andersen-Jepsen,PRL53-2571_1984}，
-LMTO方法与全势(Full Potential)方法结合，称为FP-LMTO方法，具体可参阅文献\inlinecite{PRB37-10269_1988,Blochel,JCP87-7125_1987,PRB38-1537_1988,PRB46-12181_1992}。%此外还有缀加球波(Augmented Spherical Wave, ASW)方法\cite{PRB19-6094_1979}，线性KKR方法\cite{JPC5-97_1972,Wonn,Ziesche-Lehmann,PSSB97-449_1980}，线性缀加Slater轨道(Linear Augmented Slater Orbitals, LASO)方法\cite{PRB29-2896_1984}等。
+LMTO方法也可与全势(Full Potential)方法结合，称为FP-LMTO方法，具体可参阅文献\inlinecite{PRB37-10269_1988,Blochel,JCP87-7125_1987,PRB38-1537_1988,PRB46-12181_1992}。%此外还有缀加球波(Augmented Spherical Wave, ASW)方法\cite{PRB19-6094_1979}，线性KKR方法\cite{JPC5-97_1972,Wonn,Ziesche-Lehmann,PSSB97-449_1980}，线性缀加Slater轨道(Linear Augmented Slater Orbitals, LASO)方法\cite{PRB29-2896_1984}等。
 %Tight-Binding LMTO方法
 
-LMTO方法的一个不足之处在于MT轨道随半径衰减缓慢，距离中心MT球很远的WS原胞处的波函数贡献也不能忽略。%注意到间隙区的MT轨道是Laplace方程$\nabla^2\Psi=0$的解，形式为：
+不难看出，MT轨道基函数特别适用于满足密堆积条件的体系计算，所需基组小，计算效率高；但MT轨道作为基函数随半径衰减缓慢，距离中心MT球很远的WS原胞处的波函数贡献也不能忽略，这是MT轨道作为基函数的一个不足；另外需要指出的是，对于能量较高的电子态，电荷分布往往不再满足球对称条件，采用MT轨道计算，结果也往往不理想。因此近年来，LMTO方法的应用不如LAPW方法和PAW方法广泛，主要在计算金属或合金密堆积体系时还会使用。
+%注意到间隙区的MT轨道是Laplace方程$\nabla^2\Psi=0$的解，形式为：
 %\begin{equation}
 %  \begin{split}
 %    K_{Rlm}(\vec r_R)&\equiv\left(\frac{r_R}s\right)^{-l-1}Y_{lm}(\hat{\vec r}_R)=-\sum_{l'm'}\left(\frac{r_{R'}}s\right)^{l'}\frac{Y_{l'm'}(\hat{\vec r}_{R'})}{2(2l'+1)}S_{R'l'm',Rlm}\\
@@ -690,111 +1212,3 @@ LMTO方法的一个不足之处在于MT轨道随半径衰减缓慢，距离中�
 %选取$\alpha$使得$S^{\alpha}$和$K^{\alpha}\rangle^{\infty}$最短程，对于$l>2$，使用条件$\alpha_l=0$。
 
 %局域MT轨道
-\section{全势方法的势能处理}
-Madelung\cite{PZ19-524_1918}最早研究了晶体中Coulomb势求和问题。1921年Ewald\cite{AP64-253_1921}发展了一般的晶体Coulomb势求和技术，此后Ewald方法得到了进一步的改进和推广\cite{Tosi,PR117-1466_1960,PR181-1020_1969}。
-
-文献\cite{JMP22-2433_1981}提出了根据电荷密度多极展开和MT球面上的Dirichlet问题求解Poisson方程的全势(Full-Potential)方法：
-%MT球半径$R_{MT}$外点$\vec r$处的Coulomb势为\cite{Landau-Lifshitz}
-%\begin{equation}
-%  V_I(\vec r)=\sum_L\frac{4\pi}{2l+1}q_l\frac{Y_L(\hat{\vec r})}{r^{l+1}}
-%  \label{eq:solid-65}
-%\end{equation}
-%这里I表示间隙区；$Y_L(\hat{\vec r})$是球谐函数，$L\hat=l,m$；$q_l$是多极矩，
-%\begin{equation}
-%   q_l=\int_{\Omega_0}Y_L^{\ast}(\hat{\vec r})r^l\rho(\vec r)d^3r
-%  \label{eq:solid-66}
-%\end{equation}
-将电子密度$\rho(\vec r)$分为MT球内部分$\rho_s(\vec r)$和间隙区部分$\rho_I(\vec r)$，$\rho(\vec r)=\rho_I(\vec r)\theta(r\in I)+\rho_s(\vec r)\theta(r\in \Omega_s)$
-%\begin{equation}
-%  \rho(\vec r)=\rho_I(\vec r)\theta(r\in I)+\rho_s(\vec r)\theta(r\in \Omega_s)
-%  \label{eq:solid-67}
-%\end{equation}
-%在推导Coulomb势的时候，首先确定间隙区势能，再对MT球面解Dirichlet边条件得到球内的Coulomb势。
-间隙区电子密度$\rho_I(\vec r)$是平缓函数，可以表示为快速收敛的Fourier级数。MT球内的的电子密度是强烈振荡的函数，其Fourier展开级数收敛缓慢。注意到间隙区Coulomb势对通过多极矩$q_L$依赖于MT球内电子密度\cite{Landau-Lifshitz}。因此可以用一个平缓的赝电子密度(Pseudo-density)函数替代MT球内的真实电子密度，使得两者具有相同的多极矩$q_L$。%：
-%\begin{equation}
-%  \rho(\vec r)\rightarrow\tilde\rho(\vec r)=\rho_I\theta(r\in I)+\tilde\rho_s(\vec r)\theta(r\in \Omega_s)
-%  \label{eq:solid-68}
-%\end{equation}
-%要求赝电荷密度$\tilde\rho(\vec r)$可以用快速收敛的Fourier级数表示：
-%\begin{equation}
-%  \tilde\rho(\vec r)=\sum_{\vec G}[\rho_I(\vec G)+\tilde\rho_s(\vec G)]e^{i\vec G\cdot\vec r}
-%  \label{eq:solid-69}
-%\end{equation}
-求解Poisson方程，通过赝电荷密度得到正确的间隙区Coulomb势，
-\begin{equation}
-  V_I(\vec r)=\sum_{\vec G}\frac{4\pi}{G^2}[\rho_I(\vec G)+\tilde\rho_s(\vec G)]e^{i\vec G\cdot\vec r}
-  \label{eq:solid-70}
-\end{equation}
-%必须得到MT球内的赝电荷的Fourier展开$\tilde\rho_s(\vec G)$。
-
-%将晶体中的电子密度表示为
-%\begin{equation}
-%   \rho(\vec r)=\rho_I(\vec r)+[\rho_s(\vec r)-\rho_I(\vec r)]\theta(r\in \Omega_s)
-%  \label{eq:solid-71}
-%\end{equation}
-%这里第一项$\rho_I(\vec r)$定义在整个WS原胞内。MT球内的赝电荷密度可以表示成级数：
-%\begin{equation}
-%   \tilde\rho_s(\vec r)=\sum_LQ_LY_L(\hat{\vec r})\sum_{\nu}a_{\nu}r^{l+2\nu},\quad v=0,1,2,\cdots
-%  \label{eq:solid-72}
-%\end{equation}
-%其中$a_{\nu}$是参数，$Q_L$是常数，它使得赝电荷与实际电荷的多极矩相匹配，即
-%\begin{equation}
-%  \tilde q_L=\sum_{L'}Q_{L'}\int_{\Omega_s}Y_L^{\ast}(\hat{\vec r})Y_{L'}(\hat{\vec r})d\Omega\int_0^{R_{MT}}\sum_{\nu}a_{\nu}r^{2(l+\nu+1)}dr
-%  \label{eq:solid-73}
-%\end{equation}
-%或者
-%\begin{equation}
-%  Q_L=\tilde q_L\left[\sum_{\nu}\dfrac{R_{MT}^{2(l+\nu)+3}}{2(l+\nu)+3}\right]^{-1}
-%  \label{eq:solid-74}
-%\end{equation}
-%这里$\tilde q_L$是电子密度\eqref{eq:solid-71}在MT球内的多极矩，$\tilde q_L=-Z\delta_{l0}+q_L-q_L^I$。$q_L$由式\eqref{eq:solid-66}计算得到，$q_L^I$是平面波电荷密度的多极矩
-%\begin{equation}
-%  \begin{split}
-%   q_L^I=&\frac{\sqrt{4\pi}}3R_{MT}^3\rho_I(\vec G)\delta_{l0}\delta_{G0} \\
-%   &+\sum_{\vec G\neq0}4\pi i^l\rho_I(\vec G)R_{MT}^{l+3}\dfrac{j_{l+1}(GR_{MT})}{GR_{MT}}Y_L^{\ast}(\vec G)
-%  \end{split}
-%  \label{eq:solid-75}
-%\end{equation}
-%其中$R_{MT}$是球半径。
-
-MT球内赝电荷密度%\eqref{eq:solid-72}
-的Fourier展开$\tilde\rho_s(\vec G)$%=\dfrac1{\Omega_0}\displaystyle\int_{\Omega_s}\tilde\rho_s(\vec r)e^{-i\vec G\cdot\vec r}d^3\vec r$
-可以表示为\cite{JMP22-2433_1981}：
-\begin{equation}
-  \tilde\rho_s(\vec G)=\frac{4\pi}{\Omega_0}\sum_L\dfrac{(-i)^l(2l+2n+3)!!}{R_{MT}^l(2l+1)!!}\dfrac{j_{l+n+1}(GR_{MT})}{(GR_{MT})^{n+1}}\tilde q_Le^{-i\vec G\cdot\vec r}Y_L(\vec G)
-  \label{eq:solid-76}
-\end{equation}
-其中$\Omega_0$是WS原胞体积。$n$是使得MT球内赝电荷平缓的参数。文献\cite{JMP22-2433_1981}给出了参数$n$的推荐值。
-
-式\eqref{eq:solid-70}表明，MT球内赝电荷密度决定了间隙区Coulomb势能，
-%但是不能用它来求解Poisson方程。
-为了求得MT球内的Coulomb势，使用Dirichlet的球边界条件\cite{Landau-Lifshitz}和MT球面上的势能$V_I(\vec r_{MT})$，可以得到MT球内的Coulomb势：
-\begin{displaymath}
-%\begin{equation}
-  V_s(\vec r)=\int_{\Omega_s}\rho_s(\vec r')G(\vec r,\vec r')d^3\vec r'-\dfrac{R_{MT}^2}{4\pi}\ointop\nolimits_sV_I(\vec r_{MT}')\frac{\partial G}{\partial n'}dS'
-  \label{eq:solid-77}
-%\end{equation}
-\end{displaymath}
-$\vec r_{MT}$表示MT球面上的点，G是格林函数。%：
-%\begin{equation}
-%  G(\vec r,\vec r')=4\pi\sum_L\dfrac{Y_L^{\ast}(\vec r')Y_L(\vec r)}{2l+1}\dfrac{r_<^l}{r_>^{l+1}}\left[1-\biggl(\dfrac{r_>}{R_{MT}}\biggr)^{2l+1}\right]
-%  \label{eq:Green-function}
-%\end{equation}
-%其中$r_>$($r_<$)是$r$和$r'$中较大(较小)的一项。格林函数的导数：
-%\begin{equation}
-%  \frac{\partial G}{\partial n'}=\left.\frac{\partial G}{\partial r'}\right|_{r'=R_{MT}}=-\frac{4\pi}{R_{MT}^2}\sum_L\biggl(\dfrac r{R_{MT}}\biggr)^lY_L^{\ast}(\vec r')Y_L(\vec r)
-%  \label{eq:derivative-Green}
-%\end{equation}
-%最后，
-MT球内的Coulomb势可以表示为：
-\begin{displaymath}
-%\begin{equation}
-  \begin{split}
-    V_C(\vec r)=&\sum_LY_L(\vec r)\left[\frac{4\pi}{2l+1}\left\{\dfrac1{r^{l+1}}\int_0^rdr'(r')^{l+2}\rho_L(r')+r^l\int_r^{R_{MT}}dr'(r')^{1-l}\rho_L(r')\right\}\right.\\
-    &+\biggl(\dfrac r{R_{MT}}\biggr)^l4\pi i^l\sum_{\vec G\neq0}\frac{4\pi}{G^2}\tilde\rho(\vec G)Y_L^{\ast}(\vec G)\left.\dfrac{GR_{MT}j_{l-1}(GR_{MT})}{2l+1}\right]
-  \end{split}
-%  \label{eq:solid-78}
-%\end{equation}
-\end{displaymath}
-选定能带计算方法和波函数后，即可计算得到$\rho_L(\vec r)$和$\rho_I(\vec G)$的解析表达式。
-

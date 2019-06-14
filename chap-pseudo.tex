@@ -136,8 +136,8 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 \end{itemize}
 不同的计算方法，主要通过基函数为特征命名。
 
-\section{基态总能量表达式}
-采用赝势方法计算的晶体总能量$E_T$由晶格中的电子能量$E_{e-e}$与离子实排斥能$E_{N-N}$之和：
+\section{基态总能量表达式\footnote{这部分主要参阅文献\inlinecite{XIE-LU}}}
+在DFT框架内，周期体系的总能量$E_T$由晶格中的电子能量$E_{e-e}$与离子实排斥能$E_{N-N}$之和：
 	\begin{equation}
 		E_T=E_{e-e}+E_{N-N}=T[\rho]+E_{ext}+E_{\mathrm{Coul}}+E_{\mathrm{XC}}+E_{N-N}
 	\end{equation}
@@ -147,34 +147,34 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 \end{equation}
 $n_i$是$\psi_i$上的电子占据数，$\varepsilon_i$是其能量本征值，因此有
 \begin{equation}
-	\hspace*{-12.0pt}	E_T=\sum_in_i\varepsilon_i-\dfrac12\int\int\mathrm{d}\vec r\mathrm{d}\vec r\dfrac{\rho(\vec r)\rho(\vec r^{\prime})}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r\rho(\vec r)[\epsilon_{\mathrm{XC}}(\vec r)-V_{\mathrm{XC}}(\vec r)]+E_{N-N}
+	E_T=\sum_in_i\varepsilon_i-\dfrac12\int\int\mathrm{d}\vec r\mathrm{d}\vec r\dfrac{\rho(\vec r)\rho(\vec r^{\prime})}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r\rho(\vec r)[\epsilon_{\mathrm{XC}}(\vec r)-V_{\mathrm{XC}}(\vec r)]+E_{N-N}
 \end{equation}
 
 周期体系的总能量表达式在动量空间($\vec K$空间)计算更方便
 \begin{equation}
-	\hspace*{-15.0pt}	E_T=\textcolor{red}{\sum_in_i\varepsilon_i}-\dfrac{\Omega}2\sum_{\textcolor{red}{\vec k\neq 0}}\rho^{\ast}(\vec k)V_{\mathrm{Coul}}(\vec k)+\Omega\sum_{\vec k}\rho^{\ast}(\vec k)[\epsilon_{\mathrm{XC}}(\vec k)-V_{\mathrm{XC}}(\vec k)]+E_{N-N}
+	E_T=\textcolor{red}{\sum_in_i\varepsilon_i}-\dfrac{\Omega}2\sum_{\textcolor{red}{\vec k\neq 0}}\rho^{\ast}(\vec k)V_{\mathrm{Coul}}(\vec k)+\Omega\sum_{\vec k}\rho^{\ast}(\vec k)[\epsilon_{\mathrm{XC}}(\vec k)-V_{\mathrm{XC}}(\vec k)]+E_{N-N}
 \end{equation}
 其中$V_{\mathrm{Coul}}(\vec k)$、$\epsilon_{\mathrm{XC}}(\vec k)$与$\rho^{\ast}(\vec k)$分别是\textrm{Coulomb}相互作用、单个电子的交换-相关能、交换-相关势和电子密度的\textrm{Fourier}分量。
 
-由\textrm{Poisson}方程
+电子间的\textrm{Coulomb}相互作用由\textrm{Poisson}方程计算
 \begin{equation}
 	\nabla^2V_{\mathrm{Coul}}(\vec r)=-4\pi\rho(\vec r)
 \end{equation}
-的\textrm{Fourier}展开有
+其\textrm{Fourier}展开为
 \begin{equation}
 	V_{\mathrm{Coul}}(\vec k)=\dfrac{4\pi\rho^{\ast}(\vec k)}{|\vec k|^2}
 \end{equation}
 交换-相关势和交换-相关能的计算一般先在实空间计算$\epsilon_{\mathrm{XC}}(\vec r)$和$V_{\mathrm{XC}}(\vec r)$后，再通过\textrm{Fourier}变换到动量空间，得到$\epsilon_{\mathrm{XC}}(\vec k)$和$V_{\mathrm{XC}}(\vec k)$
 
-	离子间\textrm{Coulomb}相互作用能之和
-	\begin{equation}
+离子间\textrm{Coulomb}相互作用能之和
+\begin{equation}
 		E_{N-N}=\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_s^{\prime}|}
-	\end{equation}
-	这里$Z_s$是离子实的电荷数，$\vec R$表示晶格点的位矢，$\vec r_s$代表元胞内原子的相对位矢。
+\end{equation}
+这里$Z_s$是离子实的电荷数，$\vec R$表示晶格点的位矢，$\vec r_s$代表元胞内原子的相对位矢。
 
-	\textcolor{red}{\textbf{注意}}:~$E_{N-N}$求和包含无穷多项，是发散的；$V_{\mathrm{Coul}}(\vec k=0)$是发散的。
+\textcolor{red}{\textbf{注意}}:~$E_{N-N}$求和包含无穷多项，是发散的；$V_{\mathrm{Coul}}(\vec k=0)$是发散的。
 	
-	$V_{ext}$在不存在其他外场时，一般只考虑离子-电子的\textrm{Coulomb}相互作用，
+$V_{ext}$在不存在其他外场时，一般只考虑离子-电子的\textrm{Coulomb}相互作用，
 	\begin{equation}
 		\begin{aligned}
 			V_{ext}(\vec r)&=\sum_{\vec R,s}\dfrac{-Z_s}{|\vec r-\vec R-\vec r_s|}\\
@@ -182,11 +182,11 @@ $n_i$是$\psi_i$上的电子占据数，$\varepsilon_i$是其能量本征值，�
 		\end{aligned}
 	\end{equation}
 
-	$V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}。这三项单独都是发散的，但因为整个体系出于电中性，所以这些发散项相互抵消，是一个常数。
+$V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}。这三项单独都是发散的，但因为整个体系出于电中性，所以这些发散项相互抵消，是一个常数。
 
-	因此求解\textrm{Kohn-Sham}方程时，先将$V_{\mathrm{Coul}}(\vec k=0)$和$V_{ext}(\vec k=0)$同时置为零，这相当于\textcolor{red}{将势能作一平移，或者说重新定义势能零点，而在总能量计算中补偿这一平移。}
+因此求解\textrm{Kohn-Sham}方程时，先将$V_{\mathrm{Coul}}(\vec k=0)$和$V_{ext}(\vec k=0)$同时置为零，这相当于\textcolor{red}{将势能作一平移，或者说重新定义势能零点，而在总能量计算中补偿这一平移。}
 
-	发散项之和为：
+发散项之和为：
 	\begin{equation}
 		\begin{aligned}
 			\lim_{\vec k\rightarrow0}\Omega&\bigg[\dfrac12V_{\mathrm{Coul}}(\vec k)+\sum_sv_{ext}^s(\vec k)\bigg]\rho^{\ast}(\vec k)+\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_s^{\prime}|}\\
@@ -194,7 +194,7 @@ $n_i$是$\psi_i$上的电子占据数，$\varepsilon_i$是其能量本征值，�
 		\end{aligned}
 	\end{equation}
 
-	对于形如$Z_s/r$的外场，其\textrm{Fourier}分量在$\vec k=0$附近展开
+对于形如$Z_s/r$的外场，其\textrm{Fourier}分量在$\vec k=0$附近展开
 	\begin{equation}
 		v_{ext}^s(\vec k)=-\dfrac{4\pi Z_s}{\Omega|\vec k|^2}+\alpha_s+O(\vec k)； 
 	\end{equation}
