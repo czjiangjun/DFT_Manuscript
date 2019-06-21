@@ -1,15 +1,15 @@
-\section{投影子缀加波(Projector Augmented Wave, PAW)方法}
-PAW方法是\textrm{Bl\"ochl}于1994年提出来的一种独立的计算方法\cite{PRB50-17953_1994}，这个方法的基本思想与OPW很相似，而且结合了赝势方法和APW方法的优点，兼顾了计算效率和精度，是当前最主要的计算方法之一。
-\begin{itemize}
-	\item 与芯层态正交的全部价电子构成的\textrm{Hilbert}空间%，价电子彼此的正交使得波函数在\textrm{Muffin-tin}球内振荡
-	\item 作\textcolor{red}{线性空间变换}，全电子波函数$|\Psi\rangle$与赝波函数$|\tilde\Psi\rangle$满足：
+\section{投影子缀加波(Projector Augmented Wave, PAW)方法与第一原理分子动力学}
+PAW方法是\textrm{Bl\"ochl}于1994年独立提出来的一种计算方法\cite{PRB50-17953_1994}，该方法的基本思想与OPW很相似，但同时结合了赝势方法和APW方法的优点，达到平衡计算效率和精度的目的。PAW方法刚提出来的时候并未引起注意，直到1999年\textrm{Kresse}指明了PAW方法和USPP方法的密切关联，USPP方法的计算程序只要经过简单改造就能扩展为PAW方法，有力地推动了PAW方法的广泛应用\cite{PRB59-1758_1999}。现在PAW方法已经成为最主要的可支持第一原理分子动力学(Ab initio Molecular Dynamics, AIMD)。
+
+\subsection{PAW方法的基本思想}
+与一般赝势方法不同，PAW方法的目标是全电子(all-electron)波函数\footnote{注意，“全电子”在\textrm{Bl\"ochl}原始文献\inlinecite{PRB50-17953_1994}中指的是电子波函数不再区分价电子与芯层电子，而在\textrm{Kresse}的文献\inlinecite{PRB59-1758_1999}中则是指价电子波函数，但包含了因为与芯层电子正交而导致的价电子波函数的振荡;~此外，与“全电子”概念密切关联的是“全势(full-potential)”，两者在具体语境中有一定的区别，“全势”强调的是重现价电子感受到的势函数的效果}，体系中全部电子构成\textrm{Hilbert}空间，价电子与芯层态彼此正交，使得波函数在\textrm{Muffin-tin}球内振荡。
+作\textcolor{red}{线性空间变换}，全电子波函数$|\Psi\rangle$与赝波函数$|\tilde\Psi\rangle$满足：
 		$$|\Psi\rangle=\mathbf{\tau|}\tilde\Psi\rangle$$
 %	$$\tau=\mathbf{1}+\sum_{\mathrm R}\hat\tau_{\mathrm R}$$
 	\item 在原子核附近的$r_c$范围内，波函数用原子分波函数展开：
 	$$|\Psi\rangle=|\tilde\Psi\rangle+\sum_i(|\phi_i\rangle-|\tilde\phi_i\rangle)\langle\tilde p_i|\tilde\Psi\rangle$$
 	\item 在$r_c$外$|\tilde\Psi\rangle$与$|\Psi\rangle$变换前后保持不变，因此线性变换$\mathbf{\tau}$可表示为：
 	$$\mathbf{\tau}=\mathbf{1}+\sum_i(|\phi_i\rangle-|\tilde\phi_i\rangle)\langle\tilde p_i|$$
-\end{itemize}
 其中$|\tilde p_i\rangle$是\textrm{MT}球内的投影函数\\
 $i$表示原子位置$\vec R$、原子轨道($l,m$)和能级$\epsilon_k$的指标。
 \begin{figure}[h!]
@@ -33,31 +33,31 @@ $$n^1(\vec r)=\sum_{n,(i,j)}f_n\langle\tilde\Psi_n|\tilde p_i\rangle\langle\phi_
 $$\tilde n^1(\vec r)=\sum_{n,(i,j)}f_n\langle\tilde\Psi_n|\tilde p_i\rangle\langle\tilde\phi_i|\vec r\rangle\langle\vec r|\tilde\phi_j\rangle\langle\tilde p_j|\tilde\Psi_n\rangle$$
 
 总能量泛函
-%\begin{displaymath}
+%\begin{equation}
 %	\begin{aligned}
 %		E&=\sum_nf_n\langle\Psi_n|-\dfrac12\nabla^2|\Psi_n\rangle\\
 %		 &+\dfrac12\int\mathrm{d}\vec r\int\mathrm{d}\vec r^{\prime}\dfrac{(n+n^Z)(n+n^Z)}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r n\epsilon_{\mathrm{XC}}(n)
 %	\end{aligned}
-%\end{displaymath}
+%\end{equation}
 $E=\tilde E+E^1-\tilde E^1$，每一项分别表示为：
-\begin{displaymath}
+\begin{equation}
 	\begin{aligned}
 		\tilde E&=\sum_nf_n\langle\tilde\Psi_n|-\dfrac12\nabla^2|\tilde\Psi_n\rangle\\
 		 &+\dfrac12\int\mathrm{d}\vec r\int\mathrm{d}\vec r^{\prime}\dfrac{(\tilde n+\hat n)(\tilde n+\hat n)}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r \tilde n\bar v+\int\mathrm{d}\vec r \tilde n\epsilon_{\mathrm{XC}}(\tilde n)
  	\end{aligned}
-\end{displaymath}
-\begin{displaymath}
+\end{equation}
+\begin{equation}
 	\begin{aligned}
 		E^1&=\sum_{n,(i,j)}f_n\langle\tilde\Psi_n|\tilde p_i\rangle\langle\phi_i|-\dfrac12\nabla^2|\phi_j\rangle\langle\tilde p_j|\tilde\Psi_n\rangle\\
 		 &+\dfrac12\int\mathrm{d}\vec r\int\mathrm{d}\vec r^{\prime}\dfrac{(n^1+n^Z)(n^1+n^Z)}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r n^1\epsilon_{\mathrm{XC}}(n^1)
  	\end{aligned}
-\end{displaymath}
-\begin{displaymath}
+\end{equation}
+\begin{equation}
 	\begin{aligned}
 		\tilde E^1&=\sum_{n,(i,j)}f_n\langle\tilde\Psi_n|\tilde p_i\rangle\langle\tilde\phi_i|-\dfrac12\nabla^2|\tilde\phi_j\rangle\langle\tilde p_j|\tilde\Psi_n\rangle\\
 		 &+\dfrac12\int\mathrm{d}\vec r\int\mathrm{d}\vec r^{\prime}\dfrac{(\tilde n^1+\hat n)(\tilde n^1+\hat n)}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r \tilde n^1\bar v+\int\mathrm{d}\vec r \tilde n^1\epsilon_{\mathrm{XC}}(\tilde n^1)
  	\end{aligned}
-\end{displaymath}
+\end{equation}
 
 %\subsection{\rm{PAW}的实现}
 	补偿电荷$\hat n$要求局域在缀加区(\textrm{Augmentation region})，可表示为
@@ -79,13 +79,13 @@ $E=\tilde E+E^1-\tilde E^1$，每一项分别表示为：
 		\item $\hat n^{\prime}$对应的\textrm{Gaussian}函数的衰减半径$r_c^{\prime}$比$r_c$大得多，可以用很少的平面波展开
 	\end{itemize}
 	因此能量$\tilde E$中的\textcolor{blue}{静电相互作用}可以表示为
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			&\dfrac12\int\mathrm{d}r\int\mathrm{d}r^{\prime}\dfrac{(\tilde n+\hat n)(\tilde n+\hat n)}{|r-r^{\prime}|}\\
 			=&\underline{\dfrac12\int\mathrm{d}r\int\mathrm{d}r^{\prime}\dfrac{(\tilde n+\hat n^{\prime})(\tilde n+\hat n^{\prime})}{|r-r^{\prime}|}}
 			+\underline{\int\mathrm{d}r\tilde n(r)\hat v(r)}+\underline{\sum_{R,R^{\prime}}U_{R,R^{\prime}}}
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 
 	其中第一项是平滑函数，可以在\textrm{Fourier}空间计算
 	$$2\pi V\sum_G\dfrac{|\tilde n(G)+\hat n^{\prime}(G)|^2}{G^2}$$
@@ -106,12 +106,12 @@ $$\tilde O=1+\sum_{i,j}|\tilde p_i\rangle\bigg[\langle\phi_i|\phi_j\rangle-\lang
 %	\item 完全势\textrm{(full-potential)}算符：
 %$$v(\vec r)=\tilde v(\vec r)+v^1(\vec r)-\tilde v^1(\vec r)$$
 %	\item \textrm{Hamilton}算符：
-\begin{displaymath}
+\begin{equation}
 	\begin{aligned}
 		\tilde H=&-\dfrac12\nabla^2+\tilde v+\sum_{i,j}|\tilde p_i\rangle\bigg[\langle\phi_i|-\dfrac12\nabla^2+v^1|\phi_j\rangle\\
 			&-\langle\tilde\phi_i|-\dfrac12\nabla^2+\tilde v^1|\tilde\phi_j\rangle\bigg]\langle\tilde p_j| 
 	\end{aligned}
-\end{displaymath}
+\end{equation}
 %\end{itemize}
 	完整的势函数\textrm{(full-potential)}算符：
 $$v(\vec r)=\tilde v(\vec r)+v^1(\vec r)-\tilde v^1(\vec r)$$
@@ -225,57 +225,57 @@ $$\left.\dfrac{\partial E[\tilde\Psi, R]}{\partial\langle\tilde\Psi_n|}\right|_R
 	\item 赝离子实电荷的构造$$\int_{\Omega_c}n_{Zc}(\vec r)\mathrm{d}^3\vec r=\int_{\Omega_c}\tilde n_{Zc}(\vec r)\mathrm{d}^3\vec r$$
 \end{itemize}
 在此基础上，\textrm{Bl\"ochl}方案中的电荷可以分解为：
-\begin{displaymath}
+\begin{equation}
 	\begin{aligned}
 		n_T=n+n_{Zc}\equiv&\underbrace{(\tilde n+\hat n+\tilde n_{Zc})}\\
 				 		&\quad\qquad\tilde n_T\\
 				  &+\underbrace{(n^1+\hat n+n_{Zc})}-\underbrace{(\tilde n^1+\hat n+\tilde n_{Zc})}\\
 				                  &\quad\qquad n_T^1\qquad\qquad\qquad\tilde n_T^1
 	\end{aligned}
-\end{displaymath}
+\end{equation}
 \textcolor{red}{注意}：\textrm{G. Kresse}方案中补偿电荷$\hat n$局域在每个缀加球内。
 
-\begin{displaymath}
+\begin{equation}
 	\begin{aligned}
 		\dfrac12(n_T)(n_T)=&\dfrac12(\tilde n_T)(\tilde n_T)+(n_T^1-\tilde n_T^1)(\tilde n_T)\\
 				&+\dfrac12(n_T^1-\tilde n_T^1)(n_T^1-\tilde n_T)
 	\end{aligned}
-\end{displaymath}
+\end{equation}
 这里$$(a)(b)=\int\mathrm{d}\vec r\mathrm{d}\vec r^{\prime}\dfrac{a(\vec r)b(\vec r\,^{\prime})}{|\vec r-\vec r\,^{\prime}|}$$
 \textcolor{red}{近似}：$\tilde n_T$用$\tilde n_T^1$替换：
-\begin{displaymath}
+\begin{equation}
 	\dfrac12(n_T)(n_T)=\dfrac12(\tilde n_T)(\tilde n_T)-\dfrac12\overline{(n_T^1(\tilde n_T^1)}+\dfrac12\overline{(n_T^1)(n_T^1)}
-\end{displaymath}
+\end{equation}
 
 由于交换-相关能泛函是非线性的，\textrm{G. Kresse}方案中电荷密度分解为
-\begin{displaymath}
+\begin{equation}
 	n_c+n=(\tilde n+\hat n+\tilde n_c)+(n^1+n_c)-(\tilde n^1+\hat n+\tilde n_c)
-\end{displaymath}
+\end{equation}
 原始的\textrm{Bl\"ochl}方案中电荷分解为
-\begin{displaymath}
+\begin{equation}
 	n_c+n=(\tilde n)+(n^1+n_c)-(\tilde n^1)
-\end{displaymath}
+\end{equation}
 \textcolor{blue}{两种不同的电荷密度分解方案根源}：\\\textrm{G. Kresse}方案中赝离子实电荷$\tilde n_{Zc}$与\textrm{Bl\"ochl}方案中$\tilde n_c$的约束条件不同！
-\begin{displaymath}
+\begin{equation}
 	E_{\mathrm{XC}}[\tilde n+\hat n+\tilde n_c]+\overline{E_{\mathrm{XC}}[n^1+n_c]}-\overline{E_{\mathrm{XC}}[\tilde n^1+\hat n+\tilde n_c]}
-\end{displaymath}
+\end{equation}
 
 	根据总能量表达式$$E=\tilde E+E^1-\tilde E^1$$其中
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			\tilde E=&\sum_nf_n\langle\tilde\Psi_n|-\frac12\nabla^2|\tilde\Psi_n\rangle+E_{\mathrm{XC}}[\tilde n+\hat n+\tilde n_c]+E_H[\tilde n+\hat n]\\
 			&+\int v_H[\tilde n_{Zc}][\tilde n(\vec r)+\hat n(\vec r)]\mathrm{d}\vec r+U(\vec R,Z_{\mathrm{ion}})\\
 			\tilde E^1=&\sum_{(i,j)}\rho_{ij}\langle\tilde\phi_i|-\frac12\nabla^2|\tilde\phi_j\rangle+\overline{E_{\mathrm{XC}}[\tilde n^1+\hat n+\tilde n_c]}+\overline{E_H[\tilde n^1+\hat n]}\\
 			&+\int_{\Omega_r}v_H[\tilde n_{Zc}][\tilde n^1(\vec r)+\hat n(\vec r)]\mathrm{d}\vec r
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			E^1=&\sum_{(i,j)}\rho_{ij}\langle\phi_i|-\frac12\nabla^2|\phi_j\rangle+\overline{E_{\mathrm{XC}}[n^1+n_c]}+\overline{E_H[n^1]}\\
 			&+\int_{\Omega_r}v_H[n_{Zc}]n^1(\vec r)\mathrm{d}\vec r
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 	$v_H$是电荷密度$n$产生的静电势
 	$$v_H[n](\vec r)=\int\dfrac{n(\vec r\,^{\prime})}{|\vec r-\vec r\,^{\prime}|}\mathrm{d}\vec r\,^{\prime}$$
 	$E_H[n]$是对应的静电能
@@ -283,35 +283,35 @@ $$\left.\dfrac{\partial E[\tilde\Psi, R]}{\partial\langle\tilde\Psi_n|}\right|_R
 	$U(\vec R,Z_{\mathrm{ion}})$\textcolor{blue}{由\textrm{Ewald}求和计算}
 
 	根据约束条件
-	\begin{displaymath}
+	\begin{equation}
 		\int_{\Omega_c}(n^1-\tilde n^1-\hat n)|\vec r-\vec R|^lY_{lm}^{\ast}(\widehat{\vec r-\vec R})\mathrm{d}\vec r=0
-	\end{displaymath}
+	\end{equation}
 	定义电荷密度差
-	\begin{displaymath}
+	\begin{equation}
 		Q_{ij}(\vec r)=\phi_i^{\ast}(\vec r)\phi_j(\vec r)-\tilde\phi_i^{\ast}(\vec r)\tilde\phi_j(\vec r)
-	\end{displaymath}
+	\end{equation}
 	电荷密度差的多极矩为
-	\begin{displaymath}
+	\begin{equation}
 		q_{ij}^L(\vec r)=\int_{\Omega_r}Q_{ij}(\vec r)|\vec r-\vec R|^lY_{lm}^{\ast}(\widehat{\vec r-\vec R})\mathrm{d}\vec r
-	\end{displaymath}
+	\end{equation}
 	因此，补充电荷的计算为：
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			\hat n=\sum_{(i,j),L}\sum_n f_n\langle\tilde\Psi_n|\tilde p_i\rangle\langle\tilde p_j|\Psi_n\rangle\hat Q_{ij}^L(\vec r)\\
 			\hat Q_{ij}^L(\vec r)=q_{ij}^Lg_l(|\vec r-\vec R|)Y_{lm}(\widehat{\vec r-\vec R})
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 
 重叠矩阵
-	\begin{displaymath}
+	\begin{equation}
 		\langle\tilde\Psi_n|\mathbf{S}|\tilde\Psi_m\rangle=\delta_{nm}
-	\end{displaymath}
+	\end{equation}
 	其中重叠矩阵$$S[\{\mathbf{R}\}]=1+\sum_i|\tilde p_i\rangle q_{ij}\langle\tilde p_j|$$
 	而$$q_{ij}=\langle\phi_i|\phi_j\rangle-\langle\tilde\phi_i|\tilde\phi_j\rangle$$
 	\textrm{Hamiltonian}的计算
-	\begin{displaymath}
+	\begin{equation}
 		H[\rho,\{\mathbf{R}\}]=-\dfrac12\nabla^2+\tilde v_{eff}+\sum_{(i,j)}|\tilde p_i\rangle(\hat D_{ij}+D_{ij}^1-\tilde D_{ij}^1)\langle\tilde p_j|	
-	\end{displaymath}
+	\end{equation}
 	$$\tilde v_{eff}=v_H[\tilde n+\hat n+\tilde n_{Zc}]+v_{\mathrm{XC}}[\tilde n+\hat n+\tilde n_{Zc}]$$
 
 	$$\hat D_{ij}=\dfrac{\partial\tilde E}{\partial\rho_{ij}}=\int\dfrac{\delta\tilde E}{\delta\hat n(\vec  r)}\dfrac{\partial\hat n(\vec r)}{\partial\rho_{ij}}\mathrm{d}\vec r=\sum_{L}\int\tilde v_{eff}\hat Q_{ij}^L(\vec r)\mathrm{d}\vec r$$
@@ -321,7 +321,7 @@ $$\left.\dfrac{\partial E[\tilde\Psi, R]}{\partial\langle\tilde\Psi_n|}\right|_R
 	其中$$\tilde v_{eff}^1[\tilde n^1]=v_H[\tilde n^1+\hat n+\tilde n_{Zc}]+v_{\mathrm{XC}}[\tilde n^1+\hat n+\tilde n_c]$$
 
 	能带计算中，总能量可通过\textrm{Kohn-Sham}本征值求和扣除\textrm{Double counting}计算更方便，其中修正项
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			\tilde E_{dc}=&-E_H[\tilde n+\hat n]+E_{\mathrm{XC}}[\tilde n+\hat n+\tilde n_c]\\
 			&-\int v_{\mathrm{XC}}[\tilde n+\hat n+\tilde n_c](\tilde n+\hat n)\mathrm{d}\vec r\\
@@ -329,24 +329,24 @@ $$\left.\dfrac{\partial E[\tilde\Psi, R]}{\partial\langle\tilde\Psi_n|}\right|_R
 			\tilde E_{dc}^1=&-\overline{E_H[\tilde n^1+\hat n]}+\overline{E_{\mathrm{XC}}[\tilde n^1+\hat n+\tilde n_c]}\\
 			&-\int v_{\mathrm{XC}}[\tilde n^1+\hat n+\tilde n_c](\tilde n^1+\hat n)\mathrm{d}\vec r
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 	因此总能量的计算表达式是
 	$$E=\sum_nf_n\langle\tilde\Psi_n|H|\tilde\Psi_n\rangle+\tilde E_{dc}+E_{dc}^1-\tilde E_{dc}^1+U(\vec R,Z_{\mathrm{ion}})$$
 
 \subsection{\rm{PAW~}原子数据集}
 	平滑赝原子分波函数
-	\begin{displaymath}
+	\begin{equation}
 		\tilde\phi_{i=Lk}(\vec r)=Y_L(\widehat{\vec r-\vec R})\tilde\phi_{lk}(|\vec r-\vec R|)
-	\end{displaymath}
+	\end{equation}
 	根据\textrm{RRKJ}赝势构造，赝分波函数由球\textrm{Bessel}函数线性组合
-	\begin{displaymath}
+	\begin{equation}
 		\tilde\phi_{lk}(r)=\left\{
 		\begin{aligned}
 			&\sum_{i=1}^2\alpha_ij_l(q_ir)\quad &r<r_c^l\\
 			&\phi_{lk}(r)\quad&r>r_c^l
 		\end{aligned}
 		\right.
-	\end{displaymath}
+	\end{equation}
 	调节系数$\alpha_i$和$q_i$赝分波函数$\phi_{lk}(r)$在截断半径$r_c^l$处两阶连续可微
 	投影子波函数$\tilde p_i$由\textrm{Gram-Schmidt}正交条件$\langle\tilde p_i|\tilde\phi_j\rangle=\delta_{ij}$确定
 
@@ -412,24 +412,24 @@ $$\left.\dfrac{\partial E[\tilde\Psi, R]}{\partial\langle\tilde\Psi_n|}\right|_R
 	定义\textcolor{orange}{缀加函数}$$Q_{nm}(\vec r)=\psi_n^{\ast}(\vec r)\psi_m(\vec r)-\phi_n^{\ast}(\vec r)\phi_m(\vec r)$$
 	\textcolor{blue}{可赝化的补偿电荷}$$q_{nm}=\langle\psi_n|\psi_m\rangle_R-\langle\phi_n|\phi_m\rangle_R$$
 	由此可以导出$\phi_n$满足久期方程
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			&\left(T+V_{loc}+\sum_{nm}D_{nm}|\beta_n\rangle\langle\beta_m|\right)|\phi_n\rangle\\
 			=&\varepsilon_n\left(1+\sum_{nm}q_{nm}|\beta_n\rangle\langle\beta_m|\right)|\phi_n\rangle
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 	其中$$D_{nm}=B_{nm}+\varepsilon q_{nm}$$
 
 	在超软赝势方法中，包含$N_v$个价电子体系的总能量\upcite{PRB47-10142_1993}
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			E_{\mathrm{tot}}[\{\phi_i\},\{\vec R_I\}]=&\sum_i\langle\phi_i|-\frac12\nabla^2+V_{\mathrm{NL}}|\phi_i\rangle\\
 			&+\frac12\iint\mathrm{d}\vec r\mathrm{d}\vec r\,^{\prime}\dfrac{n(\vec r)n(\vec r\,^{\prime})}{|\vec r-\vec r\,^{\prime}|}\\
 			&+\int\mathrm{d}\vec r V_{loc}^{\mathrm{ion}}(\vec r)n(\vec r)+E_{\mathrm{XC}}[n]\\
 			&+U(\{\vec R_I\})
 		\end{aligned}
-	\end{displaymath}
-	这里$\phi$是体系波函数，$n(\vec r)$是电子密度，$E_{\mathrm{XC}}$是交换-相关能，$U(\{\vec R_I\})$是离子-离子相互作用能
+	\end{equation}
+这里$\phi$是体系波函数，$n(\vec r)$是电子密度，$E_{\mathrm{XC}}$是交换-相关能，$U(\{\vec R_I\})$是离子-离子相互作用能
 
 	电荷密度$$n(\vec r)=\sum_i\big[|\phi_i(\vec r)|^2+\sum_{nm,I}Q_{nm}^I(\vec r)\langle\phi_i|\beta_n^I\rangle\langle\beta_m^I|\phi_i\rangle\big]$$
 	局域势$$V_{loc}^{\mathrm{ion}}(\vec r)=\sum_IV_{loc}^{\mathrm{ion}}(\vec r-\vec R_I)$$
@@ -440,71 +440,71 @@ $$\left.\dfrac{\partial E[\tilde\Psi, R]}{\partial\langle\tilde\Psi_n|}\right|_R
 	\textrm{G. Kresse}指出只要总能量表达式中$E^1$和$\tilde E^1$在原子构象附近作线性化即可得到\textrm{US-PP}的表达式。
 	
 	如果原子构象由占据数$\rho_{ij}^a$、电荷密度分布$n_a^1$、$\tilde n_a^1$和$\hat n_a$确定，$E^1$中的\textcolor{blue}{\underline{\textrm{Hartree}能和交换-相关能项}}在$n_a^1$附近线性化得
-	\begin{displaymath}
+	\begin{equation}
 		E_{\mathrm{XC}}(\textcolor{red}{n_a^1+n_c})+E_H(\textcolor{red}{n_a^1})+\int(v_{\mathrm{XC}}[n_a^1+n_c]+v_H[n_a^1])\underline{\textcolor{red}{[n^1(\vec r)-n_a^1(\vec r)]}\mathrm{d}\vec r}
-	\end{displaymath}
+	\end{equation}
 	在\textrm{PAW}方法中，电子密度$n^1(\vec r)$%和$\tilde n^1(\vec r)$
 	的表达式
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			n^1(\vec2 r)=&\sum_{(i,j)}\rho_{ij}\langle\phi_i|\vec r\rangle\langle\vec r|\phi_j\rangle\\
 	%		\tilde n^1(\vec r)=&\sum_{(i,j)}\rho_{ij}\langle\tilde\phi_i|\vec r\rangle\langle\vec r|\tilde\phi_j\rangle 
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 	因此，\textrm{Hartree}能和交换-相关能项为
 	$$\textcolor{blue}{C}+\sum_{(i,j)}\rho_{ij}\langle\phi_i|\textcolor{red}{v_{\mathrm{XC}}[n_a^1+n_c]+v_H[n_a^1]}|\phi_j\rangle$$
 	这里\textcolor{blue}{\textrm{C}}是常数
 
 	因此$E^1$用占据数$\rho_{ij}$近似到一阶可有
-	\begin{displaymath}
+	\begin{equation}
 		E^1\approx\textcolor{blue}{C}+\sum_{(i,j)}\langle\phi_i|-\frac12\nabla^2+v_{eff}^a|\phi_j\rangle
-	\end{displaymath}
+	\end{equation}
 	其中
-	\begin{displaymath}
+	\begin{equation}
 		v_{eff}^a=\textcolor{red}{v_H[n_a^1+}\textcolor{blue}{n_{Zc}}\textcolor{red}{]+v_{\mathrm{XC}}[n_a^1+n_c]}
-	\end{displaymath}
+	\end{equation}
 	这里\textcolor{red}{$v_{eff}^a$}是\textcolor{blue}{原子构象下的全电子有效势}
 
 	类似地可有
-	\begin{displaymath}
+	\begin{equation}
 		\tilde E^1\approx\textcolor{blue}{\tilde C}+\sum_{(i,j)}\left[\langle\tilde\phi_i|-\frac12\nabla^2+\tilde v_{eff}^a|\tilde\phi_j\rangle+\underline{\int\tilde Q_{ij}^L(\vec r)\tilde v_{eff}^a(\vec r)\mathrm{d}\vec r}\right]
-	\end{displaymath}
+	\end{equation}
 	其中$$\tilde v_{eff}^a=v_H[\tilde n_a^1+\textcolor{blue}{\hat n_a}+\tilde n_{Zc}]+v_{\mathrm{XC}}[\tilde n_a^1+\textcolor{blue}{\hat n_a}+\tilde n_c]$$
 	这里\textcolor{red}{$\tilde v_{eff}^a$}是\textcolor{blue}{原子构象下的局域原子赝势}
 
 	在此近似下，包含$\tilde E$可得体系总能量$E$:
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			E=&\sum_nf_n\langle\tilde\Psi_n|-\frac12\nabla^2+\sum_{(ij)}|\tilde p_i\rangle\langle\tilde p_j|G_{ij}^{\mathrm{US}}|\tilde\Psi_n\rangle\\
 			&+E_{\mathrm{XC}}[\tilde n+\hat n+\tilde n_c]+E_H[\tilde n+\hat n]\\
 			&+\int v_H[\tilde n_{Zc}][\tilde n(\vec r)+\hat n(\vec r)]\mathrm{d}\vec r+U(\vec R,Z_{\mathrm{ion}})
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 	其中
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			G_{ij}^{\mathrm{US}}=&\langle\phi_i|-\frac12\nabla^2+v_{eff}^a|\phi_j\rangle-\langle\tilde\phi_i|-\frac12\nabla^2+\tilde v_{eff}^a|\tilde\phi_j\rangle\\
 			&-\int\hat Q_{ij}^L(\vec r)\tilde v_{eff}^a(\vec r)\mathrm{d}\vec r
 		\end{aligned}
-	\end{displaymath}
+	\end{equation}
 	\textcolor{red}{当补偿电荷$\hat n$用\textrm{US-PP}方案的赝化补偿电荷表示时，$E\rightarrow E_{\mathrm{tot}}$}
 
 	在$G_{ij}^{\mathrm{US}}$中，
-	\begin{displaymath}
+	\begin{equation}
 		\begin{aligned}
 			&\textcolor{blue}{\langle\phi_i|-\frac12\nabla^2+v_{eff}^a|\phi_j\rangle-\langle\tilde\phi_i|-\frac12\nabla^2+\tilde v_{eff}^a|\tilde\phi_j\rangle}\\
 			\rightarrow&\textcolor{red}{D_{nm}=B_{nm}+\varepsilon_mq_{nm}}
 		\end{aligned}
-	\end{displaymath}
-	\begin{displaymath}
+	\end{equation}
+	\begin{equation}
 		\textcolor{blue}{\int\hat Q_{ij}^L(\vec r)\tilde v_{eff}^a(\vec r)\mathrm{d}\vec r}\rightarrow\textcolor{red}{D_{nm}^{(0)}=D_{nm}-\int\mathrm{d}\vec r\,^{\prime}V_{loc}(\vec r\,^{\prime})n(\vec r\,^{\prime})}
-	\end{displaymath}
+	\end{equation}
 
 	在\textrm{PAW}方法能量泛函中，如果缀加区补偿电荷$\hat n$满足$$\hat n=n^1-\tilde n^1$$
 	并且如果满足$\tilde n_{Zc}=n_{Zc}$和$\tilde n_c=n_c$，则“在位”(\textrm{on-site})动能对总能的贡献
-	\begin{displaymath}
+	\begin{equation}
 		E^1-\tilde E^1=\sum_{(i,j)}\rho_{ij}\big(\langle\phi_i|-\frac12\nabla^2|\phi_j\rangle-\langle\tilde\phi_i|-\frac12\nabla^2|\tilde\phi_j\big)
-	\end{displaymath}
+	\end{equation}
 
 	\textcolor{red}{在这种极限情况下\textrm{PAW}与\textrm{US-PP}完全等价}
 
