@@ -136,7 +136,8 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 \end{itemize}
 不同的计算方法，主要通过基函数为特征命名。
 
-\section{基态总能量表达式\footnote{这部分主要参阅文献\inlinecite{XIE-LU}}}
+\section{基态总能量表达式}
+基态总能量表达式\footnote{这部分主要参阅文献\inlinecite{XIE-LU}}
 在DFT框架内，周期体系的总能量$E_T$由晶格中的电子能量$E_{e-e}$与离子实排斥能$E_{N-N}$之和：
 	\begin{equation}
 		E_T=E_{e-e}+E_{N-N}=T[\rho]+E_{ext}+E_{\mathrm{Coul}}+E_{\mathrm{XC}}+E_{N-N}
@@ -433,7 +434,7 @@ $V_R$的定义为$V_R\Phi\equiv\sum\limits_c(E-E_c)\langle\chi_c|\Phi\rangle\chi
 \label{Pseudo-model}
 \end{figure}
 
-\subsection{模守恒赝势}
+\subsection{模守恒赝势\textrm(Norm-Conserving Pseudo-Poential, NCPP)}
 直接构造模型赝势是非常困难的，根据密度泛函理论，自洽的球形屏蔽势和与径向波函数构成Kohn-Sham方程的解，因此可以通过构造合理的赝波函数得到赝势：
 \begin{equation}
   \left[-\frac12\frac{d^2}{dr^2}+\frac{l(l+1)}{2r^2}+V(\rho,r)\right]P_{nl}(r)=\varepsilon_{nl}P_{nl}
@@ -485,7 +486,7 @@ Kleinman和Bylander(KB)\cite{PRL48-1425_1982}提出将半局域势\eqref{eq:soli
 $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Phi_l^{PP,0}(r)V_{nonlocal,l}(r)|}{\langle\Phi_l^{PP,0}(r)|V_{nonlocal,l}(r)|\Phi_l^{PP,0}(r)\rangle}$$
 这里$V_{nonlocal,l}(r)$是半局域势[式\eqref{eq:solid-107}]，$\Phi_l^{PP,0}(r)$是用以计算赝势的原子角动量$l$的参考赝波函数。选择特定的非局域表象，可以很大程度上节省计算时间。
 
-\subsection{超软赝势}
+\subsection{超软赝势\textrm{(Ultra-Soft Pseudo-Potential, USPP)}}
 赝势构造的模守恒条件很好地解决了赝势可移植性问题，但对$1s$、$2p$、$3d$等轨道，因为径向波函数本身没有节点，用模守恒方案获得的赝势过于“硬”，所需平面波基组依然非常大。\textrm{Vanderbilt}提出的超软\textrm{(Ultra-soft)}赝势\cite{PRB41-7892_1990}，解除了模守恒约束，实现对$1s$、$2p$、$3d$为价电子元素的高效计算。
 \begin{figure}[h!]
 \centering
@@ -530,4 +531,3 @@ $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Ph
 	$$\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}=\mathbf{D}_{s,s^{\prime}}-\int\mathrm{d}\vec r\big[V_{\mathrm{H}}(\vec r)+V_{XC}(\vec r)\big]Q_{s,s^{\prime}}(r)$$
 可以得到广义本征值方程
 	$$\bigg[-\dfrac12\nabla^2+V_{\mathrm{local}}+V_{NL}^{\mathrm{US}}-\varepsilon_i\bigg(\mathbf{1}+\sum_{s,s^{\prime}}Q_{s,s^{\prime}}|\beta_s\rangle\langle\beta_{s^{\prime}}|\bigg)\bigg]|\phi_{lmi}\rangle=0$$
-
