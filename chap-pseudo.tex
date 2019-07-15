@@ -149,6 +149,7 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 $n_i$是$\psi_i$上的电子占据数，$\varepsilon_i$是其能量本征值，因此有
 \begin{equation}
 	E_T=\sum_in_i\varepsilon_i-\dfrac12\int\int\mathrm{d}\vec r\mathrm{d}\vec r\dfrac{\rho(\vec r)\rho(\vec r^{\prime})}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r\rho(\vec r)[\epsilon_{\mathrm{XC}}(\vec r)-V_{\mathrm{XC}}(\vec r)]+E_{N-N}
+	\label{eq:PP_TOT_R}
 \end{equation}
 
 周期体系的总能量表达式在动量空间($\vec K$空间)计算更方便
@@ -474,13 +475,13 @@ $V_H(\rho,r)$是Hartree势，$V_{xc}^{LDA}(\rho(r))$是LDA的交换-相关势。
 \label{Pseudo-OPW_NCPP}
 \end{figure}
 由价电子产生的屏蔽与其所处的环境有关，如果扣除价电子屏蔽效应可以得到离子赝势。在自洽迭代过程中利用离子赝势得到特定环境的电子屏蔽。从屏蔽赝势中减去根据赝波函数计算得到的Hartree赝势$V_H^{PP}(r)$和交换-相关赝势$V_{xc}^{PP}(r)$，即离子赝势\cite{PRB43-1993_1991}：
-$$V_{ion,H}^{PP}(r)=V_{src,H}^{PP}(r)-V_H^{PP}(r)-V_{xc}^{PP}(r)$$
+$$V_{\mathrm{ion},H}^{PP}(r)=V_{src,H}^{PP}(r)-V_H^{PP}(r)-V_{xc}^{PP}(r)$$
 赝波函数的每个角动量分量有不同的势能，离子赝势算符可以写成：
 \begin{equation}
-  \hat V_{ion}^{PP}(r)=V_{ion,local}^{PP}+\sum_lV_{nonlocal,l}(r)\hat P_l
+	\hat V_{\mathrm{ion}}^{PP}(r)=V_{\mathrm{ion},local}^{PP}+\sum_lV_{nonlocal,l}(r)\hat P_l
   \label{eq:solid-107}
 \end{equation}
-这里$V_{ion,local}^{PP}(r)$是局域势，$V_{nonlocal,l}(r)=V_{ion,l}^{PP}(r)-V_{ion,local}^{PP}(r)$是角动量$l$的非局域(或半局域)势。$\hat P_l$是投影算符，从波函数中投影出角动量的$l$分量。
+这里$V_{\mathrm{ion},local}^{PP}(r)$是局域势，$V_{nonlocal,l}(r)=V_{\mathrm{ion},l}^{PP}(r)-V_{\mathrm{ion},local}^{PP}(r)$是角动量$l$的非局域(或半局域)势。$\hat P_l$是投影算符，从波函数中投影出角动量的$l$分量。
 
 Kleinman和Bylander(KB)\cite{PRL48-1425_1982}提出将半局域势\eqref{eq:solid-107}变换为非局域形式的过程：
 $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Phi_l^{PP,0}(r)V_{nonlocal,l}(r)|}{\langle\Phi_l^{PP,0}(r)|V_{nonlocal,l}(r)|\Phi_l^{PP,0}(r)\rangle}$$
@@ -528,6 +529,13 @@ $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Ph
 	\end{equation}
 其中$n_v(\vec r)=\sum\limits_j^{\mathrm{occ}}\phi_{lmj}^{\ast}(\vec r)\phi_{lmj}(\vec r)+\sum\limits_{s,s^{\prime}}\sum\limits_j^{\mathrm{occ}}\langle\phi_{lmj}|\beta_{s^{\prime}}\rangle\langle\beta_s|\phi_{lmj}\rangle Q_{s,s^{\prime}}(\vec r)$
 	$$V_{\mathrm{local}}^{\mathrm{ion}}=V_{local}-V_{\mathrm H}-V_{XC}$$
-	$$\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}=\mathbf{D}_{s,s^{\prime}}-\int\mathrm{d}\vec r\big[V_{\mathrm{H}}(\vec r)+V_{XC}(\vec r)\big]Q_{s,s^{\prime}}(r)$$
+	\begin{equation}
+		\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}=\mathbf{D}_{s,s^{\prime}}-\int\mathrm{d}\vec r\big[V_{\mathrm{H}}(\vec r)+V_{\mathrm{XC}}(\vec r)\big]Q_{s,s^{\prime}}(r)
+		\label{eq:uspp_6}
+	\end{equation}
+	根据文献\inciteline{PRB47-10142_1993}, $\mathbf{D}_{s,s^{\prime}}$称为超软赝势的强度指数(\textrm{strength parameter})，$\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}$是其去屏蔽后的形式(有时也记为$\mathbf{D}_{s,s^{\prime}}^0$)。
 可以得到广义本征值方程
-	$$\bigg[-\dfrac12\nabla^2+V_{\mathrm{local}}+V_{NL}^{\mathrm{US}}-\varepsilon_i\bigg(\mathbf{1}+\sum_{s,s^{\prime}}Q_{s,s^{\prime}}|\beta_s\rangle\langle\beta_{s^{\prime}}|\bigg)\bigg]|\phi_{lmi}\rangle=0$$
+\begin{equation}
+	\bigg[-\dfrac12\nabla^2+V_{\mathrm{local}}+V_{NL}^{\mathrm{US}}-\varepsilon_i\bigg(\mathbf{1}+\sum_{s,s^{\prime}}Q_{s,s^{\prime}}|\beta_s\rangle\langle\beta_{s^{\prime}}|\bigg)\bigg]|\phi_{lmi}\rangle=0
+	\label{eq:uspp_7}
+\end{equation}
