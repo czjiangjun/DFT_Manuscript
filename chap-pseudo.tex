@@ -1,4 +1,4 @@
-\chapter{周期势与计算方法}
+\chapter{周期势中的电子计算方法}
 能带理论是凝聚态物理中最重要的理论之一，它是量子力学确立后，在研究金属电导理论过程中发展起来的，已经成为固体电子理论的支柱。理想晶体的原子有序排列成晶格，具有平移周期性，势能$V(\vec r)$满足：
 \begin{equation}\label{eq:solid-2}
 	V(\vec r)=V(\vec r+\vec R_n)\quad\mbox{($\vec R_n$为任意格矢)}
@@ -113,20 +113,20 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 \begin{equation}
   V(\vec r)=\left\{
   \begin{aligned}
-    &\sum_LV_L(r)Y_L(\hat{\vec r}),\quad &r\leqslant R_{MT}\\
-    &\sum_{\vec G_n}V_I(\vec G_n)e^{i\vec G_n\cdot\vec r},&r>R_{MT}
+	  &\sum_LV_L(r)Y_L(\hat{\vec r}),\quad &r\leqslant R_{\mathrm{MT}}\\
+	  &\sum_{\vec G_n}V_I(\vec G_n)e^{i\vec G_n\cdot\vec r},&r>R_{\mathrm{MT}}
   \end{aligned}\right.
   \label{eq:solid-63}
 \end{equation}
 这里$L\hat=l,m$，$\vec G_n$为倒格矢，$Y_L(\vec r)$是球谐函数。%这是合理的修正，因为靠近原子核，势能具有原子型势能特征。在MT球外，要求满足Bloch函数边界条件特征。由于MT球内外的势能表象不同，因此要求势能在MT球表面连续。
 为求解交换-相关势$V_{xc}$，将电荷密度也采用类似的形式展开。由此得到晶体势
 \begin{equation}
-  V(\vec r)=V_{MT}(\vec r)+V_{WMT}(\vec r)+V_{NS}(\vec r)
+	V(\vec r)=V_{\mathrm{MT}}(\vec r)+V_{\mathrm{WMT}}(\vec r)+V_{\mathrm{NS}}(\vec r)
   \label{eq:solid-64}
 \end{equation}
-这里$V_{MT}(\vec r)$是简单的MT势；$V_{WMT}(\vec r)$表示MT球外势能Fourier展开对MT近似常数势的偏离；$V_{NS}(\vec r)$是式\eqref{eq:solid-63}第一个求和项中所有$\nu$$\neq$0之和。根据式\eqref{eq:solid-63}，$V_{WMT}(\vec r)$仅在MT球外非零，球内为零；而$V_{NS}(\vec r)$只在MT球内有非零值。
+这里$V_{\mathrm{MT}}(\vec r)$是简单的MT势；$V_{\mathrm{WMT}}(\vec r)$表示MT球外势能Fourier展开对MT近似常数势的偏离；$V_{\mathrm{NS}}(\vec r)$是式\eqref{eq:solid-63}第一个求和项中所有$\nu$$\neq$0之和。根据式\eqref{eq:solid-63}，$V_{\mathrm{WMT}}(\vec r)$仅在MT球外非零，球内为零；而$V_{\mathrm{NS}}(\vec r)$只在MT球内有非零值。
 
-研究表明，对于过渡金属和具有密堆积结构的过渡金属化合物，间隙区势能近似为常数，因此MT方法是很好的近似，计算结果只会有很小的误差\cite{PR153-931_1967,PRB1-1318_1970,PLA33-414_1970}。计算也表明，一般$V_{WMT}(\vec r)$比$V_{NS}(\vec r)$大得多。
+研究表明，对于过渡金属和具有密堆积结构的过渡金属化合物，间隙区势能近似为常数，因此MT方法是很好的近似，计算结果只会有很小的误差\cite{PR153-931_1967,PRB1-1318_1970,PLA33-414_1970}。计算也表明，一般$V_{\mathrm{WMT}}(\vec r)$比$V_{\mathrm{NS}}(\vec r)$大得多。
 
 %\section{能带计算方法}
 晶体电子结构的计算可以分为两个部分：构造合理的具有平移周期性的晶体势场；在该势场下求解Schr\"odinger方程。不同的能带计算方法的主要区别在于：
@@ -138,9 +138,9 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 
 \section{基态总能量表达式}
 基态总能量表达式\footnote{这部分主要参阅文献\inlinecite{XIE-LU}}
-在DFT框架内，周期体系的总能量$E_T$由晶格中的电子能量$E_{e-e}$与离子实排斥能$E_{N-N}$之和：
+在DFT框架内，周期体系的总能量$E_{\mathrm{T}}$由晶格中的电子能量$E_{\mathrm{e-e}}$与离子实排斥能$E_{\mathrm{N-N}}$之和：
 	\begin{equation}
-		E_T=E_{e-e}+E_{N-N}=T[\rho]+E_{ext}+E_{\mathrm{Coul}}+E_{\mathrm{XC}}+E_{N-N}
+		E_{\mathrm{T}}=E_{\mathrm{e-e}}+E_{\mathrm{N-N}}=T[\rho]+E_{\mathrm{ext}}+E_{\mathrm{Coul}}+E_{XC}+E_{\mathrm{N-N}}
 	\end{equation}
 根据\textrm{Kohn-Sham}方程，其中动能泛函用单电子能量表示为
 \begin{equation}
@@ -148,13 +148,13 @@ MT近似方法主要适用于具有密堆积的简单晶格的单原子(过渡)�
 \end{equation}
 $n_i$是$\psi_i$上的电子占据数，$\varepsilon_i$是其能量本征值，因此有
 \begin{equation}
-	E_T=\sum_in_i\varepsilon_i-\dfrac12\int\int\mathrm{d}\vec r\mathrm{d}\vec r\dfrac{\rho(\vec r)\rho(\vec r^{\prime})}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r\rho(\vec r)[\epsilon_{\mathrm{XC}}(\vec r)-V_{\mathrm{XC}}(\vec r)]+E_{N-N}
+	E_{\mathrm{T}}=\sum_in_i\varepsilon_i-\dfrac12\int\int\mathrm{d}\vec r\mathrm{d}\vec r\dfrac{\rho(\vec r)\rho(\vec r^{\prime})}{|\vec r-\vec r^{\prime}|}+\int\mathrm{d}\vec r\rho(\vec r)[\epsilon_{XC}(\vec r)-V_{XC}(\vec r)]+E_{\mathrm{N-N}}
 	\label{eq:PP_TOT_R}
 \end{equation}
 
 周期体系的总能量表达式在动量空间($\vec K$空间)计算更方便
 \begin{equation}
-	E_T=\textcolor{red}{\sum_in_i\varepsilon_i}-\dfrac{\Omega}2\sum_{\textcolor{red}{\vec k\neq 0}}\rho^{\ast}(\vec k)V_{\mathrm{Coul}}(\vec k)+\Omega\sum_{\vec k}\rho^{\ast}(\vec k)[\epsilon_{\mathrm{XC}}(\vec k)-V_{\mathrm{XC}}(\vec k)]+E_{N-N}
+	E_{\mathrm{T}}=\sum_in_i\varepsilon_i-\dfrac{\Omega}2\sum_{\vec k\neq 0}\rho^{\ast}(\vec k)V_{\mathrm{Coul}}(\vec k)+\Omega\sum_{\vec k}\rho^{\ast}(\vec k)[\epsilon_{XC}(\vec k)-V_{XC}(\vec k)]+E_{\mathrm{N-N}}
 \end{equation}
 其中$V_{\mathrm{Coul}}(\vec k)$、$\epsilon_{\mathrm{XC}}(\vec k)$与$\rho^{\ast}(\vec k)$分别是\textrm{Coulomb}相互作用、单个电子的交换-相关能、交换-相关势和电子密度的\textrm{Fourier}分量。
 
@@ -166,27 +166,27 @@ $n_i$是$\psi_i$上的电子占据数，$\varepsilon_i$是其能量本征值，�
 \begin{equation}
 	V_{\mathrm{Coul}}(\vec k)=\dfrac{4\pi\rho^{\ast}(\vec k)}{|\vec k|^2}
 \end{equation}
-交换-相关势和交换-相关能的计算一般先在实空间计算$\epsilon_{\mathrm{XC}}(\vec r)$和$V_{\mathrm{XC}}(\vec r)$后，再通过\textrm{Fourier}变换到动量空间，得到$\epsilon_{\mathrm{XC}}(\vec k)$和$V_{\mathrm{XC}}(\vec k)$
+交换-相关势和交换-相关能的计算一般先在实空间计算$\epsilon_{XC}(\vec r)$和$V_{XC}(\vec r)$后，再通过\textrm{Fourier}变换到动量空间，得到$\epsilon_{XC}(\vec k)$和$V_{XC}(\vec k)$
 
 离子间\textrm{Coulomb}相互作用能之和
 \begin{equation}
-		E_{N-N}=\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_s^{\prime}|}
+	E_{\mathrm{N-N}}=\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_s^{\prime}|}
 \end{equation}
 这里$Z_s$是离子实的电荷数，$\vec R$表示晶格点的位矢，$\vec r_s$代表元胞内原子的相对位矢。
 
-\textcolor{red}{\textbf{注意}}:~$E_{N-N}$求和包含无穷多项，是发散的；$V_{\mathrm{Coul}}(\vec k=0)$是发散的。
+注意:~$E_{\mathrm{N-N}}$求和包含无穷多项，是发散的；$V_{\mathrm{Coul}}(\vec k=0)$是发散的。
 	
-$V_{ext}$在不存在其他外场时，一般只考虑离子-电子的\textrm{Coulomb}相互作用，
+$V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\textrm{Coulomb}相互作用，
 	\begin{equation}
 		\begin{aligned}
-			V_{ext}(\vec r)&=\sum_{\vec R,s}\dfrac{-Z_s}{|\vec r-\vec R-\vec r_s|}\\
-			&\equiv\sum_{\vec R,s}v_{ext}^s(\vec r-\vec R-\vec r_s)
+			V_{\mathrm{ext}}(\vec r)&=\sum_{\vec R,s}\dfrac{-Z_s}{|\vec r-\vec R-\vec r_s|}\\
+			&\equiv\sum_{\vec R,s}v_{\mathrm{ext}}^s(\vec r-\vec R-\vec r_s)
 		\end{aligned}
 	\end{equation}
 
-$V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}。这三项单独都是发散的，但因为整个体系出于电中性，所以这些发散项相互抵消，是一个常数。
+$V_{\mathrm{ext}}$的\textrm{Fourier}分量在$\vec k=0$也是发散的。这三项单独都是发散的，但因为整个体系出于电中性，所以这些发散项相互抵消，是一个常数。
 
-因此求解\textrm{Kohn-Sham}方程时，先将$V_{\mathrm{Coul}}(\vec k=0)$和$V_{ext}(\vec k=0)$同时置为零，这相当于\textcolor{red}{将势能作一平移，或者说重新定义势能零点，而在总能量计算中补偿这一平移。}
+因此求解\textrm{Kohn-Sham}方程时，先将$V_{\mathrm{Coul}}(\vec k=0)$和$V_{\mathrm{ext}}(\vec k=0)$同时置为零，这相当于将势能作一平移，或者说重新定义势能零点，而在总能量计算中补偿这一平移。
 
 发散项之和为：
 	\begin{equation}
@@ -198,7 +198,7 @@ $V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}�
 
 对于形如$Z_s/r$的外场，其\textrm{Fourier}分量在$\vec k=0$附近展开
 	\begin{equation}
-		v_{ext}^s(\vec k)=-\dfrac{4\pi Z_s}{\Omega|\vec k|^2}+\alpha_s+O(\vec k)； 
+		v_{\mathrm{ext}}^s(\vec k)=-\dfrac{4\pi Z_s}{\Omega|\vec k|^2}+\alpha_s+O(\vec k)
 	\end{equation}
 	展开$\rho^{\ast}(\vec k)$，有
 	\begin{equation}
@@ -207,30 +207,30 @@ $V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}�
 去掉高次项，有
 \begin{equation}
 	\begin{aligned}
-		\lim_{\vec k\rightarrow 0}&\bigg[\boxed{\textcolor{blue}{\dfrac{\Omega}2\dfrac{4\pi[\rho^{\ast}(\vec k)]^2}{|\vec k|^2}}}+\boxed{\Omega}\bigg(\boxed{\textcolor{blue}{-\dfrac{4\pi\sum_sZ_s}{\Omega|\vec k|^2}}}+\sum_s\alpha_s\bigg)\boxed{\rho^{\ast}(\vec k)}+\boxed{\textcolor{red}{\dfrac12\dfrac{4\pi(\sum_sZ_s)^2}{\Omega|\vec k|^2}}}\bigg]\\
-		&+\boxed{\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\lim_{\vec k\rightarrow0}\textcolor{red}{\dfrac12\dfrac{4\pi(\sum_sZ_s)^2}{\Omega|\vec k|^2}}}\\
-		=&\sum_s\alpha_s\sum_sZ_s+\textcolor{magenta}{E_{\mathrm{Ewald}}}
+		\lim_{\vec k\rightarrow 0}&\bigg[\dfrac{\Omega}2\dfrac{4\pi[\rho^{\ast}(\vec k)]^2}{|\vec k|^2}+\Omega\bigg(-\dfrac{4\pi\sum\limits_sZ_s}{\Omega|\vec k|^2}+\sum\limits_s\alpha_s\bigg)\rho^{\ast}(\vec k)+\dfrac12\dfrac{4\pi(\sum\limits_sZ_s)^2}{\Omega|\vec k|^2}\bigg]\\
+		&+\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\lim_{\vec k\rightarrow0}\dfrac12\dfrac{4\pi(\sum\limits_sZ_s)^2}{\Omega|\vec k|^2}\\
+		=&\sum_s\alpha_s\sum_sZ_s+E_{\mathrm{Ewald}}
 	\end{aligned}
 \end{equation}
 
 	\begin{equation}
 		\begin{aligned}
-			E_{\textrm{Ewald}}=&\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\lim_{\vec k\rightarrow0}\dfrac12\times\dfrac{4\pi(\sum_sZ_s)^2}{\Omega|\vec k|^2}\\
+			E_{\textrm{Ewald}}=&\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\lim_{\vec k\rightarrow0}\dfrac12\times\dfrac{4\pi(\sum\limits_sZ_s)^2}{\Omega|\vec k|^2}\\
 			=&\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\dfrac1{2\Omega}\sum_{s,s^{\prime}}\int\mathrm{d}\vec r\dfrac{Z_sZ_{s^{\prime}}}r\\
 			=&\sum_{s,s^{\prime}}Z_sZ_{s^{\prime}}\bigg\{\dfrac{2\pi}{\Omega}\sum_{\vec k\neq 0}\cos[\vec k\cdot(\vec r_s-\vec r_{s^{\prime}})]\dfrac{\mathrm{e}^{-|\vec k|^2/4\eta^2}}{|\vec k|^2}\\
 			&-\dfrac{\pi}{2\eta^2\Omega}+\dfrac14\sum_{\vec R}\dfrac{\mathrm{erf}(\eta x)}x\bigg|_{\vec R+\vec r_s-\vec r_s^{\prime}\neq0}-\dfrac{\eta}{\sqrt{\pi}}\delta_{s,s^{\prime}}\bigg\}
 		\end{aligned}
 	\end{equation}
-	$\mathrm{erf}(x)$是误差函数，$\eta$原则上是任意参数。$\alpha_s$由$v_{ext}^s(\vec r)$确定：
+	$\mathrm{erf}(x)$是误差函数，$\eta$原则上是任意参数。$\alpha_s$由$v_{\mathrm{ext}}^s(\vec r)$确定：
 	\begin{equation}
-		\alpha_s=\lim_{\vec k\rightarrow0}\bigg[v_{ext}^s(\vec k)+\dfrac{4\pi Z_s}{\Omega|\vec k|^2}\bigg]=\dfrac1{\Omega}\int\mathrm{d}\vec r\bigg[v_{ext}^s(\vec r)+\dfrac{Z_s}r\bigg]
+		\alpha_s=\lim_{\vec k\rightarrow0}\bigg[v_{\mathrm{ext}}^s(\vec k)+\dfrac{4\pi Z_s}{\Omega|\vec k|^2}\bigg]=\dfrac1{\Omega}\int\mathrm{d}\vec r\bigg[v_{\mathrm{ext}}^s(\vec r)+\dfrac{Z_s}r\bigg]
 	\end{equation}
 
 由此得到的总能量表达式是
 \begin{equation}
 	\begin{aligned}
 		E_T=&\sum_i\varepsilon_i-\dfrac{\Omega}2\sum_{\vec k\neq0}\rho^{\ast}(\vec k)V_{\mathrm{Coul}}(\vec k)\\
-		&+\Omega\sum_{\vec k}\rho^{\ast}(\vec k)[\epsilon_{\mathrm{XC}}(\vec k)-V_{\mathrm{XC}}(\vec k)]\\
+		&+\Omega\sum_{\vec k}\rho^{\ast}(\vec k)[\epsilon_{XC}(\vec k)-V_{XC}(\vec k)]\\
 		&+\sum_s\alpha_s\sum_sZ_s+E_{\mathrm{Ewald}}
 	\end{aligned}
 \end{equation}
@@ -243,9 +243,9 @@ $V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}�
 %\end{figure}
 
 \section{正交平面波(Orthogonalized Plane Wave, OPW)方法}
-对于周期性体系，平面波$\exp[i(\vec k+\vec G_i)\cdot\vec r]$是最简单的正交、完备基函数。原则上，晶体中单电子波函数(Bloch函数)总可以用平面波展开得到：
+对于周期性体系，平面波$\exp[\mathrm{i}(\vec k+\vec G_i)\cdot\vec r]$是最简单的正交、完备基函数。原则上，晶体中单电子波函数(Bloch函数)总可以用平面波展开得到：
 \begin{equation}
-  \psi_i(\vec k,\vec r)=\frac1{\sqrt{N\Omega_0}}\sum_{\vec G_i}c_n(\vec k,\vec G_i)\exp[i(\vec k+\vec G_i)\cdot\vec r]
+	\psi_i(\vec k,\vec r)=\frac1{\sqrt{N\Omega_0}}\sum_{\vec G_i}c_n(\vec k,\vec G_i)\exp[\mathrm{i}(\vec k+\vec G_i)\cdot\vec r]
   \label{eq:solid-84}
 \end{equation}
 
@@ -263,7 +263,7 @@ $V_{ext}$的\textrm{Fourier}分量在$\vec k=0$\textcolor{red}{也是发散的}�
 
 OPW方法的基函数为：
 \begin{equation}
-  \varphi_i(\vec r)=\Omega_0^{-1/2}e^{i\vec k_i\cdot\vec r}-\sum_ca_c(\vec k_i)\chi_c(\vec k_i,\vec r)
+	\varphi_i(\vec r)=\Omega_0^{-1/2}\mathrm{e}^{\mathrm{i}\vec k_i\cdot\vec r}-\sum_ca_c(\vec k_i)\chi_c(\vec k_i,\vec r)
   \label{eq:OPW-set}
 \end{equation}
 这里$\vec k_i=\vec k+\vec G_i$。$\chi_c$是芯层电子的波函数。求和遍及所有占据芯层电子态。根据基函数与所有芯层电子态正交条件，
@@ -274,12 +274,12 @@ OPW方法的基函数为：
 %因此，
 正交化平面波可以表示为：
 \begin{equation}
-  \varphi_i(\vec r)=\Omega_0^{-1/2}\left[e^{i\vec k_i\cdot\vec r}-\sum_c\langle\chi_c(\vec k,\vec r),e^{i\vec k_i\cdot\vec r}\rangle\chi_c(\vec k,\vec r)\right]
+	\varphi_i(\vec r)=\Omega_0^{-1/2}\left[\mathrm{e}^{\mathrm{i}\vec k_i\cdot\vec r}-\sum_c\langle\chi_c(\vec k,\vec r),\mathrm{e}^{\mathrm{i}\vec k_i\cdot\vec r}\rangle\chi_c(\vec k,\vec r)\right]
   \label{eq:solid-85}
 \end{equation}
 
 实际应用中，通常选择原子芯层Bloch波函数构造$\chi_c$。依照tight-binding近似\cite{Huang-Han}，
-$$\chi_c(\vec k,\vec r)=\Phi_{nlm,\vec k}(\vec r)=\frac1{\sqrt N}\sum_{n=1}^Ne^{i\vec k\cdot\vec R_n}\Psi_{nlm}(\vec r-\vec R_n)$$
+$$\chi_c(\vec k,\vec r)=\Phi_{nlm,\vec k}(\vec r)=\frac1{\sqrt N}\sum_{n=1}^N\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_n}\Psi_{nlm}(\vec r-\vec R_n)$$
 这里N是晶体中所含原胞数目；$\Psi_{nlm}(\vec r)=u_{nl}(r)Y_{lm}(\hat{\vec r})$是孤立原子波函数。为了计算晶体势的Fourier分量$V(\vec k)$，将势能表示为各原子势能的求和，%：
 %\begin{equation}
 %  V(\vec r)=\sum_nV_{\alpha}(\vec r-\vec R_n)
@@ -356,7 +356,8 @@ OPW方法的重要的不足是其基组的非正交性和过完备。因为基�
 在后来的实际应用中，OPW方法很少直接作为基函数直接使用，但它几乎是其他方法的思想基础，特别是PAW方法，直接受到OPW方法的启发。
 
 \section{赝势(Pseudo Potential, PP)方法}
-赝势方法是使用最多的计算晶体电子结构和物理性质的方法。1934年，Fermi为了解释碱金属的原子光谱的谱线移动提出了原子赝势的概念(见图\ref{Pseudo-scatter-2})\cite{nc11-157_1934,ajp52-695_1984}。Hellman等将赝势应用到原子和分子能级的计算上\cite{jcp3-61_1935}，见图\ref{Pseudo-scatter-2}。
+赝势方法是使用最多的计算晶体电子结构和物理性质的方法。1934年，Fermi为了解释碱金属的原子光谱的谱线移动提出了原子赝势的概念(见图\ref{Pseudo-scatter-2})\cite{nc11-157_1934,ajp52-695_1984}。Hellman等将赝势应用到原子和分子能级的计算%\cite{jcp3-61_1935}，见图\ref{Pseudo-scatter-2}i
+。
 \begin{figure}[h!]
 \centering
 \vspace*{-0.25in}
@@ -438,11 +439,11 @@ $V_R$的定义为$V_R\Phi\equiv\sum\limits_c(E-E_c)\langle\chi_c|\Phi\rangle\chi
 \subsection{模守恒赝势\textrm(Norm-Conserving Pseudo-Poential, NCPP)}
 直接构造模型赝势是非常困难的，根据密度泛函理论，自洽的球形屏蔽势和与径向波函数构成Kohn-Sham方程的解，因此可以通过构造合理的赝波函数得到赝势：
 \begin{equation}
-  \left[-\frac12\frac{d^2}{dr^2}+\frac{l(l+1)}{2r^2}+V(\rho,r)\right]P_{nl}(r)=\varepsilon_{nl}P_{nl}
+	\left[-\frac12\frac{\mathrm{d}^2}{\mathrm{d}r^2}+\frac{l(l+1)}{2r^2}+V(\rho,r)\right]P_{nl}(r)=\varepsilon_{nl}P_{nl}
   \label{eq:solid-103}
 \end{equation}
-这里$V(\rho,r)$是自洽单电子势$$V(\rho,r)=-Z/r+V_H(\rho,r)+V_{xc}^{LDA}(\rho(r))$$
-$V_H(\rho,r)$是Hartree势，$V_{xc}^{LDA}(\rho(r))$是LDA的交换-相关势。
+这里$V(\rho,r)$是自洽单电子势$$V(\rho,r)=-Z/r+V_{\mathrm{H}}(\rho,r)+V_{xc}^{\mathrm{LDA}}(\rho(r))$$
+$V_{\mathrm{H}}(\rho,r)$是Hartree势，$V_{xc}^{\mathrm{LDA}}(\rho(r))$是LDA的交换-相关势。
 
 这样得到的赝势称为第一原理赝势，赝势构造的重点由构造赝势本身转移到构造合适的赝波函数。目前使用的电子结构计算的主要赝势方法都是求解全电子波函数，构造相适应的赝函数，再通过径向方程\eqref{eq:solid-103}确定赝势。
 
@@ -451,18 +452,18 @@ $V_H(\rho,r)$是Hartree势，$V_{xc}^{LDA}(\rho(r))$是LDA的交换-相关势。
 	\item 首先，由赝势生成的价电子赝波函数不含节点；
 	\item 其次，在截断半径$r_{cl}$之外\cite{JPC13-L189_1980,PRB43-1993_1991}，具有相同角动量$l$的原子径向赝波函数(pseudo-potential, PP)与全电子波函数(all-electron, AE)相等，%即
 \begin{equation}
-  P_l^{PP}(r)=P_l^{AE}(r)\quad \mbox{满足}r>r_{cl}
+	P_l^{\mathrm{PP}}(r)=P_l^{\mathrm{AE}}(r)\quad \mbox{满足}r>r_{cl}
   \label{eq:solid-104}
 \end{equation}
 或者快速收敛到该值\cite{PRB18-5449_1978,PRL43-1494_1979,PRB32-8412_1985}；
 	\item 第三，两种波函数在截断半径$r_{cl}$内包含的电荷密度相等\cite{PRL43-1494_1979,PRB43-1993_1991}，
 \begin{equation}
-  \int_0^{r_{cl}}|P_l^{PP}(r)|^2dr=\int_0^{r_{cl}}|P_l^{AE}(r)|^2dr
+	\int_0^{r_{cl}}|P_l^{\mathrm{PP}}(r)|^2\mathrm{d}r=\int_0^{r_{cl}}|P_l^{\mathrm{AE}}(r)|^2\mathrm{d}r
   \label{eq:solid-105}
 \end{equation}
-	\item 最后，价态的全电子和赝势的本征值必须相等，$e_l^{PP}=e_l^{AE}$。满足上述全部条件的赝势一般称为模守恒赝势(norm-conserving pseudopotential, NCPP)\cite{PRL43-1494_1979}。有很多方法可以构造出满足上述条件的赝波函数\cite{PRB18-5449_1978,PRB26-4199_1982,PRL43-1494_1979,JPC13-L189_1980,PRB32-8412_1985,PRB43-1993_1991}。得到赝波函数后，逆向求解径向Schr\"odinger方程，可以得到屏蔽(src)赝势：
+	\item 最后，价态的全电子和赝势的本征值必须相等，$e_l^{\mathrm{PP}}=e_l^{AE}$。满足上述全部条件的赝势一般称为模守恒赝势(norm-conserving pseudopotential, NCPP)\cite{PRL43-1494_1979}。有很多方法可以构造出满足上述条件的赝波函数\cite{PRB18-5449_1978,PRB26-4199_1982,PRL43-1494_1979,JPC13-L189_1980,PRB32-8412_1985,PRB43-1993_1991}。得到赝波函数后，逆向求解径向Schr\"odinger方程，可以得到屏蔽(src)赝势：
 \begin{equation}
-  V_{src,l}^{PP}=\varepsilon_l-\frac{l(l+1)}{2r^2}+\frac1{2P_l^{PP}(r)}\frac{d^2}{dr^2}P_l^{PP}(r)
+	V_{\mathrm{src},l}^{\mathrm{PP}}=\varepsilon_l-\frac{l(l+1)}{2r^2}+\frac1{2P_l^{\mathrm{PP}}(r)}\frac{\mathrm{d}^2}{\mathrm{d}r^2}P_l^{\mathrm{PP}}(r)
   \label{eq:solid-106}
 \end{equation}
 从式\eqref{eq:solid-106}可见，因为赝波函数没有节点，赝势是平缓的，除了原子球心位置不再有其他奇点。
@@ -474,18 +475,18 @@ $V_H(\rho,r)$是Hartree势，$V_{xc}^{LDA}(\rho(r))$是LDA的交换-相关势。
 \caption{\small \textrm{Schematic example of a valence function that has the character of a $3s$ orbital near the nucleus and two examples of smooth functions (dashed lines) that equal the full wave-function outside the core region.}}% Left: the smooth part of the valence function defined by OPW-like equation; Right: a smooth pseudo-function that satisfies the norm-conservation condition.(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pseudo-OPW_NCPP}
 \end{figure}
-由价电子产生的屏蔽与其所处的环境有关，如果扣除价电子屏蔽效应可以得到离子赝势。在自洽迭代过程中利用离子赝势得到特定环境的电子屏蔽。从屏蔽赝势中减去根据赝波函数计算得到的Hartree赝势$V_H^{PP}(r)$和交换-相关赝势$V_{xc}^{PP}(r)$，即离子赝势\cite{PRB43-1993_1991}：
-$$V_{\mathrm{ion},H}^{PP}(r)=V_{src,H}^{PP}(r)-V_H^{PP}(r)-V_{xc}^{PP}(r)$$
+由价电子产生的屏蔽与其所处的环境有关，如果扣除价电子屏蔽效应可以得到离子赝势。在自洽迭代过程中利用离子赝势得到特定环境的电子屏蔽。从屏蔽赝势中减去根据赝波函数计算得到的Hartree赝势$V_{\mathrm{H}}^{\mathrm{PP}}(r)$和交换-相关赝势$V_{xc}^{\mathrm{PP}}(r)$，即离子赝势\cite{PRB43-1993_1991}：
+$$V_{\mathrm{ion},\mathrm{H}}^{\mathrm{PP}}(r)=V_{\mathrm{src},\mathrm{H}}^{\mathrm{PP}}(r)-V_{\mathrm{H}}^{\mathrm{PP}}(r)-V_{xc}^{\mathrm{PP}}(r)$$
 赝波函数的每个角动量分量有不同的势能，离子赝势算符可以写成：
 \begin{equation}
-	\hat V_{\mathrm{ion}}^{PP}(r)=V_{\mathrm{ion},local}^{PP}+\sum_lV_{nonlocal,l}(r)\hat P_l
+	\hat V_{\mathrm{ion}}^{\mathrm{PP}}(r)=V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}+\sum_lV_{\mathrm{nonlocal},l}(r)\hat P_l
   \label{eq:solid-107}
 \end{equation}
-这里$V_{\mathrm{ion},local}^{PP}(r)$是局域势，$V_{nonlocal,l}(r)=V_{\mathrm{ion},l}^{PP}(r)-V_{\mathrm{ion},local}^{PP}(r)$是角动量$l$的非局域(或半局域)势。$\hat P_l$是投影算符，从波函数中投影出角动量的$l$分量。
+这里$V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}(r)$是局域势，$V_{\mathrm{nonlocal},l}(r)=V_{\mathrm{ion},l}^{\mathrm{PP}}(r)-V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}(r)$是角动量$l$的非局域(或半局域)势。$\hat P_l$是投影算符，从波函数中投影出角动量的$l$分量。
 
 Kleinman和Bylander(KB)\cite{PRL48-1425_1982}提出将半局域势\eqref{eq:solid-107}变换为非局域形式的过程：
-$$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Phi_l^{PP,0}(r)V_{nonlocal,l}(r)|}{\langle\Phi_l^{PP,0}(r)|V_{nonlocal,l}(r)|\Phi_l^{PP,0}(r)\rangle}$$
-这里$V_{nonlocal,l}(r)$是半局域势[式\eqref{eq:solid-107}]，$\Phi_l^{PP,0}(r)$是用以计算赝势的原子角动量$l$的参考赝波函数。选择特定的非局域表象，可以很大程度上节省计算时间。
+$$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\dfrac{|V_{\mathrm{nonlocal},l}(r)\Phi_l^{\mathrm{PP},0}(r)\rangle\langle\Phi_l^{\mathrm{PP},0}(r)V_{\mathrm{nonlocal},l}(r)|}{\langle\Phi_l^{\mathrm{PP},0}(r)|V_{\mathrm{nonlocal},l}(r)|\Phi_l^{\mathrm{PP},0}(r)\rangle}$$
+这里$V_{\mathrm{nonlocal},l}(r)$是半局域势[式\eqref{eq:solid-107}]，$\Phi_l^{\mathrm{PP},0}(r)$是用以计算赝势的原子角动量$l$的参考赝波函数。选择特定的非局域表象，可以很大程度上节省计算时间。
 
 \subsection{超软赝势\textrm{(Ultra-Soft Pseudo-Potential, USPP)}}
 赝势构造的模守恒条件很好地解决了赝势可移植性问题，但对$1s$、$2p$、$3d$等轨道，因为径向波函数本身没有节点，用模守恒方案获得的赝势过于“硬”，所需平面波基组依然非常大。\textrm{Vanderbilt}提出的超软\textrm{(Ultra-soft)}赝势\cite{PRB41-7892_1990}，解除了模守恒约束，实现对$1s$、$2p$、$3d$为价电子元素的高效计算。
@@ -533,7 +534,7 @@ $$V_{nonlocal,l}^{KB}=\dfrac{|V_{nonlocal,l}(r)\Phi_l^{PP,0}(r)\rangle\langle\Ph
 		\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}=\mathbf{D}_{s,s^{\prime}}-\int\mathrm{d}\vec r\big[V_{\mathrm{H}}(\vec r)+V_{\mathrm{XC}}(\vec r)\big]Q_{s,s^{\prime}}(r)
 		\label{eq:uspp_6}
 	\end{equation}
-	根据文献\inciteline{PRB47-10142_1993}, $\mathbf{D}_{s,s^{\prime}}$称为超软赝势的强度指数(\textrm{strength parameter})，$\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}$是其去屏蔽后的形式(有时也记为$\mathbf{D}_{s,s^{\prime}}^0$)。
+根据文献\inlinecite{PRB47-10142_1993}, $\mathbf{D}_{s,s^{\prime}}$称为超软赝势的强度指数(\textrm{strength parameter})，$\mathbf{D}_{s,s^{\prime}}^{\mathrm{ion}}$是其去屏蔽后的形式(有时也记为$\mathbf{D}_{s,s^{\prime}}^0$)。
 可以得到广义本征值方程
 \begin{equation}
 	\bigg[-\dfrac12\nabla^2+V_{\mathrm{local}}+V_{NL}^{\mathrm{US}}-\varepsilon_i\bigg(\mathbf{1}+\sum_{s,s^{\prime}}Q_{s,s^{\prime}}|\beta_s\rangle\langle\beta_{s^{\prime}}|\bigg)\bigg]|\phi_{lmi}\rangle=0

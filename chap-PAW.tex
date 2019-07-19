@@ -197,7 +197,7 @@ $f_n$是占据态的电子数。注意，这里的$n^1$和$\tilde n^1$中包含�
 \end{equation}
 \begin{equation}
 	\begin{aligned}
-		\tilde v_{\mathrm R}^1(r)=&\bigg(\dfrac{\patial E}{\partial\tilde n^1(r)}+\sum_{\mathrm L}\dfrac{\partial E}{\partial Q_{\mathrm{RL}}}\dfrac{\partial Q_{\mathrm{RL}}}{\tilde n^1(r)})\\
+		\tilde v_{\mathrm R}^1(r)=&\bigg(\dfrac{\partial E}{\partial\tilde n^1(r)}+\sum_{\mathrm L}\dfrac{\partial E}{\partial Q_{\mathrm{RL}}}\dfrac{\partial Q_{\mathrm{RL}}}{\tilde n^1(r)})\\
 		=&\int_{\mathrm R}\mathrm{d}r^{\prime}\dfrac{\tilde n_{\mathrm R}^1(r^{\prime})+\hat n_{\mathrm R}(r^{\prime})}{|r-r^{\prime}|}+\mu_{\mathrm{XC}}[\tilde n_{\mathrm R}^1(r)]+v_{\mathrm R}^0(r)
 	\end{aligned}
 	\label{eq:PAW-Blochl-tv1_R}
@@ -606,7 +606,7 @@ $$D_{ij}^1=\dfrac{\partial E^1}{\partial\rho_{ij}}=\langle\phi_i|-\dfrac12\nabla
 	\item $\bigg(-\dfrac12\nabla^2+\tilde v_{\mathrm{eff}}\bigg)$是一般\textrm{Kohn-Sham}方程都有的项
 	\item $D_{ij}^1$和$\tilde D_{ij}^1$描述缀加区的在位项相互作用:~表明$\tilde v_{\mathrm{eff}}$与赝波函数$\tilde\Psi_n$在离子实附近并未出现剧烈变化
 	\item $\hat D_{ij}$有关的项
-		$$\sum_{(i,j),L}\langle\tilde\Psi_n|\tilde p_i\rangle\langle\tilde p_j|\tilde\Psi_n\rangle\int\tilde v_{\mathrm{eff}}(\vec r)\hat Q_{ij}^L(\vec r)\mathrmP{d}\vec r$$
+		$$\sum_{(i,j),L}\langle\tilde\Psi_n|\tilde p_i\rangle\langle\tilde p_j|\tilde\Psi_n\rangle\int\tilde v_{\mathrm{eff}}(\vec r)\hat Q_{ij}^L(\vec r)\mathrm{d}\vec r$$
 		描述的是每个电子的补偿电荷与有效单电子势(长程静电效应)的相互作用
 	\item 在缀加区$\tilde D_{ij}^1$与$-\dfrac12\nabla^2+\tilde v_{\mathrm{eff}}+\sum\limits_{(i,j)}|\tilde p_i\rangle\hat D_{ij}\langle\tilde p_j|$彼此抵消(当分波函数是完备的，这种抵消是精确的)
 \end{itemize}
@@ -636,7 +636,7 @@ $$D_{ij}^1=\dfrac{\partial E^1}{\partial\rho_{ij}}=\langle\phi_i|-\dfrac12\nabla
 \begin{enumerate}
 	\item 全电子分波函数$\phi_i$和赝分波函数$\tilde\phi_i$
 	\item 投影函数$\tilde p_i$
-	\item \tilde 芯电荷密度$n_c$ 、局域离子赝势$v_{\mathrm H}[\tilde n_{Zc}]$(赝化离子实电荷密度$\tilde n_{Zc}$仅出现在$v_{\mathrm H}[\tilde n_{Zc}]$中，因此直接构造$v_{\mathrm H}[\tilde n_{Zc}]$)和赝芯电荷密度$\tilde n_c$
+	\item 芯电荷密度$n_c$ 、局域离子赝势$v_{\mathrm H}[\tilde n_{Zc}]$(赝化离子实电荷密度$\tilde n_{Zc}$仅出现在$v_{\mathrm H}[\tilde n_{Zc}]$中，因此直接构造$v_{\mathrm H}[\tilde n_{Zc}]$)和赝芯电荷密度$\tilde n_c$
 	\item 补偿电荷构造函数$g_l(r)$
 \end{enumerate}
 
@@ -677,11 +677,11 @@ $$g_l(r)=\sum_{i=1}^2\alpha_i^lj_l(q_i^lr)$$
 $$\int_0^{r_{\mathrm{comp}}}g_l(r)r^{l+2}\mathrm{d}r=1$$
 实际上这一条件并不难实现，只要选择$q_i^l$满足约束条件
 $$\dfrac{\mathrm{d}}{\mathrm{d}r}j_l(q_i^lr)\bigg|_{r_{\mathrm{comp}}}=0$$
-并且要求$\alpha_^l$可使得$g_l(r_{\mathrm{comp}})=0$，即可实现。在此，\textrm{Kresse}建议的截断半径取值参考条件是:~$r_{comp}=r_{\mathrm{rad}}/1.3\sim r_{\mathrm{rad}}/1.2$，主要考虑尽可能让补偿电荷局域在缀加区，防止出现\textrm{Bl\"ochl}方案中芯层区重叠。
+并且要求$\alpha_i^l$可使得$g_l(r_{\mathrm{comp}})=0$，即可实现。在此，\textrm{Kresse}建议的截断半径取值参考条件是:~$r_{\mathrm{comp}}=r_{\mathrm{rad}}/1.3\sim r_{\mathrm{rad}}/1.2$，主要考虑尽可能让补偿电荷局域在缀加区，防止出现\textrm{Bl\"ochl}方案中芯层区重叠。
 
 近年来，\textrm{Marsman}等突破了\textrm{Kresse}方案的“冻芯近似”，在自洽迭代计算中允许芯层电荷参与。迭代过程中要求确保价电子和芯电子的正交化，这其中的关键是(1)迭代过程中保持投影函数不变，(2)在每个自洽步中更新赝分波函数。具体可参阅文献\inlinecite{JCP125-104101_2006}。
 
-上述讨论中主要围绕\textrm{PAW}方法对于电子结构计算的方法，没有从第一原理分子动力学\textrm{(Ab initio Molecular Dynamics, AIMD)}角度讨论体系中原子和离子的受力运动，基于平面波基组的\textrm{AIMD}计算方法的一般概念和\textrm{PAW}方法中有关原子受力问题的讨论，可参阅文献\inlinecite{PRB47-10142_1993,PRB50-17953_1994, PRB59-1759_1999,Comput_Phys}。
+上述讨论中主要围绕\textrm{PAW}方法对于电子结构计算的方法，没有从第一原理分子动力学\textrm{(Ab initio Molecular Dynamics, AIMD)}角度讨论体系中原子和离子的受力运动，基于平面波基组的\textrm{AIMD}计算方法的一般概念和\textrm{PAW}方法中有关原子受力问题的讨论，可参阅文献\inlinecite{PRB47-10142_1993,PRB50-17953_1994,PRB59-1758_1999,Comput_Phys}。
 
 
 %\begin{figure}[h!]

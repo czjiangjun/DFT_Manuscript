@@ -42,34 +42,37 @@ Hohenberg-Kohn定理\cite{PRB136-864_1964}包含两部分{内容}。第一部分
 %设})
 N个粒子相互作用量子力学体系的%Hamiltonian})
 {基态总能量}为：
-$${E_{gs}[\Psi]}%F_{\mathrm{HK}}[\rho]})
+\begin{equation}
+	{E_{\mathrm{gs}}[\Psi]}%F_{\mathrm{HK}}[\rho]})
 =\langle\Psi%[\rho]})
 |\hat{T}+\hat{V}+\hat{W}|\Psi%[\rho]})
-\rangle$$
+\rangle
+	\label{eq:DFT_01}
+\end{equation}
 其中$\hat{T}$是动能算符，$\hat{V}$是外势%、即通常的局域单粒子势})
 ，$\hat{W}$为%粒})
-{电}子间相互作用势{，$\Psi$为基态波函数}。假设两个体系的外势分别为$\hat{V}$和$\hat V'$，它们之间相差不为常数，这两个体系的非简并基态分别为$\Psi$和$\Psi'$，其基态的本征方程分别为：
-$${\hat H\Psi=}\bigl(\hat{T}+\hat{V}+\hat{W}\bigr)|\Psi\rangle=E_{gs}|\Psi\rangle$$
-$${\hat H'\Psi=}\bigl(\hat{T}+\hat V'+\hat{W}\bigr)|\Psi'\rangle=E'_{gs}|\Psi'\rangle$$
+{电}子间相互作用势{，$\Psi$为基态波函数}。假设两个体系的外势分别为$\hat{V}$和$\hat V^{\prime}$，它们之间相差不为常数，这两个体系的非简并基态分别为$\Psi$和$\Psi^{\prime}$，其基态的本征方程分别为：
+$${\hat H\Psi=}\bigl(\hat{T}+\hat{V}+\hat{W}\bigr)|\Psi\rangle=E_{\mathrm{gs}}|\Psi\rangle$$
+$${\hat H^{\prime}\Psi=}\bigl(\hat{T}+\hat V^{\prime}+\hat{W}\bigr)|\Psi^{\prime}\rangle=E_{\mathrm{gs}^{\prime}}|\Psi^{\prime}\rangle$$
 
 %假设})
-{根据量子力学原理，}$|\Psi\rangle{\neq}|\Psi'\rangle$，%则上两式相减可得})：
-% $$%\big(\hat{V}-\hat V'\big)|\Psi\rangle=\big(E_{gs}-E'_{gs}\big)|\Psi\rangle}) $$
-%因为$\hat{V}$和$\hat V'$是乘积算符，从上式可知，$\big(\hat{V}-\hat V'\big)=\big(E_{gs}-E'_{gs}\big)=\text{const}$，这与$\hat{V}$和$\hat V'$之间相差不为常数矛盾，因此$\hat{V}$和$|\Psi\rangle$之间存在一一对应关系。})
+{根据量子力学原理，}$|\Psi\rangle{\neq}|\Psi^{\prime}\rangle$，%则上两式相减可得})：
+% $$%\big(\hat{V}-\hat V^{\prime}\big)|\Psi\rangle=\big(E_{gs}-E^{\prime}_{gs}\big)|\Psi\rangle}) $$
+%因为$\hat{V}$和$\hat V^{\prime}$是乘积算符，从上式可知，$\big(\hat{V}-\hat V^{\prime}\big)=\big(E_{gs}-E^{\prime}_{gs}\big)=\text{const}$，这与$\hat{V}$和$\hat V^{\prime}$之间相差不为常数矛盾，因此$\hat{V}$和$|\Psi\rangle$之间存在一一对应关系。})
 由变分原理可知：
-$$E_{gs}=\langle\Psi|\hat{H}|\Psi\rangle<\langle\Psi'|\hat{H}|\Psi'\rangle$$
+$$E_{\mathrm{gs}}=\langle\Psi|\hat{H}|\Psi\rangle<\langle\Psi^{\prime}|\hat{H}|\Psi^{\prime}\rangle$$
 
-设$|\Psi\rangle$和$|\Psi'\rangle$对应的%单})
+设$|\Psi\rangle$和$|\Psi^{\prime}\rangle$对应的%单})
 %粒})
 {电}子密度分别为$\rho(\vec{r})
-$和$\rho'(\vec{r})$，{$v(\vec r)$为单个电子受到的外势的作用能，则}有
-$$\langle\Psi'|\hat{H}|\Psi'\rangle=\langle\Psi'|\hat H'+\hat{V}-\hat V'|\Psi'\rangle=E'_{gs}+\int{\rho'(\vec{r})[v(\vec{r})-v'(\vec{r})]\textrm{d}^3\vec{r}}$$
-%相应的，从$E^{'}_{gs}$出发})
+$和$\rho^{\prime}(\vec{r})$，{$v(\vec r)$为单个电子受到的外势的作用能，则}有
+$$\langle\Psi^{\prime}|\hat{H}|\Psi^{\prime}\rangle=\langle\Psi^{\prime}|\hat H^{\prime}+\hat{V}-\hat V^{\prime}|\Psi^{\prime}\rangle=E^{\prime}_{gs}+\int{\rho^{\prime}(\vec{r})[v(\vec{r})-v^{\prime}(\vec{r})]\textrm{d}^3\vec{r}}$$
+%相应的，从$E^{^{\prime}}_{gs}$出发})
 {类似地}可以得到不等式
-$$E^{'}_{gs}<E_{gs}+\int{\rho(\vec{r})[v'(\vec{r})-v(\vec{r})]\textrm{d}^{3}\vec{r}}$$
+$$E^{^{\prime}}_{gs}<E_{gs}+\int{\rho(\vec{r})[v^{\prime}(\vec{r})-v(\vec{r})]\textrm{d}^{3}\vec{r}}$$
 
 %假设})
-{如果}$\rho(\vec{r})\!=\!\rho'(\vec{r})$，把上面两个不等式相加可以得到$E_{gs}+E'_{gs}\!<\!E_{gs}+E'_{gs}$，这显然%与假设矛盾，因此$\rho(\vec{r})$与v可以表示的基态$|\Psi\rangle$之间有一一对应关系})
+{如果}$\rho(\vec{r})\!=\!\rho^{\prime}(\vec{r})$，把上面两个不等式相加可以得到$E_{gs}+E^{\prime}_{gs}\!<\!E_{gs}+E^{\prime}_{gs}$，这显然%与假设矛盾，因此$\rho(\vec{r})$与v可以表示的基态$|\Psi\rangle$之间有一一对应关系})
 {不能成立。亦即不可能出现不同的外势产生相同的电子密度的情况}。由此可以得出结论，体系的基态%单})
 %粒})
 {电}子密度和体系的外势(除了相差一个常数之外)一一对应%，})
@@ -79,7 +82,16 @@ $$E^{'}_{gs}<E_{gs}+\int{\rho(\vec{r})[v'(\vec{r})-v(\vec{r})]\textrm{d}^{3}\vec
 的\textrm{Hamiltonian}、从而它的全部}性质都%可以})
 由体系的基态%单})
 %粒})
-{电}子密度完全决定。{特殊地，体系基态总能量是它的基态电子密度的泛函，记作$E[\rho]$。设有一电子密度$\tilde\rho(\vec r)$，满足条件$\tilde\rho(\vec r)\!\geqslant\!0$，$\displaystyle\int\tilde\rho(\vec r)\textrm{d}^3\vec r\!=\!N$，$\tilde\rho(\vec r)$来自某个\textit{v}\,-\,可表示的基态波函数$\tilde\Psi$(称为\textit{v}\,-\,可表示的电子密度)。设与体系基态波函数$\Psi$对应的电子密度为$\rho_0(\vec r)$，若$\tilde\rho(\vec r)\!\neq\!\rho_0(\vec r)$，则根据上面的讨论可知，$\tilde\Psi\!\neq\!\Psi$，$E[\tilde\rho]$\,$\geqslant$\,$E[\rho_0]$。}
+{电}子密度完全决定。{特殊地，体系基态总能量是它的基态电子密度的泛函，记作$E[\rho]$。
+	
+设有一电子密度$\tilde\rho(\vec r)$，满足约束条件
+\begin{displaymath}
+	\begin{aligned}
+		&\tilde\rho(\vec r)\!\geqslant\!0\\
+		&\int\tilde\rho(\vec r)\textrm{d}^3\vec r\!=\!N
+	\end{aligned}
+\end{displaymath}
+$\tilde\rho(\vec r)$来自某个\textit{v}\,-\,可表示的基态波函数$\tilde\Psi$(称为\textit{v}\,-\,可表示的电子密度)。设与体系基态波函数$\Psi$对应的电子密度为$\rho_0(\vec r)$，若$\tilde\rho(\vec r)\!\neq\!\rho_0(\vec r)$，则根据上面的讨论可知，$\tilde\Psi\!\neq\!\Psi$，$E[\tilde\rho]$\,$\geqslant$\,$E[\rho_0]$。}
 
 %从上面的结论我们可以定义作为单粒子密度$\rho(\vec{r}) $泛函的体系基态能量的形式。设一$N$个粒子体系的外势场为$\hat{V_{0}}$，})
 {设}与$\rho(\vec{r})$%一一})
@@ -88,10 +100,16 @@ $$E^{'}_{gs}<E_{gs}+\int{\rho(\vec{r})[v'(\vec{r})-v(\vec{r})]\textrm{d}^{3}\vec
 体系的基态总能量作为$\rho(\vec{r})
 $的泛函%形式})
 {可表达}为：
-$$E[\rho]=\langle\Psi[\rho]|\hat{T}+\hat{V}+\hat{W}|\Psi[\rho]\rangle$$
+\begin{equation}
+	E[\rho]=\langle\Psi[\rho]|\hat{T}+\hat{V}+\hat{W}|\Psi[\rho]\rangle
+	\label{eq:DFT_02}
+\end{equation}
 %由变分原理可知，体系本身的基态单粒子密度使得$E_{v_{0}}[\rho]$取极小，因此可以通过寻找能量泛函的极小值点来确定体系的基态能量和基态粒子密度}
 {因为由外势产生的势能是电子密度$\rho(\vec r)$的简单泛函，}体系的{基态}总能量泛函可以写成：
-$$E[\rho]=F_{\mathrm{HK}}[\rho]+\int\rho(\vec{r})v(\vec{r})\textrm{d}^3\vec{r}$$
+\begin{equation}
+	E[\rho]=F_{\mathrm{HK}}[\rho]+\int\rho(\vec{r})v(\vec{r})\textrm{d}^3\vec{r}
+	\label{eq:DFT_03}
+\end{equation}
 其中$F_{\mathrm{HK}}[\rho]=\underset{\Psi\to\rho}{\mathrm{Min}}\langle\Psi[\rho]|\hat{T}+\hat{W}|\Psi[\rho]\rangle$%。})
 {，}%从上式可以看出，$F_{\mathrm{HK}}$的形式}
 与%$v_{0}$})
@@ -182,24 +200,24 @@ $$\rho(\vec{r})=\sum_{i=1}^{N}\langle\varphi_{i}|\vec{r}\rangle\langle\vec{r}|\v
 {基态能量密度泛函}写成如下形式：
 \begin{equation}
   \label{eq:dft-1}
-E[\rho]=T_{s}[\rho]+\int{v(\vec{r})\rho(\vec{r})\textrm{d}^3\vec{r}}+\frac 12\iint{\rho(\vec{r})w(\vec{r},\vec r\,')\rho(\vec r\,')\textrm{d}^3\vec{r}\textrm{d}^3\vec r\,'}+E_{XC}[\rho]
+E[\rho]=T_{s}[\rho]+\int{v(\vec{r})\rho(\vec{r})\textrm{d}^3\vec{r}}+\frac 12\iint{\rho(\vec{r})w(\vec{r},\vec r\,^{\prime})\rho(\vec r\,^{\prime})\textrm{d}^3\vec{r}\textrm{d}^3\vec r\,^{\prime}}+E_{XC}[\rho]
 \end{equation}
-其中{$w(\vec r, \vec r\,')$为两个电子间的相互作用能。}交换-相关能泛函的形式为：
+其中{$w(\vec r, \vec r\,^{\prime})$为两个电子间的相互作用能。}交换-相关能泛函的形式为：
 
 \begin{equation} 
   \label{eq:dft-2}
-  E_{XC}[\rho]=F_{\mathrm{HK}}[\rho]-\frac 12\iint{\rho(\vec{r}) w(\vec{r},\vec r\,')\rho(\vec r\,')\textrm{d}^3\vec{r}\textrm{d}^3\vec r\,'}-T_{s}[\rho]
+  E_{XC}[\rho]=F_{\mathrm{HK}}[\rho]-\frac 12\iint{\rho(\vec{r}) w(\vec{r},\vec r\,^{\prime})\rho(\vec r\,^{\prime})\textrm{d}^3\vec{r}\textrm{d}^3\vec r\,^{\prime}}-T_{s}[\rho]
 \end{equation}
 利用$T_s$和$\rho$的表达式，%对})
 {由}总能量%作})
 {在$\{\varphi_i, i\!=\!1,\cdots, N\}$满足正交归一条件下对$\{\varphi_i\}$}变分，即%可以})
 得到Kohn-Sham方程：
 \begin{equation} \label{eq:dft-3}
-  \bigl(\hat{T}+\hat{V}_{e\!f\!f}\bigr)|\varphi_{i}\rangle=\varepsilon_{i}|\varphi_{i}\rangle{,\quad i=1,\cdots,N,\cdots}
+	\bigl(\hat{T}+\hat{V}_{\mathrm{eff}}\bigr)|\varphi_{i}\rangle=\varepsilon_{i}|\varphi_{i}\rangle{,\quad i=1,\cdots,N,\cdots}
 \end{equation}
 其中
 \begin{equation} \label{eq:dft-4}
-  V_{e\!f\!f}(\vec{r})={v}(\vec{r})+\int{w(\vec{r},\vec r\,')\rho(\vec r\,')\textrm{d}^3{\vec r\,'}+\frac{\delta E_{XC}}{\delta\rho(\vec{r})
+	V_{\mathrm{eff}}(\vec{r})={v}(\vec{r})+\int{w(\vec{r},\vec r\,^{\prime})\rho(\vec r\,^{\prime})\textrm{d}^3{\vec r\,^{\prime}}+\frac{\delta E_{XC}}{\delta\rho(\vec{r})
 }}
 \end{equation}
 式\eqref{eq:dft-4}右边第一项%中})
@@ -306,7 +324,7 @@ Kohn-Sham%理论})
 \end{enumerate}
 \begin{figure}[!h]
 \centering
-\includegraphics[height=3.5in,width=3.18in,viewport=10 5 680 700,clip]{Jacobi-ladder.png}
+\includegraphics[height=3.4in,width=3.18in,viewport=10 5 680 700,clip]{Jacobi-ladder.png}
 \caption{\small The schematic digram of Jacob's Ladder for DFT.\cite{Perdew-Schmit_2001,Science298-759_2002}}
 \label{Fig:Jacob-Ladder}
 \end{figure}
@@ -323,7 +341,7 @@ Kohn-Sham%理论})
 局域密度近似是Kohn和Sham提出的最简单的一种近似处理交换-相关能的方法。交换-相关能{泛函}的具体形式取为：
 \begin{equation}
   \label{eq:dft-5}
-E_{XC}^{LDA}[\rho]=E_X^{LDA}[\rho]+E_C^{LDA}[\rho]=\int\varepsilon_X[\rho]\rho(\vec{r}) \textrm{d}^3\vec{r}+\int\varepsilon_C[\rho]\rho(\vec{r}) \textrm{d}^3\vec{r}
+  E_{XC}^{\mathrm{LDA}}[\rho]=E_X^{\mathrm{LDA}}[\rho]+E_C^{\mathrm{LDA}}[\rho]=\int\varepsilon_X[\rho]\rho(\vec{r}) \textrm{d}^3\vec{r}+\int\varepsilon_C[\rho]\rho(\vec{r}) \textrm{d}^3\vec{r}
 \end{equation}
 其中$\varepsilon_X[\rho]$和$\varepsilon_C[\rho]$分别为{一个电子的}交换能和相关能%密度})
 。上式表明空间每一个点的交换能密度和相关能密度只是取决于该点的电子密度，而与其他点的电子密度无关。对{于均匀电子气，}$\varepsilon_X[\rho]$和$\varepsilon_C[\rho]$%的选取可按照均匀电子气中交换-相关能和电子密度的关系得到，})
@@ -337,7 +355,7 @@ E_{XC}^{LDA}[\rho]=E_X^{LDA}[\rho]+E_C^{LDA}[\rho]=\int\varepsilon_X[\rho]\rho(\
 的交换-相关能{计算}，整个体系的交换-相关能就可以写成\eqref{eq:dft-5}式的形式。{采用}这种模型{，}%下的})
 \textrm{Kohn-Sham~}方程的交换势表达为：
 \begin{equation} \label{eq:dft-6}
-V_X^{LDA}(\vec{r}) =\dfrac {\delta E_X^{LDA}}{\delta\rho(\vec{r}) }=-\dfrac 32\alpha\left\{\dfrac3\pi\rho(\vec{r}) \right\}^{1/3}
+	V_X^{\mathrm{LDA}}(\vec{r}) =\dfrac {\delta E_X^{\mathrm{LDA}}}{\delta\rho(\vec{r}) }=-\dfrac 32\alpha\left\{\dfrac3\pi\rho(\vec{r}) \right\}^{1/3}
 \end{equation}
 Kohn和Sham等从总交换能的角度出发%给})
 {得}出$\alpha=2/3$\cite{PRA140-1133_1965}，Slater从交换势的角度出发，%给})
@@ -361,7 +379,7 @@ E_X[\rho_{\alpha},\rho_{\beta}]=\frac12E_X^{0}[2\rho_{\alpha}]+\frac12E_X^{0}[2\
 {表达}式可以%结合})
 {由}\eqref{eq:dft-7}式和\eqref{eq:dft-6}式%给})
 {得}出{。}相关能泛函的形式可以写成：
-$$E_C^{LSDA}[\rho_{\alpha},\rho_{\beta}]=\int{\varepsilon_C(\rho,\varsigma)\rho\,\textrm{d}^3\vec{r}}$$
+$$E_C^{\mathrm{LSDA}}[\rho_{\alpha},\rho_{\beta}]=\int{\varepsilon_C(\rho,\varsigma)\rho\,\textrm{d}^3\vec{r}}$$
 其中$\varsigma=(\rho_{\alpha}-\rho_{\beta})
 /(\rho_{\alpha}+\rho_{\beta})
 $，$\rho_{\alpha}$和$\rho_{\beta}$分别是自旋为$\alpha$和自旋为$\beta$的电子密度。均匀电子气相关能的解析形式很难求得，但是可以用数值方法计算得到%其})
@@ -376,7 +394,7 @@ $，$\rho_{\alpha}$和$\rho_{\beta}$分别是自旋为$\alpha$和自旋为$\beta
 {的}表达式为：
 \begin{equation}
   \label{eq:dft-8}
-\varepsilon_C^{LDA}(r_s,\varsigma)=\varepsilon_C^{LDA}(r_s,0)+a_C(r_s)\dfrac{f(\varsigma)}{f''(\varsigma)}(1-\varsigma^4)+[\varepsilon_C(r_s,1)-\varepsilon_C(r_s,0)]f(\varsigma)\varsigma^4
+  \varepsilon_C^{\mathrm{LDA}}(r_s,\varsigma)=\varepsilon_C^{\mathrm{LDA}}(r_s,0)+a_C(r_s)\dfrac{f(\varsigma)}{f^{\prime\prime}(\varsigma)}(1-\varsigma^4)+[\varepsilon_C(r_s,1)-\varepsilon_C(r_s,0)]f(\varsigma)\varsigma^4
 \end{equation}
 其中$r_s=\left[\dfrac 3{4\pi}\bigl(\rho_{\alpha}+\rho_{\beta}\bigr)\right]^{-1/3}$，$f(\varsigma)=[(1+\varsigma)^{4/3}+(1-\varsigma)^{4/3}-2]/(2^{4/3}-2)$，\\$\varepsilon_C(r_s,0)$，$\varepsilon_C(r_s,1)$和$-a_C(r_s)$由经验公式
 $$G(r_s,A,\alpha_1,\beta_1,\beta_2,\beta_3,\beta_4,p)=-2A(1+\alpha_1r_s)\ln\left[1+\dfrac1{2A(\beta_1r_s^{1/2}+\beta_2r_s+\beta_3r_s^{3/2}+\beta_4r_s^{p+1})}\right]$$
@@ -397,7 +415,7 @@ LDA是建立在均匀电子气模型基础上{的}，而原子、分子和很多
 需要对电子密度的非均匀性加以校正。一般是通过在交换-相关能泛函中引入电子密度%的})
 梯度来加以校正{，}即构造GGA泛函。可以将GGA交换能泛函写成一般形式：
 \begin{equation}
-  E_X^{GGA}=E_X^{LDA}-\sum_{\sigma}\int F[x_{\sigma}]\rho_{\sigma}^{\frac43}(\vec r)\textrm{d}^3r{=E_X^{LDA}+E_X^{NL}}
+	E_X^{\mathrm{GGA}}=E_X^{\mathrm{\mathrm{LDA}}}-\sum_{\sigma}\int F[x_{\sigma}]\rho_{\sigma}^{\frac43}(\vec r)\textrm{d}^3r{=E_X^{\mathrm{LDA}}+E_X^{\mathrm{NL}}}
   \label{eq:dft-18}
 \end{equation}
 其中$x_{\sigma}=|\nabla\rho_{\sigma}|\rho_{\sigma}^{-4/3}$称为约化梯度，是一个无量纲的量。%依据})
@@ -405,21 +423,21 @@ LDA是建立在均匀电子气模型基础上{的}，而原子、分子和很多
 {现有}GGA的交换能泛函可以分为两大类，一类以Becke\cite{PRA38-3098_1988}在1988年提出的表达式为基础：
 \begin{equation}
   \label{eq:dft-9}
-E_X^{NL}=-b\sum_{\sigma}\int\rho_{\sigma}^{4/3}\dfrac{x_{\sigma}^2}{1+6bx_{\sigma}\sinh^{-1}x_{\sigma}}\textrm{d}^3r
+  E_X^{\mathrm{NL}}=-b\sum_{\sigma}\int\rho_{\sigma}^{4/3}\dfrac{x_{\sigma}^2}{1+6bx_{\sigma}\sinh^{-1}x_{\sigma}}\textrm{d}^3r
 \end{equation}
 其中$b$\,=\,0.0042{。}%$X_{\sigma}=|\nabla\rho_{\sigma}|\rho_{\sigma}^{-4/3}$})
 这是目前常用的交换能非局域校正公式。属于这一类的交换能泛函有PW91\cite{PRB46-6671_1992,PRB48-4978_1993,PRB54-16533_1996,PRB57-14999_1998}、FT97\cite{MP91-847_1997}、CAM(A)和CAM(B)\cite{JCP99-8765_1993}等等。另一类泛函的$F${泛函}采用有理函数{形式，}包括幂函数和有理分式的泛函。属于这一类的交换能泛函有B86\cite{JCP84-4524_1986}、P86$_x$\cite{PRB33-8800_1986}、LG\cite{PRA47-4681_1993}、PBE\cite{PRL77-1396_1996,IBID78-1396_1997}、VSXC\cite{JCP109-400_1998}等。B86采用的$F${泛函}的形式是
 \begin{equation}
-  F^{B86}=\left[1+1.296\left(\dfrac{x_{\sigma}}{(24\pi^2)^{1/3}}\right)^2+14\left(\dfrac{x_{\sigma}}{(24\pi^2)^{1/3}}\right)^4+0.2\left(\dfrac{x_{\sigma}}{(24\pi^2)^{1/3}}\right)^6\right]^{1/15}
+	F^{\mathrm{B86}}=\left[1+1.296\left(\dfrac{x_{\sigma}}{(24\pi^2)^{1/3}}\right)^2+14\left(\dfrac{x_{\sigma}}{(24\pi^2)^{1/3}}\right)^4+0.2\left(\dfrac{x_{\sigma}}{(24\pi^2)^{1/3}}\right)^6\right]^{1/15}
   \label{eq:dft-19}
 \end{equation}
 
-最常用的相关能非局域校正{$E_C^{NL}$}是Perdew和Wang\cite{PRB33-8822_1986}提出的%形})
-{表达}式以及把$E_C^{NL}$和$E_C^{LDA}$合{并}在一起计算的LYP%形})
+最常用的相关能非局域校正{$E_C^{\mathrm{NL}}$}是Perdew和Wang\cite{PRB33-8822_1986}提出的%形})
+{表达}式以及把$E_C^{\mathrm{NL}}$和$E_C^{\mathrm{LDA}}$合{并}在一起计算的LYP%形})
 {表达}式\cite{PRB37-785_1988}。Perdew和Wang的表达式为：
 \begin{equation} 
   \label{eq:dft-10}
-E_C^{NL}=\int{d^{-1}\textrm{e}^{-\varphi}C[\rho]|\nabla\rho|^2\rho^{-4/3}\textrm{d}^3r}
+  E_C^{\mathrm{NL}}=\int{d^{-1}\textrm{e}^{-\varphi}C[\rho]|\nabla\rho|^2\rho^{-4/3}\textrm{d}^3r}
 \end{equation}
 其中$\varphi=1.745\times 0.11\times C[\infty]|\nabla\rho|/(C[\rho]\rho^{7/6})$，%\\%\linebreak
 
@@ -432,7 +450,7 @@ LYP相关能泛函是%利用})
 {在}Colle-Salvetti公式\cite{TCA37-329_1975}{的基础上}导出的，其具体形式为：
 \begin{equation}
   \begin{aligned}
-  E_C^{LYP}=&-a\int\dfrac{\gamma(\vec r)}{1+d\rho^{-1/3}}\biggl\{\rho+2b\rho^{-5/3}\biggl[2^{2/3}C_F\rho_{\alpha}^{8/3}+2^{2/3}C_F\rho_{\beta}^{8/3}-\rho t_w\biggr.\biggr.\\
+	  E_C^{\mathrm{LYP}}=&-a\int\dfrac{\gamma(\vec r)}{1+d\rho^{-1/3}}\biggl\{\rho+2b\rho^{-5/3}\biggl[2^{2/3}C_F\rho_{\alpha}^{8/3}+2^{2/3}C_F\rho_{\beta}^{8/3}-\rho t_w\biggr.\biggr.\\
   &+\left.\left.\dfrac19\left(\rho_{\alpha}t_w^{\alpha}+\rho_{\beta}t_w^{\beta}\right)+\dfrac1{18}\left(\rho_{\alpha}\nabla^2\rho_{\alpha}+\rho_{\beta}\nabla^2\rho_{\beta}\right)\right]\textrm{e}^{-c\rho^{-1/3}}\right\}\textrm{d}\vec r
   \end{aligned}
   \label{eq:dft-20}
@@ -445,7 +463,7 @@ LYP相关能泛函是%利用})
 在交换和相关能泛函中包含动能密度$\tau$，%则})
 计算结果可能会更合理一些。表达式中包含动能密度$\tau$为变量的泛函称为\textit{meta}-GGA泛函。动能密度的一般定义为
 \begin{equation}
-  \tau=\sum_i^{occ}|\nabla\Psi_i|^2
+	\tau=\sum_i^{\mathrm{occ}}|\nabla\Psi_i|^2
   \label{eq:dft-21}
 \end{equation}
 其中$\Psi_i$是含自旋的轨道。
@@ -466,20 +484,20 @@ van~Voorhis和Scuseria于1998年提出了基于密度矩阵展开理论\cite{PRC
 \begin{equation}
   \begin{aligned}
     E_C=&E_C^{\alpha\beta}+E_C^{\alpha\alpha}+E_C^{\beta\beta}\\
-    E_C^{\sigma\sigma'}=&\int f^{\sigma\sigma'}(x,z)e_{c\sigma\sigma'}^{LDA}\textrm{d}\vec r\\
+    E_C^{\sigma\sigma^{\prime}}=&\int f^{\sigma\sigma^{\prime}}(x,z)e_{c\sigma\sigma^{\prime}}^{\mathrm{LDA}}\textrm{d}\vec r\\
     E_C^{\sigma\sigma}=&\int f^{\sigma\sigma}(x_{\sigma},z_{\sigma})
-    D_{\sigma}e_{c\sigma\sigma}^{LDA}\textrm{d}\vec r
+    D_{\sigma}e_{c\sigma\sigma}^{\mathrm{LDA}}\textrm{d}\vec r
   \end{aligned}
   \label{eq:dft-23}
 \end{equation}
-其中$x^2=x_{\alpha}^2+x_{\beta}^2$，$z=z_{\alpha}+z_{\beta}$，{$e_C^{LDA}$为相关能密度，}$D_{\sigma}$是相同自旋自相互作用的校正系数，表达式为：
+其中$x^2=x_{\alpha}^2+x_{\beta}^2$，$z=z_{\alpha}+z_{\beta}$，{$e_C^{\mathrm{LDA}}$为相关能密度，}$D_{\sigma}$是相同自旋自相互作用的校正系数，表达式为：
 $$D_{\sigma}=1-\dfrac{x_{\sigma}^2}{4(z_{\sigma}+C_F)}$$
 
 1989年Becke和Roussel从类氢原子的密度矩阵表达式出发，提出%了})
 BR89交换能泛函\cite{PRA39-3761_1989}。
 交换势为：
-$$U_{X\sigma}=-4\pi\int_0^{\infty}\rho_X^H(a,b,s)s\textrm{d}s=-\left(1-\textrm{e}^{-x}-\frac12x\textrm{e}^{-x}\right)/b$$
-其中$\rho_X^H(a,b,s)$是类氢原子的交换孔函数，%$x$})
+$$U_{X\sigma}=-4\pi\int_0^{\infty}\rho_X^{\mathrm{H}}(a,b,s)s\textrm{d}s=-\left(1-\textrm{e}^{-x}-\frac12x\textrm{e}^{-x}\right)/b$$
+其中$\rho_X^{\mathrm{H}}(a,b,s)$是类氢原子的交换孔函数，%$x$})
 {$x=ab$}，由{逐点求解}超越方程
 $$\dfrac{x\textrm{e}^{-2/3}}{x-2}=\dfrac23\pi^{2/3}\dfrac{\rho_{\sigma}^{5/3}}{Q_{\sigma}}$$
 %逐点求解})
@@ -490,20 +508,20 @@ $$\dfrac{x\textrm{e}^{-2/3}}{x-2}=\dfrac23\pi^{2/3}\dfrac{\rho_{\sigma}^{5/3}}{Q
 
 对于分子体系，交换孔函数比较离域，BR89模型往往高估交换能密度，Becke用LDA动能与精确动能密度的比值为参数，提出了B00修正模型\cite{JCP112-4020_2000}。修正后的交换能泛函形式为：
 \begin{equation}
-  E_{X\sigma}^{BR89}=\int e_{X\sigma}^{BR89}[1+f_{X\sigma}(t_{\sigma})
+	E_{X\sigma}^{\mathrm{BR89}}=\int e_{X\sigma}^{\mathrm{BR89}}[1+f_{X\sigma}(t_{\sigma})
   ]\textrm{d}\vec r
   \label{eq:dft-24}
 \end{equation}
-其中$f_{X\sigma}$是校正函数，$e_{X\sigma}^{BR89}$是BR89模型中的交换能密度。$f_{X\sigma}(t_{\sigma})=a_t(\omega_{\sigma}-2\omega_{\sigma}^3+\omega_{\sigma}^5)$，$\omega_{\sigma}=\dfrac{t_{\sigma}-1}{t_{\sigma}+1}$，$t_{\sigma}=\dfrac{\tau_{\sigma}^{LSDA}}{\tau_{\sigma}^{exact}}$，式中$a_t$为经验参数。
+其中$f_{X\sigma}$是校正函数，$e_{X\sigma}^{\mathrm{BR89}}$是BR89模型中的交换能密度。$f_{X\sigma}(t_{\sigma})=a_t(\omega_{\sigma}-2\omega_{\sigma}^3+\omega_{\sigma}^5)$，$\omega_{\sigma}=\dfrac{t_{\sigma}-1}{t_{\sigma}+1}$，$t_{\sigma}=\dfrac{\tau_{\sigma}^{\mathrm{LSDA}}}{\tau_{\sigma}^{\mathrm{exact}}}$，式中$a_t$为经验参数。
 
 %若})
 加上{电子}相关{能}作用(采用Bc88相关能泛函\cite{JCP88-1053_1988})
 ，得到的交换-相关能{泛函的}表达式为：
 \begin{equation}
-  E_{XC}=E_X^{BR89}+c_{opp}E_{Copp}^{Bc88}+c_{par}E_{Cpar}^{Bc88}+a_{mix}\sum_{\sigma}\int e_x^{BR89}f_{x\sigma}(t_{\tau})\textrm{d}\vec r
+	E_{XC}=E_X^{\mathrm{BR89}}+c_{\mathrm{opp}}E_{C\mathrm{opp}}^{\mathrm{Bc88}}+c_{\mathrm{par}}E_{C\mathrm{par}}^{\mathrm{Bc88}}+a_{mix}\sum_{\sigma}\int e_x^{\mathrm{BR89}}f_{x\sigma}(t_{\tau})\textrm{d}\vec r
   \label{eq:dft-25}
 \end{equation}
-其中$E_{Copp}^{Bc88}$和$E_{Cpar}^{Bc88}$分别是自旋平行、反平行的相关能。拟合得到的参数$a_{mix}$的优选值为0.135。
+其中$E_{C\mathrm{opp}}^{\mathrm{Bc88}}$和$E_{C\mathrm{par}}^{\mathrm{Bc88}}$分别是自旋平行、反平行的相关能。拟合得到的参数$a_{mix}$的优选值为0.135。
 
 \subsection{{杂化(hybrid)}泛函}
 %还有})
@@ -516,7 +534,7 @@ $$\dfrac{x\textrm{e}^{-2/3}}{x-2}=\dfrac23\pi^{2/3}\dfrac{\rho_{\sigma}^{5/3}}{Q
 \cite{JCP104-1040_1996,JCP98-5648_1993}，其表达式%可以写})
 为：
 \begin{equation}
-E_{XC}^{hybrid}=\alpha E_X+(1-\alpha)\bar{E}_X+\bar{E}_C
+	E_{XC}^{\mathrm{hybrid}}=\alpha E_X+(1-\alpha)\bar{E}_X+\bar{E}_C
  \label{eq:dft-11}
 \end{equation}
 其中$E_X$是Hartree-Fock%的相关})
@@ -526,7 +544,7 @@ E_{XC}^{hybrid}=\alpha E_X+(1-\alpha)\bar{E}_X+\bar{E}_C
 {的}表达式%可以写成})
 {为}：
 \begin{equation}
-  E_{XC}^{HH}=\dfrac12E_{X}^{HF}+\dfrac12E_{XC}^{LSDA}
+	E_{XC}^{\mathrm{HH}}=\dfrac12E_{X}^{\mathrm{HF}}+\dfrac12E_{XC}^{LSDA}
   \label{eq:dft-26}
 \end{equation}
 
@@ -539,10 +557,10 @@ E_{XC}^{hybrid}=\alpha E_X+(1-\alpha)\bar{E}_X+\bar{E}_C
 当$\lambda$=0时对应于无相互作用参考体系；而当$\lambda$=1时对应%着})
 真实体系。当$\lambda$连续地从0变化到1时，无相互作用参考体系绝热地过渡到真实体系。利用一级微扰理论\cite{JCP88-1053_1988}，可以得到交换-相关能%地})
 {的}表达式为：
-$$E_{XC}=\dfrac12\int\rho(\vec r)d\vec r\int\dfrac{\bar h_{xc}(\vec r,\vec r\,')}{|\vec r-\vec r\,'|}\textrm{d}\vec r\,'$$
-其中$$\bar h_{xc}(\vec r,\vec r\,')=\int_0^1h_{xc}^{\lambda}(\vec r,\vec r\,')\textrm{d}\lambda$$
-$h_{xc}^{\lambda}(\vec r,\vec r\,')$是与$\hat H_{\lambda}$相应的交换-相关孔函数。令
-$$U_{XC}^{\lambda}=\dfrac12\int\rho(\vec r)d\vec r\int\dfrac{h_{xc}^{\lambda}(\vec r,\vec r\,')}{|\vec r-\vec r\,'|}\textrm{d}\vec r\,'$$
+$$E_{XC}=\dfrac12\int\rho(\vec r)d\vec r\int\dfrac{\bar h_{xc}(\vec r,\vec r\,^{\prime})}{|\vec r-\vec r\,^{\prime}|}\textrm{d}\vec r\,^{\prime}$$
+其中$$\bar h_{xc}(\vec r,\vec r\,^{\prime})=\int_0^1h_{xc}^{\lambda}(\vec r,\vec r\,^{\prime})\textrm{d}\lambda$$
+$h_{xc}^{\lambda}(\vec r,\vec r\,^{\prime})$是与$\hat H_{\lambda}$相应的交换-相关孔函数。令
+$$U_{XC}^{\lambda}=\dfrac12\int\rho(\vec r)d\vec r\int\dfrac{h_{xc}^{\lambda}(\vec r,\vec r\,^{\prime})}{|\vec r-\vec r\,^{\prime}|}\textrm{d}\vec r\,^{\prime}$$
 于是有$$E_{XC}=\int_0^1U_{XC}^{\lambda}\textrm{d}\lambda$$
 如果%选用最})
 简单%的})
@@ -554,7 +572,7 @@ $$E_{XC}=\dfrac12U_{XC}^0+\dfrac12U_{XC}^1=\dfrac12E_X^{HF}+\dfrac12U_{XC}^1$$
 {其它}杂化型泛函的理论基础。
 
 属于这一类的泛函还有B3P\cite{JCP98-5648_1993}、B3LYP\cite{JPC98-11623_1994}、B1B95\cite{JCP104-1040_1995}、B97\cite{JCP107-8554_1997}、B98\cite{JCP109-2092_1998}、PBE0\cite{JCP110-6158_1999}~等。其中最流行的B3LYP泛函的具体形式为：
-$$E_{XC}^{B3LYP}=(1-a)E_X^{LSDA}+aE_X^{HF}+bE_X^{B88}+cE_C^{LYP}+(1-c)E_C^{LSDA}$$
+$$E_{XC}^{\mathrm{B3LYP}}=(1-a)E_X^{\mathrm{LSDA}}+aE_X^{\mathrm{HF}}+bE_X^{\mathrm{B88}}+cE_C^{\mathrm{LYP}}+(1-c)E_C^{\mathrm{LSDA}}$$
 其中$a$，$b$，$c$%均})
 为参数。
 
