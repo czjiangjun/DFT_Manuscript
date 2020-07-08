@@ -1,0 +1,116 @@
+\chapter{高通量计算软件概述}\label{chap:Software} 
+20世纪90年代以来，伴随着计算物理、量子化学方法的高速发展以及计算机软硬件技术的不断进步，计算材料科学获得了空前发展，与物理、化学、工程力学以及应用数学等诸多基础和应用学科交叉日益紧密，逐渐成为一门新兴的独立学科，并在材料学研究中发挥越来越重要的作用。\cite{Nat-Mat3-429_2004,App-CataA5-254_2003,JACS125-4306_2003,JCC5-472_2003,Mater_Sci-Tech16-1_2005,Nature392-694_1998}特别值得注意的是，近年来，得益于高精度的多尺度计算方法和高性能并行计算技术的突破，\cite{PRL88-255506_2002,Nano-Lett3-1183_2003}高通量材料计算在创新发展新材料、发现新现象方面具有巨大的潜能。
+
+\section{材料基因组的基本思想}
+进入21世纪，欧洲、日本、美国等发达国家先后启动了以多尺度模拟、研发和科学设计为手段，提升材料设计成功率，缩短材料开发周期为目的的多种类型的国家级科研专项，其中以美国的“材料基因组计划\textrm{(Materials Genome Initiative， MGI)}”最为著名\cite{MGI_USA}。该计划的根本目的是通过增效集成各个尺度的材料模拟工具、高效实验手段和数据库，把材料研发从传统 经验式提升到科学设计，从而大大加快材料研发速度。我国也于2016年起启动国家重点研 发计划“材料基因工程关键技术与支撑平台”。 实现材料物性设计与模拟计算的高通量自动运行是“材料基因组”计划的核心内涵之一， 已在能源材料预测\cite{PRL108-068701_2012}、拓扑绝缘体发现\cite{RMP82-3045_2010}、热电材料\cite{JACS128-12140_2006}、催化材料\cite{ACIE46-6016_2007}、轻质镁合金研究\cite{PRB84-084101_2011}、超导材料\cite{PRL105-217003_2010}、磁性材料\cite{Nat-Mat10-158_2011,JPD40-R337_2007}，复杂多组元化合物表面设计\cite{Science316-732_2007,ACSNano5-247_2011}，对二元或三元化合物结构稳定性判断\cite{PRB85-144116_2012}，以及高强高温合金等体系中有广泛的成功应用和尝试。在这些新材料的设计和优化过程中，还构建了一大批开放型材料物性数据库。 实现材料组分优化和模拟过程的高通量和自动化，可以有效地加速材料设计、优选过程。
+
+目前国际上知名的高通量材料计算自动流程软件主要有:~\textrm{Automatic Flow(AFLOW)}\cite{CMS49-299_2010}，\textrm{Materials Project(MP)}\cite{CMS50-2295_2011}，\textrm{Quantum Materials Informatics Project (QMIP)}\cite{QMIP_URL}，\textrm{Clean Energy Project (CEP)}\cite{JPCL2-2241_2011}，\textrm{Atomic Simulation Environment (ASE)}\cite{JPCM29-273002_2017}以及我国中科院计算机网络信息中心杨小渝等开发的\textrm{Matcloud}\cite{CMS146-319_2018}等。这些软件主要通过集成密度泛函理论\textrm{(DFT)}为基础的第一原理和分子动力学程序，如\textrm{VASP}\cite{VASP_manual}、\textrm{Quantum ESPRESSO (QE)}\cite{JPCM21-395502_2009}、\textrm{ABINIT}\cite{CPC180-2582_2009}、\textrm{Gaussian}\cite{Gaussian-UG_2004}、\textrm{LAMMPS}\cite{JCP117-1_1995}等，完成材料的微观电子结构和相关物性计算。与传统的材料计算不同，高通 量自动流程的最终目标是建立系统的材料数据库，高通量计算的结果在自动流程的终端将存 储到对应的材料数据库中。
+
+\section{主要高通量材料计算自动流程软件与实现}
+材料计算的自动流程是对传统材料计算与模拟过程的计算机自动化与程序化，高通量主要针对材料研究的复杂性。目前的高通量材料计算以支持第一原理\textrm{DFT}计算为主，少数可支持跨尺度/多尺度\textrm{(DFT-MD)}计算。考虑到材料计算过程的一般特点不难发现，自动流程主体结构主要包括: 
+\begin{enumerate}
+	\item 结构建模、计算流程参数控制 
+	\item 计算任务生成与提交，计算进程监控 
+	\item 结果数据分析、可视化与数据库管理 
+\end{enumerate}
+不同软件的主要区别在于，程序主体结构实现采用的编程语言和支持框架不同，主体结构之间的耦合程度不同。以下将简要介绍各种高通量材料模拟自动流程软件的结构和程序实现。
+
+\subsection{\rm{AFLOW}}
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.4in,width=3.2in,viewport=0 0 720 660,clip]{AFLOW_database.png}%}
+%\includegraphics[height=1.2in,width=1.7in,viewport=0 0 670 530,clip]{MP_comp_infrastructure.png}%}
+%\includegraphics[height=1.2in,width=1.7in,viewport=0 0 670 420,clip]{QMIP_shame.png}%}
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 1020 730,clip]{CEP_structure_flow.png}%}
+\caption{\textrm{AFLOW}的执行界面.}%
+\label{Auto_Flow_Platform-1}
+\end{figure}
+\textrm{AFLOW}是由美国\textrm{Duke}大学材料系~\textrm{S. Curtarolo}~等开发的高通量计算流程框架\cite{CMS49-299_2010,Nat-Mater12-191_2013}，主要用\textrm{C++}编写，代码量超过\textrm{150，000}行。\textrm{AFLOW}主要用于无机材料、无机化合物、合金材 料设计等研究领域。AFLOW 转变了具体物性专门计算的传统模式，设定自动流程完成材料 物性系统计算。\textrm{AFLOW}框架中集成的第一原理计算程序包为\textrm{VASP}。除此之外，\textrm{AFLOW}主体程序分为两部分，前处理部分主要是计算对象的结构文件转换和对称性分析模块，后处理程序\textrm{APENNSY}是数据分析与可视化模块。这些功能模块结构清晰，既可以整合使用，也可拆分独立工作，非常灵活。\textrm{AFLOW}的最重要的特点是其巨大的数据库\textrm{AFLOWLIB}，已存有超过~625,000~种材料的结构和物性信息，涵盖二元合金数据库、电子结构数据库、\textrm{Heusler}金属间化合物数据库和元素数据库等。同时\textrm{AFLOWLIB}也成为高通量自动流程的重要支撑，提升了软件的建模和分析能力。
+
+\subsection{\rm{MP}}
+\textrm{MP}最初是美国\textrm{MIT}材料科学与工程系\textrm{G. Ceder}等为加速$\mathrm{Li}^+$、$\mathrm{Na}^+$电池研发进程而开发的无机材料化合物的物性数据库生成工具\cite{ECC12-427_2010,JECS158-A309_2011,CMS97-209_2015}。目前 其数据库已经建立涵盖~80,000~多种无机化合物的物性。 
+
+\textrm{MP}是用\textrm{Python}开发的，具有很好的可移植性、通用性和扩展性。主要功能模块包括: 前后处理模块\textrm{Python Materials Genomics (Pymatgen)}\cite{CMS68-314_2013}、进程管理模块\textrm{FireWorks}和自纠错模块\textrm{Custodian}。与\textrm{AFLOW}不同， \textrm{MP}通过\textrm{FireWorks}将高通量计算全部流程也纳入\textrm{MongoDB}数据库统一管理，相比于传统的流程控制模式要灵活、方便得多。此外，\textrm{MP}中的\textrm{Custodian}模块提供了软件的容错机制，允许用户定义简单的自动判断和纠错规则。
+\begin{figure}[h!]
+\centering
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 720 660,clip]{AFLOW_database.png}%}
+\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 530,clip]{MP_comp_infrastructure.png}%}
+%\includegraphics[height=1.2in,width=1.7in,viewport=0 0 670 420,clip]{QMIP_shame.png}%}
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 1020 730,clip]{CEP_structure_flow.png}%}
+\caption{\textrm{Materials Project (MP)}的基本构架(引自文献\inlinecite{CMS97-209_2015}).}%
+\label{Auto_Flow_Platform-2}
+\end{figure}
+
+\subsection{\rm{QMIP}}
+\textrm{QMIP}是丹麦技术大学、美国\textrm{Argonne}国家实验室和\textrm{Stanford}大学合作开发中的高通量催化材料数据库生成工具\cite{QMIP_URL}。\textrm{QMIP}主要由\textrm{Computational Materials Repository (CMR)}和\textrm{CatApp}两大功能模块构成。其中\textrm{CMR}由丹麦技术大学用\textrm{Python}开发的催化材料计算与数据库高通量计算与管理模块\cite{CMR_URL}，主要计算钙钛矿吸收谱及其能带电子性质。\textrm{CatApp}是\textrm{Stanford}大学化工系\textrm{J.~K.~N{\o}rskov}等开发应用于表面化学和非均相催化的网页版高通量应用程序\cite{ACIE51-272_2012}，主要用于高通量框架下表面化学反应活化能数据计算，用\textrm{Javascript}、\textrm{SVG}和\textrm{html}语言实现。\textrm{QMIP}的数据库是以催化材料为特色，目前计算并提供的各类异质结构催化数据库， 包括:\textrm{2D}材料(216)、\textrm{Van der Waals}异质结构(51)、有机金属卤化物钙钛矿(240)、基于卟啉染料(12,000+)、新型捕光材料(~2400)、裂解水钙钛矿材料(~19,000)、低对称钙钛矿(300)等; 此外还提供了可供各种不同计算软件和方法的“标定结果”，这是其他高通量计算软件不具备的特色，标定对象包括\textrm{DFT}软件(如\textrm{FHI-aims}\cite{CPC180-2175_2009}、VASP、QE、ATK、ABINIT、CASTEP\cite{ZFK220-567_2005}、GPAW\cite{JPCM22-253202_2010}等)、局域和杂化泛对含对3\,\textit{d} 电子处理效果、原子\textrm{O}和\textrm{C}在~\textit{fcc}~结构的[111]面上的 吸附能、高通量计算的赝势等。目前\textrm{QMIP}的数据库容量还比较小，仍在开发和扩充中。
+\begin{figure}[h!]
+\centering
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 720 660,clip]{AFLOW_database.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 530,clip]{MP_comp_infrastructure.png}%}
+\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 420,clip]{QMIP_shame.png}%}
+%\includegraphics[height=1.2in,width=1.6in,viegwport=0 0 1020 730,clip]{CEP_structure_flow.png}%}
+\caption{\textrm{QMIP}的基本构架.}%
+\label{Auto_Flow_Platform-3}
+\end{figure}
+
+\subsection{\rm{CEP}}
+\textrm{CEP}是\textrm{Harvard}大学化学与化学生物系\textrm{Al{\'a}n Aspuru-Guzik}等最初为寻找高效有机光电材料设计的高通量计算化学软件\cite{JPCL2-2241_2011}，是用\textrm{Python}开发的，其软件结构见。
+目前广泛应 用于多种有机高分子材料的研发应用，如筛选有机太阳能电池、有机半导体、燃料电池中的高分子膜材料等。\textrm{CEP}的计算方案中，结合了传统材料模拟方案和现代药物研发模式，通过集成\textrm{MOPAC}\cite{JCAMD4-1-1990}， \textrm{Q-Chem}\cite{PCCP8-3172_2006}系统计算并建立了覆盖$\sim1,000,000$种电子结构的候选光电材料数据库(\textrm{MySOL}，\textrm{Django}形式)；在此基础上，\taxtrm{CEP}希望借助化学信息学和数据挖掘技术，更高效、快速地筛选合适的光电材料。化学信息学辅助的机器学习是\textrm{CEP}的显著技术特色。 但\textrm{CEP}的大部分功能模块都只是部分完成或还在研发中，其代码也未开源，因此\textrm{CEP}的完善程度不如其他几类软件平台，目前主要在完成数据库的积累。 
+
+\begin{figure}[h!]
+\centering
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 720 660,clip]{AFLOW_database.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 530,clip]{MP_comp_infrastructure.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 420,clip]{QMIP_shame.png}%}
+\includegraphics[height=2.4in,width=3.2in,viewport=0 0 1020 730,clip]{CEP_structure_flow.png}%}
+\caption{\textrm{Clean Energy Project (CEP)}的结构与流程图.(引自文献\inlinecite{JPCL2-2241_2011})}
+\label{Auto_Flow_Platform-4}
+\end{figure}
+
+\subsection{\rm{ASE}}
+\textrm{ASE}是由丹麦技术大学物理系\textrm{K.~W.~Jacobsen}等 用\textrm{Python}开发的多尺度计算自动流程框架 。与上述自动流程相比，\textrm{ASE}的功能模块最大的优势是计算模块提供了足够多的软件接口，可以支持第一原理-分子动力学跨尺度计算; \textrm{ASE}支持的结构建模与分析模块，允许 用户根据需要任意地组装原子、分子、界面和块体等多相结构，大大提升了软件对建模的自主性和灵便性的支持。另一方面，\textrm{ASE}对多任务作业的支持和管理比\textrm{AFLOW}和\textrm{MP}要差得多，主要依赖\textrm{Python}对脚本和接口软件的支持。
+
+\subsection{\rm{MatCloud}}
+\textrm{MatCloud}是由中国科学院计算机网络信息中心材料基因实验室杨小渝等开发的，可使用\textrm{VASP}开展计算的高通量计算和数据管理平台\cite{CMS146-319_2018}，前端用户界面采用\textrm{JavaScript}开发，作业生成、运行与管理采用\textrm{.NETCore}框架开发，后台数据管理采用\textrm{MogonDB}。相比于国外的各 类高通量自动流程软件，\textrm{MatCloud}的数据集成度高。\textrm{MatCloud}的界面友好，方便使用和作业提交，数据管理和集成的机器学习功能也有一定的特色，但目前提供的核心软件接口只包含\textrm{VASP}且场景化应用程度并不强。
+
+各种高通量材料计算自动流程软件功能的对比列于表\ref{Table-Cost}。
+\begin{table}[!h]
+\tabcolsep 0pt \vspace*{-5pt}
+\begin{minipage}{\0.88\textwidth}
+%\begin{center}
+\centering
+\caption{各种高通量材料计算自动流程软件概况}\label{Table-Cost}
+\def\temptablewidth{0.85\textwidth}
+\renewcommand\arraystretch{0.8} %表格宽度控制(普通表格宽度的两倍)
+\rule{\temptablewidth}{1pt}
+\begin{tabular*} {\temptablewidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c}
+%-------------------------------------------------------------------------------------------------------------------------
+	&\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{编程语言}}	&\fontsize{9.2pt}{7.2pt}\selectfont{建模} &\multicolumn{2}{|c|}{\fontsize{9.2pt}{7.2pt}\selectfont{任务提交与管理}} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{后处理}} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{数据组织管理}} \\\cline{4-5}
+	&	&\fontsize{9.2pt}{7.2pt}\selectfont{功能} &\multicolumn{1}{|c|}{\fontsize{9.2pt}{7.2pt}\selectfont{~~软件接口~~}} &\multicolumn{1}{c|}{\fontsize{9.2pt}{7.2pt}\selectfont{运行容错~~~}} & & \\\hline
+	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{AFLOW}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{C++}} &\checkmark &\triangle &\FiveStarOpen &\FiveStarOpen &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{Django}}} \\
+	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MP}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\checkmark &\checkmark &\FiveStarOpen &\FiveStarOpen &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MongoDB}}} \\
+	\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{QMIP}}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{JavaScript/SVG}} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{--} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{--} \\
+	&\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{+html/Python}} & & & & & \\
+	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{CEP}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\checkmark &\checkmark &-- &\checkmark &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{Django/MySQL}}} \\
+	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{ASE}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\FiveStarOpen &\FiveStarOpen &-- &\triangle &-- \\
+	\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MatCloud}}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{JavaScript}} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\triangle} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MongoDB}}}} \\
+	&\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{+.NETCore}} & & & & &
+\end{tabular*}
+\rule{\temptablewidth}{1pt}
+\fontsize{8.2pt}{5.2pt}\selectfont{
+\begin{description}
+	\item[\FiveStarOpen]~表示该功能较突出
+	\item[\checkmark]~表示该功能基本满足需求
+	\item[\triangle]~表示该功能存在不足
+\end{description}}
+\end{minipage}
+%\end{center}
+\end{table}
+\begin{figure}[h!]
+\centering
+\vskip -12pt
+\includegraphics[height=2.18in]{Figures/MP_comp_BCC.png}
+%\caption{\fontsize{6.5pt}{4.2pt}\selectfont{适应多体相互作用的高通量计算流程结构示意}}%
+\label{MP_comp_BCC}
+\end{figure}
+
