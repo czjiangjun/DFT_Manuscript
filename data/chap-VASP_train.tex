@@ -625,7 +625,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_surface-adsorption-POSCAR}
 \end{figure}
 
-这里，总的原子数变成46个:~原有的45个\textrm{Pt}原子的薄层模型加上一个吸附的\textrm{O}原子。\textrm{O}原子坐标~(0.55555,~0.55555,~0,37593)~加在文件最后一行，这是\textrm{FCC}结构的间隙位，在空间中与三个\textrm{Pt}原子近邻。\textrm{O}原子的$z$-轴坐标根据文献报道的\textrm{Pt-O}距离确定的。\textrm{KPOINTS}文件与之前\textrm{Pt~(111)}表面计算相同。
+这里，总的原子数变成46个:~原有的45个\textrm{Pt}原子的薄层模型加上一个吸附的\textrm{O}原子。\textrm{O}原子坐标~(0.55555,~0.55555,~0.37593)~加在文件最后一行，这是\textrm{FCC}结构的间隙位，在空间中与三个\textrm{Pt}原子近邻。\textrm{O}原子的$z$-轴坐标根据文献报道的\textrm{Pt-O}距离确定的。\textrm{KPOINTS}文件与之前\textrm{Pt~(111)}表面计算相同。
 \subsubsection{\rm{POTCAR}}
 表面吸附计算需要的\textrm{POTCAR}文件由\textrm{Pt}和\textrm{O}各自的\textrm{POTCAR}文件拼接而成，命令如下:~\\
 \textcolor{magenta}{\textrm{cat~ POTCAR-Pt~ POTCAR-O ~ > ~POTCAR}}\\
@@ -698,25 +698,34 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \textrm{KPOINTS}文件、\textrm{POSCAR}和\textrm{POTCAR}与前述表面吸附算例\textrm{Pt~(111)-O}中的相同。
 
 \subsubsection{计算结果}
-首先用命令查找\textbf{OUTCAR}中的\textrm{Fermi}能级:~\\
-\textrm{grep ~ fermi ~ OUTCAR}\\
-计算中新产生的输出文件\textbf{LOCPOT}与\textbf{CHGCAR}文件的保存格式相同，但存储的内容是三维空间中的表面平均换的局域静电势\textrm{(the planar-averaged local-electrostatic potential)}，但不包含交换-相关势。
+首先用命令查找\textrm{OUTCAR}中的\textrm{Fermi}能级的数值:~\\
+\textcolor{magenta}{\textrm{grep ~ fermi ~ OUTCAR}}\\
+结果如图\ref{Pt_surface-workfunction-LOCPOT}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.1in,viewport=0 20 340 118,clip]{Pt_surface-workfunction-LOCPOT.png}
+\vskip -20pt
+\includegraphics[height=0.3in,viewport=0 20 460 50,clip]{Pt_surface-workfunction-Fermi.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{计算\textrm{Pt}表面功函数时\textrm{LOCPOT}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{计算\textrm{Pt}表面功函数时\textrm{Fermi}能级的数值.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Pt_surface-workfunction-LOCPOT}
+\end{figure}
+计算中产生新的输出文件\textrm{LOCPOT}与\textrm{CHGCAR}文件的保存格式相同，存储的内容是三维空间中的表面平均化的局域静电势\textrm{(the planar-averaged local-electrostatic potential)}，但不包含交换-相关势。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.1in,viewport=0 10 480 250,clip]{Pt_surface-workfunction-LOCPOT.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{计算\textrm{Pt}表面功函数时\textrm{LOCPOT}文件的内容.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_surface-workfunction-LOCPOT}
 \end{figure}
 
-找到$z$-方向的势函数数据，并用合适的脚本，比如\textrm{Python}脚本\textcolor{blue}{\textrm{locpot\_workfunc.py}}\footnote{软件由韩国汉城大学\textrm{Jinwoo,Park,Lanhee Yang}开发\cite{Park-Yang}}转成$\ast\mathrm{.dat}$格式的文件，运行命令为:\\
-\textrm{python ~ locpot.py ~ LOCPOT ~ -0.3174}\\
-按照一般的喜欢，\textrm{Fermi}能级-0.3174将会被设为0，脚本输出文件\textrm{output.dat}将被用于绘制功函数图(如图\ref{Pt_surface-workfunction}所示)。功函数图表明，\textrm{Pt~(111)}层沿$z$-轴方向的相对位置，\textrm{Fermi}能级位置，功函数为\textrm{5.8}\textrm{eV}。
+找到$z$-方向的势函数数据，并用合适的脚本，比如\textrm{Python}脚本如\textcolor{blue}{\textrm{locpot\_workfunc.py}}\footnote{该软件由韩国汉城大学\textrm{Jinwoo,Park,Lanhee Yang}开发\cite{Park-Yang}}转成$\ast\mathrm{.dat}$格式的文件，运行命令为:\\
+\textcolor{blue}{\textrm{python ~ locpot.py ~ LOCPOT ~ -0.3174}}\\
+按照一般的习惯，\textrm{Fermi}能级~--0.3174~将会被设为0，脚本执行后的输出文件\textrm{output.dat}将被用于绘制功函数图(如图\ref{Pt_surface-workfunction}所示)。功函数图表明，\textrm{Pt~(111)}层沿$z$-轴方向的相对位置，\textrm{Fermi}能级位置，功函数为\textrm{5.8}\textrm{~eV}。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.1in,viewport=0 20 340 118,clip]{Pt_surface-workfunction.png}
+\includegraphics[height=3.1in,viewport=0 0 760 550,clip]{Pt_surface-workfunction.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{计算\textrm{Pt}表面功函数时\textrm{LOCPOT}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{计算\textrm{Pt~(111)}表面吸附\textrm{O}原子后的势函数和功函数，\textrm{Fermi}能已经置零.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_surface-workfunction}
 \end{figure}
 
@@ -724,7 +733,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 根据我们的经验，在两个地点间行走时，一般都可以有无数路径。为及时赶到，一般会选择最短的路径，如果想体验行走的乐趣，就可以选择最长的的路线。原子(或其他物质)并没有意识，不会自行选择最短或最长的路线，但是原子在力驱使下，一定会沿着能量最低的路径行走，如图所示。就像俗话说的“水往低处流”。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.1in,viewport=0 20 340 118,clip]{Pt_NEB-move.png}
+\includegraphics[height=2.8in,viewport=0 0 630 420,clip]{Pt_NEB-move.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{两点之间人和原子运动的示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-move}
@@ -733,21 +742,21 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 材料学研究中的一个基本问题是，体系如何从一个稳定态变化到另一个稳定态，也就是要确定最小能量路径\textrm{(the minimum energy path, MEP)}。本次练习中，根据微动弹性带\textrm{(Nudged elastic band, NEB)~}方法\cite{JCP113-9978_2000,JCP113-9901_2000,JCC32-1769_2011}来确定最小能量路径，并确定相应的反应势垒。
 \subsection{\rm{NEB}的基本原理}
 如图所示的势能面，始态和终态分别对应势能面上的两个局域极小值。有两个典型的连线可以将这两个态关联起来:~一个是直线连接，另一个是最小能量曲线。由箭头所示，我们将从直线出发，尽可能快速高效地找到最小能量曲线。
-\subsection{\rm{NEB}方法的过程}
+\subsection{NEB方法的计算过程}
 \subsubsection{始和终态}
 首先，一般在电子和离子弛豫的时候，都需要确定始态\textrm{(the initial state)}和终态\textrm{(the finial state)}。在化学反应过程中，这两种构型的能量都应该是位于极小位置，各原子受力(即能量的一阶导数)也都是零。
-\subsubsection{初始能量路线}
+\subsubsection{\rm{初始能量路线}}
 既然最小能量路径是始态向终态变化的某一条能量路线(也称为反应路线)，我们首先用直线能量路径把两个态连接起来，以此作为尝试的能量路线，并在能量路线上等距离地选择一些点(作为假想态，\textrm{images})，如图所示。注意每个假想态表示的是反应过程中的一个特定的中间构型。所需假想态的数目依赖于能量路径的复杂性，即能量路径曲率，对于绝大部分材料，三到七个假想态已经足够。对始态和终态之间的假想态，将其原子位置简单外推，可能得到与最小能量路径中原子构型偏差交大的原子构型。显然，这样构型的原子承受到极大的外力，收敛会很困难，因此需要一些手工的调整使得假想态接近最小能量路径中的原子构型。
-\subsubsection{推拉能量路径}
+\subsubsection{\rm{推拉能量路径}}
 将初始能量路径中的原子构型一点点地朝原子零受力构型方向轻微移动(类似于向一个弹性带子施以推力或拉力)，就有可能搜索到最小能量路径。为了很好地控制能量路径的移动，假设对能量路径上的等间距分布的假想态施加沿特定方向的弹性应力，确保能量路径连续地朝最小能带路径方向过渡。\textcolor{red}{一旦开始搜索能量路径过程，类比的弹性带的微动就是反应过程中的原子构型势能面的确定过程}，直到每个假想态都达到最小受力构型，如图\ref{Pt_NEB}所示。假想态就类似于穿越沙丘的骆驼队:~每头骆驼都用缰绳彼此串在一起，保证每头骆驼都不会脱离驼队。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB.png}
+\includegraphics[height=3.5in,viewport=0 0 770 530,clip]{Pt_NEB.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{NEB}方法的基本原理:~起始时将三个假想态用直线能量路径(虚线)串联，然后向最小能带路径(实线)微动，该最小能量路径将通过各势垒的鞍点.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB}
 \end{figure}
-\subsubsection{受力计算}
+\subsubsection{\rm{受力计算}}
 \textrm{NEB}方法采用受力投影(不是能量投影)，目的是确保假想态的连线通过鞍点\textrm{(the saddle points)}，达到最小能量路线。初始能连连线上的每个假想态的原子受力移动的力是弹簧力和原子间力。为了将初始能量路线直接推向最小能量路线，只考虑沿能量路线(该点切线)的弹性力投影和垂直能量路线的原子间作用力投影的贡献。忽略其余力的贡献，直线能量路线将会向最小能量路线移动。一般通过\textrm{DFT}计算得到每个微动过程中的原子构型的电子态极小值，并计算每个原子上的受力以确定减小受力的微动方向。重复上述过程，直到每个原子上的受力都小于预设的接近零的小值，得到的能量路线就认为是最小能量路线。由于上述微动是根据受力推测的。原子构型的结构弛豫算法采用\textrm{damped MD}算法(\textit{IBRION}=3)。
 \subsubsection{\rm{CI-NEB}}
 \textrm{CI-NEB}方法是为了确保有一个假想态正好位于鞍点而提出来的。为了让最高能量的假想态爬上鞍点，经过几次沿切线能量路线切线的微动后，其真实受力将被反向(例如在原来受力方向的反向加两倍的力)，于是，出现爬坡的假想态，其能量将会对应沿能量路线上的极大值，同时又是垂直能量路线方向的极小值(即鞍点)。
@@ -755,29 +764,29 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 以下算例说明如何用\textrm{NEB}方法确定最小能量路径并计算\textrm{Pt~(111)}面上吸附的\textrm{O}原子由\textrm{HCP}间隙位(如图\ref{Pt_NEB-init-POSCAR}所示)扩散到近邻的\textrm{FCC}间隙位的表面扩散势垒能量。结果如图\ref{Pt_NEB-config}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-init-POSCAR.png}
+\includegraphics[height=4.1in,viewport=0 5 470 500,clip]{Pt_NEB-init-POSCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Fig:VASP_procedure}
+\caption{\small \textrm{\textrm{Pt~(111)}表面\textrm{HCP}间隙位吸附\textrm{O}原子时的\textrm{POSCAR}结构文件}.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Pt_NEB-init-POSCAR}
 \end{figure}
 \subsubsection{\rm{Pt~(111)-slab-O-HCP}}
 采用\textrm{NEB}方法计算，首先要确定始态和终态构型的极小值。在\ref{subsec:}我们已经确定表面吸附终态\textrm{Pt~(111)-slab-O-FCC}的构型。这里，我们将用相同的方法确定始态\textrm{Pt~(111)-slab-O-HCP}的构型及能量，只是这里的\textbf{POSCAR}文件中要把\textrm{O}原子放在\textrm{HCP}的间隙位置。如图所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-config.png}
+\includegraphics[height=2.8in,viewport=0 10 1040 530,clip]{Pt_NEB-config.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与 文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{\textrm{O}原子(浅灰色球)在\textrm{Pt~(111)}的\textrm{HCP}间隙位(a)经过中间态(b)扩散到最近临的\textrm{FCC}间隙位(c)时的原子构型变化}.}%(与 文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-config}
 \end{figure} 
 
-计算结果表明 收敛的基态能量是-266.87\textrm{eV/system}和\textrm{NEB}计算需要的输出文件，如\textbf{CONTCAR}和\textbf{OUTCAR}，可以确定始态能量极小值时的构型和原子位置。
+计算结果表明，收敛的基态能量是~--266.87\textrm{~eV/system}和\textrm{NEB}计算需要的输出文件，如\textrm{CONTCAR}和\textrm{OUTCAR}，可以确定始态能量极小值时的构型和原子位置。
 \subsubsection{用\rm{VTST}脚本运行\rm{NEB}}
-\textrm{VTST}脚本\footnote{\textrm{VTST:~\url{http://theory.cm.utexas.edu/vtsttools/}}}是一个开源软件，提供有\textrm{VASP}的接口，可以方便地支持\textrm{VASP}开展\textrm{NEB}计算。下载\textrm{VTST}后，将源文件解压到\textrm{VASP}的源代码目录下，并用\textrm{make}命令编译全部$\ast.\mathrm{F}$文件(包括\textrm{neb.F}，\textrm{dynamt.F}等)得到新的可执行\textrm{NEB}版\textrm{VASP}。为了实现\textrm{NEB}计算，在\textbf{INCAR}文件中，除了修改必要的离子弛豫参数\textit{IBRON}=3外，额外增加3个参数\textit{IMAGES}=1，\textit{SPRING}=-5.0，\textit{LCLIMB}=\textrm{.TRUE.}。如图\ref{Pt_NEB-INCAR}所示。
+\textrm{VTST}脚本\footnote{\textrm{VTST:~\url{http://theory.cm.utexas.edu/vtsttools/}}}是一个开源软件，提供有\textrm{VASP}的接口，可以方便地支持\textrm{VASP}开展\textrm{NEB}计算。下载\textrm{VTST}后，将源文件解压到\textrm{VASP}的源代码目录下，并用\textrm{make}命令编译全部$\ast.\mathrm{F}$文件(包括\textrm{neb.F}，\textrm{dynamt.F}等)得到新的可执行\textrm{NEB}版\textrm{VASP}。为了实现\textrm{NEB}计算，在\textrm{INCAR}文件中，除了修改必要的离子弛豫参数\textit{IBRON}=3外，额外增加3个参数\textit{IMAGES}=1，\textit{SPRING}=-5.0，\textit{LCLIMB}=\textrm{.TRUE.}。如图\ref{Pt_NEB-INCAR}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-INCAR.png}
+\includegraphics[height=1.8in,viewport=0 0 700 200,clip]{Pt_NEB-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{VASP}计算\textrm{NEB}计算时需要新增的\textrm{INCAR}选项.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-INCAR}
 \end{figure}
 注意假想态的数目要与\textrm{CPU}的数目匹配，因为每个假想态要均衡地分配到\textrm{CPU}上去计算，以\textrm{CPU}数为8为例，假想态数目可选为1,2,4或8。脚本会在计算目录下新建目录，并将前述两类计算得到的\textbf{CONTCAR}文件复制到该目录下，并分别重命名为\textbf{CONTCAR1}(始态，\textrm{O}位于\textrm{HCP}间隙位)和\textbf{CONTCAR}(终态，\textrm{O}位于\textrm{FCC}间隙位)。由于本算例是简单的直接扩散，所以可以只用一个假想态，\textrm{VTST}将采用线性插值为中间假想态生成\textbf{POSCAR}文件。命令为:~\\
@@ -787,9 +796,9 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 这里第一个数是当前假想态中受力最大的原子，当每个假想态上的原子受力低于力标准(本算例为$<0.05\mathrm{eV/\AA}$)，即达到收敛。如果起始受力太大($>10\mathrm{eV/\AA}$)，就要调整为更合适的起始结构重新来计算。计算过程中，可以用脚本\textrm{vtstscript/nebef.pl}来监控，监控信息可写到文件$\mathbf{neb}\ast\mathbf{.dat}$中。例如，经过19次和30次的离子弛豫后的数据如图\ref{Pt_NEB-VTST-1}所示:
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-VTST-1.png}
+\includegraphics[height=2.5in,viewport=0 20 300 200,clip]{Pt_NEB-VTST-1.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{经过19次和30次离子弛豫后的数据.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-VTST-1}
 \end{figure}
 
@@ -800,29 +809,29 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \textcolor{red}{而脚本\textrm{nebresults.pl}则输出一系列的后处理数据文件。}
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-VTST-2.png}
+\includegraphics[height=1.0in,viewport=0 0 300 80,clip]{Pt_NEB-VTST-2.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{NEB}计算的反应坐标数据.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-VTST-2}
 \end{figure}
 
 图\ref{Pt_NEB-energydiff}表明原子从\textrm{Pt~(111)}的\textrm{HCP}的间隙位移动到\textrm{FCC}间隙位时，原子构型对相应基态总能差的曲线(即反应路径)。该反应路径中正向扩散势垒为0.155\textrm{eV}，反向扩散，即从\textrm{FCC}间隙位扩散到\textrm{HCP}间隙位，其势垒则为0.53\textrm{eV}，这和\textrm{Pang}等的计算值(0.5\textrm{eV})\cite{ASS257-3047_2011}吻合得很好，与实验值(0.43\textrm{eV})\cite{PRL77-123_1996}也比较一致。计算结果表明，中等强度的热扰动就可以将吸附在\textrm{Pt~(111)}面上\textrm{HCP}间隙位的\textrm{O}原子扩散到\textrm{FCC}间隙位上。本次练习的计算流程可以推广到双金属薄层\cite{PRL81-2819_1998}中的芯-壳纳米团簇体系的应力结构研究等相关理论计算中去。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-energydiff.png}
+\includegraphics[height=3.5in,viewport=0 0 790 640,clip]{Pt_NEB-energydiff.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{CI-NEB}方法计算的反应势垒.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-energydiff}
 \end{figure}
 
-\section{\rm{Pt~(111)催化剂}}
+\section{Pt~(111)催化剂计算}
 \subsection{催化剂}
 催化剂是能够改变化学反应进程(一般是加快，也有少数是减缓)，但在反应前、后不改变组分的物质。如图\ref{Pt_NEB-reaction}所示，对于一个给定化学反应，由于催化剂的存在，降低了活化能，为反应过程提供了新的反应通道，但反应的自由能($\Delta G$)不变，也就是说，催化剂的存在并不改变化学反应的热力学过程。图示的催化剂的概念很简单，但是在实际的反应过程，因为会涉及很多结构和电子态的变化，故此非常复杂。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_NEB-reaction.png}
+\includegraphics[height=3.5in,viewport=0 0 790 630,clip]{Pt_NEB-reaction.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small 催化剂的存在对反应通道的能量影响的示意图.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small 催化剂的存在对反应通道的能量影响(反应通道)的示意图.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-reaction}
 \end{figure} 
 
@@ -833,7 +842,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \textrm{DOS}反映的是电子态在$\vec k$空间的分布状况，定义为通过单位能量范围内的电子态的数目:
 \begin{equation}
 	\begin{aligned}
-		D(\varepsilon)=&\dfrac{\mbox{能量}\varepsilon\mbox{和}\partial\varepsilon}{\partial\varepsilon}\\
+		D(\varepsilon)=&\dfrac{\mbox{能量}\varepsilon\mbox{和}\partial\varepsilon\mbox{之间的态的数目}}{\partial\varepsilon}\\
 		=&2\sum_{\vec k}\delta[\varepsilon-\varepsilon_n(\vec k)]
 	\end{aligned}
 	\label{eq:DOS}
@@ -845,7 +854,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \end{equation}
 有时我们需要将\textrm{DOS}中的部分投影出来，称为分波态密度(或投影态密度)。态密度的投影可以分为针对轨道、原子、元素或薄层的层等等多种投影。在实验技术中，固体的态密度一般通过光电子发射谱测量。
 \subsection{\rm{Pt~(111)-slab-O-DOS}}
-\subsubsection{静态计算}
+\subsubsection{\rm{静态计算}}
 一旦能量弛豫结束，开始静态计算时，在\textbf{INCAR}中设参数\textit{NSW}=0，并将\textbf{CONTCAR}和\textbf{CHGCAR}作为静态自洽的结构和初始电荷密度的起点。此外，要把\textbf{KPOINTS}中的$\vec k$点增加为$6\times6\times1$，以保证计算计算精度。
 \subsubsection{\rm{DOS}计算}
 静态计算之后是根据当前得到的电荷密度\textbf{CHGCAR}进行非自洽计算(物性计算)，要将\textbf{INCAR}中设置参数\textit{ICHARG}=11。如图\ref{Pt_surface-DOS-INCAR}所示。
@@ -858,7 +867,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \end{figure}
 
 这样的参数设置会在计算过程中将保持基态电荷密度和势不变，最后得到每个$\vec k$点上的电子本征态。
-\subsubsection{计算结果}
+\subsubsection{\rm{计算结果}}
 \textbf{DOSCAR}文件给出了体系的态密度和积分态密度\textrm{(the integrated DOS)}(单位是态数目/\textrm{unit cell})，如图所示。而\textbf{PROCAR}文件给出的是每个能带的轨道按轨道分量\textit{s}-/\textit{p}-/\textit{d}-/\textit{f}-投影的情况。
 \begin{figure}[h!]
 \centering
@@ -992,7 +1001,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 不过除了对带隙的低估，\textrm{DFT}计算的色散关系(能量在倒空间分布关系)是完全正确的，比如\textrm{Fermi}面附近有四个价带，四个导带，能量$\varepsilon_{\vec k}^n$随$\vec k$空间的变化逐渐改变，因此\textrm{DFT}理论的计算定性是完全正确的。实际上，其他物理量(比如波函数和电子密度)，也和能量本征值有类似的倒空间分布关系。表明这样的$\vec k$点采样是合理的，能够表现物理量在不可约\textrm{Brillouin}区的定量变化。
 
-\section{\rm{Si}的声子计算}
+\section{Si的声子计算}
 声子计算除了\textrm{VASP}软件，还需要用到开源声子计算程序\textrm{phonopy}\cite{Phonopy}。声子是描述晶格振动的，通过波矢$\vec q$在固体中传播，其特征频率$\omega(\vec q)$是量子化的。晶格中的原子有序排列，类似于弹簧串联的小球，一个(或多个)原子偏离平衡位置引起的振动，通过“弹簧”传递，会引起一系列的原子产生类似运动，根据晶格动力学理论就产生了力常数\textrm{(force constants)}、动力学矩阵\textrm{(dynamic matrix)}等物理量。根据这些物理量，我们就可以绘制出声子在第一\textrm{Brillouin}区的频率分布$\omega(\vec q)$在$\vec k$空间的色散关系，对于具体的固体研究，声子色散关系非常重要。这里我们学习以\textrm{Si}为例计算简单的声子方式。实验技术中，一般通过中子散射确定固体中的声子分布。
 \subsection{构建输入文件}
 根据\textrm{Si}的初基原胞，首先构造\textbf{POSCAR}文件如图\ref{Si_phonon-POSAR_primitve}所示:~
