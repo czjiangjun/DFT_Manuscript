@@ -63,7 +63,7 @@
 \begin{figure}[h!]
 \centering
 \vskip -5pt
-\includegraphics[height=0.8in, viewport=0 20 780 118,clip]{Pt_atom-KPOINTS.png}
+\includegraphics[height=0.75in, viewport=0 20 750 118,clip]{Pt_atom-KPOINTS.png}
 \caption{\small \textrm{VASP}计算的\textrm{IBZ}中的$\vec k$点分布文件\textrm{KPOINTS}.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_atom:KPOINTS}
 \end{figure}
@@ -71,7 +71,7 @@
 \textrm{POSCAR}是描述计算对象结构的文件，见图\ref{Pt_atom:POSCAR}。\textrm{VASP}中所有的计算对象必须是周期体系，因此对于单原子体系，可以将原子置于一个大的超晶胞($10\times10\times10$)中心，以此确保原子间相互作用足够小。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.2in,viewport=0 0 850 155,clip]{Pt_atom-POSCAR.png}
+\includegraphics[height=1.05in,viewport=0 0 850 155,clip]{Pt_atom-POSCAR.png}
 \caption{\small \textrm{VASP}计算对象的结构文件\textrm{POSCAR}.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_atom:POSCAR}
 \end{figure}
@@ -386,7 +386,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 需要指出的是，从文件\textrm{IBZKPT}中的$\vec k$点分布看，采用\textrm{Monkhorst-Pack}布点方案，将每个维度格点剖分成偶数时，$\vec k$空间的网格点分布会更均匀。
 
-\section{Pt超晶胞计算}\label{sec:Pt-bulk}
+\section{Pt超晶胞计算}\label{Sec:bulk-Pt}
 下面我们将学习由32个\textrm{Pt}原子构成的超晶胞(\textrm{FCC}晶胞按$2\times2\times2$堆积得到)的基本的物理性质计算:~重点掌握内聚能\textrm{(cohesive energy)}和空位形成能\textrm{(vavanvy formation energy)}的计算。为简明起见，前面介绍过的参数，今后不再作详细说明。
 
 \subsection{Pt超晶胞的内聚能计算}
@@ -679,13 +679,13 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 很多时候“氧的吸附能”，也会通过自由的气态\ch{O2}分子的吸附给出。在这种情况下，需要考虑到\ch{O2}成键能减半，因此计算式中的吸附能会减小至~--1.42\textrm{~eV}，也就是~--3.13\textrm{~eV/O}\cite{Eectrochim52-2219_2007}。
 
-\subsection{功函数与偶极校正}
+\subsection{功函数的计算与偶极校正}
 该练习是利用前面的计算结果来计算校正偶极后的功函数。功函数的定义是将一个电子从固体表面的\textrm{Fermi}能级移到无穷远处(真空中)所做的功。而垂直于表面$z$-轴方向的偶极，$U_{\mathrm{dipole}}$，定义为:~
 \begin{displaymath}
 	U_{\mathrm{dipole}}(z)=\dfrac1A\iint U_{\mathrm{dipole}}(\vec r)\mathrm{d}x\mathrm{d}y
 \end{displaymath}
 因此，经偶极校正后的功函数为$-E_{\mathrm{F}}+U_{\mathrm{dipole}}$，它和表面的几何结构和特性密切相关。
-\subsubsection{功函数}
+\subsubsection\rm{{功函数的计算}}
 为了计算功函数，\textrm{INCAR}文件中多五个选项，诸如规定模型中薄层中心的坐标位置。内容如图\ref{Pt_surface-workfunction-INCAR}所示:~
 \begin{figure}[h!]
 \centering
@@ -697,18 +697,19 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 \textrm{KPOINTS}文件、\textrm{POSCAR}和\textrm{POTCAR}与前述表面吸附算例\textrm{Pt~(111)-O}中的相同。
 
-\subsubsection{计算结果}
+\subsubsection{\rm{计算结果}}
 首先用命令查找\textrm{OUTCAR}中的\textrm{Fermi}能级的数值:~\\
 \textcolor{magenta}{\textrm{grep ~ fermi ~ OUTCAR}}\\
 结果如图\ref{Pt_surface-workfunction-LOCPOT}所示。
 \begin{figure}[h!]
 \centering
-\vskip -20pt
+\vskip -15pt
 \includegraphics[height=0.3in,viewport=0 20 460 50,clip]{Pt_surface-workfunction-Fermi.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{计算\textrm{Pt}表面功函数时\textrm{Fermi}能级的数值.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_surface-workfunction-LOCPOT}
 \end{figure}
+
 计算中产生新的输出文件\textrm{LOCPOT}与\textrm{CHGCAR}文件的保存格式相同，存储的内容是三维空间中的表面平均化的局域静电势\textrm{(the planar-averaged local-electrostatic potential)}，但不包含交换-相关势。
 \begin{figure}[h!]
 \centering
@@ -718,8 +719,9 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_surface-workfunction-LOCPOT}
 \end{figure}
 
-找到$z$-方向的势函数数据，并用合适的脚本，比如\textrm{Python}脚本如\textcolor{blue}{\textrm{locpot\_workfunc.py}}\footnote{该软件由韩国汉城大学\textrm{Jinwoo,Park,Lanhee Yang}开发\cite{Park-Yang}}转成$\ast\mathrm{.dat}$格式的文件，运行命令为:\\
-\textcolor{blue}{\textrm{python ~ locpot.py ~ LOCPOT ~ -0.3174}}\\
+为了确定$z$-方向的势函数的数值分布，可以编写脚本处理\textrm{LOCPOT}的数据，如本讲义附上的\textrm{Python}脚本\textcolor{blue}{\textrm{locpot\_workfunc.py}}\footnote{该软件由韩国汉城大学\textrm{Jinwoo,Park,Lanhee Yang}开发\cite{Park-Yang}}，可以将\textrm{LOCPOT}的数值转成$\ast\mathrm{.dat}$格式的文件，运行命令为:\\
+\textcolor{blue}{\textrm{python ~ locpot.py ~ LOCPOT ~ --0.3174}}\\
+
 按照一般的习惯，\textrm{Fermi}能级~--0.3174~将会被设为0，脚本执行后的输出文件\textrm{output.dat}将被用于绘制功函数图(如图\ref{Pt_surface-workfunction}所示)。功函数图表明，\textrm{Pt~(111)}层沿$z$-轴方向的相对位置，\textrm{Fermi}能级位置，功函数为\textrm{5.8}\textrm{~eV}。
 \begin{figure}[h!]
 \centering
@@ -729,26 +731,26 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_surface-workfunction}
 \end{figure}
 
-\section{NEB方法}
-根据我们的经验，在两个地点间行走时，一般都可以有无数路径。为及时赶到，一般会选择最短的路径，如果想体验行走的乐趣，就可以选择最长的的路线。原子(或其他物质)并没有意识，不会自行选择最短或最长的路线，但是原子在力驱使下，一定会沿着能量最低的路径行走，如图所示。就像俗话说的“水往低处流”。
+\section{NEB方法与反应过渡态搜索}
+日常经验告诉我们，两地间行走时，通常会有多条路径可供选择。如果时间有限，为及时赶到，一般会选择最短的路径;~但如果时间充裕，又想体验行走的乐趣，就可以选择更有风味的路线，如图\ref{Pt_NEB-move}所示。原子(或其物质)间因相互作用而运动时，在力驱使下，则一定会沿着能量最低的路径行走，就像俗话说的“水往低处流”。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=2.8in,viewport=0 0 630 420,clip]{Pt_NEB-move.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{两点之间人和原子运动的示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{两点之间人和原子受力运动的示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-move}
 \end{figure}
 
-材料学研究中的一个基本问题是，体系如何从一个稳定态变化到另一个稳定态，也就是要确定最小能量路径\textrm{(the minimum energy path, MEP)}。本次练习中，根据微动弹性带\textrm{(Nudged elastic band, NEB)~}方法\cite{JCP113-9978_2000,JCP113-9901_2000,JCC32-1769_2011}来确定最小能量路径，并确定相应的反应势垒。
+材料学研究中的一个基本问题是，体系如何从一个稳定态变化到另一个稳定态，也就是确定变化动力学过程的最小能量路径\textrm{(the minimum energy path, MEP)}。本节练习中，我们学习微动弹性带\textrm{(Nudged elastic band, NEB)~}方法\cite{JCP113-9978_2000,JCP113-9901_2000,JCC32-1769_2011}来确定最小能量路径的计算过程，并确定相应的反应势垒。
 \subsection{\rm{NEB}的基本原理}
-如图所示的势能面，始态和终态分别对应势能面上的两个局域极小值。有两个典型的连线可以将这两个态关联起来:~一个是直线连接，另一个是最小能量曲线。由箭头所示，我们将从直线出发，尽可能快速高效地找到最小能量曲线。
+如图\ref{Pt_NEB}所示的势能面上，始态\textrm{(the initial state)}和终态\textrm{(the finial state)}分别对应势能面上的两个局域极小值。有两个典型的连线可以将这两个态关联起来:~一个是直的点线连接，另一个是最小能量曲线。由箭头所示，我们将从直线出发，学习如何尽可能快速高效地找到最小能量曲线。
 \subsection{NEB方法的计算过程}
-\subsubsection{始和终态}
-首先，一般在电子和离子弛豫的时候，都需要确定始态\textrm{(the initial state)}和终态\textrm{(the finial state)}。在化学反应过程中，这两种构型的能量都应该是位于极小位置，各原子受力(即能量的一阶导数)也都是零。
+\subsubsection{\textrm{始和终态}}
+首先，一般在电子和离子弛豫的时候，都需要确定始态和终态。在化学反应过程中，这两种构型的能量都应该是位于极小位置，各原子受力(即能量的一阶导数)也都是零。
 \subsubsection{\rm{初始能量路线}}
-既然最小能量路径是始态向终态变化的某一条能量路线(也称为反应路线)，我们首先用直线能量路径把两个态连接起来，以此作为尝试的能量路线，并在能量路线上等距离地选择一些点(作为假想态，\textrm{images})，如图所示。注意每个假想态表示的是反应过程中的一个特定的中间构型。所需假想态的数目依赖于能量路径的复杂性，即能量路径曲率，对于绝大部分材料，三到七个假想态已经足够。对始态和终态之间的假想态，将其原子位置简单外推，可能得到与最小能量路径中原子构型偏差交大的原子构型。显然，这样构型的原子承受到极大的外力，收敛会很困难，因此需要一些手工的调整使得假想态接近最小能量路径中的原子构型。
+既然最小能量路径是始态向终态变化的某一条能量路线(化学上习惯称反应通道)，我们首先用直线能量路径把两个态连接起来，以此作为尝试的能量路线，并在能量路线上等距离地选择一些点(作为假想态，\textrm{images})，如图\ref{Pt_NEB}所示。注意每个假想态表示的是反应过程中的一个特定的中间构型。所需假想态的数目则依赖于能量路线的复杂性，即能量路径曲率。对于绝大部分材料，三到七个假想态已经足够。这种始态和终态连线上的假想态，可能与最小能量路径中原子构型偏差很大。显然，这种构型中的原子将受到极大的外力，计算模拟中的收敛也会很困难，常常需要一些手工的调整，使得假想态接近最小能量路径中的原子构型。
 \subsubsection{\rm{推拉能量路径}}
-将初始能量路径中的原子构型一点点地朝原子零受力构型方向轻微移动(类似于向一个弹性带子施以推力或拉力)，就有可能搜索到最小能量路径。为了很好地控制能量路径的移动，假设对能量路径上的等间距分布的假想态施加沿特定方向的弹性应力，确保能量路径连续地朝最小能带路径方向过渡。\textcolor{red}{一旦开始搜索能量路径过程，类比的弹性带的微动就是反应过程中的原子构型势能面的确定过程}，直到每个假想态都达到最小受力构型，如图\ref{Pt_NEB}所示。假想态就类似于穿越沙丘的骆驼队:~每头骆驼都用缰绳彼此串在一起，保证每头骆驼都不会脱离驼队。
+要求初始能量路线(直线)中的各原子构型一点点地朝原子受力为零的构型方向轻微移动(类似于对一个弹性带子施以推力或拉力)，就有可能搜索到最小能量路径。为了很好地控制能量路线的移动，假设对能量路线上的等间距分布的假想态施加沿特定方向的弹性应力，确保能量路线连续地朝最小能量路径方向过渡。换句话说，反应通道的搜索过程，就是反应势能面上各原子构型落到局域极小处的过程，即每个假想态都达到最小受力构型，如图\ref{Pt_NEB}所示。这些假想态的关系，类似于穿越沙丘的骆驼队:~每头骆驼都用缰绳彼此串在一起，保证每头骆驼都不会脱离驼队。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.5in,viewport=0 0 770 530,clip]{Pt_NEB.png}
@@ -757,10 +759,10 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_NEB}
 \end{figure}
 \subsubsection{\rm{受力计算}}
-\textrm{NEB}方法采用受力投影(不是能量投影)，目的是确保假想态的连线通过鞍点\textrm{(the saddle points)}，达到最小能量路线。初始能连连线上的每个假想态的原子受力移动的力是弹簧力和原子间力。为了将初始能量路线直接推向最小能量路线，只考虑沿能量路线(该点切线)的弹性力投影和垂直能量路线的原子间作用力投影的贡献。忽略其余力的贡献，直线能量路线将会向最小能量路线移动。一般通过\textrm{DFT}计算得到每个微动过程中的原子构型的电子态极小值，并计算每个原子上的受力以确定减小受力的微动方向。重复上述过程，直到每个原子上的受力都小于预设的接近零的小值，得到的能量路线就认为是最小能量路线。由于上述微动是根据受力推测的。原子构型的结构弛豫算法采用\textrm{damped MD}算法(\textit{IBRION}=3)。
-\subsubsection{\rm{CI-NEB}}
-\textrm{CI-NEB}方法是为了确保有一个假想态正好位于鞍点而提出来的。为了让最高能量的假想态爬上鞍点，经过几次沿切线能量路线切线的微动后，其真实受力将被反向(例如在原来受力方向的反向加两倍的力)，于是，出现爬坡的假想态，其能量将会对应沿能量路线上的极大值，同时又是垂直能量路线方向的极小值(即鞍点)。
-\subsection{\rm{Pt~(111)-O-NEB}}
+\textrm{NEB}方法采用受力投影(不是能量投影)，目的是确保假想态的连线能通过鞍点\textrm{(the saddle points)}，达到最小能量路线。初始能量连线上的每个假想态的原子受力移动的力是弹性回复力和原子间力的合力。为了将初始能量路线直接推向最小能量路线，只考虑沿能量路线(该点切线)的弹性回复力投影和垂直能量路线(法线)的原子间作用力投影，而忽略其余力的贡献，因此直线能量路线将会向最小能量路线移动。一般通过\textrm{DFT}计算得到每个微动过程中的原子构型的电子态极小值，并计算每个原子上的受力以确定减小受力的微动方向。重复上述过程，直到每个原子上的受力都小于预设的接近零的小值，得到的能量路线就认为是最小能量路线。由于上述微动是根据受力推测的，因此在计算过程中，原子构型的结构弛豫算法采用\textrm{damped MD}算法(\textit{IBRION}=3)。
+\subsubsection{\rm{CI-NEB}方法}
+\textrm{CI-NEB}方法是为了确保有一个假想态正好位于鞍点而提出来的。为了让最高能量的假想态爬上鞍点，经过几次沿能量路线切线的微动后，其真实受力将被反向(例如在原来受力方向的反向加两倍的力)，于是，出现爬坡的假想态，其能量将会对应沿能量路线上的极大值，同时又是垂直能量路线方向的极小值(即鞍点)。
+\subsection{Pt~(111)-O-NEB}
 以下算例说明如何用\textrm{NEB}方法确定最小能量路径并计算\textrm{Pt~(111)}面上吸附的\textrm{O}原子由\textrm{HCP}间隙位(如图\ref{Pt_NEB-init-POSCAR}所示)扩散到近邻的\textrm{FCC}间隙位的表面扩散势垒能量。结果如图\ref{Pt_NEB-config}所示。
 \begin{figure}[h!]
 \centering
@@ -770,7 +772,8 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_NEB-init-POSCAR}
 \end{figure}
 \subsubsection{\rm{Pt~(111)-slab-O-HCP}}
-采用\textrm{NEB}方法计算，首先要确定始态和终态构型的极小值。在\ref{subsec:}我们已经确定表面吸附终态\textrm{Pt~(111)-slab-O-FCC}的构型。这里，我们将用相同的方法确定始态\textrm{Pt~(111)-slab-O-HCP}的构型及能量，只是这里的\textbf{POSCAR}文件中要把\textrm{O}原子放在\textrm{HCP}的间隙位置。如图所示。
+
+采用\textrm{NEB}方法计算，首先要确定始态和终态构型的极小值。在\ref{subsec:}我们已经确定表面吸附终态\textrm{Pt~(111)-slab-O-FCC}的构型。这里，我们将用相同的方法确定始态\textrm{Pt~(111)-slab-O-HCP}的构型及能量，只是这里的\textrm{POSCAR}文件中要把\textrm{O}原子放在\textrm{HCP}的间隙位置。如图所示。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=2.8in,viewport=0 10 1040 530,clip]{Pt_NEB-config.png}
@@ -784,25 +787,30 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \textrm{VTST}脚本\footnote{\textrm{VTST:~\url{http://theory.cm.utexas.edu/vtsttools/}}}是一个开源软件，提供有\textrm{VASP}的接口，可以方便地支持\textrm{VASP}开展\textrm{NEB}计算。下载\textrm{VTST}后，将源文件解压到\textrm{VASP}的源代码目录下，并用\textrm{make}命令编译全部$\ast.\mathrm{F}$文件(包括\textrm{neb.F}，\textrm{dynamt.F}等)得到新的可执行\textrm{NEB}版\textrm{VASP}。为了实现\textrm{NEB}计算，在\textrm{INCAR}文件中，除了修改必要的离子弛豫参数\textit{IBRON}=3外，额外增加3个参数\textit{IMAGES}=1，\textit{SPRING}=-5.0，\textit{LCLIMB}=\textrm{.TRUE.}。如图\ref{Pt_NEB-INCAR}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.8in,viewport=0 0 700 200,clip]{Pt_NEB-INCAR.png}
+\includegraphics[height=1.8in,viewport=0 0 630 200,clip]{Pt_NEB-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{VASP}计算\textrm{NEB}计算时需要新增的\textrm{INCAR}选项.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-INCAR}
 \end{figure}
-注意假想态的数目要与\textrm{CPU}的数目匹配，因为每个假想态要均衡地分配到\textrm{CPU}上去计算，以\textrm{CPU}数为8为例，假想态数目可选为1,2,4或8。脚本会在计算目录下新建目录，并将前述两类计算得到的\textbf{CONTCAR}文件复制到该目录下，并分别重命名为\textbf{CONTCAR1}(始态，\textrm{O}位于\textrm{HCP}间隙位)和\textbf{CONTCAR}(终态，\textrm{O}位于\textrm{FCC}间隙位)。由于本算例是简单的直接扩散，所以可以只用一个假想态，\textrm{VTST}将采用线性插值为中间假想态生成\textbf{POSCAR}文件。命令为:~\\
-\textrm{\~/vtstscripts/nebmake.pl~\textbf{CONTCAR1}~\textbf{CONTCAR2}~1}\\
-\textrm{VTST}脚本会产生三个目录，分别为00(始态)，01(中间假想态)，02(终态)。在\textbf{POSCAR}文件中，原子位置的坐标将都会用正值表示，如$-0.001\rightarrow0.999$。其中目录00中的\textbf{OUTCAR}直接从\textrm{Pt~(111)-slab-O-HCP}中复制，类似地，目录02中的\textbf{OUTCAR}来自\textrm{Pt~(111)-slab-O-FCC}。这几个目录中的\textbf{OUTCAR}最后得到的基态总能\textit{E0}将是计算扩散势垒的根据。计算中的\textbf{POTCAR}和\textbf{KPOINTS}也都完全相同。计算过程中，可以通过监控\textbf{OUTCAR}文件监控原子受力变化的情况:\\
-\textrm{grep~``max~atom''~OUTCAR}\\
-这里第一个数是当前假想态中受力最大的原子，当每个假想态上的原子受力低于力标准(本算例为$<0.05\mathrm{eV/\AA}$)，即达到收敛。如果起始受力太大($>10\mathrm{eV/\AA}$)，就要调整为更合适的起始结构重新来计算。计算过程中，可以用脚本\textrm{vtstscript/nebef.pl}来监控，监控信息可写到文件$\mathbf{neb}\ast\mathbf{.dat}$中。例如，经过19次和30次的离子弛豫后的数据如图\ref{Pt_NEB-VTST-1}所示:
+
+注意假想态的数目要与\textrm{CPU}的数目匹配，因为每个假想态要均衡地分配到\textrm{CPU}上去计算，以\textrm{CPU}数为8为例，假想态数目可选为1,2,4或8。脚本会在计算目录下新建目录，并将前述两类计算得到的\textrm{CONTCAR}文件复制到该目录下，并分别重命名为\textrm{CONTCAR1}(始态，\textrm{O}位于\textrm{HCP}间隙位)和\textrm{CONTCAR}(终态，\textrm{O}位于\textrm{FCC}间隙位)。由于本算例是简单的直接扩散，所以可以只用一个假想态，\textrm{VTST}将采用线性插值为中间假想态生成\textrm{POSCAR}文件。命令为:~\\
+\textcolor{magenta}{\textrm{$\sim$/vtstscripts/nebmake.pl~\textrm{CONTCAR1}~\textrm{CONTCAR2}~1}}\\
+\textrm{VTST}脚本会产生三个目录，分别为00(始态)，01(中间假想态)，02(终态)。在\textrm{POSCAR}文件中，原子位置的坐标将都会用正值表示，如$-0.001\rightarrow0.999$。其中目录00中的\textrm{OUTCAR}直接从\textrm{Pt~(111)-slab-O-HCP}中复制，类似地，目录02中的\textrm{OUTCAR}来自\textrm{Pt~(111)-slab-O-FCC}。这几个目录中的\textrm{OUTCAR}中最后得到的基态总能\textit{E0}将是计算扩散势垒的根据。计算中的\textrm{POTCAR}和\textrm{KPOINTS}也都完全相同。计算过程中，可以通过命令监控计算过程中原子受力变化的情况:\\
+\textcolor{magenta}{\textrm{grep~``max~atom''~OUTCAR}}\\
+
+%这里第一个数是当前假想态中受力最大的原子，
+当每个假想态上的原子受力低于力标准(本算例为$<0.05\mathrm{eV/\AA}$)，即达到收敛。如果起始受力太大($>10\mathrm{eV/\AA}$)，就要调整为更合适的起始结构重新来计算。
+
+计算过程可以用脚本\textrm{vtstscript/nebef.pl}来监控，监控信息将会写到文件$\mathbf{neb}\ast\mathbf{.dat}$中。例如，经过19次和30次的离子弛豫后的数据如图\ref{Pt_NEB-VTST-1}所示:
 \begin{figure}[h!]
 \centering
-\includegraphics[height=2.5in,viewport=0 20 300 200,clip]{Pt_NEB-VTST-1.png}
+\includegraphics[height=2.2in,viewport=0 20 300 200,clip]{Pt_NEB-VTST-1.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{经过19次和30次离子弛豫后的数据.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-VTST-1}
 \end{figure}
 
-这里所有数据按假想态的顺序排列，分别是力，基态总能以及基态总能与起始态的能量差。所有的数据文件(如\textbf{OUTCAR}、\textbf{WAVECAR}、\textbf{CHGCAR}等)都写到01目录内。一般一个\textrm{VTST}计算得到稳定的鞍点假想态需要比较长的时间，因为这个假想态是亚稳态，实际上非常不稳定。
+这里所有数据按假想态的顺序排列，分别是力，基态总能以及基态总能与起始态的能量差。所有的数据文件(如\textrm{OUTCAR}、\textrm{WAVECAR}、\textrm{CHGCAR}等)都写到01目录内。一般一个\textrm{VTST}计算得到稳定的鞍点假想态，需要比较长的时间，因为这个假想态是亚稳态，实际上非常不稳定。
 \subsubsection{计算结果}
 脚本\textrm{nebbarrier.pl}输出的是反应坐标，即以能量路线上各假想态为横坐标，计算各假想态基态总能的能量差和每个假想态的原子的最大受力。
 
@@ -815,7 +823,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_NEB-VTST-2}
 \end{figure}
 
-图\ref{Pt_NEB-energydiff}表明原子从\textrm{Pt~(111)}的\textrm{HCP}的间隙位移动到\textrm{FCC}间隙位时，原子构型对相应基态总能差的曲线(即反应路径)。该反应路径中正向扩散势垒为0.155\textrm{eV}，反向扩散，即从\textrm{FCC}间隙位扩散到\textrm{HCP}间隙位，其势垒则为0.53\textrm{eV}，这和\textrm{Pang}等的计算值(0.5\textrm{eV})\cite{ASS257-3047_2011}吻合得很好，与实验值(0.43\textrm{eV})\cite{PRL77-123_1996}也比较一致。计算结果表明，中等强度的热扰动就可以将吸附在\textrm{Pt~(111)}面上\textrm{HCP}间隙位的\textrm{O}原子扩散到\textrm{FCC}间隙位上。本次练习的计算流程可以推广到双金属薄层\cite{PRL81-2819_1998}中的芯-壳纳米团簇体系的应力结构研究等相关理论计算中去。
+图\ref{Pt_NEB-energydiff}表明原子从\textrm{Pt~(111)}的\textrm{HCP}的间隙位移动到\textrm{FCC}间隙位时，原子构型对相应基态总能差的曲线(即反应通道)。该反应路径中正向扩散势垒为0.155\textrm{eV}，反向扩散，即从\textrm{FCC}间隙位扩散到\textrm{HCP}间隙位，其势垒则为0.53\textrm{eV}，这和\textrm{Pang}等的计算值(0.5\textrm{eV})\cite{ASS257-3047_2011}吻合得很好，与实验值(0.43\textrm{eV})\cite{PRL77-123_1996}也比较一致。计算结果表明，中等强度的热扰动就可以将吸附在\textrm{Pt~(111)}面上\textrm{HCP}间隙位的\textrm{O}原子扩散到\textrm{FCC}间隙位上。本次练习的计算流程可以推广到双金属薄层\cite{PRL81-2819_1998}中的芯-壳纳米团簇体系的应力结构研究等相关理论计算中去。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.5in,viewport=0 0 790 640,clip]{Pt_NEB-energydiff.png}
@@ -824,12 +832,12 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_NEB-energydiff}
 \end{figure}
 
-\section{Pt~(111)催化剂计算}
+\section{Pt~(111)表面催化的计算}
 \subsection{催化剂}
-催化剂是能够改变化学反应进程(一般是加快，也有少数是减缓)，但在反应前、后不改变组分的物质。如图\ref{Pt_NEB-reaction}所示，对于一个给定化学反应，由于催化剂的存在，降低了活化能，为反应过程提供了新的反应通道，但反应的自由能($\Delta G$)不变，也就是说，催化剂的存在并不改变化学反应的热力学过程。图示的催化剂的概念很简单，但是在实际的反应过程，因为会涉及很多结构和电子态的变化，故此非常复杂。
+催化剂是能够改变化学反应进程(一般是加速反应完成，也有少数催化剂是减缓反应过程)，但在反应前、后不改变物质组分的物质。如图\ref{Pt_NEB-reaction}所示，对于一个给定化学反应，由于催化剂的存在，降低了活化能，为反应过程提供了新的反应通道，但反应的自由能($\Delta G$)不变，也就是说，催化剂的存在，虽然改变了化学反应的动力学学过程，但并不改变化学反应的热力学过程。图示的催化剂的概念很简单，但是在实际的反应过程，会涉及大量的化学结构和电子态的变化，故此一般催化反应过程都相当复杂。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=3.5in,viewport=0 0 790 630,clip]{Pt_NEB-reaction.png}
+\includegraphics[height=3.5in,viewport=0 0 850 660,clip]{Pt_NEB-reaction.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small 催化剂的存在对反应通道的能量影响(反应通道)的示意图.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-reaction}
@@ -837,7 +845,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 不难理解，催化剂表面与吸附介质相互作用的细节对于深入认知催化反应过程非常关键。\textrm{DFT}方法已经成为寻找更优异的催化材料的高效手段，并且为解释实验结果，并能提供实验难以或无法提供的细节。本节中通过对态密度\textrm{(Density of States, DOS)}的研究来表征催化表面的电子结构的改变。
 \subsection{态密度}
-对周期体系，对于每个$\vec k$点采用自洽迭代求解\textrm{Kohn-Sham}方程，将得到\textrm{Kohn-Sham}本征态轨道和能量本征值(一般称为单电子本征态)。电子结构的表示有两种重要的方式，也就是能带结构和\textrm{DOS}。一般能带结构都是沿着不可约\textrm{Brillouin}区中的高对称性线方向绘制。而\textrm{DOS}则表示的是整个\textrm{Brillouin}区的电子态的数目。
+对周期体系，在每个$\vec k$点上都要通过自洽迭代来求解\textrm{Kohn-Sham}方程，得到\textrm{Kohn-Sham}本征态轨道和能量本征值(一般称为单电子本征态)。电子结构的表示有两种重要的方式，也就是能带结构和\textrm{DOS}。一般能带结构都是沿着不可约\textrm{Brillouin}区中的高对称性线方向绘制。而\textrm{DOS}则表示的是整个\textrm{Brillouin}区的电子态的数目。
 
 \textrm{DOS}反映的是电子态在$\vec k$空间的分布状况，定义为通过单位能量范围内的电子态的数目:
 \begin{equation}
@@ -847,87 +855,88 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 	\end{aligned}
 	\label{eq:DOS}
 \end{equation}
-在特定能级附近的高态密度意味着在这个能量附近有很多占据态。如果对态密度积分，上限为\textrm{Fermi}能级，可以得到体系的电子数:~
+在特定能级附近的高态密度意味着在这个能量附近有很多占据态。如果对态密度积分，积分到\textrm{Fermi}能级，可以得到体系的电子数:~
 \begin{equation}
 	n=\int_0^{E_{\mathrm{F}}}D(\varepsilon)\mathrm{d}\varepsilon
 	\label{eq:DOS-integral}
 \end{equation}
-有时我们需要将\textrm{DOS}中的部分投影出来，称为分波态密度(或投影态密度)。态密度的投影可以分为针对轨道、原子、元素或薄层的层等等多种投影。在实验技术中，固体的态密度一般通过光电子发射谱测量。
-\subsection{\rm{Pt~(111)-slab-O-DOS}}
+
+有时我们需要将\textrm{DOS}中的部分投影出来，称为投影态密度(或分波态密度)。态密度的投影可以分为针对轨道、原子、元素或薄层的层等等多种投影。在实验技术中，固体的态密度一般通过光电子发射谱测量。
+\subsection{Pt~(111)-slab-O-DOS计算}
 \subsubsection{\rm{静态计算}}
-一旦能量弛豫结束，开始静态计算时，在\textbf{INCAR}中设参数\textit{NSW}=0，并将\textbf{CONTCAR}和\textbf{CHGCAR}作为静态自洽的结构和初始电荷密度的起点。此外，要把\textbf{KPOINTS}中的$\vec k$点增加为$6\times6\times1$，以保证计算计算精度。
+一旦能量弛豫结束，开始静态计算时，将在\textrm{INCAR}中设参数\textit{NSW}=0，并将\textrm{CONTCAR}和\textrm{CHGCAR}作为静态自洽的结构和初始电荷密度的起点。此外，要把\textrm{KPOINTS}中的$\vec k$点增加为$6\times6\times1$，以保证计算计算精度。
 \subsubsection{\rm{DOS}计算}
-静态计算之后是根据当前得到的电荷密度\textbf{CHGCAR}进行非自洽计算(物性计算)，要将\textbf{INCAR}中设置参数\textit{ICHARG}=11。如图\ref{Pt_surface-DOS-INCAR}所示。
+静态计算之后是根据当前得到的电荷密度\textrm{CHGCAR}进行非自洽计算(物性计算)，要将\textrm{INCAR}中设置参数\textit{ICHARG}=11。如图\ref{Pt_surface-DOS-INCAR}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_surface-DOS-INCAR.png}
+\includegraphics[height=0.9in,viewport=0 0 500 120,clip]{Pt_surface-DOS-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{静态计算最主要的任务之一:~\textrm{DOS}计算时的\textrm{INCAR}设置.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_surface-DOS-INCAR}
 \end{figure}
 
 这样的参数设置会在计算过程中将保持基态电荷密度和势不变，最后得到每个$\vec k$点上的电子本征态。
 \subsubsection{\rm{计算结果}}
-\textbf{DOSCAR}文件给出了体系的态密度和积分态密度\textrm{(the integrated DOS)}(单位是态数目/\textrm{unit cell})，如图所示。而\textbf{PROCAR}文件给出的是每个能带的轨道按轨道分量\textit{s}-/\textit{p}-/\textit{d}-/\textit{f}-投影的情况。
+\textrm{DOSCAR}文件给出了体系的态密度和积分态密度\textrm{(the integrated DOS)}(单位是态数目/\textrm{unit cell})，如图\ref{Pt_PDOS-d}所示。而\textrm{PROCAR}文件给出的是每个能带的轨道按轨道分量~\textit{s}-~/~\textit{p}-~/~\textit{d}-~/~\textit{f}-~投影的情况。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_PDOS-d.png}
+\includegraphics[height=3.5in,viewport=0 20 830 620,clip]{Pt_PDOS-d.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{\textrm{Pt(111)中的\textrm{Pt}的\textit{d}轨道对\textrm{DOS}的贡献}.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_PDOS-d}
 \end{figure}
 
-我们还要将计算文件中的数据经人工提取和必要处理才能进行分析，当然这可以借助脚本完成(比如这里用的就是\textrm{dos.py})。处理后得到一列能量数据和对应的每个轨道的分解占据情况。\textcolor{red}{以下图例中，对\textrm{DOS}的投影中，考虑的是两个成键原子的贡献，即\textrm{Pt}原子和\textrm{O}原子。}
+我们还要将计算文件中的数据经人工提取和必要处理才能进行分析，当然这可以借助脚本完成(比如这里用的就是\textcolor{blue}{\textrm{dos.py}})。处理后得到一列能量数据和对应的每个轨道的分解占据情况。在本算例中，对\textrm{DOS}的投影，就是两个成键原子的贡献，即\textrm{Pt}原子和\textrm{O}原子。
 
 
 根据数据文件绘制\textrm{DOS}图，还需要知道体系的\textrm{Fermi}能级。命令如下:\\
-\textrm{grep~fermi~OUTCAR}\\
-将上述分波\textrm{DOS}的数据文件\textbf{pdos-Pt-O-46O.dat}导入\textrm{Xmgrace}，\textrm{MS}$^{\textregistered}$\textrm{Excel}或\textrm{ORIGIN}$^{\textregistered}$中，第一列为绘图时，以\textrm{Fermi}能级为能量原点的能量划分，效果如图\ref{Fig:}所示。此外还可以画出净的\textrm{Pt}薄层的分态密度。这里将总的态密度投影到各原子上表示为分态密度，并给出\textrm{Pt}的\textit{d}-\textrm{DOS}和\textrm{O}的\textit{p}-DOS。根据该态密度，可以定性地估计两种原子的成键的键强度:~例如，可以明显地看出\textrm{Pt-O}成键主要来自\textrm{Pt}-5\textit{d}和\textrm{O}-2\textit{p}轨道的杂化。
+\textcolor{magenta}{\textrm{grep~fermi~OUTCAR}}\\
+将上述分波\textrm{DOS}的数据文件\textrm{pdos-Pt-O-46O.dat}导入\textrm{Xmgrace}，\textrm{MS}~\textrm{Excel}或\textrm{ORIGIN}中，第一列为绘图时的横轴，以\textrm{Fermi}能级为能量原点的能量划分，效果如图\ref{Pt_surface_PDOS}所示。此外还可以画出净的\textrm{Pt}薄层的分态密度。这里将总的态密度投影到各原子上表示为分态密度，并给出\textrm{Pt}的\textit{d}-\textrm{DOS}和\textrm{O}的\textit{p}-DOS。根据该态密度，可以定性地估计两种原子的成键的键强度:~例如，可以明显地看出\textrm{Pt-O}成键主要来自\textrm{Pt}-5\textit{d}和\textrm{O}-2\textit{p}轨道的杂化。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Pt_surface_PDOS.png}
+\includegraphics[height=3.5in,viewport=0 0 820 620,clip]{Pt_surface_PDOS.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{\textrm{Pt(111)-O}体系的\textrm{PDOS}贡献:~来自\textrm{Pt}-5\textit{d}和\textrm{O}-2\textit{p}轨道.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_surface_PDOS}
 \end{figure}
 
-\section{\rm{Si}的能带结构}
-在引入能带理论的时候，已知自由电子的能量是$\vec k$的二次函数(开口向上的抛物线)，能量极小值位于$\vec k=0$($\Gamma$点)，考虑到平移周期性，可以将能量函数平移到第一\textrm{Brillouin}区表示;~实际的周期体系由于周期性势函数的存在，能量在倒空间中的分布存在带隙\textrm{(band gap)}，也不一定关于$Gamma$点对称，这是和自由电子的最大区别。因为周期势场内的电子既不是完全局域也不是完全的自由的。
+\section{Si的能带结构}\label{Sec:Si-band}
+在引入能带理论的时候，已知自由电子的能量是$\vec k$的二次函数(开口向上的抛物线)，能量极小值位于$\vec k=0$~($\Gamma$点)，考虑到平移周期性，可以将能量函数平移到第一\textrm{Brillouin}区表示;~实际的周期体系由于周期性势函数的存在，能量在倒空间中的分布存在带隙\textrm{(band gap)}，也不一定关于$\Gamma$点对称，这是和自由电子的最大区别。因为周期势场内的电子既不是完全局域也不是完全的自由的。
 
 本次练习，将学习计算半导体\textrm{Si}的能带结构，我们将看到单个的\textrm{Si}原子堆积成固体\textrm{Si}时，原子轨道如何构成能带。该练习也将说明\textrm{Kohn-Sham}方程的能量$\varepsilon_{\vec k}^n$的表示，除了能带记号$n$，还必须包括波矢量子数$\vec k$。
 \subsection{对\rm{Si}的静态计算}
-首先根据\ref{Sec:}的结构弛豫方法计算确定金刚石结构的\textrm{Si}晶胞为$a_0=5.47\mathrm{\AA}$。为了得到\textrm{Si}的电子结构，必须要完成两组连续计算:~即通过静态计算得到迭代收敛的基态电子密度，随后用获得的电子密度，按特定的对称性方向，直接计算(无需自洽迭代)得到能带。静态计算时，\textbf{INCAR}中设置参数\textit{ENCUT}=250;~\textbf{KPOINTS}的$\vec k$点数目设为$7\times7\times7$。金刚石结构的\textrm{Si}晶胞可以视为两套\textrm{FCC}结构错开($a$/4,$a$/4,$a$/4)排列，这里$a$即立方晶胞参数。所以\textbf{POSCAR}文件可以写成包含两个\textrm{Si}原子的\textrm{FCC}初基原胞\textrm{(primitive unit cell)}:如图\ref{Si_POSCAR}所示。
+首先根据\ref{Sec:bulk-Pt}的结构弛豫方法计算确定金刚石结构的\textrm{Si}晶胞为$a_0=5.47\mathrm{\AA}$。为了得到\textrm{Si}的电子结构，必须要完成两组连续计算:~即通过静态计算得到迭代收敛的基态电子密度，随后用获得的电子密度，按特定的对称性方向，直接计算(无需自洽迭代)得到能带。静态计算时，\textrm{INCAR}中设置参数\textit{ENCUT}=250;~\textrm{KPOINTS}的$\vec k$点数目设为$7\times7\times7$。金刚石结构的\textrm{Si}晶胞可以视为两套\textrm{FCC}结构错开($a$/4,$a$/4,$a$/4)排列，这里$a$即立方晶胞参数。所以\textrm{POSCAR}文件可以写成包含两个\textrm{Si}原子的\textrm{FCC}初基原胞\textrm{(primitive unit cell)}:如图\ref{Si_POSCAR}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_POSCAR.png}
+\includegraphics[height=1.3in,viewport=0 0 370 150,clip]{Si_POSCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Si}的初基原胞的\textrm{POSCAR}文件.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_POSCAR}
 \end{figure}
 
-计算需要的\textrm{Si}原子的\textbf{POTCAR}文件可以从\textrm{VASP}的赝势库中知道并保存到当前目录。
+计算需要的\textrm{Si}原子的\textrm{POTCAR}文件可以从\textrm{VASP}的赝势库中知道并保存到当前目录，内容如图\ref{Si_POTCAR}。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_POTCAR.png}
+\includegraphics[height=1.5in,viewport=0 0 400 200,clip]{Si_POTCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Si}的\textrm{POTCAR}.文件(部分)}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_POTCAR}
 \end{figure}
 
-静态计算完毕，可以从文件\textbf{OSZICAR}得到体系的基态能量，电荷密度则保存到文件\textbf{CHGCAR}中。
-\subsection{\rm{Si}的能带结构计算}
-为了完成能带计算，主要是\textbf{CHGCAR}文件，其余文件改动极少。
-\subsubsection{\bf{INCAR}}
-能带计算无需自洽迭代，\textbf{INCAR}文件中参数设置如图所示。这里设置\textit{ICHARG}=11，要求电荷密度来自此前计算的\textbf{CHGCAR}，并在计算过程中保持不变。~
+静态计算完毕，可以从文件\textrm{OSZICAR}得到体系的基态能量，电荷密度则保存到文件\textrm{CHGCAR}中。
+\subsection{Si的能带结构计算}
+为了完成能带计算，主要是\textrm{CHGCAR}文件，其余文件改动极少。
+\subsubsection{\rm{INCAR}}
+能带计算无需自洽迭代，\textrm{INCAR}文件中参数设置如图\ref{Si_Band-INCAR}所示。这里设置\textit{ICHARG}=11，要求电荷密度来自此前计算的\textrm{CHGCAR}，并在计算过程中保持不变。
 \begin{figure}[h!] 
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_Band-INCAR.png}
+\includegraphics[height=0.8in,viewport=0 0 330 80,clip]{Si_Band-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Si}的能带计算中的\textrm{INCAR}设置.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_Band-INCAR}
 \end{figure}
-\subsection{\bf{KPOINTS}}
-一般地，波矢$\vec k $的取值是三维空间(第一\textrm{Brillouin}区)中的矢量。在能带表示中的波矢$\vec k$选择为沿不可约第一\textrm{Brillouin}区的高对称性点连线。表\ref{Tabble:kpath}给出的是\textrm{FCC}结构的第一\textrm{Brillouin}区的高对称性$\vec k$点列表。
+\subsubsection{\rm{KPOINTS}}
+一般地，波矢$\vec k $的取值是三维空间(第一\textrm{Brillouin}区)中的矢量。在能带表示中的波矢$\vec k$选择为沿不可约第一\textrm{Brillouin}区的高对称性点连线。表\ref{Tabble-kpath}给出的是\textrm{FCC}结构的第一\textrm{Brillouin}区的高对称性$\vec k$点列表。
 
 \begin{table}[!h]
 \tabcolsep 0pt \vspace*{-5pt}
@@ -940,7 +949,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \rule{\temptablewidth}{1pt}
 \begin{tabular*} {\temptablewidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c}
 %-------------------------------------------------------------------------------------------------------------------------
-	&\textrm{Rec iprocal coordinates} &\textrm{Cartesian coordinates}
+	&\textrm{Reciprocal coordinates} &\textrm{Cartesian coordinates}\\
 	\textrm{Points}	&\textrm{(unit of $b_1,b_2,b_3$)} &\textrm{unit of $2\pi/a$} \\\hline
 	$\Gamma$ &0~~0~~0 &0~~0~~0 \\
 	X &1/2~~0~~1/2 &0~~1~~0 \\
@@ -953,49 +962,49 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \end{minipage}
 %\end{center}
 \end{table}
-因此，为了绘制平滑的能带曲线，需要在\textbf{KPOINTS}文件中指定足够多的$\vec k$点，能带计算时，只需针对这些指定的$\vec k$点计算各轨道的能量本征值。如图所示:
+因此，为了绘制平滑的能带曲线，需要在\textrm{KPOINTS}文件中指定足够多的$\vec k$点，能带计算时，只需针对这些指定的$\vec k$点计算各轨道的能量本征值。%如图\ref{Si_KPOINTS}所示:
 \begin{figure}[h!]
 \centering 
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_KPOINTS.png}
+\includegraphics[height=2.0in,viewport=0 0 540 210,clip]{Si_KPOINTS.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Si}的能带计算时\textrm{KPOINTS}的设置.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_KPOINTS}
 \end{figure}
-
-图\ref{Si_KPOINTS}给出的是\textrm{VASP}计算沿$\vec k$点路线$\mathrm{W}-\mathrm{L}-\Gamma-\mathrm{X}-\mathrm{W}$共计80个$\vec k$点(20点/连线$times$4组连线)的\textbf{KPOINTS}文件，对应\textrm{Brillouin}区的$\vec k$点连线如图所示\ref{VASP_train-FCC-BZ}。
+图\ref{Si_KPOINTS}给出的是\textrm{VASP}计算沿$\vec k$点路线$\mathrm{W}-\mathrm{L}-\Gamma-\mathrm{X}-\mathrm{W}$共计80个$\vec k$点(20点/连线$\times$4组连线)的\textrm{KPOINTS}文件，对应\textrm{Brillouin}区的$\vec k$点连线如图所示\ref{VASP_train-FCC-BZ}。
 \begin{figure}[h!]
 \centering 
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{VASP_train-FCC-BZ.png}
+\includegraphics[height=4.1in,viewport=0 0 680 680,clip]{VASP_train-FCC-BZ.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Brillouin}区为\textrm{FCC}时的空间结构和$\vec k$-点路径关系.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{VASP_train-FCC-BZ}
 \end{figure}
 
-\subsubsection{能带中的本征值}
-因为能带计算是非自洽迭代计算，计算出来能量本征值$\varepsilon_{\vec k}^n$写入\textbf{EIGENVAL}文件中，用于绘制能带图。如图\ref{Si_Band-EIGENVAL}所示
+\subsubsection{\rm{能带中的本征值}}
+因为能带计算是非自洽迭代计算，计算出来能量本征值$\varepsilon_{\vec k}^n$写入\textrm{EIGENVAL}文件中，用于绘制能带图。如图\ref{Si_Band-EIGENVAL}所示
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_Band-EIGENVAL.png}
+\includegraphics[height=2.8in,viewport=0 0 640 375,clip]{Si_Band-EIGENVAL.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{VASP}计算\textrm{Si}的能量本征值文件\textrm{EiGENVAL}(部分).}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_Band-EIGENVAL}
 \end{figure}
 
-文件\textbf{EIGENVAL}中第一行是倒晶格中的$\vec k$点位置，随后8行是对应的8个能带的能量本征值:~其中前4个(\textrm{No.}~1-4)能级表示价带，是0\textrm{K}下的占据态。从\textbf{EIGENVAL}文件中提取出各$\vec k$点的能量本征值$\varepsilon_{\vec k}^n$，并将\textrm{Fermi}能级设置为0(可以用本讲义提供的脚本\textrm{vasp\_to\_image.py}实现)，\textcolor{red}{运行脚本，将\textrm{Fermi}能级(由\textbf{OUTCAR}可知\textrm{Fermi}能级为5.6980\textrm{eV})设为0~\textrm{eV}，可以得到$\vec k$点和能量本征值关系的数据文件\textrm{Si-band.dat}，如图\ref{Si_Band-data}所示}
+文件\textrm{EIGENVAL}中第一行是倒晶格中的$\vec k$点位置，随后8行是对应的8个能带的能量本征值:~其中前4个(\textrm{No.}~1-4)能级表示价带，是0\textrm{K}下的占据态。从\textrm{EIGENVAL}文件中提取出各$\vec k$点的能量本征值$\varepsilon_{\vec k}^n$，并将\textrm{Fermi}能级设置为0~(可以用本讲义提供的脚本\textcolor{blue}{\textrm{vasp\_to\_image.py}}实现)。运行该脚本，将\textrm{Fermi}能级(由\textrm{OUTCAR}可知\textrm{Fermi}能级为5.6980\textrm{eV})设为0~\textrm{eV}，可以得到$\vec k$点和能量本征值关系的数据文件\textrm{Si-band.dat}，内容如图\ref{Si_Band-data}所示}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_Band-data.png}
+\includegraphics[height=1.2in,viewport=0 0 540 140,clip]{Si_Band-data.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{用于绘制\textrm{Si}能带结构的数据.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_Band-data}
 \end{figure}
-图\ref{Fig:}给出绘制的能带图，可见按照当前的$\vec k$点路径选择，\textrm{Si}是间接带隙半导体，其带隙为$E_g=0.61\textrm{eV}$。这是$\Gamma$点和$X$点之间的带隙值，同时也是图中所有$\vec k$点之间最小的能量差。该值仅为实验测得的带隙的1/2，这是因为\textrm{DFT}本身存在先天不足，会低估能带的带隙。
+
+图\ref{Si_Band-DOS}给出绘制的能带图，可见按照当前的$\vec k$点路径选择，\textrm{Si}是间接带隙半导体，其带隙为$E_g=0.61\textrm{eV}$。这是$\Gamma$点和$X$点之间的带隙值，同时也是图中所有$\vec k$点之间最小的能量差。该值仅为实验测得的带隙的1/2，这是因为\textrm{DFT}本身存在先天不足，会低估能带的带隙。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_Band-DOS.png}
+\includegraphics[height=3.5in,viewport=0 10 920 610,clip]{Si_Band-DOS.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{Si}的能带和态密度图.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Si}的能带和相应的态密度图，从能带图看出\textrm{Si}是间接带隙半导体.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_Band-DOS}
 \end{figure}
 
@@ -1003,82 +1012,88 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 \section{Si的声子计算}
 声子计算除了\textrm{VASP}软件，还需要用到开源声子计算程序\textrm{phonopy}\cite{Phonopy}。声子是描述晶格振动的，通过波矢$\vec q$在固体中传播，其特征频率$\omega(\vec q)$是量子化的。晶格中的原子有序排列，类似于弹簧串联的小球，一个(或多个)原子偏离平衡位置引起的振动，通过“弹簧”传递，会引起一系列的原子产生类似运动，根据晶格动力学理论就产生了力常数\textrm{(force constants)}、动力学矩阵\textrm{(dynamic matrix)}等物理量。根据这些物理量，我们就可以绘制出声子在第一\textrm{Brillouin}区的频率分布$\omega(\vec q)$在$\vec k$空间的色散关系，对于具体的固体研究，声子色散关系非常重要。这里我们学习以\textrm{Si}为例计算简单的声子方式。实验技术中，一般通过中子散射确定固体中的声子分布。
-\subsection{构建输入文件}
-根据\textrm{Si}的初基原胞，首先构造\textbf{POSCAR}文件如图\ref{Si_phonon-POSAR_primitve}所示:~
+\subsection{\rm{构建输入文件}}
+根据\textrm{Si}的初基原胞，首先构造\textrm{POSCAR}文件如图\ref{Si_phonon-POSCAR_primitve}所示:~
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_phonon-POSCAR_primtive.png}
+\includegraphics[height=1.2in,viewport=0 0 520 160,clip]{Si_phonon-POSCAR_primtive.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Si_phonon-POSAR_primitve}
+\caption{\small \textrm{用于声子计算的\textrm{Si}的初基原胞的\textrm{POSCAR}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si_phonon-POSCAR_primitve}
 \end{figure}
 
 在此基础上，通过\textrm{phonopy}程序产生若干超晶胞(如$2\times2\times2$超晶胞)，命令如下:~\\
-\textrm{phonopy~-d~--dim=``2~2~2''}\\
-该命令将产生三组文件，包括\textbf{SPOSCAR}，\textbf{DISP}和\textbf{POSCAR}-\{\textrm{number}\}。其中\textbf{SPOSCAR}保存的是理想超晶胞结构，\textbf{DISP}记录的是各方向的原子偏离信息，而\textbf{POSCAR}-\{\textrm{number}\}是超晶胞中原子发生偏离后的位置。将初基原胞结构文件\textbf{POSCAR}重命名为\textbf{POSCAR1}，而\textbf{SPOSCAR}重命名为\textbf{POSCAR}:~\\
-\textrm{mv~POSCAR~POSCAR1}\\
-\textrm{mv~SPOSCAR~POSCAR}\\
-为了\textrm{VASP}计算，要求有如下的\textbf{INCAR}文件和\textbf{KPOINTS}文件，如图\ref{Si_phonon-INCAR,Si_phonon-KPOINTS}所示:~
+\textcolor{blue}{\textrm{phonopy~-d~--dim=``2~2~2''}}\\
+该命令将产生三组文件，包括\textrm{SPOSCAR}，\textrm{DISP}和\textrm{POSCAR}-\{\textrm{number}\}。其中\textrm{SPOSCAR}保存的是理想超晶胞结构，\textrm{DISP}记录的是各方向的原子偏离信息，而\textrm{POSCAR}-\{\textrm{number}\}是超晶胞中原子发生偏离后的位置。将初基原胞结构文件\textrm{POSCAR}重命名为\textrm{POSCAR1}，而\textrm{SPOSCAR}重命名为\textrm{POSCAR}:~\\
+\textcolor{magenta}{\textrm{mv~POSCAR~POSCAR1}}\\
+\textcolor{magenta}{\textrm{mv~SPOSCAR~POSCAR}}
+
+为了\textrm{VASP}计算，要求有如下的\textrm{INCAR}文件和\textrm{KPOINTS}文件，分别如图\ref{Si_phonon-INCAR},\ref{Si_phonon-KPOINTS}所示:~
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_phonon-INCAR.png}
+\includegraphics[height=0.9in,viewport=0 0 640 110,clip]{Si_phonon-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{用于声子计算的\textrm{Si}的输入参数控制\textrm{INCAR}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_phonon-INCAR}
 \end{figure}
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_phonon-KPOINTS.png}
+\vskip -20pt
+\includegraphics[height=0.9in,viewport=0 20 160 130,clip]{Si_phonon-KPOINTS.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{用于声子计算的\textrm{Si}的$\vec k$空间布点\textrm{KPOINTS}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_phonon-KPOINTS}
 \end{figure}
-根据上述输入文件，可以开启一个标准的\textrm{VASP}静算。
+根据上述输入文件，可以开启一个标准的\textrm{VASP}静态计算。
 \subsection{声子计算}
-\textrm{VASP}计算结束，将会产生\textbf{DYNMAT}文件。用以下命令可由该文件提取出力常数数据:\\
-\textrm{phonopy~--fc~vasprun.xml}\\
-将会生成\textbf{FORCE\_CONSTANTS}文件，下一步\textrm{phonopy}的输入文件\textbf{INPHON}文件中会涉及该文件。
-\subsubsection{\bf{INPHON}}
-\textbf{INPHON}内容如图\ref{Si_phonon-INPHON}所示:~
+\textrm{VASP}计算结束，将会产生\textrm{DYNMAT}文件。用以下命令可由该文件提取出力常数数据:\\
+\textcolor{blue}{\textrm{phonopy~--fc~vasprun.xml}}\\
+将会生成\textrm{FORCE\_CONSTANTS}文件，下一步\textrm{phonopy}的输入文件\textrm{INPHON}文件中会涉及该文件。
+\subsubsection{\rm{INPHON}}
+\textrm{INPHON}内容如图\ref{Si_phonon-INPHON}所示:~
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_phonon-INPHON.png}
+\includegraphics[height=1.0in,viewport=0 0 810 140,clip]{Si_phonon-INPHON.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{用于声子计算的\textrm{Si}的控制\textrm{INPHON}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si_phonon-INPHON}
 \end{figure}
 
-将\textbf{POSCAR}重命名为\textbf{POSCAR}$2\times2\times2$，\textbf{POSCAR1}重命名为\textbf{POSCAR}，执行声子计算:~\\
-\textrm{phonopy~-p}\\
+将\textrm{POSCAR}重命名为\textrm{POSCAR}$2\times2\times2$，\textrm{POSCAR1}重命名为\textrm{POSCAR}，执行声子计算:~\\
+\textcolor{blue}{\textrm{phonopy~-p}}\\
 该计算会产生绘制声子色散关系图所需的文件\textrm{band.yaml}，为了绘制声子色散图，执行以下命令:~\\
-\textrm{bandplot~band.yaml}
+\textcolor{blue}{\textrm{bandplot~band.yaml}}\\
 注意\textrm{bandplot}命令与\textrm{phonopy}在同一个执行目录\textrm{bin}下，运行后会产生弹出式窗口如图\ref{Fig:Si_pop-out_screen}所示。最后，\textrm{Si}在$2\times2\times2$超晶胞的声子色散分布如图\ref{Fig:Si_phonon}所示，为了表明计算收敛的必要性，$3\times3\times3$和$4\times4\times4$超晶胞的结果也和$2\times2\times2$的结果列在同一张图中，结果表现出了更低的声学支和更高的光学支振动。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_pop-out_screen.png}
+\includegraphics[height=3.5in,viewport=0 0 1050 650,clip]{Si_pop-out_screen.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{运行\textrm{bandplot}时的弹出界面.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Fig:Si_pop-out_screen}
 \end{figure}
 
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{Si_phonon}
+\includegraphics[height=3.5in,viewport=0 0 780 600,clip]{Si_phonon}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{The Flow of calculation for KS-ground state in VASP.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small 不同的超晶胞计算的\textrm{Si}的声子谱曲线.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Fig:Si_phonon}
 \end{figure}
-有了这些声子计算的基本数据，就可以通过计算从理论上估计晶体的熵、自由能和热膨胀等热力学物性数据。当然，这个部分内容已经超出本讲义的范围，兹不赘言。
 
-%\appendix{作业}
+有了这些声子计算的基本数据，就可以通过计算从理论上估计晶体的熵、自由能和热膨胀等热力学物性数据。当然，这些内容已经超出本讲义的范围，兹不赘言。此外，关于\textrm{VASP}计算材料的光学和介电函数性质、\textit{GW}校正的计算参数设置和相关内容，有兴趣的读者可以参阅:~\url{http://cms.mpi.univie.ac.at/wiki/index.php}
+
+%\section{光学性质计算}
+%\section{GW计算}
+\newpage
+课后作业
 \begin{enumerate}
 	\item 材料模拟的重要任务之一就是在开展实验之前筛选更合适的候选组成，在实验室在开发新的催化剂时，通常需要一系列的研究工作，因此“计算先行”策略显得尤为重要。如果我们需要寻找\textrm{Pt}-基体系的应力效应，请描述如何在应用层面上如何模拟该体系，并列出需要考虑的重要问题。
-	\item 长期以来，\textrm{Pt}是非常重要的催化剂。研究表明，从催化活性、结构稳定性以及价格经济等角度考虑，\textrm{Pt3Y}($\mathrm{L1}_2$结构)都是很好的催化剂性能。假设我们已知\textrm{Pt}和\textrm{Y}的体相基态能分别是-6.056\textrm{eV/atom}和\textrm{-6.466}\textrm{eV/atom}，根据\ref{sec:FCC-Pt}，构建\textrm{FCC}晶格(四个原子)的\ch{Pt3Y}，并确定平衡态晶格参数。
-	\item 根据上题结果，用$4\times4\times2.5$的\ch{Pt3Y}(111)薄层(5层，80个原子)和$15\mathrm{\AA}$真空层模拟\ch{Pt3Y}表面，计算一个氧原子在\textrm{FCC}间隙位(两个\textrm{Pt}和一个\textrm{Y}原子)的吸附能和\textrm{Pt-O}键长。\footnote{如果需要，为节省时间，可以给学生提供已收敛的\textbf{CONTCAR}文件}因为该吸附位是已知的氧原子在\ch{Pt3Y}(111)表面的最优先吸附位，假设我们已知如下能量:~\\
+	\item 长期以来，\textrm{Pt}是非常重要的催化剂。研究表明，从催化活性、结构稳定性以及价格经济等角度考虑，\textrm{Pt3Y}($\mathrm{L1}_2$结构)都是很好的催化剂性能。假设我们已知\textrm{Pt}和\textrm{Y}的体相基态能分别是~--6.056\textrm{~eV/atom}和\textrm{--6.466}\textrm{~eV/atom}，根据\ref{Sec:FCC-Pt}介绍的计算流程，构建\textrm{FCC}晶格(四个原子)的\ch{Pt3Y}，并确定平衡态晶格参数。
+	\item 根据上题结果，用$4\times4\times2.5$的\ch{Pt3Y}(111)薄层(5层，80个原子)和$15\mathrm{\AA}$真空层模拟\ch{Pt3Y}表面，计算一个氧原子在\textrm{FCC}间隙位(两个\textrm{Pt}和一个\textrm{Y}原子)的吸附能和\textrm{Pt-O}键长。\footnote{如果需要，为节省时间，可以给学生提供已收敛的\textrm{CONTCAR}文件}因为该吸附位是已知的氧原子在\ch{Pt3Y}(111)表面的最优先吸附位，假设我们已知如下能量:~\\
 		\begin{itemize}
-			\item 氧的原子能量:~-1.5514\textrm{eV}
-			\item \ch{Pt3Y}表面的基态能量:~548.6599\textrm{eV}
+			\item 氧的原子能量:~--1.5514\textrm{~eV}
+			\item \ch{Pt3Y}表面的基态能量:~548.6599\textrm{~eV}
 		\end{itemize}
 	\item 根据上题，说明为什么计算\ch{Pt3Y}(111)表面的吸附能时，我们需要构建这样大的超晶胞。
-	\item 锗(\textrm{Ge})是一种和硅(\textrm{Si})类似的半导体材料(曾被称为“亚硅”)。根据\ref{sec:Si}计的步骤算并绘制\textrm{Ge}的能带图(选择平衡晶胞参数5.784\AA)，你能从能带图中看到带隙(\textrm{band gap})吗?如果看不到带隙，找到可能的主要原因，并说明怎么才能克服这些问题。
+	\item 锗(\textrm{Ge})是一种和硅(\textrm{Si})类似的半导体材料(曾被称为“亚硅”)。根据\ref{Sec:Si-band}介绍的步骤算并绘制\textrm{Ge}的能带图(选择平衡晶胞参数$5.784\mathrm{\AA}$)，你能从能带图中看到带隙(\textrm{band gap})吗?如果看不到带隙，找到可能的主要原因，并说明怎么才能克服这些问题。
 \end{enumerate}
