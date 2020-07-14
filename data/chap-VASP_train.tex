@@ -1,9 +1,9 @@
 \chapter{VASP应用示例}\label{chap:VASP_train}
-\textrm{VASP}软件\cite{VASP_manual}是维也纳大学\textrm{(Universit\"at~Wien)}的\textrm{G.~Kresse}等开发的第一原理模拟软件包。作为目前最流行的第一原理材料模拟软件，\textrm{VASP}以其优异的计算性能，成为\textrm{DFT}计算软件中的执牛耳者。\cite{CPC177-6_2007}只要最多几十个\textrm{CPU}的并行规模，即可处理上百个原子的体系。究其原因，\textrm{VASP}采用的\textrm{PAW~(Projector Augmented-Wave)}方法\cite{PRB50-17953_1994,PRB59-1758_1999}，平衡了传统赝势方法和全电子计算优点，兼顾了计算的精度和效率。特别是在计算过程中采用实空间优化的投影函数\textrm{(Projector)}的思想，将主要的计算任务变换到实空间完成，大大节省了基组的维度，并能保证计算过程中的计算精度和效率。在此基础上，\textrm{VASP}通过引入多种优化算法，有效地提升了矩阵对角化和电荷密度搜索的效率。此外特别值得一提的是，程序的并行实现中，通过快速\textrm{Fourier}变换\textrm{(Fast Fourier Transformation,~FFT)}计算网格与并行计算的计算格点的分配平衡，大大提升了软件的并行效率。相比于其他第一原理计算软件，\textrm{VASP}从物理思想与方法、优化算法和并行计算实现等多个方面都表现出更为出色的性能。有关\textrm{VASP}软件实现的文献，主要如下:~
+\textrm{VASP}是目前最流行的第一原理材料模拟软件包之一，由维也纳大学\textrm{(Universit\"at~Wien)}的\textrm{G.~Kresse}等开发。\cite{VASP_manual}\textrm{VASP}以其优异的计算性能，成为\textrm{DFT}计算的执牛耳者。\cite{CPC177-6_2007}只要几十个\textrm{CPU}的并行规模，即可处理上百个原子的体系。\textrm{VASP}能在众多材料模拟软件中脱颖而出，究其原因，一方面是因为\textrm{VASP}采用的\textrm{PAW~(Projector Augmented-Wave)}方法\cite{PRB50-17953_1994,PRB59-1758_1999}，平衡了传统赝势方法和全电子计算优点，保证了计算的精度;~另一方面是在计算过程中采用实空间优化的投影函数\textrm{(Projector)}的思想，将主要的计算任务变换到实空间完成，大大节省了基组的维度，并能兼顾计算过程中的计算精度和效率。在此基础上，\textrm{VASP}通过引入多种优化算法，有效提升了矩阵对角化和电荷密度搜索的效率。此外特别值得一提的是，程序的并行实现中，重点解决了快速\textrm{Fourier}变换\textrm{(Fast Fourier Transformation,~FFT)}网格与并行计算的计算格点的分配平衡问题，大大提升了软件的并行效率。相比于其他第一原理计算软件，\textrm{VASP}从物理思想与方法、优化算法和并行计算实现等多个方面都有出色的性能展示度。关于\textrm{VASP}软件实现的文献，主要如下:~
 \begin{enumerate}
 	\item 物理思想与方法:~\textrm{PAW}赝势方法:~参阅文献\inlinecite{PRB50-17953_1994,PRB59-1758_1999};~投影函数的实空间优化，可参阅文献\inlinecite{JPCM6-8245_1994,PRB44-13063_1991,PRB44-8503_1991}
-	\item 优化算法:~参阅文献\inlinecite{CMS6-15_1996,PRB54-11169_1996}
-	\item 高效的并行计算:~ \textrm{FFT}网格与计算格点的分配:~可参阅\textrm{VASP}源代码的\textrm{mgrid.F}
+	\item 优化算法:~主要包括准\textrm{Newton}方法、\textrm{Davidson}方法、共轭梯度(\textrm{Conjugate Gradient, CG})方法和\textrm{RM-DIIS~(Residual minimization scheme, direct inversion in the iterative subspace)}方法，可参阅文献\inlinecite{CMS6-15_1996,PRB54-11169_1996}
+	\item 高效的并行计算:~ \textrm{FFT}网格与计算格点的分配:~\textrm{VASP}中应用了大量的\textrm{FFT}变换，为了提高计算效率，\textrm{VASP}在实程序实现时建立了\textrm{FFT}网格和并行计算网格的映射关系，实现\textrm{FFT}网格计算的并行化。 %可参阅\textrm{VASP}源代码的\textrm{mgrid.F}
 \end{enumerate}
 
 \section{VASP概览}
@@ -28,7 +28,7 @@
 		\end{itemize}
 \end{enumerate}
 
-\textrm{VASP}为各类计算参数提供了默认值，对于一般的简单体系，这些参数默认值基本能满足计算要求。这样的设计，方便初学者快速上手。
+\textrm{VASP}为各类计算和控制参数提供了默认值，对于一般的简单体系，这些参数默认值基本能满足计算要求。这样的设计，极大地方便了初学者快速上手。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=4.5in,width=3.6in,viewport=0 0 480 630,clip]{VASP_procedure.png}
@@ -38,12 +38,14 @@
 \label{Fig:VASP_procedure}
 \end{figure}
 
+%\section{VASP的安装}
+
 \textbf{本讲义以下算例主要来自文献\inlinecite{J.-G._Lee}。由于\textrm{VASP}版本的不同，以及用户用于计算的\textrm{POTCAR}数据差异，所以重复讲义中的算例时，计算过程和结果的数据，绝对数值可能会有一些出入，但应该不会差别太大。特此说明。}
 
 \section{原子/分子计算}\label{Sec:atom-Pt}
-真空中的孤立原子的基态能量是\textrm{VASP}中最简单的算例，通过学习金属\textrm{Pt}原子的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还将学习根据已有输出完成更高精度计算的方法，并完成后续的其他计算。
+真空中的孤立原子的基态能量是\textrm{VASP}中最简单的算例，通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 \subsection{输入文件}
-\textrm{VASP}要求所有的计算都在指定的计算目录下(比如针对当前的算例，可以建目录\textrm{Pt\_atom})完成。首先准备\textrm{VASP}计算所必须的四个输入文件，这四个文件的文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是g计算对象构成元素的原子数据，包括具体原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。
+\textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}
 \subsubsection{\rm{INCAR}}
 \textrm{INCAR}是\textrm{VASP}计算的核心控制文件。对于\textrm{Pt}的计算，\textrm{INCAR}的设置如图\ref{Pt_atom:INCAR}所示。
 \begin{figure}[h!]
@@ -76,7 +78,7 @@
 \label{Pt_atom:POSCAR}
 \end{figure}
 \subsubsection{\rm{POTCAR}}
-\textrm{POTCAR}是计算对象构成元素的数据集文件，包含了\textrm{PAW}计算所需的原子数据，\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}见图\ref{Pt_atom:POTCAR}。本次计算使用\textrm{PAW\_PBE}数据集，是兼顾精度和效率的考虑。\textrm{POTCAR}文件可通过复制\textrm{VASP}提供的原子数据集库中的对应元素数据得到:\\
+\textrm{POTCAR}是计算对象构成元素的数据集文件，包含了\textrm{PAW}计算所需的原子数据，见图\ref{Pt_atom:POTCAR}。本次计算使用\textrm{PAW\_PBE}数据集，是兼顾精度和效率的考虑。\textrm{POTCAR}文件可通过复制\textrm{VASP}提供的原子数据集库中的对应元素数据得到:\\
 \textcolor{magenta}{\textrm{cat~~potcar.PBE.paw/Pt/POTCAR~>~POTCAR}}\\
 \begin{figure}[h!]
 \centering
@@ -143,10 +145,10 @@
 \label{Pt_atom:continuruntime}
 \end{figure}
 
-再次运行\textrm{VASP}，程序除了读取原来四个输入文件的内容，还将读取\textrm{CHGCAR}和\textrm{WAVECAR}的内容，经过约18次迭代后，计算结果将进一步优化$\mathrm{E}_0=-.555\mathrm{eV/atom}$，磁矩为$\mathrm{mag}=2.0000\mu_{\mathrm{B}}$，这次得到的原子基态能量将被用于后续体相\textrm{Pt}的结合能\textrm{(Cohesive energy)}计算。
+再次运行\textrm{VASP}，程序除了读取原来四个输入文件的内容，还将读取\textrm{CHGCAR}和\textrm{WAVECAR}的内容，经过约近二十次迭代后，计算结果将进一步优化$\mathrm{E}_0=-.555\mathrm{~eV/atom}$，磁矩为$\mathrm{mag}=2.0000\mu_{\mathrm{B}}$，这次得到的原子基态能量将被用于后续体相\textrm{Pt}的结合能\textrm{(Cohesive energy)}计算。
 
 \section{面心立方Pt晶胞计算}\label{Sec:FCC-Pt}
-这里计算的是面心立方\textrm{(Face-centered Cubic, FCC)}结构的\textrm{Pt}晶体，晶胞参数为$a_0=3.975\mathrm{\AA}$。已知每个面心立方中含有4个\textrm{Pt}原子，结构弛豫(包括离子和电子能量的最小化)时，要求保持面心立方对称性。
+这里计算的是面心立方\textrm{(Face-centered Cubic, FCC)}结构的\textrm{Pt}晶体，晶胞参数为$a_0=3.975~\mathrm{\AA}$。已知每个面心立方中含有4个\textrm{Pt}原子，结构弛豫(包括离子和电子能量的最小化)时，要求保持面心立方对称性。
 \subsection{输入文件}
 计算\textrm{FCC-Pt}，除了\textrm{POTCAR}与\textrm{Pt}原子相同，其余输入原子依次讨论如下:~
 \subsubsection{\rm{INCAR}}
@@ -192,7 +194,7 @@ $\vec k$空间布点数为$9\times9\times9$，布点方案由\textrm{Monkhorst-P
 
 \subsection{用shell脚本运行VASP计算}
 \subsubsection{脚本运行}
-这里学习用\textrm{shell}脚本来提交\textrm{VASP}运行任务，后面的练习也将用脚本提交任务。提交\textrm{VASP}计算的\textrm{shell}脚本(文件名为run.vasp)的内容如图\ref{Pt_FCC:run}所示:
+这里学习用\textrm{shell}脚本来提交\textrm{VASP}运行任务，后面的练习也将用脚本提交任务。提交\textrm{VASP}计算的\textrm{shell}脚本(文件名为\textcolor{green}{\textrm{run.vasp}})的内容如图\ref{Pt_FCC:run}所示:
 \begin{figure}[h!]
 \centering
 \vskip -12pt
@@ -202,7 +204,7 @@ $\vec k$空间布点数为$9\times9\times9$，布点方案由\textrm{Monkhorst-P
 \end{figure}
 	\begin{itemize}
 		\item 命令形式\textcolor{magenta}{~\textrm{nohup}~[执行命令]~\&~}表示将执行命令提交为后台进程，这样即使当前用户在计算执行过程中执行别的计算命令甚至退出，也不会影响计算任务正常的执行。这里\textrm{``nohup''}是\textrm{``no hang-up''}的缩写。
-		\item 执行命令\textcolor{magenta}{\textrm{mpirun~-np~8~}}表示此次\textrm{VASP}计算用8个\textrm{CPU}并行完成。
+		\item 命令中\textcolor{magenta}{\textrm{mpirun~-np~8~}}表示此次\textrm{VASP}计算用8个\textrm{CPU}并行完成。
 		\item \textcolor{magenta}{\$\textrm{VASP\_RUN\_PATH~}}表示\textrm{VASP}的执行文件的路径。
 	\end{itemize}
 将该执行脚本和\textrm{VASP}计算的四个输入文件放在同一个目录下，加可执行权限:~\\
@@ -247,63 +249,16 @@ $\vec k$空间布点数为$9\times9\times9$，布点方案由\textrm{Monkhorst-P
 不难看出，离子步迭代收敛时的基态能量$\mathrm{E}_0$的值为~--24.387\textrm{~eV}，换言之，当面心立方的晶胞参数为$3.975\mathrm{\AA}$时，体系中\textrm{Pt}原子的基态能量为$-24.387/4=-6.097\mathrm{eV/atom}$，比\ref{Sec:atom-Pt}节计算的孤立原子\textrm{Pt}的基态能量要低。
 
 下一节我们将讨论晶胞参数的优化和影响\textrm{VASP}计算精度的重要参数的确定。
-	\begin{itemize}
-		\item 命令形式\textcolor{magenta}{~\textrm{nohup}~[执行命令]~\&~}表示将执行命令提交为后台进程，这样即使当前用户在计算执行过程中执行别的计算命令甚至退出，也不会影响计算任务正常的执行。这里\textrm{``nohup''}是\textrm{``no hang-up''}的缩写。
-		\item 执行命令\textcolor{magenta}{\textrm{mpirun~-np~8~}}表示此次\textrm{VASP}计算用8个\textrm{CPU}并行完成。
-		\item \textcolor{magenta}{\$\textrm{VASP\_RUN\_PATH~}}表示\textrm{VASP}的执行文件的路径。
-	\end{itemize}
-将该执行脚本和\textrm{VASP}计算的四个输入文件放在同一个目录下，加可执行权限:~\\
-\textcolor{magenta}{chmod~+x~run.vasp}\\% \# change the file mode to execution mode\\
-然后就可以运行如下命令执行\textrm{VASP}计算:\\
-	\textcolor{magenta}{./run.vasp }\\
-		计算过程中，通过\textrm{Hellman-Feynman}定理计算作用在每个离子步位置上的原子受力，离子步迭代过程直到全部原子的受力都满足收敛标准\textit{EDIFFG}($0.02\mathrm{eV/\AA}$)。在计算过程中，可以通过以下命令监控原子受力情况的变化:\\
-		\textcolor{magenta}{grep~\`~drift~\'~ OUTCAR}
-\subsubsection{\rm{nohup.out}}
-用\textcolor{magenta}{$\mathrm{nohup}~[\cdots]~\&$}提交的任务，计算过程会保存在输出文件\textrm{nohup.out}中，如图\ref{Pt_FCC:nohupout}所示。
-\newpage
-\begin{figure}[h!]
-\centering
-\includegraphics[height=5.5in,viewport=0 20 620 730,clip]{Pt_FCC-nohupout.png}
-\caption{\small \textrm{VASP}计算\textrm{FCC-Pt}的输出文件\textrm{nohup.out}.}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Pt_FCC:nohupout}
-\end{figure}
-
-因为参数\textit{ALGO}=\textrm{fast}，因此第一次离子步弛豫中，最初5步电子步迭代的矩阵对角化是\textrm{Davidson}方法，然后是\textrm{RMM-DIIS}方法;~电子步迭代结束后，根据原子受力，将原子移动到新的位置(完成离子弛豫)，在新的原子构型下开始电子步迭代，循环往复，直到满足收敛标准(\textit{EDIFF}和\textit{EDIFFG})。最后出现的\textrm{``writing wave functions''}表明运行结束。波函数将写入\textrm{WAVECAR}文件中(参照\textrm{INCAR}中的输出设置)。
-\subsection{计算结果}
-\subsubsection{\rm{CONTCAR}}
-\textrm{CONTCAR}文件记录的是结构弛豫完成时晶体中原子的位置，本算例\textrm{FCC-Pt}弛豫后的\textrm{CONTCAR}内容如图\ref{Pt_FCC:CONTCAR}所示。
-\begin{figure}[h!]
-\centering
-\includegraphics[height=1.8in,viewport=0 0 580 230,clip]{Pt_FCC-CONTCAR.png}
-\caption{\small \textrm{VASP}计算中记录\textrm{FCC-Pt}弛豫后结构的文件\textrm{CONTCAR}.}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Pt_FCC:CONTCAR}
-\end{figure}
-
-显然，结构弛豫完成后，第二个原子由起始位置\textrm{(0.510000,~0.500000,~0.00000)}弛豫到\textrm{FCC}结构要求的原子位置(存在一定的数值误差)。
-\subsubsection{\rm{OUTCAR}}
-为监控离子步弛豫过程中体系总能量收敛的情况，可以使用以下命令检索输出文件\textrm{OUTCAR}:\\
-\textcolor{magenta}{\textrm{grep~~\'~energy~without~entropy~\'~~OUTCAR}}\\
-结果如图\ref{Pt_FCC:OUTCAR_totene}所示。
-\begin{figure}[h!]
-\centering
-\includegraphics[height=1.2in,viewport=0 0 680 130,clip]{Pt_FCC-OUTCAR_totene.png}
-\caption{\small \textrm{VASP}计算\textrm{FCC-Pt}的弛豫过程的基态总能收敛情况.}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Pt_FCC:OUTCAR_totene}
-\end{figure}
-
-不难看出，离子步迭代收敛时的基态能量$\mathrm{E}_0$的值为~--24.387\textrm{~eV}，换言之，当面心立方的晶胞参数为$3.975\mathrm{\AA}$时，体系中\textrm{Pt}原子的基态能量为$-24.387/4=-6.097\mathrm{eV/atom}$，比\ref{Sec:atom-Pt}节计算的孤立原子\textrm{Pt}的基态能量要低。
-
-下一节我们将讨论晶胞参数的优化和影响\textrm{VASP}计算精度的重要参数的确定。
 \section{收敛测试}\label{Sec:convergence}
 对于一个正常的\textrm{DFT}迭代计算过程，随着迭代次数递增，体系总能(或自由能)会快速下降，随后进到逐渐平稳变化的区域，并伴随小的振荡，最终达到基态能量，如图\ref{Fig:convergence}所示，这个过程称为\textbf{收敛}。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.1in,viewport=0 0 740 600,clip]{Ab-initio-Ene.png}
+\includegraphics[height=4.1in,viewport=0 33 740 600,clip]{Ab-initio-Ene.png}
 \caption{\small 迭代计算中的能量收敛示意图，引自文献\inlinecite{Comput-phys}.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Fig:convergence}
 \end{figure}
 
-一般地，对于任何研究体系，首先必须保证迭代计算能收敛，然后才谈得上进行有意义的\textrm{DFT}物性计算。同时，面对一个全新的计算体系，合理的收敛测试也是非常必要的，否则难免遭遇为克服迭代计算收敛的困难，浪费过多计算资源和精力的尴尬。考虑到\textrm{DFT}计算的本质是变分过程，因此只有各种初始条件选择都比较合理，计算才可能收敛到正确的结果，否则很可能收敛到错误的结果。在收敛测试中，最重要的参数主要是
+一般地，对于任何研究体系，首先必须保证迭代计算能收敛，然后才谈得上进行有意义的\textrm{DFT}物性计算。同时，面对一个全新的计算体系，合理的收敛测试也是非常必要的，否则难免遭遇为克服迭代计算收敛的困难，浪费过多计算资源和精力的尴尬。考虑到\textrm{DFT}计算的本质是变分过程，因此只有各种初始条件选择都比较合理，计算才可能收敛到正确的结果，否则很可能收敛到错误的结果。在收敛测试中，最重要的参数主要包括:
 \begin{itemize}
 	\item \textrm{INCAR}中的参数\textit{ENCUT}
 	\item \textrm{KPOINTS}中的$\vec k$空间布点数目
@@ -315,9 +270,9 @@ $\vec k$空间布点数为$9\times9\times9$，布点方案由\textrm{Monkhorst-P
 	E_{\mathrm{cut}}\geqslant\dfrac12|\vec k+\vec G|^2
 	\label{eq:Ecut}
 \end{equation}
-换句话说，截断能确定的是平面波基波矢的上限。一般截断能的取值范围是$150\sim400\mathrm{~eV}$，其默认阈值由计算体系组成元素的\textrm{POTCAR}中\textit{ENMAX}和\textit{ENMIN}中的极大值和极小值确定。但是，在具体计算过程中，合理的截断能应该通过测试确定。本次练习使用的\textrm{shell}脚本中，将包含3个输入文件(\textbf{INCAR},\textbf{KPOINTS}和\textbf{POSCAR})的设置，并且有4个不同的截断能参数\textit{ENCUT}(200,~225,~250和350\textrm{~eV})。计算中$\vec k$空间布点数固定($9\times9\times9$)。由此可以同时确定\textit{ENCUT}的收敛情况和平衡态晶胞参数。
+换句话说，截断能确定的是平面波基波矢的上限。一般截断能的取值范围是$150\sim400\mathrm{~eV}$，其默认阈值由计算体系组成元素的\textrm{POTCAR}中\textit{ENMAX}和\textit{ENMIN}中的极大值和极小值确定。但是，在具体计算过程中，合理的截断能应该通过测试确定。本次练习使用的\textrm{shell}脚本中，将包含3个输入文件(\textrm{INCAR},\textrm{KPOINTS}和\textrm{POSCAR})的设置，并且有4个不同的截断能参数\textit{ENCUT}(200,~225,~250和350\textrm{~eV})。计算中$\vec k$空间布点数固定($9\times9\times9$)。由此可以同时确定\textit{ENCUT}的收敛情况和平衡态晶胞参数。
 \subsubsection{\rm{shell}脚本\rm{run.lattice}}
-这里给出一个\textrm{shell}脚本的范例(文件名\textrm{run.lattice})，如图\ref{Pt_FCC-runlattice}所示，当前截断能为\textit{ENCUT}=250\textrm{~eV}。
+这里给出一个\textrm{shell}脚本的范例(文件名\textcolor{green}{\textrm{run.lattice}})，如图\ref{Pt_FCC-runlattice}所示，当前截断能为\textit{ENCUT}=250\textrm{~eV}。
 \begin{figure}[h!]
 \centering
 \hspace*{-20pt}
@@ -326,7 +281,9 @@ $\vec k$空间布点数为$9\times9\times9$，布点方案由\textrm{Monkhorst-P
 \label{Pt_FCC-runlattice}
 \end{figure}
 
-从该\textrm{shell}脚本内容看，晶胞参数将\textrm{\$a}从$3.90\mathrm{\AA}$到$4.06\mathrm{\AA}$变化，并且每改变依次晶胞参数将会执行一轮\textrm{VASP}晶格弛豫计算流程。因为是收敛测试，而平面波的收敛与自旋无关，因此\textrm{VASP}计算不考虑自旋极化的影响。有必要指出的是，在\textrm{shell}脚本中，生成\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POSCAR}文件的各命令行必须连续，不能被注释或空行隔断，这一点请初学者务必注意。
+从该\textrm{shell}脚本内容看，晶胞参数将\textrm{\$a}从$3.90\mathrm{\AA}$到$4.06\mathrm{\AA}$变化，并且每改变一次晶胞参数将会执行一轮\textrm{VASP}晶格弛豫计算流程。因为是收敛测试，而平面波的收敛与自旋无关，因此\textrm{VASP}计算不考虑自旋极化的影响。
+
+有必要指出的是，在\textrm{shell}脚本中，生成\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POSCAR}文件的各命令行必须连续，不能被注释或空行隔断，这一点请初学者务必注意。
 \subsubsection{\rm{测试脚本的执行}}
 与\ref{Sec:FCC-Pt}的\textrm{shell}脚本执行类似，首先可执行权限:\\
 \textcolor{magenta}{\textrm{
@@ -419,7 +376,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_Bulk-POSCAR}
 \end{figure}
 
-用\ref{Sec:FCC-Pt}的\textrm{shell}脚本\textrm{run.vasp}提交计算任务至后台运行，计算过程中可以检查输出文件\textrm{nohup.out}或\textrm{OSZICAR}的内容可以监控计算过程，图\ref{Pt_Bulk-OSZICAR}给出\textrm{nohup.out}的部分结果:
+用\ref{Sec:FCC-Pt}的\textrm{shell}脚本\textcolor{green}{\textrm{run.vasp}}提交计算任务至后台运行，计算过程中可以检查输出文件\textrm{nohup.out}或\textrm{OSZICAR}的内容可以监控计算过程，图\ref{Pt_Bulk-OSZICAR}给出\textrm{nohup.out}的部分结果:
 \begin{figure}[h!]
 \centering
 \hspace*{-25pt}
@@ -429,12 +386,13 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_Bulk-OSZICAR}
 \end{figure}
 
-这里\textrm{N}统计的是两个离子步计算之间的电子步迭代次数，\textrm{E}是当前的自由能，\textrm{dE}是两次电子步迭代之间的电子步能量改变，\textrm{d~eps}是能量本征值的改变(势保持不变)。\textrm{ncg}所在的列表示完成一次迭代时，\textrm{Hamiltonian}算符\textbf{H}作用于轨道的次数;~\textrm{rms}是每次迭代中全部占据轨道的初始残矢\textrm{(residual vector)}——$\mathbf{R}=(\mathbf{H}-\varepsilon)\mathbf{S}|\phi\rangle$——之和，该值表明轨道的收敛情形的优劣;~\textrm{rms(c)}表明一次迭代前后(即输入输出)的电荷密度差。
+这里\textrm{N}统计的是两个离子步计算之间的电子步迭代次数，\textrm{E}是当前的自由能，\textrm{dE}是两次电子步迭代之间的电子步能量改变，\textrm{d~eps}是能量本征值的改变(势保持不变)。\textrm{ncg}所在的列表示完成一次迭代时，\textrm{Hamiltonian}算符\textbf{H}作用于轨道的次数;~\textrm{rms}是每次迭代开始时全部占据轨道的初始残矢\textrm{(residual vector)}——$\mathbf{R}=(\mathbf{H}-\varepsilon)\mathbf{S}|\phi\rangle$——之和，该值表明轨道的收敛情形的优劣;~\textrm{rms(c)}表明一次迭代前后(即输入输出)的电荷密度差。
 
-\textrm{VASP}程序中设定，完成最初五次电子步迭代后，才开始电荷密度的迭代，所以最初5次电子步迭代时，没有\textrm{rms(c)}输出。电子步结束时，最后一行的\textrm{F}表示电子步达到收敛的自由能，根据同一行的$\mathrm{E}_0$值(0\textrm{K}时$\sigma\rightarrow0$)，可以算出超晶胞中的单个原子\textrm{Pt}的能量为--193.8569/32=--6.058\textrm{~eV/atom}。不难看出，该值比晶格参数为$3.975\mathrm{\AA}$时计算的\textrm{FCC-Pt}的原子能量--6.056\textrm{eV/atom}仅有微小变化。
+\textrm{VASP}程序为了使迭代过程尽可能快速收敛，设定完成最初五次电子步迭代后，才开始电荷密度的迭代，所以最初5次电子步迭代时，没有\textrm{rms(c)}输出。电子步结束时，最后一行的\textrm{F}表示电子步达到收敛的自由能，根据同一行的$\mathrm{E}_0$值(0\textrm{K}时$\sigma\rightarrow0$)，可以算出超晶胞中的单个原子\textrm{Pt}的能量为--193.8569/32=--6.058\textrm{~eV/atom}。不难看出，该值比晶格参数为$3.975\mathrm{\AA}$时计算的\textrm{FCC-Pt}的原子能量--6.056\textrm{eV/atom}仅有微小变化。
 
-如果迭代计算过程中出错，\textrm{VASP}将会输出错误或警告提示信息，并终止程序运行。此外也可以通过\textrm{kill}命令终止程序。这里命令为:~\\
-\textcolor{magenta}{\textrm{killall -9 \$VASP计算进程}}
+如果迭代计算过程中出错，\textrm{VASP}将会输出错误或警告提示信息，并终止程序运行。此外也可以通过\textrm{kill}命令终止程序。命令为:~\\
+\textcolor{magenta}{\textrm{killall -9 VASP\_pid}}\\
+这里\textrm{VASP\_pid}是当前执行的\textrm{VASP}进程号。
 
 如果计算过程中发现有参数或设置问题，可以在计算目录中产生一个\textrm{STOPCAR}文件，并向其中增添一行内容:~\\
 \textit{LSTOP}=\textrm{.TRUE.}\\
@@ -448,7 +406,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 		E_{\mathrm{coh}}&=E_{\mathrm{atom}}-E_{\mathrm{bulk}}=(-0.528)-(-6.058)=5.53\mathrm{eV/atom}
 	\end{aligned}
 \end{displaymath}
-该值与\textrm{Benthmann等}~的计算值5.53\textrm{eV/atom}\cite{PRB78-205302_2008}一致，与实验值5.45\textrm{eV/atom}\cite{Landolt-Bornstein}的数值也比较吻合。
+该值与\textrm{Benthmann等}~的计算值5.53\textrm{~eV/atom}\cite{PRB78-205302_2008}一致，与实验值5.45\textrm{~eV/atom}\cite{Landolt-Bornstein}的数值也比较吻合。
 \subsection{\rm{Pt}的空位生成能计算}
 室温条件下，金属体相内都会存在空位，空位浓度约为$10^{-6}$量级。显然，我们不可能为了模拟一个空位，就用$10^6$量级的超晶胞。合理的做法应该是选择合适尺度的超晶胞并在其中设计原子空位，要求作为重复单元的超晶胞间的这些空位相互作用可以忽略，由此计算晶格中的空位能。因为计算的超晶胞中仅有一个空位，计算时将\textrm{INCAR}中关闭对称性。
 \begin{figure}[h!]
@@ -459,14 +417,14 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Pt_Bulk-INCAR-modified}
 \end{figure}
 
-\textbf{POSCAR}文件可以从之前的超晶胞算例中\textrm{copy}来，将总的原子数减为31，扣除位于(0.5,~0.5,~0.5)处的\textrm{Pt}原子，产生空位，如图所示:~
+\textrm{POSCAR}文件可以从之前的超晶胞算例中\textrm{copy}来，将总的原子数减为31，扣除位于(0.5,~0.5,~0.5)处的\textrm{Pt}原子，产生空位，如图\ref{Pt_vacancy-POSCAR}所示:~
 \begin{figure}[h!]
 \centering
 \vskip -3pt
 \includegraphics[height=0.85in,viewport=0 15 750 120,clip]{Pt_vacancy-POSCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{模拟\textrm{FCC-Pt}超晶胞中含有一个空位时\textrm{POSCAR}文件的修改分.}}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Pt_Bulk-POSCAR}
+\label{Pt_vacancy-POSCAR}
 \end{figure}
 
 后续计算与\textrm{Pt}超晶胞计算类似，从\textrm{OSZICAR}文件中看到，含有31个\textrm{Pt}原子和一个空位的超晶胞基态能量是--186.95325\textrm{~eV/atom}。
@@ -475,8 +433,8 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \begin{displaymath}
 	E_{\mathrm{v}}^f=E_{\mathrm{v}}-\dfrac{N-1}N\times E_{\mathrm{bulk}}=-186.95325-\dfrac{31}{32}(-193.85695)=0.846\mathrm{eV/atom}
 \end{displaymath}
-这里$E_{\mathrm{v}}$是含有一个空位的超晶胞基态总能，$N$是理想超晶胞的原子个数，$E_{\mathrm{bulk}}$是理想晶体的总能(上个算例中的值是-193.85695~\textrm{eV})。我们这里的计算结果与其他计算值0.68\textrm{eV/vacancy}或通过正电子子湮灭测量的值1.35\textrm{eV/vacancy}\cite{PSSA102-47_1987}有不小的差别。\textrm{Mattsson}等发现，只要引入体系的表面误差校正，就能改善\textrm{Pt}的空位形成能，结果为1.18\textrm{eV/vacancy}。\cite{PRB66-214110_2002}对于其他的材料，比如\textrm{W}\cite{JNM383-244_2009}或\ch{SiC}\cite{JMS44-1828_2009}，用\textrm{DFT}计算的缺陷形成能一般都能与实验吻合得比较好。\textrm{CONTCAR}文件中可以看到空位附近原子的弛豫情况。\textrm{WAVECAR}是二进制文件，保存的是最终得到的电子轨道波函数，亦即\textrm{Kohn-Sham}方程的解。在本次算例中，因为\textrm{INCAR}中的设置，则未将波函数写到\textrm{WAVECAR}中。
-\subsubsection{\bf{CHGCAR}绘图}
+这里$E_{\mathrm{v}}$是含有一个空位的超晶胞基态总能，$N$是理想超晶胞的原子个数，$E_{\mathrm{bulk}}$是理想晶体的总能(上个算例中的值是~--193.85695~\textrm{eV})。我们这里的计算结果与其他计算值0.68\textrm{~eV/vacancy}或通过正电子子湮灭测量的值1.35\textrm{~eV/vacancy}\cite{PSSA102-47_1987}有不小的差别。\textrm{Mattsson}等发现，只要引入体系的表面误差校正，就能改善\textrm{Pt}的空位形成能，结果为1.18\textrm{eV/vacancy}。\cite{PRB66-214110_2002}对于其他的材料，比如\textrm{W}\cite{JNM383-244_2009}或\ch{SiC}\cite{JMS44-1828_2009}，用\textrm{DFT}计算的缺陷形成能与实验值吻合得比较好。\textrm{CONTCAR}文件中可以看到空位附近原子的弛豫情况。\textrm{WAVECAR}是二进制文件，保存的是最终得到的电子轨道波函数，亦即\textrm{Kohn-Sham}方程的解。在本次算例中，因为\textrm{INCAR}中的设置，则未将波函数写到\textrm{WAVECAR}中。
+\subsubsection{\rm{CHGCAR}绘图}
 \textrm{VASP}运行结束，会将电荷密度写到\textrm{CHG}和\textrm{CHGCAR}文件，这两个文件的内容基本相同，主要包括:~晶格矢量、原子位置，电荷密度等。表示电荷密度的网格与超晶胞的形态成正比，网格的数目由\textrm{OUTCAR}中\textrm{FFT}变换的网格数\textit{NFXF}、\textit{NGYF}和\textit{NGZF}确定。将\textrm{CHGCAR}或\textrm{CHG}中的电荷密度按超晶胞体积划分，就可以得到电荷密度的轮廓。例如，本次练习得到的\textrm{CHGCAR}文件的内容如图\ref{Pt_vacancy-CHGCAR}所示:~
 \begin{figure}[h!]
 \centering
@@ -504,14 +462,14 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \end{displaymath}
 这里$E_{\mathrm{inter}}^{\mathrm{bulk}}$和$E^{\mathrm{bulk}}$是带有间隙的超晶胞和理想超晶胞的总能，$n$是间隙处的原子数目，$E^{\mathrm{atom}}$是孤立原子的能量。
 
-各种缺陷的形成能都可以用这些简化模型来模拟。用户在构造这种包含缺陷的超晶胞时，必须切记，超晶胞必须要足够大，确保缺陷间的相互作用足够小。
+各种缺陷的形成能都可以用这些简化模型来模拟。用户在构造这种包含缺陷的超晶胞时，必须切记，设计的超晶胞要足够大，确保缺陷间的相互作用足够小。
 
 进一步推广，如果存在两个固相\textrm{A}和{B}，它们可以形成\textrm{AB}相，则三个体相的能量能量差
 \begin{displaymath}
 	\Delta H_{\mathrm{AB}}=E_{\mathrm{AB}}^{\mathrm{bulk}}-E_{\mathrm{A}}^{\mathrm{bulk}}-E_{\mathrm{B}}^{\mathrm{bulk}}
 \end{displaymath}
 定义为固体生成焓\textrm{(the formation enthalpy)}。
-\section{\rm{Pt~(111)}表面的计算}
+\section{\rm{Pt~(111)}表面的计算}\label{Sec:Surface-Pt}
 实际应用中，材料的表面性质和体相性质一样重要。表面的很多基本性质，比如表面能\textrm{(surface energy)}、功函数\textrm{(work function)}、吸附能\textrm{(adsorption energy)}、吸附原子迁移势垒\textrm{(barrier energy for transport of the adatom)}等可用来确定材料的用途。比如表面能是表面形貌学研究(向外/向内弛豫、重构、屈曲分析)和裂纹扩散到断裂研究的重要因素。此外，功函数、吸附能/解吸能和势垒能量是研究表面氧化、薄膜表面和纳米结构的生长和稳定、腐蚀、钝化和催化反应的重要决定因素。只有真正理解了这些表面现象，才有望从设计层面获得更高性能的材料。本节中，我们将学习构建\textrm{Pt}原子构成的表面，并研究上述提到的表面属性的计算。
 \subsection{\rm{Pt~(111)}表面}
 首先构建\textrm{Pt~(111)}面薄层并计算其基态总能、弛豫能和表面能的计算方案。这些数据将成为后续进一步计算吸附能和迁移势垒能量的参考基准。
@@ -549,13 +507,13 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \begin{displaymath}
 	a_{\mathrm{HCP}}=\dfrac{a_{\mathrm{FCC}}}{\sqrt2}=\dfrac{3.977}2=2.812\mathrm{\AA}
 \end{displaymath}
-这就是\textrm{Pt}原子的最近邻原子间距离。\textrm{POSCAR}中共有45个\textrm{Pt}原子，按\textrm{FCC}结构的\textit{a-b-c-a-b}顺序排列。一般说，差不多当原子堆积厚度达到九层才能使薄层内两侧表层的原子间相互作用忽略不计。不过在本次练习中，我们的模型只使用五层原子，主要是考虑到节省学习过程中的时间，同时也是因为由此(薄层层数)产生误差也还在可以接受的范围内。
+这就是\textrm{Pt}原子的最近邻原子间距离。\textrm{POSCAR}中共有45个\textrm{Pt}原子，按\textrm{FCC}结构的\textit{a-b-c-a-b}顺序排列。一般说，差不多当原子堆积厚度达到九层才能使薄层内两侧表层的原子间相互作用忽略不计。不过在本次练习中，我们的模型只使用五层原子，主要是考虑到节省学习过程中的等待时间，同时也因为由此(薄层层数过少)产生误差尚在可接受的范围内。
 
 在\textrm{FCC-Pt}体相划出晶格矢量为
 \begin{displaymath}
 	(a,0,0),~\bigg(\dfraca2,\dfrac{\sqrt3a}2,0\bigg),~(0,0,c)
 \end{displaymath}
-的\textrm{Pt}原子密堆积单胞，这里$a=2.812\mathrm{\AA}$,~$c=\sqrt{8/3}a=1.633a$。用$3\times3\times6$~(含真空层)的单胞堆积得到模拟\textrm{Pt~(111)}表面的超晶胞，它是表面模拟中的最小重复单元。
+的\textrm{Pt}原子密堆积单胞，这里$a=2.812\mathrm{\AA}$,~$c=\sqrt{8/3}a=1.633a$。用$3\times3\times6$~(含真空层)的单胞堆积得到模拟\textrm{Pt~(111)}表面的超晶胞，构成模拟\textrm{FCC}中\textrm{(111)}表面的最小重复单元。
 
 为了稳定薄层模型，最底层(九个原子)完全固定，而紧邻底层(九个原子)则只在$x$和$y$方向固定。其余三层则允许在各方向弛豫。\textrm{Pt~(111)}表面模拟使用的\textrm{POSCAR}文件如下图\ref{Pt_surface-POSCAR}所示:
 \begin{figure}[h!]
@@ -582,7 +540,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 最后一行就是体系弛豫完成后的自由能和基态能量。
 
-在\ref{sec:Pt-bulk}节，我们计算过体相超晶胞中的一个\textrm{Pt}原子的能量是~--6.058\textrm{~eV/atom}，因此未弛豫表面能\textrm{(the unrelaxed surface energy)}，$\gamma_{\mathrm{unrel}}$可由下式确定:~
+在\ref{Sec:bulk-Pt}节，我们得到体相超晶胞中的一个\textrm{Pt}原子的能量是~--6.058\textrm{~eV/atom}，因此未弛豫表面能\textrm{(the unrelaxed surface energy)}，$\gamma_{\mathrm{unrel}}$可由下式确定:~
 \begin{displaymath}
 	\begin{aligned}
 		\gamma_{\mathrm{s}}^{\mathrm{unrel}}&=\dfrac12\big(E_{\mathrm{slab}}^{\mathrm{unrel}}-NE_{\mathrm{atom}}^{\mathrm{bulk}}\big)=\dfrac12[-261.0906-45(-6.058)]
@@ -766,24 +724,24 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 以下算例说明如何用\textrm{NEB}方法确定最小能量路径并计算\textrm{Pt~(111)}面上吸附的\textrm{O}原子由\textrm{HCP}间隙位(如图\ref{Pt_NEB-init-POSCAR}所示)扩散到近邻的\textrm{FCC}间隙位的表面扩散势垒能量。结果如图\ref{Pt_NEB-config}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.1in,viewport=0 5 470 500,clip]{Pt_NEB-init-POSCAR.png}
-%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{\textrm{Pt~(111)}表面\textrm{HCP}间隙位吸附\textrm{O}原子时的\textrm{POSCAR}结构文件}.}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{Pt_NEB-init-POSCAR}
-\end{figure}
-\subsubsection{\rm{Pt~(111)-slab-O-HCP}}
-
-采用\textrm{NEB}方法计算，首先要确定始态和终态构型的极小值。在\ref{subsec:}我们已经确定表面吸附终态\textrm{Pt~(111)-slab-O-FCC}的构型。这里，我们将用相同的方法确定始态\textrm{Pt~(111)-slab-O-HCP}的构型及能量，只是这里的\textrm{POSCAR}文件中要把\textrm{O}原子放在\textrm{HCP}的间隙位置。如图所示。
-\begin{figure}[h!]
-\centering
 \includegraphics[height=2.8in,viewport=0 10 1040 530,clip]{Pt_NEB-config.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{\textrm{O}原子(浅灰色球)在\textrm{Pt~(111)}的\textrm{HCP}间隙位(a)经过中间态(b)扩散到最近临的\textrm{FCC}间隙位(c)时的原子构型变化}.}%(与 文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_NEB-config}
 \end{figure} 
 
+\subsubsection{\rm{Pt~(111)-slab-O-HCP}}
+采用\textrm{NEB}方法计算，首先要确定始态和终态构型的极小值。在\ref{Sec:Surface-Pt}节我们已经确定表面吸附终态\textrm{Pt~(111)-slab-O-FCC}的构型。这里，我们将用相同的方法确定始态\textrm{Pt~(111)-slab-O-HCP}的构型及能量，只是这里的\textrm{POSCAR}文件中要把\textrm{O}原子放在\textrm{HCP}的间隙位置。如图\ref{Pt_NEB-init-POSCAR}所示。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=4.1in,viewport=0 5 470 500,clip]{Pt_NEB-init-POSCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{\textrm{Pt~(111)}表面\textrm{HCP}间隙位吸附\textrm{O}原子时的\textrm{POSCAR}结构文件}.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Pt_NEB-init-POSCAR}
+\end{figure}
+
 计算结果表明，收敛的基态能量是~--266.87\textrm{~eV/system}和\textrm{NEB}计算需要的输出文件，如\textrm{CONTCAR}和\textrm{OUTCAR}，可以确定始态能量极小值时的构型和原子位置。
-\subsubsection{用\rm{VTST}脚本运行\rm{NEB}}
+\subsubsection{\rm{用VTST脚本运行NEB}}
 \textrm{VTST}脚本\footnote{\textrm{VTST:~\url{http://theory.cm.utexas.edu/vtsttools/}}}是一个开源软件，提供有\textrm{VASP}的接口，可以方便地支持\textrm{VASP}开展\textrm{NEB}计算。下载\textrm{VTST}后，将源文件解压到\textrm{VASP}的源代码目录下，并用\textrm{make}命令编译全部$\ast.\mathrm{F}$文件(包括\textrm{neb.F}，\textrm{dynamt.F}等)得到新的可执行\textrm{NEB}版\textrm{VASP}。为了实现\textrm{NEB}计算，在\textrm{INCAR}文件中，除了修改必要的离子弛豫参数\textit{IBRON}=3外，额外增加3个参数\textit{IMAGES}=1，\textit{SPRING}=-5.0，\textit{LCLIMB}=\textrm{.TRUE.}。如图\ref{Pt_NEB-INCAR}所示。
 \begin{figure}[h!]
 \centering
@@ -796,7 +754,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 注意假想态的数目要与\textrm{CPU}的数目匹配，因为每个假想态要均衡地分配到\textrm{CPU}上去计算，以\textrm{CPU}数为8为例，假想态数目可选为1,2,4或8。脚本会在计算目录下新建目录，并将前述两类计算得到的\textrm{CONTCAR}文件复制到该目录下，并分别重命名为\textrm{CONTCAR1}(始态，\textrm{O}位于\textrm{HCP}间隙位)和\textrm{CONTCAR}(终态，\textrm{O}位于\textrm{FCC}间隙位)。由于本算例是简单的直接扩散，所以可以只用一个假想态，\textrm{VTST}将采用线性插值为中间假想态生成\textrm{POSCAR}文件。命令为:~\\
 \textcolor{magenta}{\textrm{$\sim$/vtstscripts/nebmake.pl~\textrm{CONTCAR1}~\textrm{CONTCAR2}~1}}\\
 \textrm{VTST}脚本会产生三个目录，分别为00(始态)，01(中间假想态)，02(终态)。在\textrm{POSCAR}文件中，原子位置的坐标将都会用正值表示，如$-0.001\rightarrow0.999$。其中目录00中的\textrm{OUTCAR}直接从\textrm{Pt~(111)-slab-O-HCP}中复制，类似地，目录02中的\textrm{OUTCAR}来自\textrm{Pt~(111)-slab-O-FCC}。这几个目录中的\textrm{OUTCAR}中最后得到的基态总能\textit{E0}将是计算扩散势垒的根据。计算中的\textrm{POTCAR}和\textrm{KPOINTS}也都完全相同。计算过程中，可以通过命令监控计算过程中原子受力变化的情况:\\
-\textcolor{magenta}{\textrm{grep~``max~atom''~OUTCAR}}\\
+\textcolor{magenta}{\textrm{grep~\`~max~atom~\'~OUTCAR}}\\
 
 %这里第一个数是当前假想态中受力最大的原子，
 当每个假想态上的原子受力低于力标准(本算例为$<0.05\mathrm{eV/\AA}$)，即达到收敛。如果起始受力太大($>10\mathrm{eV/\AA}$)，就要调整为更合适的起始结构重新来计算。
@@ -812,9 +770,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 这里所有数据按假想态的顺序排列，分别是力，基态总能以及基态总能与起始态的能量差。所有的数据文件(如\textrm{OUTCAR}、\textrm{WAVECAR}、\textrm{CHGCAR}等)都写到01目录内。一般一个\textrm{VTST}计算得到稳定的鞍点假想态，需要比较长的时间，因为这个假想态是亚稳态，实际上非常不稳定。
 \subsubsection{计算结果}
-脚本\textrm{nebbarrier.pl}输出的是反应坐标，即以能量路线上各假想态为横坐标，计算各假想态基态总能的能量差和每个假想态的原子的最大受力。
-
-\textcolor{red}{而脚本\textrm{nebresults.pl}则输出一系列的后处理数据文件。}
+脚本\textrm{nebbarrier.pl}输出的是反应坐标，即以能量路线上各假想态为横坐标，计算各假想态基态总能的能量差和每个假想态的原子的最大受力。 而脚本\textrm{nebresults.pl}执行后则输出一系列的后处理数据文件。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.0in,viewport=0 0 300 80,clip]{Pt_NEB-VTST-2.png}
@@ -877,7 +833,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 这样的参数设置会在计算过程中将保持基态电荷密度和势不变，最后得到每个$\vec k$点上的电子本征态。
 \subsubsection{\rm{计算结果}}
-\textrm{DOSCAR}文件给出了体系的态密度和积分态密度\textrm{(the integrated DOS)}(单位是态数目/\textrm{unit cell})，如图\ref{Pt_PDOS-d}所示。而\textrm{PROCAR}文件给出的是每个能带的轨道按轨道分量~\textit{s}-~/~\textit{p}-~/~\textit{d}-~/~\textit{f}-~投影的情况。
+\textrm{DOSCAR}文件给出了体系的态密度和积分态密度\textrm{(the integrated DOS)}(单位:~态数目/\textrm{unit cell})，如图\ref{Pt_PDOS-d}所示。而\textrm{PROCAR}文件给出的是每个能带的轨道按轨道分量~\textit{s}-~/~\textit{p}-~/~\textit{d}-~/~\textit{f}-~投影的情况。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.5in,viewport=0 20 830 620,clip]{Pt_PDOS-d.png}
@@ -891,7 +847,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 根据数据文件绘制\textrm{DOS}图，还需要知道体系的\textrm{Fermi}能级。命令如下:\\
 \textcolor{magenta}{\textrm{grep~fermi~OUTCAR}}\\
-将上述分波\textrm{DOS}的数据文件\textrm{pdos-Pt-O-46O.dat}导入\textrm{Xmgrace}，\textrm{MS}~\textrm{Excel}或\textrm{ORIGIN}中，第一列为绘图时的横轴，以\textrm{Fermi}能级为能量原点的能量划分，效果如图\ref{Pt_surface_PDOS}所示。此外还可以画出净的\textrm{Pt}薄层的分态密度。这里将总的态密度投影到各原子上表示为分态密度，并给出\textrm{Pt}的\textit{d}-\textrm{DOS}和\textrm{O}的\textit{p}-DOS。根据该态密度，可以定性地估计两种原子的成键的键强度:~例如，可以明显地看出\textrm{Pt-O}成键主要来自\textrm{Pt}-5\textit{d}和\textrm{O}-2\textit{p}轨道的杂化。
+将上述分波\textrm{DOS}的数据文件\textrm{pdos-Pt-O-46O.dat}导入\textrm{Xmgrace}，\textrm{MS}~\textrm{Excel}或\textrm{ORIGIN}等数据绘图软件中，第一列指定为绘图时的横坐标，并以\textrm{Fermi}能级为能量原点，可以得到效果如图\ref{Pt_surface_PDOS}所示的态密度图。此外还可以画出净的\textrm{Pt}薄层的分态密度。这里将总的态密度投影到各原子上表示为分态密度，并给出\textrm{Pt}的\textit{d}-\textrm{DOS}和\textrm{O}的\textit{p}-DOS。根据该态密度，可以定性地估计两种原子的成键的键强度:~例如，可以明显地看出\textrm{Pt-O}成键主要来自\textrm{Pt}-5\textit{d}和\textrm{O}-2\textit{p}轨道的杂化。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.5in,viewport=0 0 820 620,clip]{Pt_surface_PDOS.png}
@@ -904,8 +860,8 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 在引入能带理论的时候，已知自由电子的能量是$\vec k$的二次函数(开口向上的抛物线)，能量极小值位于$\vec k=0$~($\Gamma$点)，考虑到平移周期性，可以将能量函数平移到第一\textrm{Brillouin}区表示;~实际的周期体系由于周期性势函数的存在，能量在倒空间中的分布存在带隙\textrm{(band gap)}，也不一定关于$\Gamma$点对称，这是和自由电子的最大区别。因为周期势场内的电子既不是完全局域也不是完全的自由的。
 
 本次练习，将学习计算半导体\textrm{Si}的能带结构，我们将看到单个的\textrm{Si}原子堆积成固体\textrm{Si}时，原子轨道如何构成能带。该练习也将说明\textrm{Kohn-Sham}方程的能量$\varepsilon_{\vec k}^n$的表示，除了能带记号$n$，还必须包括波矢量子数$\vec k$。
-\subsection{对\rm{Si}的静态计算}
-首先根据\ref{Sec:bulk-Pt}的结构弛豫方法计算确定金刚石结构的\textrm{Si}晶胞为$a_0=5.47\mathrm{\AA}$。为了得到\textrm{Si}的电子结构，必须要完成两组连续计算:~即通过静态计算得到迭代收敛的基态电子密度，随后用获得的电子密度，按特定的对称性方向，直接计算(无需自洽迭代)得到能带。静态计算时，\textrm{INCAR}中设置参数\textit{ENCUT}=250;~\textrm{KPOINTS}的$\vec k$点数目设为$7\times7\times7$。金刚石结构的\textrm{Si}晶胞可以视为两套\textrm{FCC}结构错开($a$/4,$a$/4,$a$/4)排列，这里$a$即立方晶胞参数。所以\textrm{POSCAR}文件可以写成包含两个\textrm{Si}原子的\textrm{FCC}初基原胞\textrm{(primitive unit cell)}:如图\ref{Si_POSCAR}所示。
+\subsection{静态计算}
+首先根据\ref{Sec:bulk-Pt}的结构弛豫方法计算确定金刚石结构的\textrm{Si}晶胞为$a_0=5.47\mathrm{\AA}$。为了得到\textrm{Si}的电子结构，必须要完成两组连续计算:~即通过静态计算得到迭代收敛的基态电子密度，随后用获得的电子密度，按特定的对称性方向，直接计算(无需自洽迭代)得到能带。静态计算是获得电子基态信息的重要步骤，在结构弛豫后完成，也是材料电子学性质计算的起点。静态计算时，\textrm{INCAR}中设置参数\textit{ENCUT}=250;~\textrm{KPOINTS}的$\vec k$点数目设为$7\times7\times7$。金刚石结构的\textrm{Si}晶胞可以视为两套\textrm{FCC}结构错开($a$/4,$a$/4,$a$/4)排列，这里$a$即立方晶胞参数。所以\textrm{POSCAR}文件可以写成包含两个\textrm{Si}原子的\textrm{FCC}初基原胞\textrm{(primitive unit cell)}:如图\ref{Si_POSCAR}所示。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.3in,viewport=0 0 370 150,clip]{Si_POSCAR.png}
@@ -1023,7 +979,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \end{figure}
 
 在此基础上，通过\textrm{phonopy}程序产生若干超晶胞(如$2\times2\times2$超晶胞)，命令如下:~\\
-\textcolor{blue}{\textrm{phonopy~-d~--dim=``2~2~2''}}\\
+\textcolor{blue}{\textrm{phonopy~-d~--dim=~\`\`~2~2~2~\'\'}}\\
 该命令将产生三组文件，包括\textrm{SPOSCAR}，\textrm{DISP}和\textrm{POSCAR}-\{\textrm{number}\}。其中\textrm{SPOSCAR}保存的是理想超晶胞结构，\textrm{DISP}记录的是各方向的原子偏离信息，而\textrm{POSCAR}-\{\textrm{number}\}是超晶胞中原子发生偏离后的位置。将初基原胞结构文件\textrm{POSCAR}重命名为\textrm{POSCAR1}，而\textrm{SPOSCAR}重命名为\textrm{POSCAR}:~\\
 \textcolor{magenta}{\textrm{mv~POSCAR~POSCAR1}}\\
 \textcolor{magenta}{\textrm{mv~SPOSCAR~POSCAR}}
