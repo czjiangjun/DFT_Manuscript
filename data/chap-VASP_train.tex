@@ -38,7 +38,9 @@
 \label{Fig:VASP_procedure}
 \end{figure}
 
-%\section{VASP的安装}
+\section{VASP的安装}
+\subsection{软件编译的一般过程}\label{SubSec:Compilation}
+高级语言编写的程序，从源代码变成可执行的文件，必须经过编译\textrm{compilation}。编译的功能类似于翻译，把人类编写的符合高级语言语法规则的语句，翻译成计算机可以执行的指令。完整的编译过程包括四个步骤，如图\ref{Fig:Compiler}所示。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.0in,viewport=0 0 470 560,clip]{compiler_procedure.png}
@@ -46,8 +48,19 @@
 \caption{\small \textrm{软件编译的步骤示意(预编译-编译-汇编-链接).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Fig:Compiler}
 \end{figure}
-
-
+\begin{itemize}
+	\item 预处理\textrm{(Pre-Processing)}:~用预处理器\textrm{cpp}将根据源代码中以字符\#开头的指令要求，修改原始程序。如\textrm{C}程序中\textcolor{purple}{\textrm{\#include <stdio.h>}}指令告诉预处理器读系统头文件\textrm{stdio.h}的内容，并把它直接插入到程序文本中去。结果就得到另外一个\textrm{C}程序。%通常是 以.i作为文件扩展名的。
+	\item 编译\textrm{(Compiling)}:~在编译阶段，编译器\textrm{compiler}会检查代码的规范性，是否存在拼写和语法错误等，确定代码实际执行的具体任务和指令。检查无误后，编译器把代码翻译成汇编语言。汇编语言非常有用，它为不同高级语言不同编译器提供了通用的语言。比如\textrm{C}编译器和\textrm{Fortran}编译器产生的输出文件用的都是一样的汇编语言。用户可以使用\textrm{-S}选项来进行查看，该选项只完成编译过程而不进行汇编，生成汇编代码。
+	\item 汇编\textrm{(Assembling)}:~汇编阶段是把编译阶段生成的\textrm{.s}文件(汇编代码)转成目标文件。用户可使用\textrm{-c}选项就可看到汇编代码将转化为\textrm{.o}的二进制目标代码。
+	\item 链接\textrm{(Linking)}:~汇编生成二进制代码之后，就进入了链接阶段。用户采用高级语言编写的程序中，有相当一部分功能是由外部软件函数库或其他目标代码提供，无需用户自行编写(如输入输出命令、复杂函数的解法器等)，因此程序执行时就需要和这些函数库的支持。函数库一般分为静态库(后缀名一般为\textrm{.a})和动态库(后缀名一般为\textrm{.so})两种
+		\begin{itemize}
+			\item 静态库是指编译链接时，把库文件的代码全部加入到可执行文件中，因此生成的文件比较大，但在运行时就不再需要库文件支持
+			\item 动态库在编译链接时并没有把库文件的代码加入到可执行文件中，而在程序执行时由运行时链接文件加载库，这样可以节省系统的开销
+		\end{itemize}
+完成了链接之后，编译器就可以生成最终可执行文件。
+\end{itemize}
+\subsection{VASP的编译}
+本讲义将以\textrm{VASP~5.X}为例介绍\textrm{VASP}的编译过程，关于更高版本的\textrm{VASP~6.X}软件的编译，用户可参阅~\url{https://www.vasp.at/wiki/index.php/Installing_VASP.6.X.X}的介绍。\textrm{VASP~5.X}软件代码结构如图\ref{Fig:VASP_build}所示:~
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.5in,viewport=0 0 490 140,clip]{VASP_build.png}
@@ -55,7 +68,132 @@
 \caption{\small \textrm{VASP}软件的代码结构.}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Fig:VASP_build}
 \end{figure}
+\begin{itemize}
+	\item \textcolor{purple}{root/}:~是\textrm{VASP}代码的总目录，其中存放总编译安装脚本(\textrm{Makefile})和各种子目录
+	\item \textcolor{purple}{root/src}:~存放\textrm{VASP}的全部源代码和一些底层的\textrm{makefile}
+	\item \textcolor{purple}{root/src/lib}:~存放\textrm{VASP}自带库函数的源代码(用于\textrm{vasp.X.lib})和库函数编译的\textrm{makefile}
+	\item \textcolor{purple}{root/src/parser}:~存放\textrm{VASP}的\textrm{LOCPROJ}解析器的源代码和编译用的\textrm{makefile}(\textrm{VASP}版本\textrm{~>=5.4.4~}才会有该目录)
+	\item \textcolor{purple}{root/src/CUDA}:~存放\textrm{GPU}版本\textrm{VASP}中由\textrm{GPU}执行的\textrm{cuda}源代码
+	\item \textcolor{purple}{root/arch}:~存放针对各类不同编译环境的\textrm{makefile.include.arch}文件
+	\item \textcolor{purple}{root/build}:~\textrm{VASP}编译过程中，不同类型(如\textrm{standard}/\textrm{gamma-only}/\textrm{non-collinear})的代码在编译过程中产生的中间文件和目标文件，会保存到该目录下的相应子目录中
+	\item \textcolor{purple}{root/bin}:~用于存放编译生成的二进制文件的目录
+\end{itemize}
 
+\textrm{VASP}的安装就是编译并产生可执行文件的过程。
+根据\ref{SubSec:Compilation}的介绍，编译软件最重要的因素是编译器、编译选项和库函数。具体到\textrm{VASP}编译安装，考虑到\textrm{VASP}的源代码主要由\textrm{Fortran}语言编写，另有少量\textrm{C}语言代码，因此当前系统环境下必须正确安装如下应用(注意相应的版本号):~
+\begin{itemize}
+	\item \textrm{Fortran}语言编译器和\textrm{C}语言编译器
+	\item \textrm{MPI~(Message Passing Interface)}支持(用于编译并行版\textrm{VASP})
+	\item 各类数值函数求解库，如\textrm{BLAS},~\textrm{LAPACK},~\textrm{ScaLAPACK},~\textrm{FFTW}等
+\end{itemize}
+根据确定的编译器和库函数，选择\textrm{root/arch}中最吻合的\textrm{makefile.include.arch}文件，复制到根目录下。比如系统有\textrm{intel}编译器(这也是最常见的情况):~\\
+\textcolor{magenta}{\textrm{cp~arch/makefile.include.linux\_intel~~./makefile.include}}\\
+一般地，\textrm{makefile.include}的内容，特别是编译选项的设置，需要根据具体的系统环境修改，留待后面作单独介绍。如果所有选项设置完毕，可执行命令:\\
+\textcolor{magenta}{\textrm{make~all}}\\
+依次生成\textrm{standard}/\textrm{gamma-only}/\textrm{non-collinear}三种类型的可执行文件，或分别执行命令:\\
+\textcolor{magenta}{\textrm{make~std}}\\
+\textcolor{magenta}{\textrm{make~gam}}\\
+\textcolor{magenta}{\textrm{make~nlc}}\\
+也将得到这三种类型可执行文件。
+
+如果要编译支持\textrm{GPU}计算的\textrm{VASP}，执行如下命令(仍以\textrm{intel}编译器为例):\\
+\textcolor{magenta}{\textrm{cp~arch/makefile.include.linux\_intel\_cuda~~./makefile.include}}\\
+修改编译参数后，分别执行命令:\\
+\textcolor{magenta}{\textrm{make~gpu}}\\
+\textcolor{magenta}{\textrm{make~gpu\_nlc}}\\
+得打支持\textrm{GPU}计算的\textrm{VASP}。目前的\textrm{VASP}的\textrm{gamma}版不支持\textrm{GPU}计算。
+
+\subsection{VASP的编译选项}
+熟悉软件编译的用户一定知道，编译选项的选择非常依赖编译器和库函数的版本，因此准确地确定编译选项几乎是软件编译安装中最重要的环节，非常依赖用户的个人经验。这里就\textrm{VASP}编译中的编译选项作一般性介绍:~
+\subsubsection{\rm{预编译}}
+\texrtrm{makefile.include}中有关预编译的变量主要为\\
+\textrm{CPP}:~指定使用的预编译器
+\begin{itemize}
+	\item 使用\textrm{intel}的\textrm{Fortran}预编译器:\\
+		\textcolor{brown}{\textrm{CPP~=~fpp~-f\_com=no~-free~-w0~\$*\$(FUFFIX)~\$*\$(SUFFIX) \$(CPP\_OPTIONS)}}
+	\item 使用\textrm{cpp}预编译器:\\
+		\textcolor{brown}{\textrm{CPP~=~/usr/bin/cpp~-P~-C~-traditional~\$*\$(FUFFIX)~>~\$*\$(SUFFIX)~\$(CPP\_OPTIONS)}}
+\end{itemize}
+\textrm{CPP\_OPTIONS}:~针对不同类型和不同条件(如内存使用上限)的预处理控制参数\\
+	\textcolor{brown}{\textrm{CPP\_OPTIONS~= ~[-Dflag1~[-Dflag2]~ $\cdots$~ ]}}
+\subsubsection{\rm{编译选项}}
+\textrm{Fortran}编译器编译时添加编译选项格式为:\\
+\textcolor{brown}{\textrm{\$(FC)~~\$(FREE)~~\$(FFLAGS)~~\$(OFLAG)~~\$(INCS)}}\\
+\begin{itemize}
+	\item \textrm{Free}:~是指定\textrm{Fortran}编译器接受某些自由格式的代码，不受源代码行长度限制
+		\begin{itemize}
+			\item 采用\textrm{intel}编译器时:\\
+				\textcolor{brown}{\textrm{FREE=-free~-names~lowercase}}
+			\item 采用\textrm{gfortran}编译器时:\\
+				\textcolor{brown}{\textrm{FREE=-ffree-form~-ffree-line-length-none}}
+		\end{itemize}
+	\item \textrm{FC}:~指定当前可选择的\textrm{Fortran}编译器(比如\textrm{gfortran/ifort/mpif90/mpiifort}等等)
+	\item \textrm{FCL}:~编译器带链接库函数方式，比如采用\textrm{intel}的\textrm{MKL}库时:\\
+		\textcolor{brown}{\textrm{FCL=\$(FC)}~-mkl}
+	\item \textrm{OFLAG}:~编译的优化选项(默认为:~\textcolor{brown}{\textrm{OFLAG=-O2}})
+	\item \textrm{FFLAGS}:~更多许可的编译选项。比如为方便程序查错(\textrm{debug})，可以添加选项:\\
+		\textcolor{brown}{\textrm{FFLAG+=-g}}
+	\item \textrm{OFLAG\_IN}:~绝大部分情况下设置:\\
+		\textcolor{brown}{\textrm{OFLAG\_IN=\$(OFLAG)}}
+	\item \textrm{DEBUG}:~编译时主程序\textrm{main.F}的优化选项，一般设置:\\
+		\textcolor{brown}{\textrm{DEBUG=-O0}}
+	\item \textrm{INCS}:~指定包含在其中的对象(\textrm{objects}):\\
+		\textcolor{brown}{\textrm{INCS=-Idirectory-with-files-to-be-included}}
+\end{itemize}
+\subsubsection{\rm{链接库函数}}
+链接库函数形式为:\\
+\textcolor{brown}{\textrm{\$(FCL)~~-o~~vasp~~..objects..\$(LLIBS)~~\$(LINK)}}
+\begin{itemize}
+	\item \textrm{LLIBS}:~指定链接的库或对象，一般格式为:\\
+		\textcolor{brown}{\textrm{LLIBS~=~[-Ldirectory~-llibrary]~[path/library.a]~[path/object.o]}}
+\end{itemize}
+一般用户需要指定多个数学库(如\textrm{BLAS/LAPACK/scaLAPACK}等)，如最常用的\textrm{intel-MKL}库时，设置为:\\
+\textcolor{brown}{\textrm{
+	MKL\_PATH~~ = ~~\$(MKLROOT)/lib/intel64\\
+BLACS~~ = ~~ -lmkl\_blacs\_openmpi\_lp64\\
+SCALAPACK ~~ = ~~  \$(MKL\_PATH)/libmkl\_scalapack\_lp64.a ~\$(BLACS)\\
+LLIBS ~~ = ~~ \$(SCALAPACK) ~\$(LAPACK) }}\\
+如果使用其它的编译器和库函数，请参考\textrm{root/arch/}所提供的相应的\textrm{makefile.include.arch}中的编译选项调整和选择相应的设置。
+
+$\ast$注意，如果选用\textrm{LAPACK~>=3.6}，直接链接\textrm{LAPACK3.6}或更高版本时，编译时会出错，这是因为子程序\textrm{DGEGV}已经被\textrm{DGGEV}替代。解决的步骤为:~
+\begin{enumerate}
+	\item 在\textrm{makefie.include}预编译处添加:\\
+		\textcolor{brown}{\textrm{CPP\_OPTIONS~+= ~-DLPACK36}}
+	\item 在源代码\textrm{./src/symbol.inc}中添加:\\
+		\textcolor{brown}{\textrm{
+			\!~ routines ~replaced~ in~ LAPACK~ >=3.6\\
+\#ifdef~ LAPACK36\\
+\#define~ DGEGV~ DGGEV\\
+\#endif}}
+\end{enumerate}
+这样就会在预编译时，将所有代码张调用的\textrm{DGEGV}替换为\textrm{DGGEV}。
+
+\subsubsection{\rm{链接对象}}
+编译\textrm{VASP}的标准配置的链接对象(子程序)列表见\textrm{root/src/.objects}文件中的\textrm{SOURCE}变量，此外需要的链接对象由\textrm{makefile.include}配置(比如\textrm{FFT~(Fast-Fourier-Transforms)}库生成的对象等):\\
+\textcolor{brown}{\textrm{OBJECTS~= ~$\cdots$ objects. $\cdots$}}
+
+\subsubsection{\rm{FFT}库}
+\begin{itemize}
+	\item \textrm{OBJECTS}:~指定\textrm{VASP}编译需要的\textrm{FFTW}的一些用于编译的对象或静态库，形式为:\\
+\textcolor{brown}{\textrm{OBJECTS~= ~$\cdots$~fftw3d.o~~ fftmpiw.o~ $\cdots$}}
+	\item \textrm{INCS}:~指定\textrm{FFTW}-库的对象，形式为\\
+\textcolor{brown}{\textrm{INCS=-Idirectory-that-holds-fftw3f}}
+\end{itemize}
+具体应用中
+\begin{itemize}
+	\item 采用\textrm{MKL}封装的\textrm{FFTW}(预编译设置包含\textcolor{brown}{\textrm{CPP\_OPIONS~=~$\cdots$~-DMPI~$\cdots$}}):\\
+		\textcolor{brown}{\textrm{
+			OBJECTS~= ~fftmpiw.o~~ fftmpi\_map.o~~ fftw3d.o ~~fft3dlib.o $\setminus$ \\
+         \$(MKLROOT)/interfaces/fftw3xf/libfftw3xf\_intel.a\\
+INCS~=~ -I\$(MKLROOT)/include/fftw }}
+	\item 使用\textrm{Juergen~Furtmuller}的\textrm{FFT}变换，设置为:\\
+		\textcolor{brown}{\textrm{
+			OBJECTS~= ~fftmpiw.o~~ fftmpi\_map.o~~ fftw3dfurth.o ~~fft3dlib.o \\
+INCS~= }}
+\end{itemize}
+类似地，如果使用其它\textrm{FFTW}的库函数和链接，请参考\textrm{root/arch/}所提供的相应的\textrm{makefile.include.arch}中的编译选项调整和选择相应的设置。
+\subsubsection{\rm{特定编译规则}}
+\newpage
 \textbf{本讲义以下算例主要来自文献\inlinecite{J.-G._Lee}。由于\textrm{VASP}版本的不同，以及用户用于计算的\textrm{POTCAR}数据差异，所以重复讲义中的算例时，计算过程和结果的数据，绝对数值可能会有一些出入，但应该不会差别太大。特此说明。}
 
 \section{原子/分子计算}\label{Sec:atom-Pt}
