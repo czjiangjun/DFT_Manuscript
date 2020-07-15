@@ -192,7 +192,107 @@ INCS~=~ -I\$(MKLROOT)/include/fftw }}
 INCS~= }}
 \end{itemize}
 类似地，如果使用其它\textrm{FFTW}的库函数和链接，请参考\textrm{root/arch/}所提供的相应的\textrm{makefile.include.arch}中的编译选项调整和选择相应的设置。
-\subsubsection{\rm{特定编译规则}}
+\subsubsection{\rm{源代码部分编译规则}}
+\begin{itemize}
+	\item \textrm{FFT}对象有关规则:\\
+		\textcolor{brown}{\textrm{
+			OBJECTS\_O1 ~+= ~fft3dfurth.o ~fftw3d.o ~fftmpi.o ~fftmpiw.o\\
+OBJECTS\_O2 ~+= ~fft3dlib.o }}
+	\item 源代码部分的特定编译规则:~在\textrm{root/src/makefile}文件中有\textrm{VASP}源代码的一些特定编译规则，其形式为:\\
+		\textcolor{brown}{\textrm{\$(FC) ~\$(FREE) ~\$(FFLAGS\_x) ~\$(OFLAG\_x) ~\$(INCS\_x)}}\\
+		这里\textrm{x}代表$1/2/3/\mathrm{IN}$
+		\begin{itemize}
+			\item \textrm{FFLGS\_x}:~默认值:~\textcolor{brown}{\textrm{FFLAGS\_x~=~\$(FFLAGS)}}， $\mathrm{x}=1, 2, 3, \mathrm{IN}$
+			\item \textrm{OFLGS\_x}:~默认值:~\textcolor{brown}{\textrm{OFLAGS\_x~=~-Ox}}， $\mathrm{x}=1, 2, 3, ~\mathrm{OFLG\_IN}$~=~-O2
+			\item \textrm{INCS\_x}:~默认值:~\textcolor{brown}{\textrm{INCS\_x~=~\$(INCS)}}， $\mathrm{x}=1, 2, 3, \mathrm{IN}$
+			\item \textrm{OFLGS\_x}:~默认值:~\textcolor{brown}{\textrm{OFLAGS\_x~=~-Ox}}， $\mathrm{x}=1, 2, 3, ~\mathrm{OFLG\_IN}$~=~-O2
+		\end{itemize}
+		采用这些特定规则编译生成的对象的指定方式是:~
+		\begin{itemize}
+			\item \textrm{OBJECTS\_O1, OBJECTS\_O2, OBJECTS\_O3, OBJECTS\_IN}:~一般针对默认的编译优化选项为\textrm{-O1}和\textrm{-O2}
+			\item \textrm{SOURCE\_O1, SOURCE\_O2, OBJECTS\_IN}:~在\textrm{.object}文件中用来指定需要特别编译的子程序
+		\end{itemize}
+		比如要改掉默认编译选项\textrm{-O1}，可以按照如下方式指定编译规则:~\\
+		\textcolor{brown}{\textrm{
+			SOURCE\_O1=\\
+OBJECTS\_O1~= ~$\cdots$ objects-list $\cdots$ }}
+\end{itemize}
+\subsubsection{\rm{VASP}自带的函数库}
+针对\textrm{VASP}自带函数库的编译规则
+\begin{itemize}
+	\item \textrm{CPP\_LIB}:~指定预编译器\\
+		\textcolor{brown}{\textrm{CPP\_LIB=\$(CPP)}}
+	\item \textrm{FP\_LIB}:~指定\textrm{Fortran}编译器\\
+		\textcolor{brown}{\textrm{FC\_LIB=\$(FC)}}\\
+		注意\textrm{VASP}的库函数可以不用\textrm{MPI}支持，因此，如果\textrm{FC=mpif90}，\textrm{FC\_LIB}可以指定另外的\textrm{MPI}编译器，比如\textrm{FC\_LIB=ifort}
+	\item \textrm{FFLAGS\_LIB}:~指定\textrm{Fortran}编译选项，包括优化等级，最常用的设置是:\\
+		\textcolor{brown}{\textrm{FFLAGS\_LIB=-O1}}
+	\item \textrm{FREE\_LIB}:~指定\textrm{Fortran}编译的源代码中的指令不受行长度限制，最常用的设置是:\\
+		\textcolor{brown}{\textrm{FREE\_LIB=\$(FREE)}}
+	\item \textrm{CC\_LIB}:~指定\textrm{C}编译器，可以不用\textrm{MPI}支持，一般编译器为\textrm{gcc,icc}等
+	\item \textrm{CFLAGS\_LIB}:~指定\textrm{C}编译选项，包括优化等级，最常用的设置是:\\
+		\textcolor{brown}{\textrm{CFLAGS\_LIB=-O}}
+	\item \textrm{OBJECTS\_LIB}:~指定\textrm{VASP}自带库的非标准编译对象:\\
+		\textcolor{brown}{\textrm{OBJECTS\_LIB=linpack\_double.o}}\\
+		注意:~如果编译\textrm{VASP}时，预编译选项有\textrm{-Duse\_shmem}，则编译选项必须加上\textrm{getshmem.o}，即:\\
+		\textcolor{brown}{\textrm{OBJECTS\_LIB=$\cdots$getshmem.o $\cdots$}}
+\end{itemize}
+\subsubsection{\rm{LOCPROJ}的解析代码编译选项}
+\begin{itemize}
+	\item \textrm{CXX\_PARS}:~指定\textrm{C++}编译器(如:~\textrm{g++,icpc})
+	\item 对编译选项增加内容:~\textcolor{brown}{\textrm{LIBS~+=~ parser}}
+	\item 对链接对象增加:~\textcolor{brown}{\textrm{LLIBS~+=~ -Lparser ~-lparser ~-lstdc++}}
+\end{itemize}
+\subsubsection{\rm{Wannier90}接口编译选项}
+\begin{itemize}
+	\item 用户下载\textrm{Wannier90}后，编译出库函数\textrm{libwannier.a}
+	\item 编译\textrm{Wannier90}接口(预编译选项\textrm{-DVASP2WANNIER90}或\textrm{-DVASP2WANNIER90v2})，编译选项增加:\\
+		\textcolor{brown}{\textrm{LLIBS~+=~ /your-wannier90-directory/libwannier.a}}
+\end{itemize}
+\subsubsection{\rm{libbeef}(备选)}
+\begin{itemize}
+	\item 用户下载\textrm{libbeef}并编译出动态库
+	\item 编译\textrm{VASP}用的\textrm{BEEF~van-der-Waals}泛函(预编译选项\textrm{-Dlibbeef})，编译选项增加:\\
+		\textcolor{brown}{\textrm{LLIBS~+=~ -Lyour-libbeef-directory~ -lbeef }}
+\end{itemize}
+\subsubsection{\rm{VASP的GPU计算部分的编译选项}}
+\begin{itemize}
+	\item \textrm{CUDA\_ROOT}:~指定\textrm{CUDA}的安装位置，例如:\\
+\textcolor{brown}{\textrm{CUDA\_ROOT~ :=~ /opt/cuda }}
+	\item \textrm{CUDA\_LIB}:~指定\textrm{CUDA}的有关的库函数，例如:\\
+\textcolor{brown}{\textrm{CUDA\_LIB~ :=~ -L\$(CUDA\_ROOT)/lib64 ~-lnvToolsExt ~-lcuda ~-lcufft ~-lcublas}}
+	\item \textrm{NVCC}:~指定\textrm{CUDA}的编译器和选项，例如:\\
+		\textcolor{brown}{\textrm{NVCC~ :=~ \$(CUDA\_ROOT)/bin/nvcc ~-g }}
+	\item \textrm{OBJECTS\_GPU}:~指定\textrm{FFT}编译的对象和链接(含静态库)，例如，对\textrm{FFTW}:\\
+\textcolor{brown}{\textrm{OBJECTS\_GPU~ =~ fftmpiw.o ~fftmpi\_map.o ~fft3lib.o ~fftw3d\_gpu.o ~fftmpiw\_gpu.o}}
+	\item \textrm{GENCODE\_ARCH}:~针对当前\textrm{GPU}架构的编译器选项:~
+		\begin{itemize}
+			\item 对\textrm{Kepler}架构:\\
+\textcolor{brown}{\textrm{GENCODE\_ARCH~ :=~ gencode=arch=compute\_35, ~code= $\setminus$\`\` ~sm\_35,~compute\_35$\setminus$~\'\'}}
+			\item 对\textrm{Maxwell}架构:\\
+\textcolor{brown}{\textrm{GENCODE\_ARCH~ :=~ gencode=arch=compute\_53, ~code= $\setminus$\`\` ~sm\_53,~compute\_53$\setminus$~\'\'}}
+\end{itemize}
+可以通过多个\textrm{\`~gencode~\'}声明来编译跨平台的可执行文件。
+	\item \textrm{MPI\_INC}:~指定\textrm{MPI}的\textrm{include}目录，方便\textrm{CUDA}找到该目录，例如:\\
+\textcolor{brown}{\textrm{MPI\_INC~ :=~ /opt/openmpi/include}}\\
+该选项一般可以通过\textrm{mpicc ~~\-\-show}查看
+	\item \textrm{CPP\_GPU}:~\textrm{GPU}编译的预编译选项:
+		\begin{itemize}
+			\item 标准选项:\\
+				\textcolor{brown}{\textrm{-DCUDA\_GPU to build cross-platform sources for GPU,~-DUSE\_PINNED\_MEMORY to use pinned memory for transfer buffers, and~-DRPROMU\_CPROJ\_OVERLAP to overlap communication and computation in RPROJ\_MU.}}
+			\item 可选选项:\\
+				\textcolor{brown}{\textrm{set -DCUFFT\_MIN=N to intercept any FFT calls of size greater than $\mathrm{N}^3$ and evaluate on GPU}}
+			\item 实验选项:\\
+				\textcolor{brown}{\textrm{set -DUSE\_MAGMA to use MAGMA for LAPACK-like calls on the GPU}}
+		\end{itemize}
+		典型的\textrm{GPU}预编译选项:\\
+		\textcolor{brown}{\textrm{CPP\_GPU~=~-DCUDA\_GPU~-DRPROMU\_CPROJ\_OVERLAP~-DUSE\_PINNED\_MEMORY~-DCUFFT\_MIN=28}}
+\end{itemize}
+\subsubsection{\rm{MAGMAN\_ROOT}的编译选项}
+如果有\textrm{MAGMA}实验的支持，指定\textrm{MAGMA-1.6}函数库的路径:\\
+\textcolor{brown}{\textrm{MAGMA\_ROOT~ :=~ /opt/magma/lib }}
+
+
 \newpage
 \textbf{本讲义以下算例主要来自文献\inlinecite{J.-G._Lee}。由于\textrm{VASP}版本的不同，以及用户用于计算的\textrm{POTCAR}数据差异，所以重复讲义中的算例时，计算过程和结果的数据，绝对数值可能会有一些出入，但应该不会差别太大。特此说明。}
 
