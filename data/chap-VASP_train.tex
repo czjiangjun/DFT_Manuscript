@@ -1,4 +1,4 @@
-\chapter{VASP应用示例}\label{chap:VASP_train}
+\chapter{VASP的安装与应用示例}\label{chap:VASP_train}
 \textrm{VASP}是目前最流行的第一原理材料模拟软件包之一，由维也纳大学\textrm{(Universit\"at~Wien)}的\textrm{G.~Kresse}等开发。\cite{VASP_manual}\textrm{VASP}以其优异的计算性能，成为\textrm{DFT}计算的执牛耳者。\cite{CPC177-6_2007}只要几十个\textrm{CPU}的并行规模，即可处理上百个原子的体系。\textrm{VASP}能在众多材料模拟软件中脱颖而出，究其原因，一方面是因为\textrm{VASP}采用的\textrm{PAW~(Projector Augmented-Wave)}方法\cite{PRB50-17953_1994,PRB59-1758_1999}，平衡了传统赝势方法和全电子计算优点，保证了计算的精度;~另一方面是在计算过程中采用实空间优化的投影函数\textrm{(Projector)}的思想，将主要的计算任务变换到实空间完成，大大节省了基组的维度，并能兼顾计算过程中的计算精度和效率。在此基础上，\textrm{VASP}通过引入多种优化算法，有效提升了矩阵对角化和电荷密度搜索的效率。此外特别值得一提的是，程序的并行实现中，重点解决了快速\textrm{Fourier}变换\textrm{(Fast Fourier Transformation,~FFT)}网格与并行计算的计算格点的分配平衡问题，大大提升了软件的并行效率。相比于其他第一原理计算软件，\textrm{VASP}从物理思想与方法、优化算法和并行计算实现等多个方面都有出色的性能展示度。关于\textrm{VASP}软件实现的文献，主要如下:~
 \begin{enumerate}
 	\item 物理思想与方法:~\textrm{PAW}赝势方法:~参阅文献\inlinecite{PRB50-17953_1994,PRB59-1758_1999};~投影函数的实空间优化，可参阅文献\inlinecite{JPCM6-8245_1994,PRB44-13063_1991,PRB44-8503_1991}
@@ -639,8 +639,16 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \caption{\small \textrm{计算\textrm{Pt}超晶胞时的\textrm{nohup}文件(局部).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pt_Bulk-OSZICAR}
 \end{figure}
-
-这里\textrm{N}统计的是两个离子步计算之间的电子步迭代次数，\textrm{E}是当前的自由能，\textrm{dE}是两次电子步迭代之间的电子步能量改变，\textrm{d~eps}是能量本征值的改变(势保持不变)。\textrm{ncg}所在的列表示完成一次迭代时，\textrm{Hamiltonian}算符\textbf{H}作用于轨道的次数;~\textrm{rms}是每次迭代开始时全部占据轨道的初始残矢\textrm{(residual vector)}——$\mathbf{R}=(\mathbf{H}-\varepsilon)\mathbf{S}|\phi\rangle$——之和，该值表明轨道的收敛情形的优劣;~\textrm{rms(c)}表明一次迭代前后(即输入输出)的电荷密度差。
+这里各参数的含义:
+\begin{itemize}
+	\item \textrm{N}:~统计两个离子步计算之间的电子步迭代次数
+	\item \textrm{E}:~当前的基态总能
+	\item \textrm{dE}:~两次电子步迭代之间的基态总能变化
+	\item \textrm{d~eps}:~两次电子步迭代的能量本征值的改变(势保持不变)
+	\item \textrm{ncg}:~完成一次迭代时，\textrm{Hamiltonian}算符\textbf{H}作用于轨道的次数~
+	\item \textrm{rms}:~每次迭代开始时全部占据轨道的初始残矢\textrm{(residual vector)}——$\mathbf{R}=(\mathbf{H}-\varepsilon)\mathbf{S}|\phi\rangle$——之和，该值表明轨道的收敛情形的优劣
+	\item \textrm{rms(c)}:~一次迭代前后(即输入输出)的电荷密度差
+\end{itemize}
 
 \textrm{VASP}程序为了使迭代过程尽可能快速收敛，设定完成最初五次电子步迭代后，才开始电荷密度的迭代，所以最初5次电子步迭代时，没有\textrm{rms(c)}输出。电子步结束时，最后一行的\textrm{F}表示电子步达到收敛的自由能，根据同一行的$\mathrm{E}_0$值(0\textrm{K}时$\sigma\rightarrow0$)，可以算出超晶胞中的单个原子\textrm{Pt}的能量为--193.8569/32=--6.058\textrm{~eV/atom}。不难看出，该值比晶格参数为$3.975\mathrm{\AA}$时计算的\textrm{FCC-Pt}的原子能量--6.056\textrm{eV/atom}仅有微小变化。
 
@@ -1290,10 +1298,13 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Fig:Si_phonon}
 \end{figure}
 
-有了这些声子计算的基本数据，就可以通过计算从理论上估计晶体的熵、自由能和热膨胀等热力学物性数据。当然，这些内容已经超出本讲义的范围，兹不赘言。此外，关于\textrm{VASP}计算材料的光学和介电函数性质、\textit{GW}校正的计算参数设置和相关内容，有兴趣的读者可以参阅:~\url{https://www.vasp.at/wiki/index.php/The_VASP_Manual}.
+有了这些声子计算的基本数据，就可以通过计算从理论上估计晶体的熵、自由能和热膨胀等热力学物性数据。当然，这些内容已经超出本讲义的范围，兹不赘言。
 
-%\section{光学性质计算}
-%\section{GW计算}
+%\section{物理性质计算}
+%\subsection{光学性质计算}
+%\subsection{GW计算}
+此外，关于\textrm{VASP}计算材料的光学和介电函数性质、\textit{GW}校正的计算参数设置和相关内容，有兴趣的读者可以参阅:~\url{https://www.vasp.at/wiki/index.php/Category:Examples}.
+
 \newpage
 课后作业
 \begin{enumerate}
