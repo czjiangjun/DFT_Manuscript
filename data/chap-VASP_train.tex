@@ -380,7 +380,54 @@ OBJECTS\_O1~= ~$\cdots$ objects-list $\cdots$ }}
 	\mathrm{mag}=\mu_{\mathrm{B}}[\rho_{\uparrow}-\rho_{\downarrow}]
 \end{displaymath}
 \subsubsection{\rm{OUTCAR}}
-\textrm{OUTCAR}保存的是\textrm{VASP}运行中最详尽的过程记录。文件不仅包括输入文件的既有信息，还有计算体系的对称性分析，$\vec k$空间布点和具体位置，平面波基信息和最近邻原子的距离等基本信息;~此外记录了每一步离子弛豫和电子弛豫的计算信息。所以\textbf{OUTCAR文件是\textrm{VASP}运行过程中最重要的输出文件}，在文件的末尾，还记录了全部计算过程运行时间和计算资源使用情况，如图\ref{Pt_atom:runtime}所示:
+\textrm{OUTCAR}保存的是\textrm{VASP}运行中最详尽的过程记录。文件不仅包括输入文件的既有信息，还有计算体系的对称性分析，$\vec k$空间布点和具体位置，平面波基信息和最近邻原子的距离等基本信息;~此外记录了每一步离子弛豫和电子弛豫的计算信息。所以\textbf{OUTCAR文件是\textrm{VASP}运行过程中最重要的输出文件}，\textrm{OUTCAR}的文件结构为:~
+\begin{itemize}
+	\item \textrm{VASP}版本和基本计算环境和计算资源信息
+	\item 读入\textrm{INCAR}、\textrm{POTCAR}、\textrm{POSCAR}
+	\item 最近邻原子和对称性分析信息
+	\item 关于计算过程的详尽的控制参数信息(含默认值)
+	\item 晶格正空间和$\vec k$-空间信息与原子坐标
+	\item 平面波基信息(截断能和平面波数目)
+	\item 非局域赝势信息
+	\item 每个电子步计算的信息
+	\item 每个电子步迭代的时间和能量信息
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.5in,viewport=0 40 770 555,clip]{VASP_train-OUTCAR-iteration.png}
+\caption{\small \textrm{VASP}的输出文件\textrm{OUTCAR}的电子步迭代信息示例.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{VASP_train-OUTCAR-iteration}
+\end{figure}
+	\item 能量本征值信息
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.5in,viewport=0 0 580 235,clip]{VASP_train-OUTCAR-eigenvalue.png}
+\caption{\small \textrm{VASP}的输出文件\textrm{OUTCAR}电子步迭代完成能量本征值信息示例.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{VASP_train-OUTCAR-eigenvalue}
+\end{figure}
+	\item 原子的受力与应力张量和晶胞信息
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.5in,viewport=0 0 780 515,clip]{VASP_train-OUTCAR-stress_and_volumn.png}
+\caption{\small \textrm{VASP}的输出文件\textrm{OUTCAR}原子受力与应力张量和晶胞信息示例.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{VASP_train-OUTCAR-stress_and_volumn}
+\end{figure}
+	\item 体系基态总能和自由能信息
+\begin{figure}[h!]
+\centering
+\includegraphics[height=0.5in,viewport=0 0 720 95,clip]{VASP_train-OUTCAR-free_energy.png}
+\caption{\small \textrm{VASP}的输出文件\textrm{OUTCAR}基态总能和自由能信息.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{VASP_train-OUTCAR-free_energy}
+\end{figure}
+	\item 完整计算过程的资源和计算时间统计信息
+\begin{figure}[h!]
+\centering
+\includegraphics[height=4.7in,viewport=5 0 680 835,clip]{VASP_train-OUTCAR-time_and_memory.png}
+\caption{\small \textrm{VASP}的输出文件\textrm{OUTCAR}的计算资源和时间统计信息.}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{VASP_train-OUTCAR-time_and_memory}
+\end{figure}
+\end{itemize}
+
+在本算例中，文件末尾记录的全部计算过程运行时间和计算资源使用情况，如图\ref{Pt_atom:runtime}所示:
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.5in,viewport=0 0 680 215,clip]{Pt_atom-runtime.png}
