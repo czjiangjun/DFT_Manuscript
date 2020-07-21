@@ -1347,10 +1347,74 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 有了这些声子计算的基本数据，就可以通过计算从理论上估计晶体的熵、自由能和热膨胀等热力学物性数据。当然，这些内容已经超出本讲义的范围，兹不赘言。
 
-%\section{物理性质计算}
+\section{其他计算}
+关于\textrm{VASP}计算材料的\textrm{LDA}+\textit{U}~计算和光学介电函数、\textit{GW}校正的计算参数设置和相关内容，有兴趣的读者可以参阅:~\url{https://www.vasp.at/wiki/index.php/Category:Examples}.这些计算是在结构弛豫之后，完成静态\textrm{DFT}计算基础上的物理性质模拟。
+\subsection{LDA+$U$计算}
+计算反铁磁(\textrm{antiferromagnetic})的\ch{NiO}的\textrm{LSDA+$U$}。其中\textrm{POSCAR}文件如图\ref{NiO-LDA_U-POSCAR}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.0in,viewport=0 5 210 260,clip]{NiO-LDA_U-POSCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}的结构\textrm{POSCAR}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-POSCAR}
+\end{figure}
+
+\textrm{INCAR}中的输入控制参数如图\ref{NiO-LDA_U-INCAR}所示。因为是反铁磁计算，初始的原子磁矩(共线磁矩)控制两个\ch{Ni}原子(原子构型为:~\textrm{[Ar]3\textit{d}~$^8$})的磁矩相反(2.0,~-2.0)，\ch{O}原子的净磁矩为0。考虑\textrm{LDA}+$U$的类型为\textrm{Dudarev}近似\textrm{(\textit{LDAUTYPE}=2)}。参数\textit{LDAUL}指定对应元素的角动量\textit{l}~需要考虑轨道的在位相互作用，$-1$表示该元素无需考虑在位相互作用。\textit{LDAUU}和\textit{LDAUJ}是对应的$U$和$J$的数值(单位~\textrm{eV})。为了考察不同角动量对磁性的贡献，对电荷密度按轨道角动量分解，因此设\textit{LORBIT}=11。考虑到反铁磁计算对电荷密度精度混合精度要求较高，因此设置电荷密度混合参数\textit{AMIX}，\textit{BMIX}，\textit{AMIX\_MAG}和\textit{BMIX\_MAG}以及\textit{LMAXMIN}等参数。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=3.0in,viewport=0 0 690 615,clip]{NiO-LDA_U-INCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}计算的控制文件\textrm{INCAR}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-INCAR}
+\end{figure}
+
+$\vec k$空间布点方案是$4\times4\times4$网格点，如图\ref{NiO-LDA_U-KPOINTS}
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.2in,viewport=0 0 100 110,clip]{NiO-LDA_U-KPOINTS.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}计算的$\vec k$空间布点\textrm{KPOINTS}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-KPOINTS}
+\end{figure}
+
+计算得到的\ch{Ni}原子的$d$电子在位占据数如图\ref{NiO-LDA_U-onsite_matrix}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=3.0in,viewport=0 0 700 525,clip]{NiO-LDA_U-onsit_matrix.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子在位原子占据数.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-onsite_matrix}
+\end{figure}
+
+对比考虑加$U$时(即$U=0,J=0$)时的\ch{Ni}原子的$d$电子在位占据数(如图\ref{NiO-LDA-onsite_matrix})，可以看到$U$值对$d$电子数的影响。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=3.0in,viewport=0 0 700 515,clip]{NiO-LDA-onsit_matrix.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{不加$U$的反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子在位原子占据数.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA-onsite_matrix}
+\end{figure}
+
+类似地，与轨道$l$相关的局域磁矩变化如图\ref{NiO-LDA_U-magnetization}所示:
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.5in,viewport=0 0 410 415,clip]{NiO-LDA_U-magnetization.png}
+\includegraphics[height=2.5in,viewport=0 0 410 415,clip]{NiO-LDA-magnetization.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{加$U$对反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子数和局域磁矩的影响(左:;~右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-magnetization}
+\end{figure}
+
+考虑\textrm{LDA}+$U$的态密度和分波态密度如图\ref{NiO-LDA_U-DOS}所示:
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.0in,viewport=0 0 2010 680,clip]{NiO-LDA_U-DOS.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{加$U$对反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子分态密度的影响(左:;~右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-DOS}
+\end{figure}
 %\subsection{光学性质计算}
 %\subsection{GW计算}
-此外，关于\textrm{VASP}计算材料的光学和介电函数性质、\textit{GW}校正的计算参数设置和相关内容，有兴趣的读者可以参阅:~\url{https://www.vasp.at/wiki/index.php/Category:Examples}.
 
 \newpage
 课后作业
