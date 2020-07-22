@@ -1350,16 +1350,18 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \section{其他计算}
 关于\textrm{VASP}计算材料的\textrm{LDA}+\textit{U}~计算和光学介电函数、\textit{GW}校正的计算参数设置和相关内容，有兴趣的读者可以参阅:~\url{https://www.vasp.at/wiki/index.php/Category:Examples}.这些计算是在结构弛豫之后，完成静态\textrm{DFT}计算基础上的物理性质模拟。
 \subsection{LDA+$U$计算}
-计算反铁磁(\textrm{antiferromagnetic})的\ch{NiO}的\textrm{LSDA+$U$}。其中\textrm{POSCAR}文件如图\ref{NiO-LDA_U-POSCAR}所示:~
+计算反铁磁(\textrm{antiferromagnetic})的\ch{NiO}的\textrm{LSDA+$U$}。其中\textrm{POSCAR}文件和$\vec k$空间布点方案($4\times4\times4$网格点)，如图\ref{NiO-LDA_U-Input}所示:~
 \begin{figure}[h!]
 \centering
 \includegraphics[height=2.0in,viewport=0 5 210 260,clip]{NiO-LDA_U-POSCAR.png}
+\includegraphics[height=0.8in,viewport=0 0 100 110,clip]{NiO-LDA_U-KPOINTS.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}的结构\textrm{POSCAR}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{NiO-LDA_U-POSCAR}
+\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}的结构\textrm{POSCAR}文件(左)和$\vec k$空间布点\textrm{KPOINTS}(右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-Input}
 \end{figure}
 
-\textrm{INCAR}中的输入控制参数如图\ref{NiO-LDA_U-INCAR}所示。因为是反铁磁计算，初始的原子磁矩(共线磁矩)控制两个\ch{Ni}原子(原子构型为:~\textrm{[Ar]3\textit{d}~$^8$})的磁矩相反(2.0,~-2.0)，\ch{O}原子的净磁矩为0。考虑\textrm{LDA}+$U$的类型为\textrm{Dudarev}近似\textrm{(\textit{LDAUTYPE}=2)}。参数\textit{LDAUL}指定对应元素的角动量\textit{l}~需要考虑轨道的在位相互作用，$-1$表示该元素无需考虑在位相互作用。\textit{LDAUU}和\textit{LDAUJ}是对应的$U$和$J$的数值(单位~\textrm{eV})。为了考察不同角动量对磁性的贡献，对电荷密度按轨道角动量分解，因此设\textit{LORBIT}=11。考虑到反铁磁计算对电荷密度精度混合精度要求较高，因此设置电荷密度混合参数\textit{AMIX}，\textit{BMIX}，\textit{AMIX\_MAG}和\textit{BMIX\_MAG}以及\textit{LMAXMIN}等参数。
+\textrm{INCAR}中的输入控制参数如图\ref{NiO-LDA_U-INCAR}所示。因为是反铁磁计算，初始的原子磁矩(共线磁矩)控制两个\ch{Ni}原子(原子构型为:~\textrm{[Ar]3\textit{d}~$^8$})的磁矩相反(2.0,~-2.0)，\ch{O}原子的净磁矩为0。考虑\textrm{LDA}+$U$的类型为\textrm{Dudarev}近似(\textit{LDAUTYPE}=2)。参数\textit{LDAUL}指定对应元素的角动量\textit{l}~需要考虑轨道的在位相互作用，$-1$表示该元素无需考虑在位相互作用。\textit{LDAUU}和\textit{LDAUJ}是对应的$U$和$J$的数值(单位~\textrm{eV})。为了考察不同角动量对磁性的贡献，对电荷密度按轨道角动量分解，因此设\textit{LORBIT}=11。考虑到反铁磁计算对电荷密度精度混合精度要求较高，因此设置电荷密度混合参数\textit{AMIX}，\textit{BMIX}，\textit{AMIX\_MAG}和\textit{BMIX\_MAG}以及\textit{LMAXMIN}等参数。
+
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.0in,viewport=0 0 690 615,clip]{NiO-LDA_U-INCAR.png}
@@ -1368,25 +1370,32 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{NiO-LDA_U-INCAR}
 \end{figure}
 
-$\vec k$空间布点方案是$4\times4\times4$网格点，如图\ref{NiO-LDA_U-KPOINTS}
-\begin{figure}[h!]
-\centering
-\includegraphics[height=1.2in,viewport=0 0 100 110,clip]{NiO-LDA_U-KPOINTS.png}
-%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}计算的$\vec k$空间布点\textrm{KPOINTS}文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{NiO-LDA_U-KPOINTS}
-\end{figure}
+在\textrm{VASP}中，加$U$的方式有三种:~
+\begin{itemize}
+	\item \textit{LDAUTYPE}=1:~\textrm{Liechtenstein}等引入的旋转不变\textrm{LDA}+$U$方法\cite{PRB52-R5467_1995}:~形式为:
+		\begin{displaymath}
+			E_{\mathrm{HF}}=\dfrac12\sum_{\gamma}(U_{\gamma_1\gamma_3\gamma_2\gamma_4}-U_{\gamma_1\gamma_3\gamma_4\gamma_2})\hat{n}_{\gamma_1\gamma_2}\hat{n}_{\gamma_3\gamma_4}
+		\end{displaymath}
+		其中在位占据数由\textrm{PAW}方法确定:~
+		\begin{displaymath}
+			\hat{n}_{\gamma_1\gamma_2}=\langle\Psi^{s_2}|m_2\rangle\langle m_1|\Psi^{s_1}\rangle
+		\end{displaymath}
+		电子-电子相互作用由下式计算:
+		\begin{displaymath}
+			U_{\gamma_1\gamma_3\gamma_2\gamma_4}=\langle m_1m_3|\dfrac1{|\vec r-\vec r^{\prime}|}|m_2m_4\rangle]\delta_{s_1s_2}\delta_{s_3s_4}
+		\end{displaymath}
+		这里$|m\rangle$表示球谐函数。
+	\item \textit{LDAUTYPE}=2:~\textrm{Dudarev}等引入的简化旋转不变\textrm{LDA}+$U$方法\cite{PRB57-1505_1998}
+		\begin{displaymath}
+			E_{\mathrm{LSDA+}U}=E_{\mathrm{LSDA}}+\dfrac{U-J}2+\sum_{\sigma}\bigg[\bigg(\sum_{m_1}n_{m_1,m_1}^{\sigma}\bigg)-\bigg(\sum_{m_1,m_2}n_{m_1,m_2}^{\sigma}n_{m_2,m_1}^{\sigma}\bigg)\bigg]
+		\end{displaymath}
+	\item \textit{LDAUTYPE}=4:~与\textit{LDAUTYPE}=1相似，不过用\textrm{LDA}+$U$代替\textrm{LSDA}+$U$(不再考虑\textrm{LSDA}的自旋分裂)，因此计算表达式为:~
+		\begin{displaymath}
+			E_{\mathrm{dc}}(\hat n)=\dfrac{U}2\hat{n}_{\mathrm{tot}}(\hat{n}_{\mathrm{tot}}-1)-\dfrac{J}2\sum_{\sigma}\hat{n}_{\mathrm{tot}}^{\sigma}(\hat{n}_{\mathrm{tot}}^{\sigma}-1)
+		\end{displaymath}
+\end{itemize}
 
-计算得到的\ch{Ni}原子的$d$电子在位占据数如图\ref{NiO-LDA_U-onsite_matrix}所示:~
-\begin{figure}[h!]
-\centering
-\includegraphics[height=3.0in,viewport=0 0 700 525,clip]{NiO-LDA_U-onsit_matrix.png}
-%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子在位原子占据数.}}%(与文献\cite{EPJB33-47_2003}图1对比)
-\label{NiO-LDA_U-onsite_matrix}
-\end{figure}
-
-对比考虑加$U$时(即$U=0,J=0$)时的\ch{Ni}原子的$d$电子在位占据数(如图\ref{NiO-LDA-onsite_matrix})，可以看到$U$值对$d$电子数的影响。
+对比考虑不加$U$时(即$U=0,J=0$)时的\ch{Ni}原子的$d$电子在位占据数(如图\ref{NiO-LDA-onsite_matrix}所示)，\textit{d}~电子分波投影标记在图中已经标出。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=3.0in,viewport=0 0 700 515,clip]{NiO-LDA-onsit_matrix.png}
@@ -1395,13 +1404,23 @@ $\vec k$空间布点方案是$4\times4\times4$网格点，如图\ref{NiO-LDA_U-K
 \label{NiO-LDA-onsite_matrix}
 \end{figure}
 
+加$U$计算得到的\ch{Ni}原子的$d$电子在位占据数如图\ref{NiO-LDA_U-onsite_matrix}所示，，可以看到$U$值对$d$电子数的影响。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=3.0in,viewport=0 0 700 525,clip]{NiO-LDA_U-onsit_matrix.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{用于\textrm{LDA}+$U$的反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子在位原子占据数.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-onsite_matrix}
+\end{figure}
+
+
 类似地，与轨道$l$相关的局域磁矩变化如图\ref{NiO-LDA_U-magnetization}所示:
 \begin{figure}[h!]
 \centering
-\includegraphics[height=2.5in,viewport=0 0 410 415,clip]{NiO-LDA_U-magnetization.png}
 \includegraphics[height=2.5in,viewport=0 0 410 415,clip]{NiO-LDA-magnetization.png}
+\includegraphics[height=2.5in,viewport=0 0 410 415,clip]{NiO-LDA_U-magnetization.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{加$U$对反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子数和局域磁矩的影响(左:;~右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{加$U$对反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子数和局域磁矩的影响(左:~未考虑加$U$;~右:~考虑加$U$).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{NiO-LDA_U-magnetization}
 \end{figure}
 
@@ -1410,12 +1429,156 @@ $\vec k$空间布点方案是$4\times4\times4$网格点，如图\ref{NiO-LDA_U-K
 \centering
 \includegraphics[height=2.0in,viewport=0 0 2010 680,clip]{NiO-LDA_U-DOS.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{加$U$对反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子分态密度的影响(左:;~右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{反铁磁\ch{NiO}计算的\ch{Ni}的$d$电子分态密度受$U$的影响(左:~未考虑加$U$;~右:~考虑加$U$).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{NiO-LDA_U-DOS}
 \end{figure}
-%\subsection{光学性质计算}
-%\subsection{GW计算}
 
+考虑\textrm{LDA}+$U$对总能的影响，如图\ref{NiO-LDA_U-tot}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.3in,viewport=6.5 0 836 235,clip]{NiO-LDA-OSZICAR.png}
+\includegraphics[height=1.5in,viewport=0 0 830 270,clip]{NiO-LDA_U-OSZICAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{加$U$对反铁磁\ch{NiO}计算的\ch{Ni}的$d$对基态总能的影响(上:~未考虑加$U$;~下:~考虑加$U$).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{NiO-LDA_U-tot}
+\end{figure}
+不难看出，对于\textrm{Dudarev}近似，只要$(U-J)>0$，则考虑\textrm{LDA}+$U$的基态总能总会大于不考虑加$U$的情况。因此，如果两次计算中$(U-J)$的数值不等，不能将总能简单对比。
+\subsection{光学介电函数的计算}
+本部分我们将学习如何利用\textrm{VASP}计算\ch{SiC}的光学介电函数，关于\textrm{VASP}中光学介电函数计算主要参见文献\inlinecite{PRB73-045112_2006}。
+
+计算对象\ch{SiC}的结构和$\vec k$空间布点分别如如图\ref{SiC-optic-Input}所示:
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.5in,viewport=0 15 186 220,clip]{SiC-optic-POSCAR.png}
+\includegraphics[height=0.8in,viewport=0 0 100 110,clip]{SiC-epsilon-KPOINTS.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{计算\ch{SiC}的光学介电函数时的模型(左)和$\vec k$空间布点方案(右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-optic-Input}
+\end{figure}
+
+介电函数包括静态介电函数(\textrm{\textit{LEPSILON}=.TURE.}})和动态(频率相关)介电函数(\textrm{\textit{LOPITC}=.TURE.}})两类，这里将分别介绍。
+\subsubsection{\rm{静态介电函数的计算}}
+一般静态介电函数计算是通过密度泛函微扰理论(\textrm{Density Functional Perturbation Theory, DFPT})计算的，同时计算的物理量还包括\textrm{Born}有效电荷(\textrm{the Born effective charges})，铁电张量(\textrm{piezoelectric tensors})等。计算控制参数如图\ref{SiC-Epsilon-INCAR}所示。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.2in,viewport=0 380 420 540,clip]{SiC-epsilon-INCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{计算\ch{SiC}的光学介电函数时的计算控制文件\textrm{INCAR}.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-Epsilon-INCAR}
+\end{figure}
+
+根据微扰理论，计算静态介电函数时，
+\begin{displaymath}
+	\nabla_{\vec k}|\tilde u_{n\vec k}\rangle=\sum_{n^{\prime}\neq n}\dfrac{|\tilde u_{\n^{\prime}\vec k}\rangle\langle\tilde u_{\n^{\prime}\vec k}|\frac{\partial(\mathbf{H}(\vec k)-\varepsilon_{n\vec k}\mathbf{S}(\vec k))}{\partial\vec k}|\tilde u_{n\vec k}\rangle}{\varepsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k}}
+\end{displaymath}
+可用线性\textrm{Sternheimer}方程改写
+\begin{displaymath}
+	(\mathbf{H}(\vec k)-\varepsilon_{n\vec k}\mathbf{S}(\vec k))|\nabla_{\vec k}|\tilde u_{n\vec k}\rangle=-\dfrac{\partial(\mathbf{H}(\vec k)-\varepsilon_{n\vec k}\mathbf{S}(\vec k))}{\partial\vec k}|\tilde u_{n\vec k}\rangle
+\end{displaymath}
+方程的求解过程和自洽迭代的思想类似。
+
+在输出文件\textrm{OUTCAR}中计算得到的静态光学介电函数等物理量如图\ref{SiC-Epsilon-OUTCAR}为:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=3.5in,viewport=0 0 1030 845,clip]{SiC-epsilon-OUTCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{计算\ch{SiC}的光学介电函数时的计算结果\textrm{OUTCAR}中有关输出内容.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-Epsilon-OUTCAR}
+\end{figure}
+
+如果控制参数中引入\textrm{\textit{LRPA}=.TRUE.}，则可以在无规相近似(\textrm{Random-Phase-Approximation, RPA})下，在静态介电函数计算中引入局域\textrm{Hartree}势场效应(\textrm{local field effect on the Hartree level});~类似地，微扰理论也可以通过有限差分方法计算，控制参数为\textrm{\textit{LPEAD}=.TRUE.}，这两种计算对应的输入文件分别如图\ref{SiC-epsilon-INCARs}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=1.5in,viewport=0 310 420 540,clip]{SiC-epsilon-INCAR.png}
+\includegraphics[height=1.5in,viewport=0 290 420 520,clip]{SiC-epsilon-INCAR_PEAD.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{计算\ch{SiC}的静态光学介电函数时\textrm{RPA}近似(左)和有限差分方法(右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-epsilon-INCARs}
+\end{figure}
+\subsubsection{\rm{频率相关的介电函数}}
+\textrm{VASP}中动态介电函数虚部计算公式为:
+\begin{displaymath}
+	\varepsilon_{\alpha\beta}^{(2)}(\omega)=\dfrac{4\pi^2e^2}{\Omega}\lim_{q\rightarrow 0}\frac1{q^2}\sum_{c,v,\vec k}2w_{\vec k}\delta(\varepsilon_{c,\vec k}-\varepsilon_{v,\vec k}-\omega)\times\langle u_{c,\vec k+\mathbf{e}_{\alpha}q}|u_{v,\vec k}\rangle\langle u_{c,\vec k+\mathbf{e}_{\beta}q}|u_{v,\vec k}\rangle^{\ast}
+\end{displaymath}
+介电函数虚部和实部满足\textrm{Kramers-Kr\"onig}变换关系:
+\begin{displaymath}
+	\varepsilon_{\alpha\beta}^{(1)}(\omega)=1+\dfrac2{\pi}\mathcal{P}\int_0^{\infty}\dfrac{\varepsilon_{\alpha\beta}^{(2)}(\omega^{\prime})\omega^{\prime}}{\omega^{\prime2}-\omega^2+\mathrm{i}\eta}\mathrm{d}{\omega^{\prime}}
+\end{displaymath}
+这里$\mathcal{P}$表示取积分主值。$\eta$对应控制参数\textit{CSHIFT}。
+
+为了计算动态介电函数，首先完成标准\textrm{DFT}计算，控制文件和$\vec k$空间布点方案如图\ref{SiC-optic-Input}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=0.9in,viewport=0 10 170 90,clip]{SiC-optic-INCAR.png}
+\includegraphics[height=0.9in,viewport=0 0 100 106,clip]{SiC-optic-KPOINTS.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{为计算\ch{SiC}的动态光学介电函数，完成标准\textrm{DFT}计算的控制文件(左)和$\vec k$空间布点方案(右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-optic-Input}
+\end{figure}
+
+基于标准\textrm{DFT}计算的\textrm{WAVECAR}，计算独立粒子\textrm{(independent-particle, IP)}图像下的动态介电函数时，注意要引入较多的空轨道，计算控制参数如图\ref{SiC-optic-INCAR}所示:
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.0in,viewport=0 10 500 300,clip]{SiC-optic-INCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{为计算\ch{SiC}的动态光学介电函数的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-optic-INCAR}
+\end{figure}
+
+在输出文件\textrm{OUTCAR}中，频率相关的介电函数虚部和实部数据如图\ref{SiC-optic-OUTCAR}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=4.5in,viewport=0 0 990 1000,clip]{SiC-optic-OUTCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{计算\ch{SiC}输出文件中的动态介电函数的虚部和实部.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{SiC-optic-OUTCAR}
+\end{figure}
+与静态介电函数计算类似，可以通过有限差分方法计算$\nabla_{\vec k}\tilde u_{n\vec k}$，进而得到动态介电函数，只要在\textrm{INCAR}中设置控制参数\textrm{\textit{LPEAD}=.TRUE.}，这个留待作为练习。
+
+\subsection{GW计算}
+本部分我们将学习如何利用\textrm{VASP}完成对\ch{Si}的\textit{GW}计算。为了完成\textit{GW}计算，首先也需要完成标准\textrm{DFT}计算，相关输入文件(\textrm{Si}的结构文件、计算控制文件和$\vec k$空间布点方案)如图\ref{Si-GW-Input}所示:~
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.0in,viewport=0 10 160 210,clip]{Si-GW-POSCAR.png}
+\includegraphics[height=1.2in,viewport=0 10 160 90,clip]{SiC-optic-INCAR.png}
+\includegraphics[height=1.2in,viewport=0 0 100 106,clip]{SiC-optic-KPOINTS.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{为实现\ch{Si}的\textit{GW}计算，所需的标准\textrm{DFT}计算的结构文件(左)、计算控制文件(中)和$\vec k$空间布点方案(右).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si-GW-Input}
+\end{figure}
+
+在完成标准\textrm{DFT}计算基础上，\textit{GW}计算还需要\textrm{DFT}计算的波函数\textrm{WAVECAR文件(含有大量的空轨道)}和波函数导数\textrm{WAVEDER}文件，因此计算控制参数如图\ref{Si-GW-DFT-INCAR}所示:
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.0in,viewport=0 10 490 285,clip]{Si-GW-DFT-INCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{为实现\ch{Si}的\textit{GW}计算，所需的标准\textrm{DFT}的\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si-GW-DFT-INCAR}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.5in,viewport=0 10 595 465,clip]{Si-G0W0-INCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{为实现\ch{Si}的$G_0W_0$计算，所需的标准\textrm{DFT}的\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si-G0W0-INCAR}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[height=4.8in,viewport=0 40 1190 1240,clip]{Si-G0W0-OUTCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{\ch{Si}的$G_0W_0$计算输出文件中的准粒子能量本征值.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si-G0W0-OUTCAR}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.5in,viewport=0 10 595 465,clip]{Si-GW0-INCAR.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{为实现\ch{Si}的$GW_0$计算，所需的标准\textrm{DFT}的\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si-GW0-INCAR}
+\end{figure}
 \newpage
 课后作业
 \begin{enumerate}
