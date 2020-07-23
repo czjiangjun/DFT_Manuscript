@@ -1413,7 +1413,6 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{NiO-LDA_U-onsite_matrix}
 \end{figure}
 
-
 类似地，与轨道$l$相关的局域磁矩变化如图\ref{NiO-LDA_U-magnetization}所示:
 \begin{figure}[h!]
 \centering
@@ -1547,40 +1546,54 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Si-GW-Input}
 \end{figure}
 
-在完成标准\textrm{DFT}计算基础上，\textit{GW}计算还需要\textrm{DFT}计算的波函数\textrm{WAVECAR文件(含有大量的空轨道)}和波函数导数\textrm{WAVEDER}文件，因此计算控制参数如图\ref{Si-GW-DFT-INCAR}所示:
+在完成标准\textrm{DFT}计算基础上，\textit{GW}计算还需要\textrm{DFT}计算的波函数\textrm{WAVECAR文件(含有大量的空轨道)}和波函数导数\textrm{WAVEDER}文件，因此后续计算与光学动态介电函数的计算类似，控制参数如图\ref{Si-GW-DFT-INCAR}所示:
 \begin{figure}[h!]
 \centering
 \includegraphics[height=2.0in,viewport=0 10 490 285,clip]{Si-GW-DFT-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{为实现\ch{Si}的\textit{GW}计算，所需的标准\textrm{DFT}的\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{为支持\ch{Si}的\textit{GW}计算，标准\textrm{DFT}后续获得\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si-GW-DFT-INCAR}
 \end{figure}
 
+正式的\textit{GW}计算，如果只是单步计算(不迭代)准粒子(\textrm{quasi-particle, QP})能量，称为$G_0W_0$计算，控制参数如图\ref{Si-G0W0-INCAR}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=2.5in,viewport=0 10 595 465,clip]{Si-G0W0-INCAR.png}
+\includegraphics[height=2.7in,viewport=0 10 595 465,clip]{Si-G0W0-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{为实现\ch{Si}的$G_0W_0$计算，所需的标准\textrm{DFT}的\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{\ch{Si}的$G_0W_0$计算的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si-G0W0-INCAR}
 \end{figure}
-
+在\textit{GW}计算的输出文件\textrm{OUTCAR}中，准粒子能量如图\ref{Si-G0W0-OUTCAR}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=4.8in,viewport=0 40 1190 1240,clip]{Si-G0W0-OUTCAR.png}
+\includegraphics[height=5.5in,viewport=0 40 1190 1240,clip]{Si-G0W0-OUTCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{\ch{Si}的$G_0W_0$计算输出文件中的准粒子能量本征值.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si-G0W0-OUTCAR}
 \end{figure}
 
+如果\textit{GW}计算中，准粒子能量是通过迭代计算得到的，则是$GW_0$计算，只要在$G_0W_0$基础上引入迭代控制参数\textit{NELM}即可。如本算例中，迭代次数为4次(\textit{NELM}=4)，如图\ref{Si-GW0-INCAR}所示。
 \begin{figure}[h!]
 \centering
 \includegraphics[height=2.5in,viewport=0 10 595 465,clip]{Si-GW0-INCAR.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
-\caption{\small \textrm{为实现\ch{Si}的$GW_0$计算，所需的标准\textrm{DFT}的\textrm{WAVECAR}和\textrm{WAVEDER}的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{\ch{Si}的$GW_0$计算的控制文件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Si-GW0-INCAR}
 \end{figure}
-\newpage
-课后作业
+
+图\ref{Si-GW-Band}给出\textit{GW}计算和\textrm{DFT}计算的\ch{Si}的能带变化，可以看出，考虑\textit{GW}影响之后，带隙增大。这部分作为课后练习，留待用户完成。
+\begin{figure}[h!]
+\centering
+\includegraphics[height=2.5in, width=2.3in, viewport=0 0 375 490,clip]{Si-BSE-band.png}
+%\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
+\caption{\small \textrm{\ch{Si}的\textrm{DFT}和$GW$计算的能带(局部)和$\Gamma$点的带隙变化.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Si-GW-Band}
+\end{figure}
+
+有关旋-轨耦合(\textrm{Spin-Orbital coupling, SOC})、非共线磁性(\textrm{nonlinear magnetization})等相关的计算，与\textrm{LDA}+$U$、光学介电函数和\textit{GW}计算类似，主要是控制参数文件\textrm{INCAR}的修改，有兴趣的用户请参阅有关算例。
+
+\clearpage\newpage
+\textbf{课后作业}
 \begin{enumerate}
 	\item 材料模拟的重要任务之一就是在开展实验之前筛选更合适的候选组成，在实验室在开发新的催化剂时，通常需要一系列的研究工作，因此“计算先行”策略显得尤为重要。如果我们需要寻找\textrm{Pt}-基体系的应力效应，请描述如何在应用层面上如何模拟该体系，并列出需要考虑的重要问题。
 	\item 长期以来，\textrm{Pt}是非常重要的催化剂。研究表明，从催化活性、结构稳定性以及价格经济等角度考虑，\textrm{Pt3Y}($\mathrm{L1}_2$结构)都是很好的催化剂性能。假设我们已知\textrm{Pt}和\textrm{Y}的体相基态能分别是~--6.056\textrm{~eV/atom}和\textrm{--6.466}\textrm{~eV/atom}，根据\ref{Sec:FCC-Pt}介绍的计算流程，构建\textrm{FCC}晶格(四个原子)的\ch{Pt3Y}，并确定平衡态晶格参数。
@@ -1591,4 +1604,6 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 		\end{itemize}
 	\item 根据上题，说明为什么计算\ch{Pt3Y}(111)表面的吸附能时，我们需要构建这样大的超晶胞。
 	\item 锗(\textrm{Ge})是一种和硅(\textrm{Si})类似的半导体材料(曾被称为“亚硅”)。根据\ref{Sec:Si-band}介绍的步骤算并绘制\textrm{Ge}的能带图(选择平衡晶胞参数$5.784\mathrm{\AA}$)，你能从能带图中看到带隙(\textrm{band gap})吗?如果看不到带隙，找到可能的主要原因，并说明怎么才能克服这些问题。
+	\item 完成\ch{SiC}的动态光学介电函数计算练习，用有限差分方法计算$\nabla_{\vec k}\tilde u_{n\vec k}$并获得动态介电函数，并与\textrm{RPA}近似动态介电函数对比。
+	\item 完成\ch{Si}的\textit{GW}计算和\textrm{DFT}计算的能带图，并在能带图上标出$\Gamma$点的带隙变化情况。
 \end{enumerate}
