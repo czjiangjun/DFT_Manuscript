@@ -241,7 +241,7 @@ $f_n$是占据态的电子数。注意，这里的$n^1$和$\tilde n^1$中包含�
 \end{equation}
 根据\textrm{Bl\"ochl}的建议，为确定分波函数$\phi_i$，一般通过适当选择$\varepsilon_i^1$(原子价电子能量附近)，并要求在缀加区与芯层分波函数正交。实际应用中，还可以类似\textrm{LAPW}方法，对每个分波引入多个(一般是两个)分波函数。
 
-对于赝原子分波，\textrm{Bl\"ochl}建议的赝化方案与传统赝势构造类似\cite{PRL43-1494_1979,PRB26-4119_1982,PRB40-2980_1989}:
+对于赝原子分波，\textrm{Bl\"ochl}建议的赝化方案与传统赝势构造类似\cite{PRL43-1494_1979,PRB26-4199_1982,PRB40-2089_1989}:
 通过引入局域赝势:%$$w_i(r)=\tilde v_{at}(r)+c_ik(r)=\tilde v_{at}(0)\mathrm{e}^{-(r/r_k)^{\lambda}}+[1-k(r)]v_{at}(r)+c_i\mathrm{e}^{-(r/r_k)^{\lambda}}$$
 \begin{equation}
 	w_i(r)=\tilde v_{\mathrm{at}}(0)\mathrm{e}^{-(r/r_k)^{\lambda}}+[1-\mathrm{e}^{-(r/r_k)^{\lambda}}]v_{\mathrm{at}}(r)+c_i\mathrm{e}^{-(r/r_k)^{\lambda}}
@@ -578,7 +578,7 @@ $Q_{ij}(\vec r)$对应的多极矩为
 \begin{equation}
 	\begin{aligned}
 		\tilde H=\dfrac{\mathrm{d}E}{\mathrm{d}\tilde\rho}=\dfrac{\partial E}{\partial\tilde\rho}+\int\dfrac{\delta E}{\delta\tilde n(\vec r)}&\underbrace{\dfrac{\partial\tilde n(\vec r)}{\partial\tilde\rho}}\mathrm{d}\vec r+\sum_{(i,j)}\dfrac{\partial E}{\partial\rho_{ij}}&\underbrace{\dfrac{\partial\rho_{ij}}{\partial\tilde\rho}}\\
-		&|\vec r\rangle\langle\vec r| &|\tilde\rho_i\rangle\langle\tilde\rho_j|
+		&|\vec r\rangle\langle\vec r| &|\tilde p_i\rangle\langle\tilde p_j|
 	\end{aligned}
 	\label{eq:PAW_Kresse_16}
 \end{equation}
@@ -681,7 +681,7 @@ $$\dfrac{\mathrm{d}}{\mathrm{d}r}j_l(q_i^lr)\bigg|_{r_{\mathrm{comp}}}=0$$
 
 近年来，\textrm{Marsman}等突破了\textrm{Kresse}方案的“冻芯近似”，在自洽迭代计算中允许芯层电荷参与。迭代过程中要求确保价电子和芯电子的正交化，这其中的关键是(1)迭代过程中保持投影函数不变，(2)在每个自洽步中更新赝分波函数。具体可参阅文献\inlinecite{JCP125-104101_2006}。
 
-上述讨论中主要围绕\textrm{PAW}方法对于电子结构计算的方法，没有从第一原理分子动力学\textrm{(Ab initio Molecular Dynamics, AIMD)}角度讨论体系中原子和离子的受力运动，基于平面波基组的\textrm{AIMD}计算方法的一般概念和\textrm{PAW}方法中有关原子受力问题的讨论，可参阅文献\inlinecite{PRB47-10142_1993,PRB50-17953_1994,PRB59-1758_1999,Comput_Phys}。
+上述讨论中主要围绕\textrm{PAW}方法对于电子结构计算的方法，没有从第一原理分子动力学\textrm{(Ab initio Molecular Dynamics, AIMD)}角度讨论体系中原子和离子的受力运动，基于平面波基组的\textrm{AIMD}计算方法的一般概念和\textrm{PAW}方法中有关原子受力问题的讨论，可参阅文献\inlinecite{PRB47-10142_1993,PRB50-17953_1994,PRB59-1758_1999,Comput-Phys}。
 
 
 %\begin{figure}[h!]
