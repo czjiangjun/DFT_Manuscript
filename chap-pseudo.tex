@@ -32,7 +32,7 @@ $k$是与平移对称性相应的量子数，因此理想晶体的电子波函�
 \caption{\small \textrm{Division of the unit cell into spheres(I) and into interstitial region(II)}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Muffin_tin-1}
 \end{figure}
-
+用数学形式表示即为:
 \begin{equation}
   V(\vec r)=\left\{
   \begin{aligned}
@@ -218,7 +218,7 @@ $V_{\mathrm{ext}}$的\textrm{Fourier}分量在$\vec k=0$也是发散的。这三
 			E_{\textrm{Ewald}}=&\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\lim_{\vec k\rightarrow0}\dfrac12\times\dfrac{4\pi(\sum\limits_sZ_s)^2}{\Omega|\vec k|^2}\\
 			=&\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_{s^{\prime}}|}-\dfrac1{2\Omega}\sum_{s,s^{\prime}}\int\mathrm{d}\vec r\dfrac{Z_sZ_{s^{\prime}}}r\\
 			=&\sum_{s,s^{\prime}}Z_sZ_{s^{\prime}}\bigg\{\dfrac{2\pi}{\Omega}\sum_{\vec k\neq 0}\cos[\vec k\cdot(\vec r_s-\vec r_{s^{\prime}})]\dfrac{\mathrm{e}^{-|\vec k|^2/4\eta^2}}{|\vec k|^2}\\
-			&-\dfrac{\pi}{2\eta^2\Omega}+\dfrac14\sum_{\vec R}\dfrac{\mathrm{erf}(\eta x)}x\bigg|_{\vec R+\vec r_s-\vec r_s^{\prime}\neq0}-\dfrac{\eta}{\sqrt{\pi}}\delta_{s,s^{\prime}}\bigg\}
+			&-\dfrac{\pi}{2\eta^2\Omega}+\dfrac12\sum_{\vec R}\dfrac{\mathrm{erf}(\eta x)}x\bigg|_{\vec R+\vec r_s-\vec r_s^{\prime}\neq0}-\dfrac{\eta}{\sqrt{\pi}}\delta_{s,s^{\prime}}\bigg\}
 		\end{aligned}
 	\end{equation}
 	$\mathrm{erf}(x)$是误差函数，$\eta$原则上是任意参数。$\alpha_s$由$v_{\mathrm{ext}}^s(\vec r)$确定：
@@ -266,7 +266,7 @@ OPW方法的基函数为：
 	\varphi_i(\vec r)=\Omega_0^{-1/2}\mathrm{e}^{\mathrm{i}\vec k_i\cdot\vec r}-\sum_ca_c(\vec k_i)\chi_c(\vec k_i,\vec r)
   \label{eq:OPW-set}
 \end{equation}
-这里$\vec k_i=\vec k+\vec G_i$。$\chi_c$是芯层电子的波函数。求和遍及所有占据芯层电子态。根据基函数与所有芯层电子态正交条件，
+这里$\vec k_i=\vec k+\vec G_i$。$\chi_c$是芯层电子的波函数。$\sum\limits_c$表示对所有芯层电子态求和。根据基函数与所有芯层电子态正交条件，
 %为保证基函数与所有芯层电子态正交，即
 %$$\int\varphi_i(\vec r)\chi_c(\vec k_i,\vec r)d\vec r\equiv\langle\varphi_i|\chi_c\rangle=0$$
 %由此确定正交系数$a_c(\vec k_i)$
@@ -407,7 +407,7 @@ $V_R$的定义为$V_R\Phi\equiv\sum\limits_c(E-E_c)\langle\chi_c|\Phi\rangle\chi
 吸引势$V(\vec r)$是负值，势能$V_R$包含能量差$(E-E_c)$是正的。这两个势能项相互抵消，得到比$V(\vec r)$平缓得多的赝势函数$V_p$，用少量的Fourier级数展开得到很好的结果。赝势$V_p$函数的数值一般比较小，我们可以回到近自由电子模型。
 
 通过构造必要的赝势，求解本征方程，可以从第一原理求解能量$E(\vec k)$分布。但是这样的赝势方法相比OPW没有明显的优势。赝势方法由OPW变换得到，两者是完全等价的。因为需要求解非局域势$V_p(\vec r,\vec r',E)$，赝势方法求解过程比OPW方法更复杂。而且为了计算其他物理性质，必须根据求解的赝波函数得到真实的波函数。此外，根据OPW方法变换得到的赝势\eqref{eq:solid-99}，其中$V_R$的表达式\eqref{eq:solid-101}并不唯一。%式\eqref{eq:solid-101}中的能量差$(E-E_c)$原则上可以用任意能量函数和指标$c$代替，即$f(E,c)$。
-赝势方程式\eqref{eq:solid-98}的能量本征值与真实的本征函数的解相同\cite{Harrison}。$V_R$表达式的不唯一性根源在于OPW基组的过完备性。这样得到的赝势一般称为经验赝势，通常选择赝势的Fourier分量参数使得计算结果与实验一致。
+赝势方程式\eqref{eq:solid-98}的能量本征值与真实的本征函数的解相同\cite{Harrison}。$V_R$表达式的不唯一性根源在于OPW基组的过完备性。这样得到的赝势一般称为经验赝势(参见图\ref{Pseudo_model-empty_core})，通常选择赝势的Fourier分量参数使得计算结果与实验一致。
 
 基于半经验的更广泛使用的是模型赝势，根据实验数据提出了大量的模型势能\cite{PM9-451_1964,PM12-529_1965,JPF2-270_1972,PRB11-2717_1975,PRB11-2726_1975,JPF6-L271_1976,PR174-769_1968}(参见图\ref{Pseudo-model})。模型赝势的一般形式为：
 \begin{equation}
@@ -466,7 +466,7 @@ $V_{\mathrm{H}}(\rho,r)$是Hartree势，$V_{xc}^{\mathrm{LDA}}(\rho(r))$是LDA�
 	V_{\mathrm{src},l}^{\mathrm{PP}}=\varepsilon_l-\frac{l(l+1)}{2r^2}+\frac1{2P_l^{\mathrm{PP}}(r)}\frac{\mathrm{d}^2}{\mathrm{d}r^2}P_l^{\mathrm{PP}}(r)
   \label{eq:solid-106}
 \end{equation}
-从式\eqref{eq:solid-106}可见，因为赝波函数没有节点，赝势是平缓的，除了原子球心位置不再有其他奇点。
+从式\eqref{eq:solid-106}可见，因为赝波函数没有节点，赝势是平缓的，除了原子球心位置不再有其他奇点。图\ref{Pseudo-OPW_NCPP}给出的是模守恒赝势和\textrm{OPW}方法得到的赝势对应的3~\textit{s}~电子波函数的主要差别。
 \end{itemize}
 \begin{figure}[h!]
 \centering
@@ -493,11 +493,11 @@ $$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\dfrac{|V_{\mathrm{nonlocal},l}(r)\Phi_l
 \begin{figure}[h!]
 \centering
 \includegraphics[height=1.35in,width=1.40in,viewport=30 55 415 500,clip]{Norm-US-wave.pdf}
-\caption{\small \textrm{Oxygen 2} \textit{p} \textrm{radical wave function (solid), NC-pseudo-wave (dottde) and US-pseudo-wave (dashed).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\caption{\small \textrm{Oxygen 2} \textit{p} \textrm{radical wave function (solid), NC-pseudo-wave (dotted) and US-pseudo-wave (dashed).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Norm-US-wave}
 \end{figure}
 
-根据Vanderbilt的建议,对$1s$、$2p$、$3d$这种径向不包含节点的价电子波函数，构造赝波函数时放弃模守恒条件，只使用少量平面波基组，但是记录赝波函数与真实波函数的电荷密度差。\footnote{模守恒约束下，赝势\textrm{Schr\"odinger~}方程是标准本征值问题；放弃模守恒条件，引入电荷密度差，可将\textrm{Schr\"odinger}方程表示为广义本征值问题。}策略上，这是通过少量增加的电荷密度差计算为代价(以保持赝势的可移植性)，换取基函数规模的大大减少。
+根据Vanderbilt的建议,对$1s$、$2p$、$3d$这种径向不包含节点的价电子波函数，构造赝波函数时放弃模守恒条件，只使用少量平面波基组，但是记录赝波函数与真实波函数的电荷密度差。\footnote{模守恒约束下，赝势\textrm{Schr\"odinger~}方程是标准本征值问题；放弃模守恒条件，引入电荷密度差，可将\textrm{Schr\"odinger}方程表示为广义本征值问题。}策略上，这是通过少量增加的电荷密度差计算为代价(以保持赝势的可移植性)，换取基函数规模的大大减少。图\ref{Norm-US-wave}给出了\textrm{O}的2~\textit{p}~轨道的径向波函数在不同势函数下的形式，可以预见，超软赝势下的需要的平面波基函数数目最少。
 \begin{equation}
 	Q_{nm}(\vec r)=\varphi_n^{\ast}(\vec r)\varphi_m(\vec r)-\tilde\varphi_n^{\ast}(\vec r)\tilde\varphi_m(\vec r)
   \label{eq:uspp_4}

@@ -1,0 +1,603 @@
+\chapter{分子动力学\rm{(Molecular Dynamics, MD)}概论}\label{chapter:MD}
+根据经典力学的基本理论为基础，通过求解组成原子\footnote{经典的化学理论认为，物质是由分子组成的，分子动力学中的“分子”一词正源于此。但分子可分解为原子，有些物质是由原子直接构成的。在本节，如不作特别说明，“原子”一词指代包括组成物质的分子或原子，不再严格区分。有些书上，也有用“粒子”一词指代的。}的运动方程，对材料的静态和动态性质做出预测，是分子动力学\textrm{(Molecular Dynamics, MD)}在材料学研究领域的最主要任务。对初学者来说，掌握分子动力学是跨入计算材料科学大门的重要一步。
+%分子动力学方法是研究经典多粒子体系运动规律的最重要的方法之一。通过求解每个粒子在相空间中的运动方程
+
+\section{导论}
+材料科学的主要目标是提升和改进现有材料性能和设计新材料。在计算材料科学中，该目标是通过建模和模拟来实现的。自从1950年代，\textrm{Alder}和\textrm{Wainwright}通过密堆积球出发，成功模拟液-固相变\cite{JCP27-1208_1957}开始，标志着分子动力学方法成功应用到材料学模拟中。自此以后，大量的高效算法和代码以及不断升级的计算能力使得分子动力学在材料领域发挥的作用日益凸显，进入21世纪，\textrm{Kadau}等实现了对3200亿个原子的分子动力学模拟\cite{IJMPC17-1755_2006}，显示出该方法的巨大能力。尽管第一性原理方法在功能材料，特别是光电磁相关研究领域中异军突起，但分子动力学仍然坚守在那些量子效应可以忽略的领域，特别是对于结构材料，如何利用分子动力学方法来描述材料中的原子运动是该领域的重要主题。
+
+量子效应只有在粒子波长$\lambda$与原子间距离（1-3\AA）相当时才变得重要。在当粒子尺度或距离超过以距离，其运动完全可以经典力学方程描述。因此，对于大多数元素和在较高温度下，涉及原子运动过程可以用经典力学方程来预测。这就是分子动力学理论的主要范畴。实际上，分子动力学几乎是模拟复杂原子体系运动——例如熔化纳米球、烧结粒子、变形纳米线和裂纹扩展块等——的最有效工具。在学习求解经典的分子动力学方程之前，将介绍分子动力学中的几个基本问题。
+
+\subsection{\rm{MD}中原子相互作用模型}
+在分子动力学中，原子被近似为质点在中心的球体，电子的作用被完全忽略，如图\ref{MD_atoms}所示。考虑到原子间的相互作用源自电子，因此引入原子间相互作用势/力场来描述原子间的相互作用。所以在分子动力学模拟之前，必须提供原子间的相互作用势。一般来说，原子间的相互作用势，都是根据经验来生成。能否构造出好的普适的原子间相互作用势函数，是分子动力学模拟成败的关键，也是诸多分子动力学研究中的难点。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_atom_electron-nucleus.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{MD}方法中的原子模型示意图.}}%
+\label{MD_atoms}
+\end{figure}
+
+\subsection{经典力学}
+在这节中，我们将回顾经典力学的一些重要性质，为完成分子动力学模拟提供一些必要的基础。图\ref{MD_typical}左侧展示了经典力学体系的性质，在势阱中运动原子的能量守恒。显而易见:~
+\begin{itemize}
+	\item 给定一个原子的当前位置和速度，其未来和过去的轨迹可以用经典力学方程精确地计算出来。
+	\item 跳跃过程中能量的变化是从势阱底(能量零点)到最大点的连续变化。
+	\item 如果一个原子的能量低于势壁，那么该原子就永远不能跳过势壁。
+\end{itemize}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_jumping_atom.png}
+\includegraphics[height=1.8in]{MD_typical_process.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{(左)~经典力学框架下势阱中运动的原子(黑球);~(右)~五原子体系中\textrm{MD}的典型过程(原子1受其他四个原子产生的合力，在时间步长$\Delta t$内从虚线位置移动到实心球位置).}}%
+\label{MD_typical}
+\end{figure}
+
+\subsection{分子动力学}
+用数学语言描述，分子动力学描述的物理过程，就是材料中的原子在经典力学方程支配下随时间的积分，得到体系的时间演化，进而获取感兴趣的性质。通常按照图\ref{MD_typical}右侧进行:~
+\begin{itemize}
+	\item 给定每个原子的初始位置和速度，并根据已知的原子间势，计算每个原子所受的力。
+	\item 利用这些信息，初始位置经过一个较短的时间间隔（称为时间步长，Δt）向着低能量位置行进，产生新的位置、速度等等。
+	\item 输入新数据，重复上述步骤，通常要重复数千个这样的时间步长，直到达到平衡，此后体系性质不会随时间而显著改变(会有涨落)。\\
+在平衡期间和平衡结束之后，每个或某些时间步长的各种原始数据被存储起来，因为这些时间步长包括了原子位置和动量、能量、力等等信息。可通过直接计算或通过这些数据的统计分析得出如下性质：
+	\item 基本的能量，结构和力学性质。(请注意，其中一些数据是用于根据经验拟合势函数。)
+	\item 用压力和体积表示的热膨胀系数、熔点和相图。
+	\item 缺陷结构与扩散，晶界结构与滑移。
+	\item 热容、相间自由能差和热导率。
+	\item 液体径向分布函数和扩散系数。
+	\item 描述溅射、气相沉积、快速塑性流动、裂纹生长和快速断裂、纳米压痕、冲击波传播、爆炸、辐照、离子轰击、团簇碰撞和纳米齿轮的操作等过程和现象。
+\end{itemize}
+与第一性原理方法相比，分子动力学模拟速度极快，因此可以处理更大的体系。然而，分子动力学也有一些“先天不足”：
+\begin{itemize}
+	\item	势函数主要依赖经验构造，普适性较差，尤其是对多成分体系，多体相互作用的势函数的构造非常困难，势函数的精确性常常受到质疑。
+	\item 分子动力学模拟的尺度仍然非常有限，不够宏观，伴随而来的时间尺度也被限制为纳秒级别。
+	\item 因为忽略电子的存在，分子动力学模拟无法给出材料的电磁特性，必须诉诸第一原理计算。
+\end{itemize}
+
+\section{势函数/力场}
+由于静电作用，当原子距离彼此足够近的时候，就会在吸引力和排斥力之间达到某种平衡，这种平衡由该原子与周围原子的相互作用势决定。原子最终将稳定在平衡距离的最小势能处。根据经典力学基本理论，作用于原子的所有力的共同作用，可由\textrm{Newton}第二定律表示为
+\begin{equation}
+	\mathbf{F}=m\mathbf{a}=m\dfrac{\mathrm{d}\mathbf{v}}{\mathrm{d}t}=m\dfrac{\mathrm{d}^2\mathbf{r}}{\mathrm{d}t^2}=\dfrac{\mathrm{d}\mathbf{p}}{\mathrm{d}t}
+	\label{eq:Newton_2}
+\end{equation}
+其中:~
+$\mathbf{a}$是加速度，$\mathbf{v}$是速度，$t$是时间，$\mathbf{r}$是位置，$\mathbf{p}$是动量。
+
+这里位移$\mathbf{r}$是矢量，它的一阶导数是速度$\mathbf{v}$，二阶导数为加速度$\mathbf{a}$同样是矢量，相应地，动量$\mathbf{p}$和力$\mathbf{F}$也都是矢量。
+
+如果体系的总能量$E$在时间上是守恒量($\mathrm{d}E/\mathrm{d}t=0$)，在分子动力学模拟中称为孤立体系，相对于位移，此时，原子的受力F可由势函数的负梯度确定，即
+\begin{equation}
+	\mathbf{F}=-\Delta U\rightarrow\mathbf{F}=-\Delta U(\mathbf{r}_1,\mathbf{r}_2,\cdots,\mathbf{r}_N)
+	\label{eq:Force_Potential}
+\end{equation}
+$U$是势函数。因此，如果势函数是原子间距离的函数，只要给定体系中各原子的起始位置，通过求解运动方程，就可以确定原子在不同位置时的受力和运动状态，以及体系随时间演化，最后达到稳定的过程。
+
+在构造体系的势函数的过程中，还可以通过引入不同的参数来控制和改善势函数，这些参数或是来自于实验数据或是通过第一性原理的方法计算得到。实验数据包括平衡晶格参数、内聚能、体积模量、弹性模量、空位形成能、热膨胀系数、介电常数、振动谱和表面能等。特别需要注意的是，这样构造的经验势，主要依赖的是体系的静态性质，因此普适性较差，一般只能应用于特定目的下的计算，即使在相同的体系和计算条件下，也不能简单地移植到其他计算中去。势函数是目前影响分子动力学发展的最主要的瓶颈。
+
+近年来，在某些金属体系、半导体和某些陶瓷领域里，生成准确和可靠的势方面取得了很大的进展，这些材料的势函数通常以函数库的形式提供免费下载，例如：
+\begin{itemize}
+	\item \url{http://xmd.sourceforge.net/eam.html}
+	\item \url{http://cst-www.nrl.navy.mil/ccm6/ap/eam/index.html}
+	\item \url{http://riodb.ibase.aist.go.jp/apot/toppage_e.html}
+	\item \url{http://enpub.fulton.asu.edu/cms/potentials/main/main.htm}
+	\item \url{http://lammps.sandia.gov/}
+	\item \url{http://www.ctcms.nist.gov/potentials}
+	\item \url{http://www.dfrl.ucl.ac.uk/Potentials/O/index.html}
+\end{itemize}
+在本节中，我们将详细介绍四种常见的势的类型：对势、\textrm{EAM}势、\textrm{Tersoff}势和离子势。为有机物、聚合物和生物有机系统（例如蛋白质）设计的势函数(由于历史的原因，这些领域习惯将势函数称为力场)不包括在内。%此外，在3.7和3.10节的算例中，会演示混合势方法，即如何在一个体系中应用不同类型的势函数。
+\subsection{对势}
+在$N$原子体系中，$N$是原子的数目，一个原子$i$同时与所有其他原子发生相互作用(这种作用可以通过考虑两个原子间、三个原子，扩展到$N$个原子间相互作用，以此类推):
+\begin{equation}
+	U=\sum_{i<j}^NU_2(\mathbf{r}_i,\mathbf{r}_j)+\sum_{i<j<k}^NU_3(\mathbf{r}_i,\mathbf{r}_j,\mathbf{r}_k)+\cdots
+	\label{eq:interaction_atom}
+\end{equation}
+这里包括的分别是两个原子，三个原子，$N$个原子的势。在这里，求和符号表示所有不同的双原子组、三原子组，$N$原子组的和，注意:~不重复计算其中任何一组!
+
+为简化问题的讨论，起始开始只考虑任意两原子间的相互作用。每个原子之间有$(N–1)$个相互作用，因此须考虑的原子间相互作用的数量，$N_{\mathrm{pair}}$，是$N^2$的数量级：
+\begin{equation}
+	N_{\mathrm{pair}}=\dfrac{N(N-1)}2\propto O(N^2)
+	\label{eq:interaction_atom_range}
+\end{equation}
+图\ref{MD_5-atoms}以一个由五个原子组成的体系为例，显示了10对相互作用。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_5-atoms.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{五原子体系中的成对相互作用(箭头标示).}}%
+\label{MD_5-atoms}
+\end{figure}
+
+对势是最简单的一种相互作用势，它只考虑两个原子之间的作用，不再考虑其他的相互作用。一个典型的例子是\textrm{Lennard-Jones (L-J)}势\cite{PRSC106-463_1924}，$U_{\mathrm{LJ}}(r)$，用原子间距离$\mathbf{r}$表示，\textrm{L-J}势的表达式有两个参数:~
+\begin{equation}
+	U_{\mathrm{LJ}}(r)=4\varepsiolon\bigg[\bigg(\dfrac{\sigma}r\bigg)^{12}-\bigg(\dfrac{\sigma}r\bigg)^6\bigg]
+	\label{eq:Potential_L-J}
+\end{equation}
+\begin{itemize}
+	\item 参数$\varepsilon$是势能曲线的最低能量点($\equiv$势阱深度，内聚能)
+	\item 参数$\sigma$是原子间的距离，其势能为零，如图\ref{Curve_L-J}所示。
+\end{itemize}
+那么它的排斥力和吸引力的作用力形式是
+\begin{equation}
+	\mathbf{F}_{\mathrm{LJ}}=\dfrac{24\epsilon}{\sigma}\bigg[2\bigg(\dfrac{\sigma}r\bigg)^{13}-\bigg(\dfrac{\sigma}r\bigg)^7\bigg]
+	\label{eq:Focrce_L-J}
+\end{equation}
+当两个\textrm{L-J}势的原子(如惰性元素\ch{Ar})从远距离彼此靠近时，我们注意到了\textrm{L-J}势具有几个特征:~
+\begin{itemize}
+	\item 在$r=\infty$时，$U_{\mathrm{LJ}}$和$\mathbf{F_{\mathrm{LJ}}}$为零。
+	\item 当它们靠近时，偶极-偶极引力就会发生，而符号$r^{-6}$很好的描述了\textrm{van der Waals}相互作用。
+	\item 当它们距离更近时，电子云的重叠产生了\textrm{Pauli}互斥现象，任意的$r^{-12}$项描述了斥力的急剧增加。
+\end{itemize}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_Potential_L-J.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{L-J}对势曲线示意图.}}%
+\label{Curve_L-J}
+\end{figure}
+在平衡的原子间距离$r_0(=2^{1/6}\sigma=1.122\sigma)$下，两个力的平衡合力为零，相应的能量变为最小值$(\mathrm{d}U_{\mathrm{LJ}}/\mathrm{d}r=0)$。
+由于\textrm{Pauli}互斥的作用，能量在$r=\sigma$时穿过0，并随着$r$的进一步减小而急剧增大。
+这种简单的对势可以很好的表示稀有气体（\ch{Ne}、\ch{Ar}、\ch{Kr}等）的原子间相互作用，以及球形分子。然而，由于三个或三个以上原子的多原子效应（在大多数材料中这部分贡献占总势能的10\%）被完全忽略，\textrm{L-J}势不能应用于金属、半导体和其他固体问题的分子动力学描述。
+\subsection{嵌入原子势}
+根据经典的金属电子理论，可以将金属设想为构成元素的原子核(或离子实)浸没在电子海洋中。因此平均地看，在金属中，各原子与其他原子主要以8-12配位的密堆积形式存在。它们之间的静电库仑相互作用是长程的，一般将扩展到数十个原子的距离，因此这种多原子效应不能忽略，必须考虑在内。在经验势的框架内，很大一部分精力都集中在如何更精确有效地处理这些多原子效应。嵌入原子方法\textrm{(Embedded Atom Method, EAM)}的主要思想就是将给定原子位置上的有效电子密度作为参数之一，在保持势函数简单性的同时，考虑更多的电子效应的贡献。
+金属中的价电子倾向于离域，构成电子海洋的主要部分，它们对来自各方向的离子实（原子核加上内层电子）都具有静电吸引。显然，主要局域于原子间的对势无法很好地描述这种状态。\textrm{EAM}则在原子间对势贡献的基础上，通过引入嵌入能，平均地考虑了嵌入原子与周围原子的相互作用的贡献\cite{PRB29-6443_1984,MSR9-251_1993}，这种考虑的嵌入能与对势中忽略的N原子效应相似。本质上，这是一种平均场的处理方案。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_EAM_5-atoms.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{五原子体系的\textrm{EAM}势模型,显式地表明$N$-原子效应的成对相互作用(箭头)和嵌入能(灰色区域).}}%
+\label{EAM_atoms}
+\end{figure}
+如图\ref{EAM_atoms}所示，嵌入能量是将带正电的离子实嵌入电子云所需的近似能量(用电子密度描述的能量函数)。因为净的相互作用表现为吸引，因此能量将是负值。请注意，这里的原子间对相互作用最主要的仍是排斥力。因此，作为\textrm{EAM}势的数学表达$U_{\mathrm{EAM}}$包含两个方面的要素，一个是成对原子间的相互作用(排斥为主)，另一个是嵌入能量作为原子$i$上电子密度$\rho_i$的函数(净的吸引作用):
+\begin{equation}
+	U_{\mathrm{EAM}}=\sum_{i<j}U_{ij}(r_{ij})+\sum_iF_i(\rho_i)
+	\label{eq:Potential_EAM}
+\end{equation}
+其中:
+\begin{itemize}
+	\item $F_i(\rho_i)$是嵌入能量函数
+	\item $r_{ij}$是原子$i$和$j$之间的标量距离
+\end{itemize}
+并将$x$轴、$y$轴和$z$轴的原子-原子距离表示为
+\begin{equation}
+	r_{ij}=|\mathbf{r}_i-\mathbf{r}_j|=\sqrt{(x_i-x_j)^2+(y_i-y_j)^2+(z_i-z_j)^2}
+	\label{eq:MD-R_ij}
+\end{equation}
+在式\eqref{eq:Potential_EAM}中，第一个求和符号表示所有单独的相互作用的和，不包括任何重复计数:
+\begin{equation}
+	U=\sum_{i<j}^NU_{ij}(r_{ij})=U_{12}+U_{13}+\cdots+U_{23}+U_{24}+\cdots+U_{34}+U_{35}+\cdots
+	\label{eq:EAM_pair}
+\end{equation}
+
+位于$i$的电子密度只是其他所有原子的价电子云的线性叠加：
+\begin{equation}
+	\rho_i=\dfrac12\sum_{j(\neq i)}\rhi_j(r_{ij})
+	\label{eq:EAM_rho}
+\end{equation}
+例如，下面是由\textrm{Voter}和\textrm{Chen}\cite{MRSSP82-175_1987}列出的\ch{Ni}-\ch{Al}体系的\textrm{EAM}势，它显示了七个数据组（三个为对势，两个为电子密度，两个为嵌入能）。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_EAM_Ni-Al.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{文献\inlinecite{MRSSP82-175_1987}给出的\ch{Ni}-\ch{Al}的\textrm{EAM}势(部分),数据引自文献\inlinecite{J.-G._Lee}.}}%
+\label{EAM_Ni-Al}
+\end{figure}
+对于分子动力学计算过程来说，首先应该计算不同位置上的电子密度，然后评估相应的嵌入能，并将其添加到对势中。一般地，距离近的原子对电子密度的增加贡献大。通常情况下，嵌入能与电子密度形成一条缓缓变化的凹形曲线:~电子密度开始逐渐增加时，嵌入能的负值缓慢变化;~随着电子密度增加，当电子密度的负电荷与离子实的正电荷大致相等时，嵌入能的负值将呈现更快速的变化。
+这种类型的势对大多数金属，包括过渡金属都非常有效，尤其是\textrm{FCC}金属。然而，对于合金来说，为所有组成元素拟合嵌入能函数将是一项非常复杂、非常困难的工作。这也从一个方面解释了为什么合金体系能利用的势函数是非常有限的。这些年来，\textrm{EAM}势也有了长足的发展，已经扩展到\textrm{MEAM}，甚至可以处理某些具有一定方向的原子间相互作用键\cite{PRB46-2727_1992}。
+\subsection{\rm{Tersoff}势}
+在共价型固体中，原子间成键很大程度上取决于原子轨道的重叠程度，即化学键呈现出显著的方向性特征。因此共价型材料中的原子/离子堆积一般不会太紧密（通常配位数只有4），这也决定了共价型固体的原子空间结构与金属材料中“密堆积”的情形有很大的不同。金刚石或闪锌矿的结构属于这一类型的固体，其特征是键角为$\sim109.47^{\circ}$，并具有$sp^3$杂化轨道的化学键。因此，键角以及与键长有关的键级，将是描述这些材料的原子间相互作用的主要特征参量，两个原子之间键的强度取决于配位数和键长、键角等局部环境。\textrm{Tersoff}\cite{PRB37-6991_1988}注意到共价化合物原子间成键与空间几何结构的关系，首先发展了以下一般形式的势函数:~
+\begin{equation}
+	U_{\mathrm{Tersoff}}=\dfrac12\sum_{i\neq j}U_{\mathrm R}(r_{ij})+\dfrac12\sum_{i\neq j}B_{ij}U_{\mathrm A}(r_{ij})
+	\label{eq:Potential_Tersoff}
+\end{equation}
+其中:
+\begin{itemize}
+	\item $U_{\mathrm R}$和$U_{\mathrm A}$代表排斥势和吸引势
+	\item $B_{ij}$是原子$i$和$j$之间键的键序，通常是配位数$N_{\mathrm{coor}}$的递减函数
+		\begin{displaymath}
+			B_{ij}\propto\dfrac1{\sqrt{N_{\mathrm{coor}}}}
+		\end{displaymath}
+换句话说，原子$i$与原子$j$的键$B_{ij}$因另一个键$B_{ik}$的存在而减弱。减弱的程度取决于另一个键的位置和角度。
+\end{itemize}
+虽然这两个条件都只取决于原子间距离，但这种类型的势函数通常有六个以上的参数才能完成拟合。只有选择合适的参数，这种势函数才有可能发挥较好的作用。目前经常应用\textrm{Tersoff}势的各种共价结合固体和分子，如碳化硅，硅，金刚石，石墨，无定形碳，碳氢化合物等。需要指出的是，根据\textrm{Tersoff}势函数的定义，用它描述定域的\textrm{(localized)}化学键比较成功，但对于含有离域的\textrm{(delocalized)}化学键体系，应用\textrm{Tersoff}势函数需要特别慎重，典型的例子就是石墨，因为对其层间的离域键的描述，超出了\textrm{Tersoff}势函数的能力范围。
+
+\subsection{离子固体势}
+大多数势函数都是短程的，一般在第二邻域内以指数级衰减快速地趋向于零。但是在离子固体中，因为离子本身带电，而正负电荷的\textrm{Coulomb}相互作用是长程的，并不随着原子间距离增大而快速衰减，因此能扩展到很远的距离。正负离子间还可能因为极化导致极性增强，导致必须考虑偶极或四极作用，这种相互作用也往往是长程的。因此，要描述这些离子固体中的势函数，必须考虑两种类型的势函数，即短程相互作用和远程相互作用:
+\begin{equation}
+	U_{\mathrm{ionic}}=U_{\mathrm{short}}(r_{ij})+\dfrac{Z_1Z_2}{r_{ij}}
+	\label{eq:Potential_ionic}
+\end{equation}
+其中$Z_1$和$Z_2$是组成原子的电荷。第一部分(短程相互作用)通常由两部分组成 ——近距离电子间的排斥作用和\textrm{van der Waals}作用的吸引部分：
+\begin{equation}
+	U_{\mathrm{short}}(r_{ij})=C_1\mathrm{exp}\bigg(-\dfrac{r_{ij}}{\rho}\bigg)-\dfrac{C_2}{r_{ij}^2}
+	\label{eq:Potential_ionic_vdW}
+\end{equation}
+其中$C_1$和$C_2$是常数。
+第二部分是以\textrm{Coulomb}相互作用为代表的长程静电相互作用，\textrm{Coulomb}相互作随$1/r_{ij}$衰减。对于离子晶体来说，在周期边界条件下，这种长程的\textrm{Coulomb}相互作用无法用通常的能量截断方法来处理，因为静电相互作用势的周期性地叠加会造成严重的求和发散问题。一个常用的解决方案是采用\textrm{Ewald}求和技术\cite{AP369-253_1921}，可以有效地处理这个问题。%有关\textrm{Ewald}求和的原理和实现，详见第一原理的总能计算中的有关部分。
+\subsection{反应力场势}
+反应力场\textrm{ReaxFF}势函数\cite{JPCA105-9396_2001}中包括数十个参数，这些参数主要通过由第一原理计算确定。反应力场势函数可以动态地适应原子在化学反应过程中的环境变化，能反映出化学键的形成或断裂。虽然用反应力场势函数模拟的速度比前面提到的势函数要慢近一个数量级，但反应力场势函数在模拟碳氢化合物、纳米管体系、硅体系等涉及化学键变化方面的研究取得了很大的成功，让这种方法具备了很高的应用前景
+。
+除了上面介绍的势函数，对于高能粒子(>10~\textrm{eV})的体系，还有一种特殊的势函数，是由\textrm{Ziegler}等提出的，称为\textrm{ZBL}通用势\cite{ZBL-1985}，可以计算原子在很短的距离内的排斥势。
+
+\section{经典力学方程的求解算法}\label{section:MD_algorithm}
+本节将在经典力学的框架下，讨论材料中原子运动服从的\textrm{Newton}第二定律的微分方程的求解算法。
+\subsection{{\it N}-原子体系}
+让我们用一组完整的$3N$原子坐标系来考虑$N$-原子体系的总作用力:
+\begin{equation}
+	\mathbf{F}(r_1,r_2,\cdots,r_N)=\sum_im_i\mathbf{a}_i=\sum_im_i\dfrac{\mathrm{d}^2\mathbf{r}_i}{\mathrm{d}t^2}
+	\label{eq:MD_force}
+\end{equation}
+如果总能量守恒($\mathrm{d}E/\mathrm{d}t=0$)，可以从势能函数相对于某个位置的负导数获得到原子$i$上的力，大多数分子动力学模拟都能满足这一要求。%根据上一节所讨论的各类经验势，
+根据\textrm{Newton}运动方程，可以把势能的导数与位置的变化联系起来并考虑运动方程随时间的变化，最终得到的分子动力学运动方程为:
+\begin{equation}
+	\mathbf{F}_i=m_i\dfrac{\mathrm{d}^2\mathbf{r}_i}{\mathrm{d}t^2}=-\dfrac{\mathrm{d}U(\mathbf{r_i})}{\mathrm{d}r_i}
+	\label{eq:Forece_Potential}
+\end{equation}
+不难看出，如果原子间势函数只是所有原子位置的函数，在给定时间内，作用于原子上的力可以通过原子间势函数精确地获得。在此基础上求解\textrm{Newton}运动方程，将会得到关于N个原子运动耦合的常微分方程。原则上，针对方程对时间t的一重和二重积分，就可以获得关于体系运动的速度和位置信息。但是，考虑到原子运动的自由度后，这个问题转变成为求解$6N$维体系($3N$个位置和$3N$个动量)的解析解的数学问题，显然，追求解析解是几乎不可能的。因此，分子动力学采用有限差分方法进行数值模拟：它以有限差分代替微分，如$\mathrm{d}\mathbf{r}(\equiv\mathrm{d}^3r)$和$\mathrm{d}t$，分别用$\Delta r$和$\Delta t$代替，从而将微分方程转化为有限差分方程:~根据\textrm{Taylor}展开，如果已知时间$t$的原子位置，计算时的原子位置，可有:
+\begin{equation}
+	\mathbf{r}(t+\Delta t)=\mathbf{r}(t)+\mathbf{v}(t)\Delta t+\dfrac1{2!}\mathbf{a}(t)\Delta t^2+\dfrac{\mathrm{d}^3\mathbf{r}(t)}{3!\mathrm{d}t^3}\Delta t^3+\cdots
+	\label{eq:displace}
+\end{equation}
+其中$\Delta t$是一个小的离散的时间步长，在此时间范围内，速率将保持恒定。
+实际求解具体的函数时，可以根据需要用\textrm{Taylor}展开的多项式逼近，只要包含更多的高阶项，理论上可以逼近任何所需的精度。对$N$-原子体系的\textrm{Newton}运动方程进行积分，其过程如下:
+\begin{itemize}
+	\item 根据势函数表达式，得到时刻$t$时原子位置时所有原子所受的力。
+	\item 根据等式$\mathbf{a}_i =\mathbf{F}_i/m$，计算在时间步长内的体系每个原子的加速度$\mathbf{a}_i$，应用有限差分方法(式\eqref{eq:displace}所示)，获得时间的位置$\mathbf{r}_i$、速度$\mathbf{v}_i$。
+	\item 将计算的原子位置$\mathbf{r}_i$作为新一轮势函数的输入参数，计算出新的势函数，重复上述过程，直到达到平衡并产生稳定的原子轨迹。
+\end{itemize}
+在实际的分子动力学计算过程中，通常要考虑\textrm{Taylor}级数展开到三阶项，更高阶项的截断误差表示为$O(\Delta t^4)$。这样的数值求解处理，肯定不如解析解精确，但可以通过增加高阶项来逼近精确解。在下面的小节中，将从\textrm{Taylor}展开法出发，导出的分子动力学计算的三种最通行的算法，以求得到\textrm{Newton}第二定律的有效数值解。
+\subsection{\rm{Verlet}算法}
+在具体的分子动力学求解过程中，有多种算法可用于\textrm{Newton}运动方程的数值积分和原子轨迹的计算。所有这些方法都旨在确保求解过程具有良好的运行稳定性和较高的计算精度。\textrm{Verlet}\cite{PR159-98_1967}首先提出了由以下流程构成的算法，习惯上称为\textrm{Verlet}算法:~
+\begin{enumerate}
+	\item 写出时间上向前和向后位置的\textrm{Taylor}级数展开表达式，保留到三阶项，
+		\begin{equation}
+			\begin{aligned}
+				\mathbf{r}(t+\Delta t)=\mathbf{r}(t)+\mathbf{v}(t)\Delta t+\dfrac1{2!}\mathbf{a}(t)\Delta t^2+\dfrac{\mathrm{d}^3\mathbf{r}(t)}{3!\mathrm{d}t^3}\Delta t^3\\
+				\mathbf{r}(t-\Delta t)=\mathbf{r}(t)+\mathbf{v}(t)\Delta t+\dfrac1{2!}\mathbf{a}(t)\Delta t^2-\dfrac{\mathrm{d}^3\mathbf{r}(t)}{3!\mathrm{d}t^3}\Delta t^3
+			\end{aligned}
+			\label{eq:Verlet_displace}
+		\end{equation}
+		注意，式\eqref{eq:Verlet_displace}中的向后步骤涉及表达式的正负号，因为每个项都涉及到微分的顺序。
+	\item 根据加速度的定义，将处位置的最终表达式写成递推形式
+		\begin{equation}
+			\mathbf{r}(t+\Delta t)=2\mathbf{r}(t)-\mathbf{r}(t-\Delta t)+\mathbf{a}(t)\Delta t^2
+			\label{eq:Verlet_displace_2}
+		\end{equation}
+\end{enumerate}
+由此得到的算法，本质上是通过$\mathbf{r}(t)$、$\mathbf{r}(t-\Delta t)$和$\mathbf{a}(t)$的信息来预测$\mathbf{r}(t+\Delta t)$的数值。如式\eqref{eq:Verlet_displace_2}所示，将会面对第一个时间步长需要向后一步的位置$\mathbf{r}(t_0-\Delta t)$的问题。实际上只要有关初值的信息足够多，如已知第一个时间步长的速度，就可以使用正常的\textrm{Taylor}级数展开，避免$\mathbf{r}(t_0+\Delta t)$计算:
+\begin{equation}
+	\mathbf{r}(t+\Delta t)=\mathbf{r}(t)+\mathbf{v}(t)\Delta t+\dfrac{\mathbf{a}(t)}2\Delta t^2
+	\label{eq:Verlet_Taylor}
+\end{equation}
+在式\eqref{eq:Verlet_Taylor}中，第一个时间步长之后，我们将式\eqref{eq:Verlet_displace_2}用于第二个时间步长，$\mathbf{r}(t+2\Delta t)$。还需要指出的是，除了速度点的信息，速度并不会出现在\textrm{Verlet}算法的时间演化中。但是在体系动能计算时是需要速度信息的，因此，它们是通过用内的位置变化来间接计算速度
+\begin{equation}
+	\mathbf{v}(t)=\dfrac{\mathbf{r}(t+\Delta t)-\mathbf{r}(t-\Delta t)}{2\Delta t}
+	\label{eq:Verlet_V}
+\end{equation}
+\textrm{Verlet}算法非常简单，每个时间步长只需要对力进行一次计算。由于四阶即更高阶项被截断，因此它的精度相对较高，误差$O(\Delta t^4)$较小。同时该算法在时间上是可逆的（将时间参数$-t\rightarrow t$，体系的径迹将保持可逆变换），当然，计算过程中，随着舍入误差的累积，最终必然会破坏体系径迹的时间可逆性。另一方面，由于\textrm{Verlet}算法中不包括速度，速度是通过中值定理间接确定的，相关的误差为$O(\Delta t^2)$，换言之，$\mathbf{r}$和$\mathbf{v}$是在不同的时间步长下得到的，所以在分子动力学程序运行过程中，能量(主要源自动能)的振荡会特别严重，且无法克服。
+\subsection{速度{\rm Verlet}算法}
+速度\textrm{Verlet}算法\cite{PR165-201_1968}是当前分子动力学程序中最常用的算法之一。在该算法的策略中，时间处的位置、速度和加速度是根据相应的时间$t$处的值计算得到的:
+\begin{equation}
+	\begin{aligned}
+		&\mathbf{v}\bigg(t+\dfrac{\Delta t}2\bigg)=\mathbf{v}(t)+\dfrac1{2!}\mathbf{a}(t)\Delta t\\
+		&\mathbf{r}(t+\Delta t)=\mathbf{r}(t)+\mathbf{v}(t)\Delta t+\dfrac1{2!}\mathbf{a}(t)\Delta t^2=\mathbf{r}(t)+\mathbf{v}\bigg(t+\dfrac{\Delta t}2\bigg)\Delta t 
+	\end{aligned}
+	\label{eq:Verlet_Velocity}
+\end{equation}
+注意到此处，计算的$\mathbf{v}$、$\mathbf{r}$仍然不是在同一位置的数值，彼此差半个时间步长。
+由此可以根据势函数，得到加速度$\mathbf{a}$随时间步长的递推关系:
+\begin{equation}
+	\mathbf{a}(t+\Delta t)=-\bigg(\dfrac1m\bigg)\dfrac{\mathrm{d}U[\mathbf{r}(t+\Delta t)]}{\mathrm{d}r}=\dfrac{\mathbf{F}(t+\Delta t)}m 
+	\label{eq:Verlet_Velocity_a}
+\end{equation} 
+一旦获得加速度的递推关系，就可以实现同一位置、同一步长计算$\mathbf{v}$、$\mathbf{r}$:
+\begin{equation}
+	\mathbf{v}(t+\Delta t)=\mathbf{v}(t)+\dfrac{\mathbf{a}(t)+\mathbf{a}(t+\Delta t)}2\Delta t=\mathbf{v}(t+\dfrac{\Delta t}2)+\dfrac12\mathbf{a}(t+\Delta t)\Delta t 
+	\label{eq:Verlet_Velocity_2}
+\end{equation}
+注意，只有在计算了新的位置和加速度(相当于新的力)之后，速度才会被更新。
+
+速度\textrm{Verlet}算法操作简单，除了径迹计算具有时间可逆性和准确性，特别适合于较短时间和较长时间步长的径迹模拟。此外由于速度\textrm{Verlet}算法在每次时间步长上都同时计算位置和速度，因此用于能量计算时，具有更好的稳定性。虽然由于计算中的机器误差，会出现一些能量涨落，但相比传统的\textrm{Verlet}算法，更适合长时间的能量模拟。
+\subsection{预测-校正算法}
+预测-校正算法\cite{PR136-405_1964}是一种利用原子坐标高阶导数信息的高阶算法。它也是分子动力学模拟中最常采用的方法之一。
+在此算法中，充分利用了前几个时间步长的数据，并将其用于下一个时间步长的校正，有望提升计算的精度，如下所示:
+\begin{itemize}
+	\item 预测步:~根据\textrm{Taylor}级数展开式，根据它们当前数值来预测时刻的位置、速度和加速度:
+		\begin{equation}
+			\begin{aligned}
+			\mathbf{r}_{\mathrm{pre}}(t+\Delta t)&=\mathbf{r}(t)+\mathbf{v}(t)\Delta t+\dfrac1{2!}\mathbf{a}(t)\Delta t^2+\dfrac{\mathrm{d}^3\mathbf{r}(t)}{3!\mathrm{d}t^3}\Delta t^3+\cdots\\
+			\mathbf{v}_{\mathrm{pre}}(t+\Delta t)&=\mathbf{v}(t)+\mathbf{a}(t)\Delta t+\dfrac1{2!}\dfrac{\mathrm{d}^3\mathbf{r}(t)}{\mathrm{d}t^3}\Delta t^2+\cdots\\
+			\mathbf{a}_{\mathrm{pre}}(t+\Delta t)&=\mathbf{a}(t)+\dfrac{\mathrm{d}^3\mathbf{r}(t)}{\mathrm{d}t^3}\Delta t+\dfrac1{2!}\dfrac{\mathrm{d}^4\mathbf{r}(t)}{\mathrm{d}t^4}\Delta t^2+\cdots
+			\end{aligned}
+			\label{eq:Predict}
+		\end{equation}
+	\item 误差估计:~在时刻$t+\Delta t$，根据预测确定的位置，由势函数确定原子的受力，并由此确定此刻的加速度$\mathbf{a}(t+\Delta t)$。一般地，该值与预测的加速度$\mathbf{a}_{\mathrm{pre}}(t+\Delta t)$通常是不一样的。这两个值之间的微小差异将确定错误范围，$\Delta\mathbf{a}(t+\Delta t)$:
+		\begin{equation}
+			\Delta\mathbf{a}(t+\Delta t)=\mathbf{a}(t+\Delta t)-\mathbf{a}_{\mathrm{pre}}(t+\Delta t)
+			\label{eq:Delta_a}
+		\end{equation}
+	\item 校正步:~如果其他数值的误差也很小，可以近似认为误差是线性的并且与成正比。因此，将位置和速度按加速度计算误差的正比进行校正:
+		\begin{equation}
+			\begin{aligned}
+				\mathbf{r}_{\mathrm{cor}}(t+\Delta t)=\mathbf{r}_{\mathrm{pre}}(t+\Delta t)+c_0\Delta\mathbf{a}(t+\Delta t)\\
+				\mathbf{v}_{\mathrm{cor}}(t+\Delta t)=\mathbf{v}_{\mathrm{pre}}(t+\Delta t)+c_1\Delta\mathbf{a}(t+\Delta t)
+			\end{aligned}
+			\label{eq:Correct}
+		\end{equation}
+		常数$c_i$主要取决于\textrm{Taylor}级数展开式中包含了多少阶导数，且从1到0不等。
+\end{itemize}
+预测-校正算法非常精确和稳定，在运行过程中几乎没有涨落，特别适用于恒温分子动力学模拟。不过，由于误差校正的引入，破坏了径迹的时间可逆性，因此该算法下的径迹随时间变化的函数是不可逆的。预测-校正算法具有时间较长(>5~\textrm{fs})而能量漂移较小的特点，代价是需要更多的存储空间。
+
+由于预测-校正算法的高精度源自原子位置的高阶导数的利用，将该算法进一步推广，就可以得到\textrm{Gear}算法\cite{ODE_1971}，应用于计算可以得到更高的计算精度。例如，分子动力学研究者乐于使用的\textrm{Gear}-5算法，计算精度极高，且总能量的振荡也最小。
+
+\section{计算初始化}
+根据图\ref{MD_Procedure}所示，一般的分子动力学计算流程包括初始化、积分/判断动力学平衡和数据生成等几大步骤。在这一节中，将重点围绕初始化中的几个值得注意问题作一些说明。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_Procedure.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{典型的分子动力学计算流程示意.}}%
+\label{MD_Procedure}
+\end{figure}
+\subsection{初值预置}
+在本部分，将介绍在典型分子动力学模拟中最大限度控制和减少计算量的几种策略。应用这些策略可将分子动力学模拟过程的时间尺度控制为$O(N)$而不是$O(N^2)$。
+\subsubsection{势能截断}
+分子动力学模拟中最耗时的部分是力的计算，因为力是势函数对原子位置的导数$(-\mathrm{d}U/\mathrm{d}\mathbf{r})$。通常情况下，势函数随着原子间距增大而逐渐减弱，直到变得可以忽略不计。因此当原子间的距离超过了一定的截断距离$r_{\mathrm{cut}}$时，我们可以忽略力的计算。$r_{\mathrm{cut}}$的选择必须小于主模拟区域尺寸的一半，如图\ref{MD_R_cut}中的较小的圆圈所示。否则，这个原子可能与主模拟区域内的原子以及镜像区域内的映像(源自周期性假设，见下)发生相互作用，导致引入非物理的多重相互作用。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_Potential_cut.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{二维平面内周期边界条件下势能截断范围(小圆圈)和近邻列表范围(大圆圈)示意图，中心为主模拟区域，周围是镜像模拟区.}}%
+\label{MD_R_cut}
+\end{figure}
+原始的势函数，在截断半径$r_{\mathrm{cut}}$之外，呈现出锥形结构的衰减“尾巴”，在图\ref{Potential_R_cut}中 截断后的势函数将在$r_{\mathrm{cut}}$处消失。这种锥形“尾巴”的存在可以防止能量和力的突然中断。截断锥形收缩“尾巴”（等效于引入吸引形式的势函数）引起的能量误差通常小于百分之几，一般可以通过在势函数中截断半径外保留常数来校正。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_Potential_R_cut.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{势能曲线在$r_{\mathrm{cut}}$处的截断和截断前的收缩的起点$r_{\mathrm{rap}}$.}}%
+\label{Potential_R_cut}
+\end{figure}
+
+典型势函数的正常截断参考距离为
+\begin{itemize}
+	\item \textrm{Lennard−Jones}势:~2.5—3.2$\sigma$
+	\item \textrm{EAM}势:~5\AA
+	\item \textrm{Tersoff}势能:~3-5\AA
+	\item 离子固体的势能:~无截断，因为远程势能的下降非常缓慢，即$U_{\mathrm{long}}\propto1/\mathbf{r}$
+\end{itemize}
+在这种势能截断方案中，要求原子间相互作用力只与附近的原子有关，这样总的分子动力学模拟的计算量大约为$O(N)$。例如，对于金属材料，所需考虑的对相互作用可以减小到~80$N$，而金刚石结构的半导体(硅、锗、砷化镓等共价材料)，所需要考虑的对相互作用可以减小到~4$N$。
+
+在分子动力学模拟软件运行期间，原子所受的力的计算是在势能截断内的所有原子中进行的。如图\ref{MD_R_cut}所示，\textrm{atom}~$i$在主模拟区域中有一个相邻的\textrm{atom}~$k$，在周围的镜像模拟区域中有多个等价的$k$(如标记为$k^{\prime}$者)。在这些原子中，只有左边的镜像盒中的原子$k^{\prime}$是最接近于原子$i$的，所以将被用于原子间作用力的计算。这就是所谓的最小镜像准则。因此，计算原子$i$的势函数时，需要考虑左边镜像模拟区域中k原子的两个“镜像”与原子$i$的相互作用，而忽略$k^{\prime}$在主模拟区域对应部分$k$原子与$i$的相互作用。注意，当势函数是长程作用时，比如带电或极化原子产生的\textrm{Coulomb}作用时，最小镜像准则是不适用的。
+\subsubsection{周期边界条件}
+在一个包含1000个原子的面心立方\textrm{(FCC)}晶格构成模拟区域中，将出现大约有一半的原子暴露在表面的问题，特别是注意到表面原子远不满足配位数为12的要求，因此这样的模拟体系不能被当作一个完整的模拟对象。一个这样的完整的模拟对象，可能需要包括大约1~\textrm{mol}($\sim10^{23}$)数量级的原子，才能完全忽略表面效应。显然目前的计算能力下，无论如何模拟区域，都无法包含这个多的原子。所谓的周期边界条件\cite{PZ13-297_1912}，就是为了解决模拟规模的问题而引入的，通过在模拟区域周围设置了无限大数量的镜像区域，尽可能降低表面效应的影响。如图\ref{MD_R_cut}所示。
+
+实际的模拟过程只在中心主模拟区域中的原子发生，所有的镜像模拟区域只是复制主模拟区域。例如，如果\textrm{atom}~$k$从主模拟区域移动到其上面的镜像模拟区域，那么它底部镜像区域中的镜像(带有朝上箭头的原子)就会移动进来替换它，让主模拟区域的原子数保持不变。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_Periodic-boundary-condition.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{周期边界条件下模拟材料计算的各种模型(原子/分子，表面/界面，体相)选取方式示意图.}}%
+\label{MD_Periodic}
+\end{figure}
+注意，原子和它的周期性镜像之间的作用力相互抵消，只需要通过简单的坐标变换，就可以更新相邻镜像模拟区域中原子的位置。通过使用超晶胞\textrm{(supercell)}方法，同样的变换不仅适用于全部原子，还可以应用于单原子、薄层和团簇体系，如图\ref{MD_Periodic}所示。
+\subsubsection{近邻列表}
+在分子动力学程序运行期间，每个原子移动的距离是不相同的，显然，对于移动距离微小的原子来说，重复的受力的计算将变得毫无必要。\textrm{Verlet}\cite{PR159-98_1967}设计了一个方案，通过列出邻近的原子对并检查它们的移动距离来避免这种不必要的计算。在这一算法中，在每个原子周围画一个半径为$r_{\mathrm{list}}$的球(二维平面中时退化为圆)，球半径$r_{\mathrm{list}}$比势函数截断值更大一些，如图\ref{MD_R_cut}所示。在大多数分子动力学程序的代码中，一般$r_{\mathrm{list}}$的默认值设为1.1~$r_\mathrm{cut}$，原子的近邻列表将由圆圈中每个原子的所有邻近原子组成。经过一定数量的时间步长$N_{\mathrm{up}}$后，只对运动超过的原子重新进行力的计算。
+近邻列表在分子动力学模拟之前预先设定好，要求在任何近邻列表中未列入的原子进入圆圈前(这种进入通常发生在5-20\textrm{MD}步骤之后)，在每隔$N_{\mathrm{up}}$步都会更新列表:
+\begin{equation}
+	r_{\mathrm{list}}-r_{\mathrm{cut}}>N_{\mathrm{up}}\mathbf{v}\Delta t
+	\label{eq:r_list_circle}
+\end{equation}
+
+\subsection{初始化}
+要开始一个分子动力学模拟过程，必须准备几个初始输入参数。这些准备工作非常重要，如果参数选择得合适，能尽量减少量，获得可靠的模拟结果。
+\subsubsection{确定原子数(体系大小)}
+只要能正确的代表真实体系，要求主模拟区域的原子数目越少越好。一般为了得到可靠的数据，主模拟区域的原子选择在100个以上。
+\subsubsection{给定初始位置和速度}
+为了求解\textrm{Newton}运动方程，必须提供体系的初始位置和速度(初值条件)。原子的初始位置允许任意的，但通常是根据已知晶格位置来指定，这些起始位置的数据可从多个网站轻松获得，包括:
+\begin{itemize}
+	\item \url{http://cst-www.nrl.navy.mil/lattice/spcgrp/index.html}
+	\item \url{http://rruff.geo.arizona.edu/AMS/amcsd.php}
+\end{itemize}
+原子的初始速度可能都为零，但通常都是从\textrm{Maxwell-Boltzmann}分布或给定温度下的\textrm{Gaussian}分布中随机选取的。例如，一个原子在绝对温度\textit{T}下有速度$\mathbf{v}$的概率是
+\begin{equation}
+	P(\mathbf{v})=\bigg(\dfrac{m}{2\pi k_{\mathrm{B}}T}\bigg)^{1/2}\mathrm{exp}\bigg(-\dfrac{m\mathbf{v}^2}{2k_{\mathrm{B}}T}\bigg)
+	\label{eq:v-MB}
+\end{equation}
+这里$k_{\mathrm{B}}$是\textrm{Boltzmann}常数。同时随机选择速度方向，使总线性动量为零。
+\subsubsection{选择时间步长}
+固体晶格中的原子在$10^{-14}$秒范围内振动，所以一个单位的文字动力学过程必须在$10^{-15}$秒\textrm{(femtosecond，fs)}范围内。这个小的时间尺度称为时间步长$\Delta t$，假设在这个时间步长中每个原子的速度、加速度和力都是常数，这样就可以进行简单的数值计算了。参照\ref{section:MD_algorithm}中的分子动力学运动方程，原子将在时间步长内向前移动到新的位置。不难想见，为了加速模拟，只要能保持运行的能量守恒和稳定，就应该尽可能地增大时间步长。一个实用的规则是，在时间步长中，原子的移动不应该超过最近邻原子距离的1/30，这样典型的时间步长就从0.1~\textrm{fs}变为数飞秒。
+在计算过程中，经常面临计算负载和时间步长间平衡的问题。选择小的时间步长，毫无疑问将增大计算负荷，但通常会提高精度；而选择较大的时间步长的效果则完全反之。如果总能量变得不稳定(出现漂移或波动太大)，则表明时间步长选择过大，特别是当原子运动较快速的情形，比如温度较高、原子质量较小、势函数梯度较大等，时间步长需要选得小一些。
+
+\subsubsection{确定总的模拟时间}
+一个典型的分子动力学模拟过程的运行时间可能需要$10^3$-$10^6$数量级的时间步长，相当于总的模拟时间约为几百纳秒($10^{-9}$~\textrm{s}）。通常情况下，这样的模拟足以看出材料中常见的静态和动态属性。因此分子动力学模拟总的模拟时间应该选择得比体系完全弛豫所需的时间略长些，这样才能产生可靠的数据。特别是对于相变、气相沉积、晶体生长和辐照损伤的退火等现象，达到平衡非常缓慢，需要保证足够长的总模拟时间。需要注意的是，长时间运行的分子动力学模拟可能会出现积累误差的问题，以致可能产生无效的模拟数据。
+
+\subsubsection{系综类型的选择}
+在分子动力学模拟中过程，模拟区域的每个原子的运动和行为都不同，并且在每个时间步长中都会生成系统的一个新的微观状态。
+\begin{table}[!h]
+\tabcolsep 0pt \vspace*{-5pt}
+\begin{minipage}{\0.99\textwidth}
+%\begin{center}
+\centering
+\caption{分子动力学和\textrm{MC}模拟中的各种系综概述}\label{Table-Ensemble}
+\def\temptablewidth{0.92\textwidth}
+\renewcommand\arraystretch{0.8} %表格宽度控制(普通表格宽度的两倍)
+\rule{\temptablewidth}{1pt}
+\begin{tabular*} {\temptablewidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c}
+%-------------------------------------------------------------------------------------------------------------------------
+	系综\textrm{(Ensemble)} &固定的状态参数 &热力学量的计算\\\hline
+	微正则系综\textrm{(Microcanonical)} &$N,V,E$ &$S=k\ln\Omega_{\mathrm{NVE}}$~(孤立体系)\\
+	正则系综\textrm{(Canonical)} &$N,V,T$ &$F=-kTln\Omega_{\mathrm{NVT}}$\\
+	等温-等压\textrm{Isobaric-isothermal} &$N,P,T$ &$G=-kTln\Omega_{\mathrm{NPT}}$\\
+	巨正则系综\textrm{(Grand canonical)} &$\mu,V,T$ &$\mu=-kTln\Omega_{\mathrm{NPT}}/N$~(\textrm{MC}模拟)
+\end{tabular*}
+\rule{\temptablewidth}{1pt}
+\end{minipage}
+%\end{center}
+\end{table}
+经过完整的模拟过程后，体系达到平衡，它就变成一个系综，包含所有可能的构型，并且具有相同的宏观或热力学性质。所以，一个分子动力学模拟完成达到平衡时，可以视为大量的处于各种运动状态的、各自独立的原子的集合。即系综。
+表\ref{Table-Ensemble}显示了不同热力学条件的分子动力学和\textrm{Monte Carlo~(MC)}模拟中使用的各种系综。与实验研究中的条件控制相似，对系综施加一些外部约束，可以使其在运行后具有特定的属性。特别是熵\textrm{(entropy)}~\textrm{S}，\textrm{Helmholtz}自由能\textrm{(Free energy)}~\textrm{F}，\textrm{Gibbs}自由能~\textrm{G}，化学势$\mu$等热力学性质可以从这些系综数据中获得。表中的$\Omega$是相应系综的可访问的相空间体积(或配分函数)。表\ref{Table-Ensemble}中对每个系综进行规定的变量可被视为进行实验的实验控制条件。
+
+微正则系综\textrm{(the microcanonical ensemble)}中，原子数目$N$、模拟体积$V$和总能量$E$都是确定的，因此这是一个孤立体系，它既不能与周围环境交换物质也不能交换能量。这个系综是分子动力学模拟中最常用的，因为它代表了一般的处于稳定状态的真实体系。如果模拟这种NVE系综，描写原子的运动方程就是通常的\textrm{Newton}方程。
+如图\ref{MD_ensemble}所示，其他系综都有一定的环境(大型外部体系)包围，以具有固定的参数。正则系综确定原子数$N$、模拟体积$V$和温度$T$，这一系综在\textrm{Monte Carlo}方法中最常用。等温-等压系综确定原子数、压强$和$温度$T$，而巨正则系综确定化学势($\mu$)、体积$V$和温度$T$，并且允许原子数量的变化。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_ensemble.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{分子动力学和\textrm{MC}模拟中的常见系综示意图.}}%
+\label{MD_ensemble}
+\end{figure}
+
+\section{时间步累积直至体系达到平衡}
+设定所有的预设参数和初始输入，实际的分子动力学运行会在给定的条件下逐步让未弛豫的初始体系达到平衡，消除初始构型有关的任何痕迹。换句话说，我们求解\textrm{Newton}的运动方程，直到体系的性质不再随时间而变化。正常情况下，该体系与外部环境是绝热的，不会有热交换。其结果是总能量(势能和动能之和)将保持恒定。在达到平衡的初始阶段，体系总能可能会出现涨落，但最终所有原子都被驱动到势能的最低点，每个原子上所受的净的外力为零。固体材料中的小熵变效应通常被忽略，因此这里的平衡不是热力学上的平衡，在热力学上的热平衡指的是体系的\textrm{Gibbs}自由能变化为零。以下将介绍如何在模拟过程中实现控制温度和压力，以及如何建立预期的最低能量状态。
+\subsection{模拟过程中的温度与压力控制}
+与实验中的情形类似，$NVE$系综的分子动力学模拟运行通常需要设置恒定的温度，一般程序中都是通过根据控制体系动能进而改变体系中原子的速度分布来实现。平均动能 ，与平均速度以及原子的温度相关
+\begin{equation}
+	\langle E_{\mathrm{kin}}\rangle=\bigg\langle\dfrac12\sum_im_i\mathbf{v}_i^2\bigg\rangle=\dfrac32NkT
+	\label{eq:MD_molecular_kinetic}
+\end{equation}
+这里3表示三维空间的自由度(能量均分原理)。根据分子运动论，温度和原子平均速度直接相关:
+\begin{displaymath}
+	\langle\mathbf{v}\rangle=\bigg(\dfrac{3kT}m\bigg)^{1/2}\propto T^{1/2}
+\end{displaymath} 
+因此，可以通过将每个速度分量乘以相同的因子来提升或降低温度，即速度变化对应温度的改变满足下式：
+\begin{equation}
+	\langle\mathbf{v}_{\mathrm{new}}\rangle=\langle\mathbf{v}_{\mathrm{old}}\rangle\bigg(\dfrac{T^{\prime}}T\bigg)^{1/2}
+	\label{eq:MD_velocity_relation}
+\end{equation}
+利用该等式关系，所有原子的速度在预设的迭代步骤中逐渐变化到指定的值。尽管从严格的热力学意义上讲，当前体系并不完全等同于真正的$NVT$系综，但经过这种原子运动速度的重新标定，可以确保体系平均地保持恒定温度。
+
+而当模拟对象达到热平衡时需满足正则系综的要求，并需要计算相应的热力学性质，如\textrm{Helmholtz}自由能~\textrm{F}，考虑恒温环境的方式与$NVE$系综不同，一般程序通过控制体系与热浴耦合(恒温方法)或通过虚拟坐标和速度(扩展方法)使体系达到指定温度。
+实际应用中，绝大部分实验研究是在恒压下完成的，因此分子动力学研究也常常需要研究等温等压系体系。为了维持模拟过程中压力恒定，通常采用可伸展的系综（所谓的恒压器），也就是模拟过程中为保持压力不变，体系的体积允许改变。这种情况下，分子动力学模拟的就是带有压力活塞的热力学体系。
+\subsection{分子动力学模拟过程中的最小化能量搜索}
+在所有的材料模拟中，检索体系的最低能量及其构型都是非常耗时耗力的。从数值计算的角度考虑，体系中原子每一步构象搜索的完成，主要依赖于当前原子的受力情况。显然，这种有限区域的搜索很可能使体系陷入局部极小值，而非全局最小值。在分子动力学模拟基态构象检索过程中，需要一些系统的方法来有效地搜索全局最小值。
+\subsubsection{最陡下降法}
+最陡下降法\textrm{(Steepest-descent method)}首先计算原子初始构型的势能函数$U$，然后要求原子沿着与势能梯度垂直的方向，朝着势能$U$降低的方向运动(最陡下降方向)，直到势能$U$不再变小，完成第一步检索；下一步检索，将沿着当前位置的最陡下降方向开始，这个过程不断重复，如图\ref{MD_SD-CG}\textrm{(a)}所示，直到找到原子的最小势能构型为止。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_SD-CG.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{最优化算法中的最陡下降法\textrm{(a)}和共轭梯度法\textrm{(b)}实现示意图.}}%
+\label{MD_SD-CG}
+\end{figure}
+最陡下降法在找到能量$U$的极小值之前，每一步都要求指向当前能量的梯度方向(能量变化极大方向)，因此总的搜索路径将呈锯齿状，搜索过程也相对缓慢。
+\subsubsection{共轭梯度法}
+共轭梯度法\textrm{(Conjugate gradients method)}首先沿着最陡下降的方向搜索，在局部最小值处停住，然后根据新的能量梯度(原子间作用力的负值)和先前搜索方向确定新的搜索方向。如图\ref{MD_SD-CG}(b)所示，共轭梯度法搜索路径相当简单，步骤较少，使得该方法相对快速。共轭梯度法的发展就是拟牛顿法\textrm{(the quasi-Newton method)}，这是在共轭梯度法的基础上考虑了势函数$U$的二阶导数的贡献。
+
+\section{数据生成}
+分子动力学模拟程序运行完毕，将会有大量描述每个原子的在模拟过程中行为的数据生成，最主要是记录原子在所有或指定时间步长下的相空间径迹(3$N$个位置和3$N$个动量)。从这些数据中可以直接得到一些体系的单元性质:~如能量、力、原子应力等等。而体系的许多宏观性质，则需要基于单个原子的径迹，通过统计物理模型计算出来。本节将说明如何通过时间平均方法，从原子尺度的径迹信息计算体系宏观的静态和动态物理性质。
+\subsection{分子动力学软件运行分析}
+\subsubsection{能量守恒}
+当体系的分子动力学模拟达到平衡态，开始计算数据输出之前，必须对分子动力学模拟的有效性进行检查和确认。首先要检查体系，在$NVE$系综下的总能量是否满足守恒条件。
+在一个合理的分子动力学模拟过程中，动能和势能会相互交换，但是要求体系的总能必须保持恒定，一般模拟过程中能量的涨落小于$10^{−4}$。出现明显的能量波动通常是由于时间步长或积分算法选择不当造成的。如果模拟过长，很容易会出现总能量缓慢漂移，这种漂移可以通过设置更小的时间步长或者将较长时间的模拟分解为几个短时间的模拟来抑制。在许多情况下，增大模拟体系的规模将有助于减少体系能量的波动。
+此外，模拟主区域的总动量应保持为零，以防止整个单元出现移动:
+\begin{equation}
+	\mathbf{p}=\sum_im_i\mathbf{v}_i=0
+	\label{eq:momentum_conserved}
+\end{equation}
+动量守恒条件容易满足，因此可将更多的注意力集中在能量守恒的检查上，只要确保模拟过程中，原子在相空间中的径迹始终落在等能曲面上。需要指出的是，在周期性边界条件约束下，体系的角动量并不守恒。
+\subsubsection{全局极小值检查}
+对于一个孤立体系，体系的熵S达到最大时体系达到平衡，这就是最大熵原理。但是体系熵不能直接由原子的径迹来计算。因此，分子动力学程序常见的一个问题，就是将体系达到的局部极小值，认为是模拟过程已经达到平衡，因为误判导致模拟过程过早结束。因为满足能量守恒的要求，从计算程序的数值角度判断，体系达到局域极小值与达到全局最小值时的判据是一样的。解决这个问题的一种常见思路是采用模拟退火\textrm{(simulated annealing)}方法。要求体系在较高的温度下达到平衡态，再缓慢地冷却到0~\textrm{K}，使得体系有足够多的机会查看并识别出相空间等能面上诸多不同位置的极小值，最终跨越局部能垒到达全局最小值。
+\subsubsection{各态遍历假说下的时间平均}
+通过分子动力学模拟完成宏观性质计算，从统计力学角度说，必须要求模拟体系有可能遍历宏观体系所包含的全部构型，其累积的原子运动径迹必须覆盖整个相空间中所有可能的状态。这就是各态遍历假说\textrm{(the ergodic hypothesis)}。无数的分子动力学模拟过程表明，各态遍历假说是非常接近或普遍成立的。事实上，从直觉上说，对于一个系综中的各种态，应该是平等的，没有证据表明任何一种态有可能比其余态有更高概率出现的机会。为了满足各态遍历要求，通常允许体系在足够长的时间内充分演化（因此分子动力学模拟的时长比任何特定性质所需要的弛豫时间都要长得多）。
+
+如果分子动力学模拟的各态遍历具有一般性，那么任何宏观可观测的性质，都可以通过体系达到平衡后的轨迹的时间平均来计算。假设有一个分子动力学计算，完成了时间步长数$\tau=1$到$\tau_f$的模拟，并已得到$\tau_f$-步原子运动径迹下的性质，记为$A(\Gamma)$。这里，$\Gamma$表示3$N$位置和3$N$动量的6$N$维相空间。
+然后，将的总和除以总的时间步长，计算出可观测的性质:
+\begin{equation}
+	\langle A\rangle=\dfrac1{\tau_f}\sum_{\tau=1}^{\tau_f}A(\Gamma(\tau))=\dfrac1{\tau_f-500}\sum_{\tau=500}^{\tau_f}A(\Gamma(\tau))
+	\label{eq:MD_average_value}
+\end{equation}
+注意，式\eqref{eq:MD_average_value}的第二个等号后面的表达式是考虑到在模拟过程中，前500个时间步长用来建立合理的热力学平衡。%这种时间平均计算出的热力学性质将在后面作进一步讨论。
+\subsubsection{计算误差}
+不同的数值方法本身会引入不同的截断误差和舍入误差，截断误差主要取决于算法本身，而舍去误差则取决于算法的实现过程。前者可以通过缩小步长或选择更合适的算法来控制，后者则需要通过更高精度的算法来降低。计算程序的精度主要由计算中的截断差和舍入误差的大小决定，而计算误差的积累和传递则反映出算法的稳定性。一般来说，目前运行分子动力学软件的绝大部分计算机都有64位的扩展精度，因此舍入误差通常可以忽略不计，计算程序的主要误差都是由截断误差引起的。
+\subsection{分子动力学中的能量计算}
+在分子动力学模拟过程中，能量是体系最重要的物理量。总能量是体系的动能和势能之和。采用分子动力学模拟$NEV$系综，因为总能量守恒的要求，计算过程中动能和势能将表现出此消彼长的形态。通过对计算过程中相空间采样点的能量值加权平均，可以由原子的速度计算体系的平均动能，并直接从每个原子的势能计算平均势能:
+\begin{equation}
+	E_{\mathrm{total}}=\langle E_{\mathrm{kin}}\rangle+\langle U\rangle=\dfrac1{N_{\Delta t}}\sum_1^{N_{\Delta t}}\bigg(\sum_i\dfrac{m_i}2\mathbf{v}_i^2\bigg)+\dfrac1{N_{\Delta t}}\sum_1^{N_{\Delta t}}U_i
+	\label{eq:MD_Enerty_tot}
+\end{equation}
+其中:
+\begin{itemize}
+	\item $N_{\Delta t}$是计算中所选取的时间步长数(在分子动力学模拟径迹中的构型数目)
+	\item $U_i$是每个构型的势能
+\end{itemize}
+根据能量均分定理，平均动能与动能温度成正比，温度可根据速度数据确定
+\begin{equation}
+	\langle E_{\mathrm{kin}}\rangle=\dfrac32Nk_{\mathrm{B}}T=\bigg\langle\sum_i\dfrac12m\mathbf{v}_i^2\bigg\rangle
+	\label{eq:Energy_T}
+\end{equation}
+根据不同的分子动力学模拟过程，可以建立体系总能$E$和温度$T$的不同函数关系，由此构造$E-T$曲线，并可预测体系的一级相变，如熔化。熔合潜热将在$E-T$曲线上表现为特定温度下出现一个跳跃。在模拟曲线中，这种跳跃通常发生在比真实熔点高出20\%-30\%的温度下，这是因为相比于固相中，液滴种子在液相中传播需要更长的等待时间。相反，当模拟液体冷却时，也会出现过冷现象。可以通过以下方法克服熔点(一级相变)附近的过热和过冷问题：将模拟对象构建为包含50\%固体和50\%液体的体系，并将熔化定义为在固-液界面上达到两相共存的平衡态。考虑到熔化温度与体系压力有关，因此模拟体系熔化或结晶时，应该允许体系调整其体积，以保持体系压力不变。
+\subsection{结构性质模拟}
+分子动力学模拟过程中，如果允许晶格常数发生变化，就可以得到材料的$E$-$V$曲线，从该曲线可获得诸如平衡晶格常数、内聚能、弹性模量和体模量等各种结构性质。有必要指出的是，作为分子动力学模拟使用的原子势函数，一般都是通过拟合理想的实验数据(通常主要包括上述这些结构性质的数据)而生成的。因此，不难想见，通过分子动力学模拟得到的体系结构性质往往与实验数据吻合得特别好。
+\subsubsection{平衡晶格常数，内聚能}
+如图\ref{Curve_L-J}所示，从$E$-$V$曲线中可以直接得到平衡晶格常数和内聚能。不同晶体结构的势能数据将决定体系的稳定结构，而$P$-$T$图将给出压力下的材料物相的稳定性。
+\subsubsection{体相模量}
+体模量的定义是体系随着施加的外力而发生的的体积改变:
+\begin{equation}
+	B_{\mathrm{v}}=-V\bigg(\dfrac{\partial P}{\partial V}\bigg)_{NVT}
+	\label{eq:Bulk-modulus}
+\end{equation}
+例如，在\textrm{FCC}结构中，体模量可以通过在平衡晶格常数$r_0$的势能曲线的二阶导数(曲率)得到:
+\begin{equation}
+	B_{\mathrm{v}}=\dfrac{r_0^2}{9\Omega}\bigg(\dfrac{\mathrm{d}^2U}{\mathrm{d}r^2}\bigg)_{NVT}
+	\label{eq:Bulk-modulus-2}
+\end{equation}
+这里$\Omega$是原子体积%(有关分子动力学计算软件计算体模量的算例，请参阅第3.1节)
+。
+\subsubsection{热膨胀系数}
+热膨胀系数的定义是在一定压力下，体积随温度的变化量：
+\begin{equation}
+	\alpha_P=\dfrac1V\bigg(\dfrac{\partial V}{\partial T}\bigg)_P
+	\label{eq:expansion-coefficient}
+\end{equation}
+因此，只要计算出模拟区域的尺寸随温度的变化，就很容易得到热膨胀系数。
+\subsubsection{径向分布函数}
+与\textrm{X}射线衍射\textrm{(X-ray diffraction, XRD)}类似，径向分布函数\textrm{(radial distribution function, RDF)}$g(r)$，表示一个原子周围的原子分布状态。有的书上称为对相关函数\textrm{(pair correlation function)}。它是通过从某一特定原子出发，汇总其各个方向在特定距离内的所有原子数而得到的:
+\begin{equation}
+	g(r)=\dfrac{\mathrm{d}N/N}{\mathrm{d}V/V}=\dfrac{V}{N}\dfrac{\langle N(r,\Delta r)\rangle}{4\pi r^2\Delta r}
+	\label{eq:MD_RDF}
+\end{equation}
+这里:
+\begin{itemize}
+	\item $r$是径向距离
+	\item $N(r,\Delta r)$是在$r$和$\Delta r$之间的$4\pi r^2\Delta r$这个壳层空间中的原子数，括号表示求时间平均
+\end{itemize}
+图\ref{MD_RDF-Si}显示了硅在各种形式下的典型径向分布函数:包括晶体、非晶态和液态。
+
+对于晶体，该函数由指定原子周围每个相邻距离处的尖峰组成，这些尖峰能呈现出体系的晶体结构。第一峰位中心对应的是与原子最近邻原子的平均距离，该距离的大小表明原子的可能堆积与成键特性。当固体熔化或变成非晶体时，这些峰将因为近邻原子的距离发生变化而变宽，由此可以确定体系结构发生的变化。体系中原子配位数，特别是非晶态体系的原子配位数，也可以由给定原子的径向分布函数$g(r)$在空间$r_1$和$r_2$间积分得到平均原子数来确定:
+\begin{equation}
+	N_{\mathrm{coor}}=\rho\int_{r_1}^{r_2}g(r)4\pi r^2\mathrm{d}r
+	\label{eq:MD-N-coop}
+\end{equation}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{MD_RDF-Si.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{分子动力学模拟非晶态和液态\ch{Si}的典型分布函数示意图(晶体\ch{Si}用柱状图标出).}}%
+\label{MD_RDF-Si}
+\end{figure}
+
+\subsection{分子动力学模拟的均方位移}
+在分子动力学模拟中，原子位移的矢量和有可能接近于零，因为模拟过程中的每一步，原子都可能向前、也可能向后移动。但是如果我们取这些位移的平方，我们会得到一个非零的正值，该值定义为一定的时间间隔$t$内的原子均方位移\textrm{(the mean-square displacement, MSD)}。通过对模拟对象的所有原子求平均，\textrm{MSD}会表现出对时间t的线性依赖关系:
+\begin{equation}
+	\mathrm{MSD}\equiv\langle\Delta\mathbf{r}^2(t)\rangle=\dfrac1N\sum_{i=1}^N|\mathbf{r}_i(t)-\mathbf{r}_i(0)|^2=\big\langle|\mathbf{r}_i(t)-\mathbf{r}_i(0)|^2\big\rangle
+	\label{eq:MD_MSD}
+\end{equation}
+因此，当含时的均方位移出现突然变化，表明体系出现熔融、凝固、相变等。对于固体而言，\textrm{MSD}应该是一个有限值。而对于液体，原子将允许无限范围内移动，因此\textrm{MSD}会表现继续随时间的线性增加。于是液体中的自扩散系数$D$就可以从\textrm{MSD}-$t$关系的斜率得到:
+\begin{equation}
+	D=\dfrac16\dfrac{\mathrm{d}\langle|\mathbf{r}(t)-\mathbf{r}(0)|^2\rangle}{\mathrm{d}t}=\dfrac16\dfrac{\langle|\mathbf{r}(t)-\mathbf{r}(0)|^2\rangle}{t}
+	\label{eq:MD_liquid-self_diffusion}
+\end{equation}
+
+式\eqref{eq:MD_liquid-self_diffusion}中的6表示3维空间中的原子跳跃自由度(每个维度方向都允许原子向前或向后跳跃)。绘制出体系在不同温度下自扩散系数曲线，就可以通过\textrm{Arrhenius}扩散公式得到体系的活化能。
+
+\subsection{能量、热力学性质及其他}
+过去几十年里，分子动力学模拟的应用范围已经延伸到各种不同的体系和研究领域，包括
+\begin{itemize}
+	\item 热力学性质的计算。
+	\item 非平衡状态下体系的模拟\cite{CMP8-247_2005}，包括热传导、扩散、碰撞等等。
+	\item 多时间步长方法：对轻元素或存在相互作用的原子设定较短的时间步长，同一体系中其他移动缓慢的原子则设定较长的时间步长。
+	\item 通过调节势能面或温度来加速分子动力学模拟\cite{JCP106-4665_1997,JCP112-9599_2000}。
+	\item 第一性原理分子动力学方法:~体系中的离子遵守经典运动运动规律，但作用于离子上的力，则是由第一原理计算得到体系的电子结构和势能面后提供的。有关这部分理论可参阅\textrm{Car}和\textrm{Parrinello}的论著\cite{PRL55-2471_1985}，这里不作专门的讨论。
+\end{itemize}
+
+不难看出，对于能量和热力学基本数据的计算，\textrm{DFT}方法发挥的作用越来越重要，因为\textrm{DFT}计算可以从一个相对较小的体系（<100个原子）出发，但提供更精确和可靠的计算结果。不过，对位于剧烈的动态变化下的大体系而言，分子动力学模拟仍将是理论研究中的不二选择。

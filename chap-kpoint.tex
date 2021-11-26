@@ -67,7 +67,7 @@ $\Omega_0$是正格子的原胞体积，$N\Omega_0=V$。波矢$\vec k$是体系�
   \end{split}
   \label{eq:solid-39}
 \end{equation}
-不能写成一个简单的常数乘以$\psi_{\vec k}$，因此$\psi_{\vec k}$也不是动量算符的本征函数。
+显然，该式并不能写成一个简单的常数乘以$\psi_{\vec k}$，因此$\psi_{\vec k}$也不是动量算符的本征函数。
 
 简约波矢$\vec k$是对应于平移操作本征值的量子数，它的物理意义是表示原胞之间电子波函数位相的变化。不同$\vec k$值表明原胞间的位相是不同的。但是需要指出的是，如果$\vec k$改变一个倒格子矢量
 \begin{displaymath}
@@ -121,7 +121,7 @@ $\Omega_0$是正格子的原胞体积，$N\Omega_0=V$。波矢$\vec k$是体系�
 
 不难看出，引入分布函数后，\textrm{Fermi}面附近高于$E_F$的波函数态也会对积分有所贡献。实际上\textrm{Fermi-Dirac}分布描述的正是有限温度下，电子在热平衡时的分布，展宽参数$kT$对应热电子分布对熵的贡献(\textrm{Gaussian}分布中是$\sigma$)。所以在计算体系总能量时，考虑到人为地引入分布函数和有关参数的影响，需要扣除“形式上的热电子熵的贡献”，即计算电子的自由能。
 
-通过选择简单分布函数，只要指定有关参数，可以快速地确定轨道电子的占据数分布，给$k$空间积分带来很大的方便，因此，如何选择合理的分布函数成为这类方法的重要研究任务。\textrm{Methfessel}和\textrm{Paxton}在\textrm{Gaussian}分布函数的基础上，进一步用完备多项式展开逼近\textrm{Step}函数的思想来提高对$\vec k$空间积分(特别是对导体)的精度。
+通过选择简单分布函数，只要指定有关参数，可以快速地确定轨道电子的占据数分布，给$k$空间积分带来很大的方便，因此，如何选择合理的分布函数成为这类方法的重要研究任务。\textrm{Methfessel}和\textrm{Paxton}\cite{PRB40-3616_1989}在\textrm{Gaussian}分布函数的基础上，进一步用完备多项式展开逼近\textrm{Step}函数的思想来提高对$\vec k$空间积分(特别是对导体)的精度。
 \begin{figure}[t]
 	\centering
 	\vspace*{-0.5in}
@@ -479,7 +479,7 @@ $\vec k$空间积分的线性插值方法最初是\textrm{Gilat}和\textrm{Raube
   \end{split}
   \label{eq:solid-201}
 \end{equation}
-\item $E_0\leqslant E\leqslant E_1$
+\item $E_2\leqslant E\leqslant E_3$
 \begin{equation}
   \begin{split}
     N_A(E)=&\frac{|\vec k_{10}[\vec k_{20}\cdot\vec k_{30}]|}\Omega_0\frac{(E_3-E)^2/2}{(E_3-E_0)(E_3-E_1)(E_3-E_2)}\\
