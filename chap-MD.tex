@@ -37,7 +37,7 @@
 用数学语言描述，分子动力学描述的物理过程，就是材料中的原子在经典力学方程支配下随时间的积分，得到体系的时间演化，进而获取感兴趣的性质。通常按照图\ref{MD_typical}右侧进行:~
 \begin{itemize}
 	\item 给定每个原子的初始位置和速度，并根据已知的原子间势，计算每个原子所受的力。
-	\item 利用这些信息，初始位置经过一个较短的时间间隔（称为时间步长，Δt）向着低能量位置行进，产生新的位置、速度等等。
+	\item 利用这些信息，初始位置经过一个较短的时间间隔（称为时间步长，$\Delta t$）向着低能量位置行进，产生新的位置、速度等等。
 	\item 输入新数据，重复上述步骤，通常要重复数千个这样的时间步长，直到达到平衡，此后体系性质不会随时间而显著改变(会有涨落)。\\
 在平衡期间和平衡结束之后，每个或某些时间步长的各种原始数据被存储起来，因为这些时间步长包括了原子位置和动量、能量、力等等信息。可通过直接计算或通过这些数据的统计分析得出如下性质：
 	\item 基本的能量，结构和力学性质。(请注意，其中一些数据是用于根据经验拟合势函数。)
@@ -65,7 +65,7 @@ $\mathbf{a}$是加速度，$\mathbf{v}$是速度，$t$是时间，$\mathbf{r}$�
 
 这里位移$\mathbf{r}$是矢量，它的一阶导数是速度$\mathbf{v}$，二阶导数为加速度$\mathbf{a}$同样是矢量，相应地，动量$\mathbf{p}$和力$\mathbf{F}$也都是矢量。
 
-如果体系的总能量$E$在时间上是守恒量($\mathrm{d}E/\mathrm{d}t=0$)，在分子动力学模拟中称为孤立体系，相对于位移，此时，原子的受力F可由势函数的负梯度确定，即
+如果体系的总能量$E$在时间上是守恒量($\mathrm{d}E/\mathrm{d}t=0$)，在分子动力学模拟中称为孤立体系，相对于位移，此时，原子的受力$\mathbf{F}$可由势函数的负梯度确定，即
 \begin{equation}
 	\mathbf{F}=-\Delta U\rightarrow\mathbf{F}=-\Delta U(\mathbf{r}_1,\mathbf{r}_2,\cdots,\mathbf{r}_N)
 	\label{eq:Force_Potential}
@@ -109,7 +109,7 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 
 对势是最简单的一种相互作用势，它只考虑两个原子之间的作用，不再考虑其他的相互作用。一个典型的例子是\textrm{Lennard-Jones (L-J)}势\cite{PRSC106-463_1924}，$U_{\mathrm{LJ}}(r)$，用原子间距离$\mathbf{r}$表示，\textrm{L-J}势的表达式有两个参数:~
 \begin{equation}
-	U_{\mathrm{LJ}}(r)=4\varepsiolon\bigg[\bigg(\dfrac{\sigma}r\bigg)^{12}-\bigg(\dfrac{\sigma}r\bigg)^6\bigg]
+	U_{\mathrm{LJ}}(r)=4\varepsilon\bigg[\bigg(\dfrac{\sigma}r\bigg)^{12}-\bigg(\dfrac{\sigma}r\bigg)^6\bigg]
 	\label{eq:Potential_L-J}
 \end{equation}
 \begin{itemize}
@@ -170,7 +170,7 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 
 位于$i$的电子密度只是其他所有原子的价电子云的线性叠加：
 \begin{equation}
-	\rho_i=\dfrac12\sum_{j(\neq i)}\rhi_j(r_{ij})
+	\rho_i=\dfrac12\sum_{j(\neq i)}\rho_j(r_{ij})
 	\label{eq:EAM_rho}
 \end{equation}
 例如，下面是由\textrm{Voter}和\textrm{Chen}\cite{MRSSP82-175_1987}列出的\ch{Ni}-\ch{Al}体系的\textrm{EAM}势，它显示了七个数据组（三个为对势，两个为电子密度，两个为嵌入能）。
