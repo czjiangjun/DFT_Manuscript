@@ -55,7 +55,7 @@
 
 \subsection{\rm{CEP}}
 \textrm{CEP}是\textrm{Harvard}大学化学与化学生物系\textrm{Al{\'a}n Aspuru-Guzik}等最初为寻找高效有机光电材料设计的高通量计算化学软件\cite{JPCL2-2241_2011}，是用\textrm{Python}开发的，其软件结构见。
-目前广泛应 用于多种有机高分子材料的研发应用，如筛选有机太阳能电池、有机半导体、燃料电池中的高分子膜材料等。\textrm{CEP}的计算方案中，结合了传统材料模拟方案和现代药物研发模式，通过集成\textrm{MOPAC}\cite{JCAMD4-1-1990}， \textrm{Q-Chem}\cite{PCCP8-3172_2006}系统计算并建立了覆盖$\sim1,000,000$种电子结构的候选光电材料数据库(\textrm{MySOL}，\textrm{Django}形式)；在此基础上，\taxtrm{CEP}希望借助化学信息学和数据挖掘技术，更高效、快速地筛选合适的光电材料。化学信息学辅助的机器学习是\textrm{CEP}的显著技术特色。 但\textrm{CEP}的大部分功能模块都只是部分完成或还在研发中，其代码也未开源，因此\textrm{CEP}的完善程度不如其他几类软件平台，目前主要在完成数据库的积累。 
+目前广泛应 用于多种有机高分子材料的研发应用，如筛选有机太阳能电池、有机半导体、燃料电池中的高分子膜材料等。\textrm{CEP}的计算方案中，结合了传统材料模拟方案和现代药物研发模式，通过集成\textrm{MOPAC}\cite{JCAMD4-1-1990}， \textrm{Q-Chem}\cite{PCCP8-3172_2006}系统计算并建立了覆盖$\sim1,000,000$种电子结构的候选光电材料数据库(\textrm{MySOL}，\textrm{Django}形式)；在此基础上，\textrm{CEP}希望借助化学信息学和数据挖掘技术，更高效、快速地筛选合适的光电材料。化学信息学辅助的机器学习是\textrm{CEP}的显著技术特色。 但\textrm{CEP}的大部分功能模块都只是部分完成或还在研发中，其代码也未开源，因此\textrm{CEP}的完善程度不如其他几类软件平台，目前主要在完成数据库的积累。 
 
 \begin{figure}[h!]
 \centering
@@ -68,49 +68,65 @@
 \end{figure}
 
 \subsection{\rm{ASE}}
-\textrm{ASE}是由丹麦技术大学物理系\textrm{K.~W.~Jacobsen}等 用\textrm{Python}开发的多尺度计算自动流程框架 。与上述自动流程相比，\textrm{ASE}的功能模块最大的优势是计算模块提供了足够多的软件接口，可以支持第一原理-分子动力学跨尺度计算; \textrm{ASE}支持的结构建模与分析模块，允许 用户根据需要任意地组装原子、分子、界面和块体等多相结构，大大提升了软件对建模的自主性和灵便性的支持。另一方面，\textrm{ASE}对多任务作业的支持和管理比\textrm{AFLOW}和\textrm{MP}要差得多，主要依赖\textrm{Python}对脚本和接口软件的支持。
+\textrm{ASE}是由丹麦技术大学物理系\textrm{K.~W.~Jacobsen}等用\textrm{Python}开发的多尺度计算自动流程框架\cite{JPCM29-273002_2017}。与上述自动流程相比，\textrm{ASE}的功能模块最大的优势是计算模块提供了足够多的软件接口，可以支持第一原理-分子动力学跨尺度计算; \textrm{ASE}支持的结构建模与分析模块，允许 用户根据需要任意地组装原子、分子、界面和块体等多相结构，大大提升了软件对建模的自主性和灵便性的支持。另一方面，\textrm{ASE}对多任务作业的支持和管理比\textrm{AFLOW}和\textrm{MP}要差得多，主要依赖\textrm{Python}对脚本和接口软件的支持。
+\begin{figure}[h!]
+\centering
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 720 660,clip]{AFLOW_database.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 530,clip]{MP_comp_infrastructure.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 420,clip]{QMIP_shame.png}%}
+\includegraphics[height=2.4in]{ASE_Python_lib.png}%}
+\caption{\textrm{ASE}的\textrm{Python}模块关系.(引自文献\inlinecite{JPCM29-273002_2017})}
+\label{Auto_Flow_Platform-5}
+\end{figure}
 
 \subsection{\rm{MatCloud}}
 \textrm{MatCloud}是由中国科学院计算机网络信息中心材料基因实验室杨小渝等开发的，可使用\textrm{VASP}开展计算的高通量计算和数据管理平台\cite{CMS146-319_2018}，前端用户界面采用\textrm{JavaScript}开发，作业生成、运行与管理采用\textrm{.NETCore}框架开发，后台数据管理采用\textrm{MogonDB}。相比于国外的各 类高通量自动流程软件，\textrm{MatCloud}的数据集成度高。\textrm{MatCloud}的界面友好，方便使用和作业提交，数据管理和集成的机器学习功能也有一定的特色，但目前提供的核心软件接口只包含\textrm{VASP}且场景化应用程度并不强。
 
+\begin{figure}[h!]
+\centering
+%\includegraphics[height=1.2in,width=1.6in,viewport=0 0 720 660,clip]{AFLOW_database.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 530,clip]{MP_comp_infrastructure.png}%}
+%\includegraphics[height=2.4in,width=3.4in,viewport=0 0 670 420,clip]{QMIP_shame.png}%}
+\includegraphics[height=2.4in]{Matcloud.jpg}%}
+\caption{\textrm{MatCloud}的结构与流程图.(引自文献\inlinecite{CMS146-319_2018})}
+\label{Auto_Flow_Platform-6}
+\end{figure}
+
 各种高通量材料计算自动流程软件功能的对比列于表\ref{Table-Cost}。
 \begin{table}[!h]
 \tabcolsep 0pt \vspace*{-5pt}
-\begin{minipage}{\0.88\textwidth}
+\begin{minipage}{\0.95\textwidth}
 %\begin{center}
 \centering
 \caption{各种高通量材料计算自动流程软件概况}\label{Table-Cost}
-\def\temptablewidth{0.85\textwidth}
+\def\temptablewidth{0.92\textwidth}
 \renewcommand\arraystretch{0.8} %表格宽度控制(普通表格宽度的两倍)
 \rule{\temptablewidth}{1pt}
 \begin{tabular*} {\temptablewidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c@{\extracolsep{\fill}}c}
 %-------------------------------------------------------------------------------------------------------------------------
 	&\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{编程语言}}	&\fontsize{9.2pt}{7.2pt}\selectfont{建模} &\multicolumn{2}{|c|}{\fontsize{9.2pt}{7.2pt}\selectfont{任务提交与管理}} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{后处理}} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{数据组织管理}} \\\cline{4-5}
 	&	&\fontsize{9.2pt}{7.2pt}\selectfont{功能} &\multicolumn{1}{|c|}{\fontsize{9.2pt}{7.2pt}\selectfont{~~软件接口~~}} &\multicolumn{1}{c|}{\fontsize{9.2pt}{7.2pt}\selectfont{运行容错~~~}} & & \\\hline
-	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{AFLOW}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{C++}} &\checkmark &\triangle &\FiveStarOpen &\FiveStarOpen &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{Django}}} \\
+	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{AFLOW}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{C++}} &\checkmark &$\triangle$ &\FiveStarOpen &\FiveStarOpen &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{Django}}} \\
 	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MP}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\checkmark &\checkmark &\FiveStarOpen &\FiveStarOpen &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MongoDB}}} \\
 	\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{QMIP}}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{JavaScript/SVG}} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{--} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{--} \\
 	&\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{+html/Python}} & & & & & \\
 	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{CEP}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\checkmark &\checkmark &-- &\checkmark &\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{Django/MySQL}}} \\
-	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{ASE}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\FiveStarOpen &\FiveStarOpen &-- &\triangle &-- \\
-	\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MatCloud}}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{JavaScript}} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\triangle} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MongoDB}}}} \\
+	\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{ASE}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{Python}} &\FiveStarOpen &\FiveStarOpen &-- &$\triangle$ &-- \\
+	\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MatCloud}}}} &\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{JavaScript}} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{$\triangle$} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\checkmark} &\multirow{2}{*}{\fontsize{9.2pt}{7.2pt}\selectfont{{\textrm{MongoDB}}}} \\
 	&\fontsize{9.2pt}{7.2pt}\selectfont{\textrm{+.NETCore}} & & & & &
 \end{tabular*}
 \rule{\temptablewidth}{1pt}
 \fontsize{8.2pt}{5.2pt}\selectfont{
-\begin{description}
-	\item[\FiveStarOpen]~表示该功能较突出
-	\item[\checkmark]~表示该功能基本满足需求
-	\item[\triangle]~表示该功能存在不足
-\end{description}}
+%\begin{description}
+%	\item[\FiveStarOpen]~表示该功能较突出
+%	\item[\checkmark]~表示该功能基本满足需求
+%	\item[$\triangle$]~表示该功能存在不足
+%\end{description}}
+	\begin{itemize}
+		\item \FiveStarOpen~表示该功能较突出;~\checkmark~表示该功能基本满足需求;~$\triangle$~表示该功能存在不足 
+	\end{itemize}}
 \end{minipage}
 %\end{center}
 \end{table}
-\begin{figure}[h!]
-\centering
-\vskip -12pt
-\includegraphics[height=2.18in]{Figures/MP_comp_BCC.png}
-%\caption{\fontsize{6.5pt}{4.2pt}\selectfont{适应多体相互作用的高通量计算流程结构示意}}%
-\label{MP_comp_BCC}
-\end{figure}
 
+对比上述各类流程软件，燃烧催化反应的模拟对于计算流程的各环节提出的诸多挑战。现有的计算流程软件都无法给出完善的解决方案，因此有必要在充分调研计算流程软件研发状况的基础上,针对催化燃烧计算任务的特点，开发面向适合$\mathrm{CH}_4$催化材料研究的高通量计算流程软件。

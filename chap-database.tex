@@ -1,0 +1,173 @@
+\section{高通量第一原理计算数据的自动处理和第一原理数据库}\label{chap:database} 
+第一原理计算，特别是基于高通量的\textrm{DFT}计算已经成为原子尺度材料设计最重要的方法。由高性能计算支持的第一原理计算产生了成千上万的材料数据记录。随着计算材料数据指数级别的增长，有必要开发功能强大的材料数据库来支持数据的管理、存储、检索、展示和操作。本节讨论材料设计所需的最主要的第一原理数据库并比较其优劣。\footnote{本节的数据库部分主要参考了文献\inlinecite{MPC4-148_2015}}
+
+\subsection{高通量第一原理自动流程}
+高通量的概念最初在实验领域产生的，早期材料研究和制药研究，一般通过大量备选材料试错，最终才得到合适的材料或药物主要功能成分，这就可以视为是一种高通量筛选。需要明确的是，在文献中常会提到“高通量”和“组合方法”(\textrm{Combinational approach})的概念，但很少区分着两者的区别，这里明确一下，所谓“高通量”是用户产生或处理的数据量极大，没有计算机自动处理是无法完成的;~而“组合方法”是针对影响研究对象的各种可能自由度的分门别类研究。换言之，高通量考虑的是利用计算机“一视同仁”地自动化式处理海量数据，而组合方法更强调对特定影响因素的筛查和组合研究，这是这两个概念的主要区别。
+
+高通量计算流程主要包括三方面的任务
+\begin{itemize}
+	\item 增加材料模拟的计算数据:~包括采用热力学、电子结构计算获得的材料数据;
+	\item 存储合理的材料数据:~将材料数据系统地保存起来，用以构建材料数据库;
+	\item 表征和筛选材料数据:~为了获得更好的材料或提升材料的特定性能，可实现对材料数据的检索和分析。
+\end{itemize}
+第一原理高通量计算流程就是具体实现上述三个流程开发的计算任务，高通量计算流程的主要目标之一是构建材料数据库(可以是一般的通用材料数据库或特定目标的材料数据库)，所以高通量计算软件与相应的数据库有着密不可分的关联。著名的高通量计算流程都有相应的数据库，如\textrm{AFLOW}的数据库为\textrm{AFLOWLIB}\cite{CMS58-227_2012,AFLOWORG_URL}，\textrm{MP}的数据库为同名的\textrm{Materials Project}\cite{CMS50-2295_2011,MP_URL}，\textrm{ASE}的数据库为\textrm{CMR~(The Computational Materials Repository)}\cite{CSE14-51_2012,CMR_URL}。中科院物理所也拥有一个通用的材料科学数据库\textrm{Atomly}\cite{ATOMLY_URL}。
+
+虽然高通量计算流程包括三个方面，但是由于第一原理材料计算的成本较高，构建一个相对完善的材料数据库需要耗费相当的计算资源和人力。因此当前发展的各种自动处理流程的重点主要集中在收集材料模拟的计算数据和实现计算结果自动入库为主。自动流程面向的对象是数据，鉴于能完成材料第一原理计算的软件有很多，相应的输出文件的格式也是千差万别，因此要实现材料计算过程的自动处理，首先需要解决的是数据格式的规范化问题。习惯的数据处理方案有两种:~一种是面向各类第一原理软件数据的规范化，通过程序语言实现材料计算过程的自动化，不妨称为数据标准化型自动流程;~一种是面向典型的材料计算软件，开发数据库支持的材料自动化计算流程，不妨称为流程标准化型自动流程。这两种策略各有利弊:~前者可以利用数据的规范化，根据计算软件的特色组织丰富多样的材料物性计算，灵活性较好，但一般只支持相对简单的计算流程;~后者可利用数据库技术将自动流程组织得更复杂多样，并作为数据库条目存储下来，稳定性较好，但计算的材料物性受软件能力的限制较多。因为\textrm{Python}\cite{Python_URL}的模块化组织和灵活性，主要的自动流程都采用\textrm{Python}来实现。
+
+数据规范化型的自动处理以\textrm{ASE/CMR}为典型代表，通过构建各类\textrm{Python}模块，支持多种成熟的\textrm{DFT}计算软件的\textrm{Kohn-Sham}方程求解过程。根据图\ref{Auto_Flow_Platform-5}可知，\textrm{ASE}的核心模块主要包括\textrm{Atoms}(原子、分子建模)、\textrm{Calculator}(各类计算软件运行支持与控制)和物性计算、功能分析和结果可视化模块。
+
+\textrm{Atoms}是材料计算建模的主要模块，功能包括:
+\begin{itemize}
+	\item 生成各种计算软件所需的结构模型，包括原子、分子、晶体、表面和界面等;
+	\item 读入各种格式的结构模型文件，包括\texttt{xyz}、\textrm{POSCAR}、\texttt{cif}等65种格式;
+	\item 可将各类结构模型统一以\texttt{traj}或\texttt{json}格式写入数据库，实现计算模型数据的标准化。
+\end{itemize}
+
+\textrm{Calculator}是支持各类\textrm{DFT}计算软件运行的主要模块，封装了\textrm{DFT}计算的过程，依次执行以下步骤:
+\begin{enumerate}
+	\item 生成\textrm{DFT}计算软件所需的输入(控制)文件;
+	\item 启动\textrm{DFT}软件，以子进程方式开始计算过程;
+	\item 模块守候直至\textrm{DFT}计算子进程结束;
+	\item 根据要求解析\textrm{DFT}计算软件生成文件，并可将计算结果以\texttt{json}格式写入数据库。
+\end{enumerate}
+类似地，物性计算、功能分析模块通过集成全局结构搜索算法(\textrm{Base-hopping}和\textrm{minima-hopping}算法)、反应动力学模拟\textrm{NEB}算法和势能面鞍点搜索算法、分子动力学模拟算法、几何结构优化算法和分子振动与声子振动分析算法，可完成材料物性的自动化计算，得到的材料物性数据仍将以标准化形式存入数据库。
+
+这样设计的自动处理结构最大的好处是，\textrm{Python}模块与\textrm{DFT}计算软件的交互简单，无须改变\textrm{DFT}计算的任何代码;~只是\textrm{Python}执行过程中会有较多的\textrm{I/O}处理，脚本运行效率不高。
+
+为了增加自动流程的可控和灵活性，\textrm{ASE}引入\textrm{checkpointing}模块，可以协助用户排查计算中的错误定位和重启计算。\textrm{checkpointing}大大增加了\textrm{ASE}对计算流程的控制能力。
+
+和\textrm{ASE}相应的材料数据库\textrm{CMR}采用关系型数据库管理系统\textrm{MySQL}，延续了\textrm{ASE}的思路，先将标准化数据转成数据库文件(称为\textit{cmr}-文件)，要求数据库中的文件名尽可能与原始文件名保持一致，由此用户可以不进入数据库即可对材料数据进行检验。\textrm{CMR}在存储材料数据时也有了更大的兼容性。
+
+流程标准化型的自动处理以\textrm{MP}的流程控制\textrm{FireWorks}为代表。\textrm{FireWorks}是一款开源的通用工作流定义、管理和执行软件，可以支持\textrm{Python}实现与执行，复杂的工作流可以数据形式保存到\textrm{MongoDB}数据库中，用\textrm{FireWorks}设计的工作流具有较高的稳定性。\textrm{FireWorks}的架构如图\ref{FireWorks_FW}左所示，包括流程发布(称为\textrm{LachPad})和流程执行(称为\textrm{FireWorkers})，换言之\textrm{FireWorks}的自动流程是中心化的“发布-执行”模式。\textrm{LaunchPad}是工作流的主管者，主要负责自动流程的定义、分发、排队、增删和对工作流的反馈与响应;~\textrm{FireWorkers}是工作流的执行者，包括一个或多个计算资源(个人计算机、小型工作站、超级计算机等)。\textrm{FireWorkers}从\textrm{LaunchPad}处获得计算任务，执行完毕后再将计算结果返回到\textrm{LaunchPad}。
+
+\textrm{FireWorks}的这种“发布-执行”结构使得计算任务与软件、硬件高度解耦，用户可根据需要随时向\textrm{LaunchPad}添加新的工作流，承担计算任务的\textrm{FireWorkers}彼此也可以是完全异构的，具有很好的机动性。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.6in]{MP_fireworks.png}
+\hskip 5pt
+\includegraphics[height=1.6in]{MP_multiple_fw.png}
+\hskip 5pt
+\includegraphics[height=1.6in]{MP_Fireworks_fwactions.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{FireWorks}的架构(左)、工作流组成(中)和单元组间数据传递与处理(右)示意.图片引自文献\onlinecite{FireWorks_URL}}}%
+\label{FireWorks_FW}
+\end{figure} 
+\textrm{FireWorks}发布的工作流成如图\ref{FireWorks_FW}中所示，由三层嵌套结构组成:
+\begin{itemize}
+	\item \textrm{Firetask}:~基本执行单元，是执行计算的最基本脚本命令或\textrm{Python}命令。
+	\item \textrm{Firework}:~组织基本执行单元构成任务单元组，并指定各基本执行单元所需的参数。
+	\item \textrm{Workflow}:~彼此相关联的任务单元组构成完整的工作流程:\\
+		\textrm{FireWork}之间的数据传递、任务执行序列等由\textrm{FWAction}完成。
+\end{itemize}
+对于材料第一原理计算自动流程而言，一个\textrm{DFT}计算过程就是一个\textrm{Firework}，可以分解为:
+\begin{enumerate}
+	\item 指定计算控制参数(参数在数据库中\texttt{Json}存储，由\textrm{Spec}传入)
+	\item 计算控制文件生成(每个\textrm{Firetask}生成一个控制文件)
+	\item \textrm{DFT}计算作业提交(一个\textrm{Firetask})
+\end{enumerate}
+在此基础上，可以通过\textrm{FWAction}修改控制参数，将\textrm{DFT}计算单元组组织成完整的材料第一原理计算流程，并将最终结果直接导入材料计算数据库。
+
+可见，\textrm{FireWorks}是以任务单元组为基本组成的来实现工作流程的，任务单元组之间依靠数据传递相关联，流程执行完毕也将返回数据，因此\textrm{FWAction}模块主要负责任务单元组之间的数据传递和任务分配。图\ref{FireWorks_FW}右示意了工作流中\textrm{FWAction}的工作模式。不难看出，\textrm{FWAction}允许用户根据需要设计和更改流程参数、增添、删减和改变流程(子)单元组，这一模块大大增加了\textrm{FireWorks}工作流的灵活性。
+
+数据库技术支持的\textrm{FireWorks}解耦了\textrm{DFT}计算软件与计算流程，允许用户根据需要设计出稳定、复杂的材料物性模拟与设计流程。由于不同\textrm{DFT}计算软件的计算控制文件格式存在较大的差别，目前\textrm{FireWorks}流程设计只对特定计算软件(如\textrm{VASP})设计了最常用的计算流程模块(如结构弛豫、基态总能计算、能带和态密度计算等)。更丰富的计算流程有待应用研究中不断开发。
+
+\subsection{第一原理数据库}
+\textrm{SpingerMaterials}\cite{SpringerM_URL}是世界上最古老也是完备的材料数据库，旨在创建集成材料学信息、性质和使用平台。数据库主要由以下部分组成:
+\begin{itemize}
+	\item 全部\textrm{Landolt-B{\"o}rnstein}丛书(自1883年起)，是以基础科学为主的大型科学与技术数值与函数关系的工具书
+	\item 全部\textrm{Pauling~File}无机材料数据库，收集了从1900年迄今超过21000种出版物中的无机晶体结构、衍射、相图和物理属性数据
+	\item \textrm{Dortmud Data Band}中的纯液体和二元混合物的热物理数据
+	\item 吸附材料数据库(\textrm{Adsorption Database})
+	\item 聚合物热力学数据库(\textrm{Polymer Thermodynamics Databse})
+	\item \textrm{MSI}数据库
+\end{itemize}
+
+除了\textrm{SpingerMaterials}之外，比较完整的数据有无机晶体结构数据库\textrm{(Inorganic Crystal Structure Database, ICSD)}\cite{ICSD_URL}，其服务器位于德国的\textrm{FIZ~Karlsruhe}，收录了自1913年以来超过185000条矿物、 金属和其他无机固体化合物(包括2000多元素单质、34500多二元化合物、68000多三元化合物、66000多四元及多元化合物)的晶体结构数据。类似的实验材料数据库有%\textrm{CRYSTMET}\cite{CRYSTMET_URL}、
+\textrm{Pauling}无机材料数据库\cite{Pauling_URL}和\textrm{Pearson}晶体数据库\cite{Pearson_URL}等。这些实验数据库对于材料学的结构和物性研究提供很重要的支持，但是仅有这些数据库肯定是不够的，一方面材料的覆盖范围非常广泛，有限的数据库不可能穷尽，更重要的是有很多材料的物性数据很难通过实验直接得到。材料设计和开发是复杂的多维优化问题，注定新材料研发耗时耗力。在这一点上，原子尺度的材料物性数值模拟可以有效补偿实验方法的不足。近年来雨后春笋般的计算材料数据库填补了不少很多实验数据缺乏的空白\cite{CMS58-227_2012}，集成了实验数据和计算数据的新材料数据库为探索新材料合成、性能优化开辟了新的研究思路。
+
+随着高性能计算与\textrm{DFT}相结合推动了第一原理材料模拟数据生成和结果分析的自动化，而随着“材料基因组计划”的实施，为计算材料科学提供了越来越广阔的应用空间，也涌现了越来越多的计算材料数据库，特别是在功能材料领域，高通量\textrm{DFT}计算大大推进了新材料合成的进步。\cite{JCED59-3232_2014, IC53-11849_2014,JPCL4-3607_2013,PCCP16-22073_2014}
+
+\subsubsection{\tt{AFLOWLIB}}
+\textrm{AFLOWLIB}是由高通量\textrm{DFT}计算框架\textrm{AFLOW}\cite{CMS58-218_2012,CMS58-227_2012,Nat-Mater12-191_2013}生成的材料信息数据库，包括相图、电子结构和磁学性质等。\textrm{AFLOWLIB.org}的源代码和材料数据由\textrm{Duke}大学开发\cite{AFLOWORG_URL}，包含了630,000以上的合金热力学条目，涵盖了\textrm{ICSD}中的52,000多种化合物，3,000多种基本化合物，330,000多种二元化合物和262,000多中\textrm{Heuslers}金属间化合物。数据库提供在线的界面搜索，包括计算的细节、电子结构、磁学性质和热力学性质。所有的计算结果都是由\textrm{AFLOW}高通量计算软件生成的，为方便进一步的检索，这些计算数据存入\textrm{SQL}数据库(\textrm{MySQL})。此外\textrm{AFLOWLIB.org}提供了数据交换的应用接口\textrm{RESTful~API}服务\cite{CMS93-178_2014}，可以方便用户更快捷地检索材料数据，数据结果可以表示为多种格式，包括\texttt{HTML/JSON/DUMP/PHP/TEXT/NONE}等，极大地方便了用户对数据库进行挖掘，研发新材料。
+
+\subsubsection{\tt{MP}}
+\textrm{Materials Project}是材料基因组的高通量第一原理计算的核心软件\cite{MP_URL}，现在在开源软件平台\textrm{GitHub}\cite{MP_Github}上提供全部代码，因此得到越来越多的开发者的支持。根据\textrm{MP}网页提供的信息\cite{MP_URL}，目前可提供的数据包括59,000多种化合物，41,000多种能带结构数据和1,300多种的弹性张量数据，以及2,200多种\ch{Li}的插层电极和19,000多种\ch{Li}的转换电极数据，\textrm{MP}网页由\textrm{Apache}、\textrm{Python}和\textrm{Django}开发。
+
+\textrm{Materials Project}的扩展性极好，除了\textrm{Pymatgen}、\textrm{FireWorks}和\textrm{Custodian}的支持，也源自\textrm{MongoDB}的\textrm{NoSQL}数据格式文件，因为传统的数据库只是“纵向可扩展”\footnote{横向可扩展，是指数据库可支持增加数据库的服务器数目;~纵向可扩展是指数据库可支持增加硬盘、内存和\textrm{CPU}的数目}，\textrm{NoSQL}数据库弥补了传统数据库的扩展问题和灵活性问题，因此近年来在材料研究数据库技术中特别受到注意。
+
+\textrm{Materials Project}同样通过\textrm{API}支持\textrm{RESTful}服务\cite{CMS68-314_2013}，根据\textrm{RESTful}的设计，对数据的需求和操作，不须依赖复杂的用户界面，只要直接对数据库的\textrm{URL}完成。\textrm{RESTful}接受到\textrm{URL}，\textrm{Materials Project}材料数据库返回的\textrm{JSON}结构。\textrm{RESTful}服务器有效地提升了数据获取效率，如\textrm{Pymatgen}的结构对象，\textrm{生成能}、\textrm{VASP}计算结果等。对科研工作者而言，\textrm{RESTful}是有效的研究工具。
+
+\subsubsection{\tt{CMR}}
+为方便不同经验的用户存储、检索电子结构计算数据，\textrm{CMR}提供了三种不同的用户界面\textrm{PHP/HTML和Python}\cite{CMR_URL}，\textrm{CMR}和\textrm{ASE}最初都是由\textrm{QMIP}开发的\cite{CSE14-51_2012}，\textrm{ASE}主要侧中第一原理计算任务生成、计算执行、结果分析和可视化模块，\textrm{CMR}则主要针对计算数据存储，代码都由丹麦技术大学维护。
+
+与\textrm{ASE}类似，\textrm{CMR}面向数据库的多元化需求，多元化的需求源自软硬件的兼容性，软件方面主要是面向开源系统，特别是\textrm{Linux}操作系统，\textrm{Apache}浏览器，\textrm{MySQL}数据库，用户界面采用\texttt{PHP/HTML}，合成\textrm{LAMP}(\textrm{Linux,Apache,MySQL,PHP})套装。\textrm{ASE}和\textrm{CMR}所有源代码开发都是基于松耦合模式，方便用户根据自己的要求应用软件。比如用户可以分别只选用\textrm{ASE}或\textrm{CMR};硬件方面，软件可以安装到台式机、集群或超级计算机上，对于小的台式机，因为无须安装数据库和网络服务器，\textrm{CMR}可以使用\textrm{SQLite}数据库模式而不用\textrm{MySQL}服务器模式存储和检索材料数据。如有必要，\textrm{CMR}的数据处理模块可将\textrm{SQLite}数据库文件上传到\textrm{MySQL}服务器上，或者将数据文件转呈\texttt{XML/JSON}格式，以方便数据交换。
+
+\textrm{CMR}提供了超过30,000条数据记录，\textrm{ASE}和\textrm{CMR}仍在开发中，不断发布更新的稳定版本，有比较完整的安装、使用说明文档。
+
+\subsubsection{\tt{ESP}}
+和其余的\textrm{DFT}计算数据库类似，电子结构计划\textrm{(Electronic Structure Project, ESP)}利用\textrm{ICSD}的结构数据来加速无机化合物的电子结构计算\cite{ESP_URL,CMS44-1042_2009}，数据库的数据由\textrm{FP-LMTO}方法计算得到，自2002年\textrm{ESP}发布以来，共收录了60,000多条化合物的电子结构。
+
+\textrm{ESP}的目标是加速新的功能材料的研发进程，\textrm{ESP}的官网提供了一个很好的范例:~采用大规模计算结合数据挖掘技术预测的第一个拓扑绝缘体\textrm{(toplogical insulator)}\ch{Bi2SeTe2}。根据60,000多条化合物电子结构，应用数据挖掘技术已经预测了17种可能的强拓扑绝缘体\cite{arXiv1007-4838,APR6-31_2014}，\ch{Bi2SeTe2}是从这17种可能的化合物种筛选出来的，而且该预测很快就得到验证。
+
+\textrm{ESP}的数据库和官网由\textrm{Uppsala}大学维护和管理，用户可以最多查到五种元素组成的化合物的电子结构信息。除了\textrm{FP-LMTO}代码是开源的，\textrm{ESP}的数据库和能带分析工具的代码都没有公开，因此这些年来，\textrm{ESP}开发进展得很缓慢。
+
+\subsubsection{\tt{ESTEST}}
+加州大学\textrm{Davis}分校\textrm{(the University of California at Davis)}开发的材料数据库\textrm{ESTEST}\cite{ESTEST_URL,CSD3-015004_2010,CPC183-1744_2010}用于验证和对比电子结构软件\textrm{Qbox}、\textrm{VASP}、\textrm{Quantum Espresso}、\textrm{Siesta}、\textrm{ABINI}的结果和\textrm{Exciting}的计算结果，软件提供的网页界面，可将各类软件的输入/输出文件转换成统一的\textrm{XML}格式，每个\textrm{XML}文件由文件名和数据库存储位置区别。因为采用了相同的\textrm{XML}文件格式，数据存储、比较、分析就容易得多。数据库的网页界面可提供数据、表格和图片形式的电子结构的模拟信息，包括计算参数、原子信息、能量结果和结构应力与光谱信息。但必须是注册用户才能数据库的源代码。
+
+\textrm{ESTEST}数据库总共包括400多条\textrm{Qbox}的计算记录，10条左右的\textrm{VASP}计算记录，\textrm{Quantum Espresso}和\textrm{Siesta}计算记录各70多条，150多条\textrm{ABINIT}计算记录，\textrm{Exciting}的记录约30条。\textrm{ESTEST}的网页界面提供了类似\textrm{Google}的简明搜索栏，网页还提供了多个搜索下来菜单，如软件名称、计算元素等。
+
+\textrm{ESTEST}的网页界面还提供了一些插件，可对诸如原子距离、晶格、能带结构、态密度、能量和结构应力或其他记录转换成一种或多种数据格式，例如\textrm{band\_structure\_plot}插件可将\textrm{XML}格式的能量本征值转成电子能带图。这种格式转换插件丰富了\textrm{ESTEST}生成、模拟计算结果的能力。
+
+\subsubsection{\tt{MAST}}
+以完整的高通量框架的角度看，材料模拟工具\textrm{(MAterials Simulation Toolkit, MAST)}，更像是对\textrm{ESTEST}的补充，重点用于工作流管理和后处理\cite{MAST_URL}，它的基本框架\textrm{MP}的\textrm{Pymatgen}和\textrm{Custodian}模块和\textrm{ASE}组合搭配实现的，但\textrm{MAST}开发了自己的自动计算流程以及数据库，而没有使用\textrm{FireWorks}和\textrm{MangoDB}，所以\textrm{MAST}的数据生成和管理主要依赖于操作系统和\textrm{I/O}算法，运行\textrm{MAST}也无须额外安装专门的数据库软件。
+
+\textrm{MAST}的数据库主要收集了带空位的稳定纯元素的数据，现有面心立方的49种元素和六方密堆积的44种元素。\textrm{MAST}数据库主要用于研究基本的空位扩散，因此收集的数据包括空位形成焓、空位迁移焓、内聚能和体模量\cite{NJP16-015108_2014}。\textrm{MAST}的数据主要来自\textrm{VASP}的数据拟合。\textrm{MAST}的数据目前还不能通过网页界面访问，很多功能还有待完善。
+
+\subsubsection{\tt{CEPDB}}
+\textrm{CEPDB}是哈佛大学的\textrm{CEP}对应的数据库，主要用于研究有机光电材料\cite{CEPDB_URL,JPCL2-2241_2011}。数据库除了有第一原理计算结果，还收录了文献中的实验数据，用于作为\textrm{CEPDB}的训练和标定数据集。\textrm{CEPDB}使用\textrm{Python}的网页框架\textrm{Django}在\textit{in silico}上开发的高通量计算\textrm{MySQL}数据库，计算数据由量子化学计算软件\textrm{Q-Chem}得到，\textrm{CEPDB}的强大算力主要由\textrm{IBM}的公益分布式计算项目全球社群网格\textrm{(World Community Grid, WCG)}提供，还有一些算力来自\textrm{Harvard}的\textrm{FAS Odyssey}集群、\textrm{NERSC}和\textrm{TeraGrid}的计算资源以及其它一些计算资源。根据\textrm{CEPDB}的网页信息显示，数据库共拥有2,300,000多个分子的图谱信息和22,000,000多个分子结构(由超过150,000,000个\textrm{DFT}计算得到)共计超过400\textrm{TB}的数据，这些数据都是开放的，但是\textrm{CEPDB}的高通量计算软件并未开源，不过\textrm{CEPDB}对全世界各研究组上传自己的实验数据持开放态度。
+
+\subsubsection{\texttt{CCCBDB}}
+计算化学对比和基准数据库\textrm{(Computational Chemistry Comparison and Benchmark Database, CCCBDB)}由美国国家标准和技术协会(\textrm{National Institute of Standards and Technology, NIST})提供，汇集了1600多种气相原子和分子的实验和第一原理计算的化学热力学数据\cite{CCCBDB}，这个数据库很好地弥补了常见数据库只有固体材料数据的不足。
+
+\textrm{CCCBDB}提供简单的在线服务界面，用户可以检索到指定化合物的实验数据和计算数据，实验和计算数据的对比也验证了数据的可靠性。\textrm{CCCBDB}允许用户优先使用几何结构、振动模式、熵、能量和静电性质而非分子结构作为检索的关键词，这样设计检索方案避免引入复杂的筛选组合，方便用户快速得到检索结果。\textrm{CCCBDB}是一个庞大的数据库，收录了总计有超过460,000个计算条目，但是因为其没有开源，降低了数据库的影响力。
+
+\subsubsection{\tt{AiiDA}}
+\textrm{AiiDA}\cite{AiiDA_URL}是\textrm{Python}语言开发的用于原子尺度材料自动模拟、管理、共享和复制的软件框架，该软件由\textrm{THEOS-EPFL~(Theory and Simulation of Materials-{\'E}cole~Polytechnique~F{\'e}d{\'e}rale~de~Lausanne)}的实验室和\textrm{BOSCH}公司于2012年开始开发和维护的。\textrm{DiiDA}数据库是用\textrm{Python}的网页编程框架\textrm{Django}开发的\cite{CMS187-110086_2021}，可以满足计算物理、化学和材料科学研究的多种不同需求，数据库可提供\texttt{SQLite/MySQL}和\texttt{PostgreSQL}三种形式的数据，推荐使用\textrm{PostgreSQL}，当用户使用数据库的\textrm{RESTful~API}接口时，数据将以\texttt{JSON}格式呈现。
+
+\subsubsection{\tt{Alloy Database}}
+\textrm{Alloy~Database}数据库提供了用\textrm{VASP}计算的合金结构和结合能数据\cite{AlloyD_URL}，包括200多种二元合金、100多种三元合金和20多种四元合金的材料数据，通过设设在卡内基梅隆大学\textrm{(Carnegie~Mellon~University)}的在线服务器，用户可以检索二元、三元和四元合金的\textrm{VASP}计算数据，此外，数据库还可以提供包括组成合金的元素信息、\textrm{Pearson}符号、合金模型以及计算所需的\textrm{POSCAR}文件、合金\textrm{Pearson}符号，基态总能和生成焓、化学组成和赝势等。
+
+\textrm{Alloy~Data}最早于2006年提供线上服务，但因为其数据库服务代码从未开放，因此该数据库还没有应用到高通量第一原理计算上。
+
+\subsubsection{\tt{NoMaD}}
+\textrm{Novel Materials Discovery~(NoMaD)}也是一种重要的材料数据库，用于第一原理计算的电子结构数据生成、组织和交换\cite{NoMaD_URL}。现在\textrm{NoMaD}数据库包含640,000多条数据，其中有250,000多条数据来自\textrm{aflowlib.org}，其余则来自\textrm{cccbdb.nist.gov}。\textrm{NoMaD}通过网页界面~\textrm{\url{http://nomad-repository.edu/gui/\#nomad}}~实现数据库共享。用户可以通过元素、结构和计算方法、作者等数据找到目标数据。供下载的数据除了少量关于计算本身如材料的化学式、空间群、计算软件及版本、作者和参考文献等，主要是计算输入/输出文件的压缩包，\textrm{NoMaD}目前可提供的计算软件包括\textrm{ABINIT}、\textrm{CASTEP}、\textrm{CRYSTAL}、\textrm{Exciting}、\textrm{FHI-aims}、\textrm{Gaussian}、\textrm{Gaussian}、\textrm{Quantum-Espresso}、\textrm{VASP}和\textrm{WIEN2k}等。
+
+\textrm{NoMaD}的注册用户不仅可以浏览和下载材料数据，还允许向\textrm{NoMaD}上传数据，上传数据可以根据用户指定为“开放”\textrm{(open access)}和“限制”\textrm{(restricted)}状态，“开放”态对全体互联网用户开放，“限制”态只对指定用户群开放。\textrm{NoMaD}的绝大部分数据是开放的，约540,000多条是开放的，而“限制”状态的数据最多三年后将转成“开放”状态，这就确保科学材料数据最大限度的共享和交换能力。不过\textrm{NoMaD}除了提供材料计算的输入/输出文件，并未提供高通量计算框架。而且有些重要的和有价值的材料数据，如计算参数以及计算能量数据在数据文件下载之前已被隐去。
+
+\subsubsection{\tt{OQMD}与\tt{qmpy}}
+开放量子材料数据库\textrm{(Open Quantum Materials Database, OQMD)}以在线方式提供收录的\textrm{DFT}计算的材料热力学和结构性质数据的共享\cite{OQMD_URL,NCM1-15010_2015}，\textrm{OQMD}累积的\textrm{DFT}计算化合物约有290,000条，这些化合物中约10\%来自\textrm{ICSD}，约90\%则来自简单化合物雏形组合，而且数据库中的化合物条目还在增加。
+
+\textrm{OQMD}是2013年前后由美国西北大学\textrm{(Northwestern University)}的研究团队在超过200,000\textrm{DFT}计算的晶体结构基础上发展起来的，这些数据主要是在西北大学高性能计算队列和美国国家能源研究科学计算中心\textrm{(the National Energy Research Scientific Computing Center, NERSC)}的机器上完成的。
+
+\textrm{OQMD}主页提供了\textrm{Python}的\textrm{API}软件\textrm{qmpy}\cite{qmpy_URL}和全部近300,000个结构数据可下载。\textrm{qmpy}用\textrm{Django}开发，数据库是\textrm{MySQL}形式，数据主要都是由\textrm{VASP}计算的。
+
+\textrm{OQMD}没有提供\textrm{RESTful}服务，但允许用户\textrm{URL}地址栏输入检索化合物的字符串，如~\textrm{\url{http://oqmd.org/materials/composition/Al2O3}}~表示\ch{Al2O3}的检索。浏览器得到的检索数据是\texttt{HTML}格式的(而非\texttt{JSON}或\texttt{XML}格式的)。\textrm{OQMD}允许用户将全部数据(约4\textrm{GB})下载到本地并保存成一个文件，对于小型的计算用户，这将提升用户对计算数据的分析。
+
+\subsubsection{\tt{PyChemia}}
+\textrm{Python Materials Discovery Framework~(PyChemia)}也是近年来才出现的\textrm{DFT}高通量计算框架。\textrm{PyChemia}的目标是通过涵盖\textrm{DFT}计算和\textrm{Minima Hoping}等各种方法来推动发现新材料，将\textrm{PyChemia}计算的数据存入数据库，作为后续发现新材料的备选化合物。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=2.6in]{PyChemia_code.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{PyChemia}的代码框架.图片引自文献\onlinecite{PyChemia_Github_IO}}}%
+\label{PyChemia_FireWork}
+\end{figure} 
+\textrm{PyChemia}是\textrm{Python}的一个模块，其全部代码在\textrm{GitHub}上找到\cite{PyChemia_Github}，其最初的代码是西弗吉尼亚大学\textrm{(West Virginia University)}于2014年贡献到\textrm{GitHub}网站的，近年来，\textrm{PyChemia}可支持的\textrm{DFT}计算软件有\textrm{VASP}、\textrm{ABINIT}、\textrm{Octopus}、\textrm{DFTB+}和\textrm{Fireball}等，而且利用Python模块的特点，\textrm{PyChemia}完成了对\textrm{Pymatgen}、\textrm{ASE}和\textrm{qmpy}的集成，而且相比于其他高通量材料计算软件，\textrm{PyChemia}更显著的特长是材料结构搜索，而不是简单的材料计算和数据采集。图\ref{PyChemia_FireWork}给出了\textrm{PyChemia}的代码框架。
+
+\textrm{PyChemia}除了提供大的材料数据库作为结构搜索的基础，还可以将每一套结构搜索产生新的小型数据库，为了满足不同\textrm{DFT}计算软件包材料结构以及各种物理性质研究的需要，\textrm{PyChemia}也采用\textrm{MongoDB}的\textrm{NoSQL}数据库而非传统的关联数据库形式，以便产生结构搜索需要的小型数据库。\textrm{PyChemia}由\textrm{Python}、\textrm{Django}和\textrm{MongoDB}搭建而成，其中\textrm{Django}是\textrm{PyChemia}用于显示计算的网页前端。目前\textrm{PyChemia}仍在开发中，并未发布稳定版的软件。
+
+\subsubsection{\tt{Atomly}}
+\textrm{Atomly}材料科学数据库\cite{ATOMLY_URL}是中国科学院物理研究所开发的第一原理材料数据库，截止到目前已经收录了超过180,000条无机材料的高质量数据。\textrm{Atomly}的目标是为科研领域带来材料数据工具平台，通过数据驱动新材料的筛选、预测和发现，提升材料研发的生产力。截止到撰稿时\textrm{Atomly}共收录232,869种化合物，228,741种能带结构和55,831种相图数据。
+
+\textrm{Atomly}提供了高通量第一原理计算流程框架\cite{arXiv2108_00359v1}，依托中科院物理所的松山湖材料实验室的计算资源，框架支持的高通量计算流程可以支持~$10^3$数量级的材料体系同时计算。同时\textrm{Atomly}的网页前端，提供便捷搜索，能快速定位到指定材料数据，并以友好的方式呈现给用户。此外，\textrm{Atomly}可以实现数据驱动的材料设计，能快速地高通量筛选，获得最优候选材料;~借助人工智能\textrm{(Artificial Intelligence, AI)}算法，\textrm{Atomly}支持材料性质预测，能更快捷、精准地预测材料性质。
