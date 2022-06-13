@@ -484,7 +484,7 @@ $$V_{\mathrm{ion},\mathrm{H}}^{\mathrm{PP}}(r)=V_{\mathrm{src},\mathrm{H}}^{\mat
 \end{equation}
 这里$V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}(r)$是局域势，$V_{\mathrm{nonlocal},l}(r)=V_{\mathrm{ion},l}^{\mathrm{PP}}(r)-V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}(r)$是角动量$l$的非局域(或半局域)势。$\hat P_l$是投影算符，从波函数中投影出角动量的$l$分量。
 
-Kleinman和Bylander(KB)\cite{PRL48-1425_1982}提出将半局域势\eqref{eq:solid-107}变换为非局域形式的过程：
+\textrm{Kleinman}和\textrm{Bylander}\textrm{(KB)}\cite{PRL48-1425_1982}提出将半局域势\eqref{eq:solid-107}变换为非局域形式的过程：
 $$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\dfrac{|V_{\mathrm{nonlocal},l}(r)\Phi_l^{\mathrm{PP},0}(r)\rangle\langle\Phi_l^{\mathrm{PP},0}(r)V_{\mathrm{nonlocal},l}(r)|}{\langle\Phi_l^{\mathrm{PP},0}(r)|V_{\mathrm{nonlocal},l}(r)|\Phi_l^{\mathrm{PP},0}(r)\rangle}$$
 这里$V_{\mathrm{nonlocal},l}(r)$是半局域势[式\eqref{eq:solid-107}]，$\Phi_l^{\mathrm{PP},0}(r)$是用以计算赝势的原子角动量$l$的参考赝波函数。选择特定的非局域表象，可以很大程度上节省计算时间。
 
@@ -497,7 +497,7 @@ $$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\dfrac{|V_{\mathrm{nonlocal},l}(r)\Phi_l
 \label{Norm-US-wave}
 \end{figure}
 
-根据Vanderbilt的建议,对$1s$、$2p$、$3d$这种径向不包含节点的价电子波函数，构造赝波函数时放弃模守恒条件，只使用少量平面波基组，但是记录赝波函数与真实波函数的电荷密度差。\footnote{模守恒约束下，赝势\textrm{Schr\"odinger~}方程是标准本征值问题；放弃模守恒条件，引入电荷密度差，可将\textrm{Schr\"odinger}方程表示为广义本征值问题。}策略上，这是通过少量增加的电荷密度差计算为代价(以保持赝势的可移植性)，换取基函数规模的大大减少。图\ref{Norm-US-wave}给出了\textrm{O}的2~\textit{p}~轨道的径向波函数在不同势函数下的形式，可以预见，超软赝势下的需要的平面波基函数数目最少。
+根据\textrm{Vanderbilt}的建议,对$1s$、$2p$、$3d$这种径向不包含节点的价电子波函数，构造赝波函数时放弃模守恒条件，只使用少量平面波基组，但是记录赝波函数与真实波函数的电荷密度差。\footnote{模守恒约束下，赝势\textrm{Schr\"odinger~}方程是标准本征值问题；放弃模守恒条件，引入电荷密度差，可将\textrm{Schr\"odinger}方程表示为广义本征值问题。}策略上，这是通过少量增加的电荷密度差计算为代价(以保持赝势的可移植性)，换取基函数规模的大大减少。图\ref{Norm-US-wave}给出了\textrm{O}的2~\textit{p}~轨道的径向波函数在不同势函数下的形式，可以预见，超软赝势下的需要的平面波基函数数目最少。
 \begin{equation}
 	Q_{nm}(\vec r)=\varphi_n^{\ast}(\vec r)\varphi_m(\vec r)-\tilde\varphi_n^{\ast}(\vec r)\tilde\varphi_m(\vec r)
   \label{eq:uspp_4}
