@@ -104,7 +104,7 @@
 \end{figure}
 图\ref{ML_Fitting_Error}给出两种不同上述两种极端情况的预测误差示意，不难看出，误差与训练数据集包含的数据数量密切相关。实际应用中，常常引入标准化参数$\lambda$来反应训练集元素变化的影响，优化参数$\lambda$以降低训练集数据数量的影响。这种实际上是对线性回归的发展，常见的有岭回归\textrm{(Ridge Regression)}和套索回归\textrm{(LASSO Regression)}\footnote{\textrm{LASSO}是英文最小绝对收敛与选择算子\textrm{Least Absolute Shrinkage and Selection Operator}的缩写.}。引入$\lambda$作为正则化参数，得到函数
 \begin{equation}
-	J(\theta)=\dfrac12\sum_{i=1}^n(\theta^T\mathbf{x}^{(\mathrm{i})}-y^{(\mathrm{i})})^2+\lambd\|\theta\|_p
+	J(\theta)=\dfrac12\sum_{i=1}^n(\theta^T\mathbf{x}^{(\mathrm{i})}-y^{(\mathrm{i})})^2+\lambda\|\theta\|_p
 	\label{eq:Ridge_LASSO}
 \end{equation}
 这里$p$表示数据度量形式。$p=1$时是\textrm{LASSO}回归，表示数据距离采用曼哈顿距离(也称为出租车距离)方式，计算两点间距离与实际选定的路径有关，在这样的约束下，函数最小化要求将会排除某些训练集数据特征;~$p=2$是岭回归，数据间距离按照欧氏距离计算，与实际路径无关，函数最小化时会排除训练集中特征贡献大的部分。因此无论是岭回归还是\textrm{LASSO}回归，含参数$\lambda$的正则项将通过压制或筛选训练数据集中的特征来调节其对误差函数的贡献。需要注意的是$\lambda$不能像$\theta$一样优化，一般是通过比较几个不同的值，选其中能最大化预测能力又不会引入太大偏差的一个值。
