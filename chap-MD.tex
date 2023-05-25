@@ -415,7 +415,7 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 在分子动力学模拟中过程，模拟区域的每个原子的运动和行为都不同，并且在每个时间步长中都会生成系统的一个新的微观状态。
 \begin{table}[!h]
 \tabcolsep 0pt \vspace*{-5pt}
-\begin{minipage}{\0.99\textwidth}
+\begin{minipage}{0.99\textwidth}
 %\begin{center}
 \centering
 \caption{分子动力学和\textrm{MC}模拟中的各种系综概述}\label{Table-Ensemble}
@@ -437,7 +437,8 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 经过完整的模拟过程后，体系达到平衡，它就变成一个系综，包含所有可能的构型，并且具有相同的宏观或热力学性质。所以，一个分子动力学模拟完成达到平衡时，可以视为大量的处于各种运动状态的、各自独立的原子的集合。即系综。
 表\ref{Table-Ensemble}显示了不同热力学条件的分子动力学和\textrm{Monte Carlo~(MC)}模拟中使用的各种系综。与实验研究中的条件控制相似，对系综施加一些外部约束，可以使其在运行后具有特定的属性。特别是熵\textrm{(entropy)}~\textrm{S}，\textrm{Helmholtz}自由能\textrm{(Free energy)}~\textrm{F}，\textrm{Gibbs}自由能~\textrm{G}，化学势$\mu$等热力学性质可以从这些系综数据中获得。表中的$\Omega$是相应系综的可访问的相空间体积(或配分函数)。表\ref{Table-Ensemble}中对每个系综进行规定的变量可被视为进行实验的实验控制条件。
 
-微正则系综\textrm{(the microcanonical ensemble)}中，原子数目$N$、模拟体积$V$和总能量$E$都是确定的，因此这是一个孤立体系，它既不能与周围环境交换物质也不能交换能量。这个系综是分子动力学模拟中最常用的，因为它代表了一般的处于稳定状态的真实体系。如果模拟这种NVE系综，描写原子的运动方程就是通常的\textrm{Newton}方程。
+微正则系综\textrm{(the microcanonical ensemble)}中\footnote{\textrm{canonical}，汉译作``正则''，出自《楚辞\textperiodcentered 离骚》``皇揽揆余於初度兮，肇锡余以嘉名;~名余曰正则兮，字余曰灵均''，《楚辞章句》%\upcite{Chucizhangju}
+:~``正，平也;~则，法也;~灵，神也;~均，调也。言正平可法则者，莫过于天;~养物均调者，莫神于地。高平曰原，故父伯庸名我为平以法天，字我为原以法地。言己上之能安君，下之能养民也。''意思是说``正则''、``灵均''隐喻着某种意义，即平正是天的象征，原均是地的象征。因此正则的含义是``符合天道''，与\textrm{canonical}的意思\textrm{of, relating to, or forming a canon}意义一致。}，原子数目$N$、模拟体积$V$和总能量$E$都是确定的，因此这是一个孤立体系，它既不能与周围环境交换物质也不能交换能量。这个系综是分子动力学模拟中最常用的，因为它代表了一般的处于稳定状态的真实体系。如果模拟这种NVE系综，描写原子的运动方程就是通常的\textrm{Newton}方程。
 如图\ref{MD_ensemble}所示，其他系综都有一定的环境(大型外部体系)包围，以具有固定的参数。正则系综确定原子数$N$、模拟体积$V$和温度$T$，这一系综在\textrm{Monte Carlo}方法中最常用。等温-等压系综确定原子数、压强$和$温度$T$，而巨正则系综确定化学势($\mu$)、体积$V$和温度$T$，并且允许原子数量的变化。
 \begin{figure}[h!]
 \centering
