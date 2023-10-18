@@ -19,7 +19,7 @@
 
 无监督学习是描述性质的，就是所有数据只有特征向量没有标签，即$\mathbf{x}_{\mathrm{i}}\in\mathbf{X}$，但是这些数据呈现出聚群的结构，每个相似的类型或特征的会聚集在一起。如果没有标签的数据的组合$f(\mathbf{X})$是有限个，则称为聚类\textrm{(clustering)}，学习的是数据特征的分类;~反之，如果$f(\mathbf{X})\in[0,\infty)$，则称为密度估计\textrm{(density estimation)}，学习的是数据特征的边缘分布。另一种无监督学习是降维\textrm{(dimensionality reduction)}，是对数据实施压缩，用少量输入变量代表数据，特别是当$f(\mathbf{X})$是高维形式，降维后可以更清晰地了解复杂数数据的检测模式。
 
-与无监督学习相对反，监督学习是预测性质的，是通过学习指定数量的输入输出间的函数映射$(x_{\mathrm{i}},y_{\mathrm{i}})\in(\mathbf{X},f(\mathbf{X}))$(取$i=1,\cdots,N$，称为训练集\textrm{(training set)})，如果输出函数$y_{\mathrm{i}}$表示类别的有限集合，则称为分类\textrm{classification}问题，该模型可用来预测未知数据所属类型;~如果输出函数是实数，即$y_\mathrm{i}\in\mathbb{R}$，则称为回归\textrm{(regression)}问题，模型用来预测未知输入数据对应的值输出值。此外的机器学习问题还包括:~
+与无监督学习相对反，监督学习是预测性质的，是通过学习指定数量的输入输出间的函数映射$(x_{\mathrm{i}},y_{\mathrm{i}})\in(\mathbf{X},f(\mathbf{X}))$(取$i=1,\cdots,N$，称为训练集\textrm{(training set)})，如果输出函数$y_{\mathrm{i}}$表示类别的有限集合，则称为分类\textrm{(classification)}问题，该模型可用来预测未知数据所属类型;~如果输出函数是实数，即$y_\mathrm{i}\in\mathbb{R}$，则称为回归\textrm{(regression)}问题，模型用来预测未知输入数据对应的值输出值。此外的机器学习问题还包括:~
 \begin{itemize}
 	\item 半监督学习，即大部分没有映射关系的数据和少量有映射关系的数据;
 	\item 多任务和迁移学习，即将从相关问题习得的知识应用到数据极少的对象，提升模型的学习能力
