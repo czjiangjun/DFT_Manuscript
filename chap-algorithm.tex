@@ -124,7 +124,7 @@
 	J(\theta) = -\dfrac1n\sum_{i=1}^n[y^{(\mathrm{i})}\log(\hat{y}^{(\mathrm{i})})+(1-y^{(\mathrm{i})})\log(1-\hat{y}^{(\mathrm{i})})]
 	\label{eq:logstical_eq}
 \end{equation}
-这里$y^{(\mathrm{i})}$和$\hat{y}^{(\mathrm{i})}=\sigma(\theta^T\mathbf{x}^{(\mathrm{i})})$分别为实际和预测的二元标签值。和线性回归类似，上式\ref{eq:logstical_eq}中也可以引入正则参数$\lambda$。逻辑分类也可用于处理超过两类的数据分类，这种情形下，需要训练有$n$个逻辑回归值的模型，每一类对应一个数值，每个数据分入概率值最高的类中。
+这里$y^{(\mathrm{i})}$和$\hat{y}^{(\mathrm{i})}=\sigma(\theta^T\mathbf{x}^{(\mathrm{i})})$分别为实际和预测的二元标签值。和线性回归类似，上式\eqref{eq:logstical_eq}中也可以引入正则参数$\lambda$。逻辑分类也可用于处理超过两类的数据分类，这种情形下，需要训练有$n$个逻辑回归值的模型，每一类对应一个数值，每个数据分入概率值最高的类中。
 
 \textrm{Corsts}和\textrm{Vapnik}在逻辑回归的一系列改造基础上，提出了最通用的分类算法:~支持向量机\textrm{(Support Vector Machines, SVMs)}\cite{ML20-273_1995}。定义函数
 \begin{equation}
@@ -158,7 +158,7 @@
 	p(y|\mathbf{x})=\dfrac{p(\mathbf{x}|y)p(y)}{p(\mathbf{x})}=\dfrac{p(\mathbf{x}|y)p(y)}{\sum\limits_ip(\mathbf{x}|y=i)p(y=i)}
 	\label{eq:Bayes}
 \end{equation}
-这里$p(y)$表示先验概率，即没有附加任何先期知识和分析得到的概率。假设数据点的特征向量$\mathbf{x}^{(\mathrm{i}})$和标注$y^{(\mathrm{i})}$之间完全独立，可有\textrm{Na\"ive~Bayes}分类算法\cite{Naive-Bayes}，改写了式\eqref{eq:Bayes}的后验概率形式:
+这里$p(y)$表示先验概率，即没有附加任何先期知识和分析得到的概率。假设数据点的特征向量$\mathbf{x}^{(\mathrm{i})}$和标注$y^{(\mathrm{i})}$之间完全独立，可有\textrm{Na\"ive~Bayes}分类算法\cite{Naive-Bayes}，改写了式\eqref{eq:Bayes}的后验概率形式:
 \begin{equation}
 	p(y|\mathbf{x})=\dfrac{\prod\limits_{j=1}^np(x_j|y)p(y)}{p(\mathbf{x})}
 	\label{eq:Naive-Bayes}
