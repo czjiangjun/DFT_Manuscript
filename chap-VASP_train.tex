@@ -107,7 +107,7 @@
 \subsection{VASP的编译选项}
 熟悉软件编译的用户一定知道，编译选项的选择非常依赖编译器和库函数的版本，因此准确地确定编译选项几乎是软件编译安装中最重要的环节，非常依赖用户的个人经验。这里就\textrm{VASP}编译中的编译选项作一般性介绍:~
 \subsubsection{\rm{预编译}}
-\texrtrm{makefile.include}中有关预编译的变量主要为\\
+\textrm{makefile.include}中有关预编译的变量主要为\\
 \textrm{CPP}:~指定使用的预编译器
 \begin{itemize}
 	\item 使用\textrm{intel}的\textrm{Fortran}预编译器:\\
@@ -266,13 +266,13 @@ OBJECTS\_O1~= ~$\cdots$ objects-list $\cdots$ }}
 		\textcolor{brown}{\textrm{NVCC~ :=~ \$(CUDA\_ROOT)/bin/nvcc ~-g }}
 	\item \textrm{OBJECTS\_GPU}:~指定\textrm{FFT}编译的对象和链接(含静态库)，例如，对\textrm{FFTW}:\\
 \textcolor{brown}{\textrm{OBJECTS\_GPU~ =~ fftmpiw.o ~fftmpi\_map.o ~fft3lib.o ~fftw3d\_gpu.o ~fftmpiw\_gpu.o}}
-	\item \textrm{GENCODE\_ARCH}:~针对当前\textrm{GPU}架构的编译器选项:~
-		\begin{itemize}
-			\item 对\textrm{Kepler}架构:\\
-\textcolor{brown}{\textrm{GENCODE\_ARCH~ :=~ gencode=arch=compute\_35, ~code= $\setminus$\`\` ~sm\_35,~compute\_35$\setminus$~\'\'}}
-			\item 对\textrm{Maxwell}架构:\\
-\textcolor{brown}{\textrm{GENCODE\_ARCH~ :=~ gencode=arch=compute\_53, ~code= $\setminus$\`\` ~sm\_53,~compute\_53$\setminus$~\'\'}}
-\end{itemize}
+%	\item \textrm{GENCODE\_ARCH}:~针对当前\textrm{GPU}架构的编译器选项:~
+%		\begin{itemize}
+%			\item 对\textrm{Kepler}架构:\\
+%\textcolor{brown}{\textrm{GENCODE\_ARCH~ :=~ gencode=arch=compute\_35, ~code= $\setminus$\`\` ~sm\_35, ~compute\_35 $\setminus$~\'\'}}
+%			\item 对\textrm{Maxwell}架构:\\
+%\textcolor{brown}{\textrm{GENCODE\_ARCH~ :=~ gencode=arch=compute\_53, ~code= $\setminus$\`\` ~sm\_53,~compute\_53$\setminus$~\'\'}}
+%\end{itemize}
 可以通过多个\textrm{\`~gencode~\'}声明来编译跨平台的可执行文件。
 	\item \textrm{MPI\_INC}:~指定\textrm{MPI}的\textrm{include}目录，方便\textrm{CUDA}找到该目录，例如:\\
 \textcolor{brown}{\textrm{MPI\_INC~ :=~ /opt/openmpi/include}}\\
@@ -821,7 +821,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 在\textrm{FCC-Pt}体相划出晶格矢量为
 \begin{displaymath}
-	(a,0,0),~\bigg(\dfraca2,\dfrac{\sqrt3a}2,0\bigg),~(0,0,c)
+	(a,0,0),~\bigg(\dfrac a2,\dfrac{\sqrt3a}2,0\bigg),~(0,0,c)
 \end{displaymath}
 的\textrm{Pt}原子密堆积单胞，这里$a=2.812\mathrm{\AA}$,~$c=\sqrt{8/3}a=1.633a$。用$3\times3\times6$~(含真空层)的单胞堆积得到模拟\textrm{Pt~(111)}表面的超晶胞，构成模拟\textrm{FCC}中\textrm{(111)}表面的最小重复单元。
 
@@ -1206,7 +1206,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 \begin{table}[!h]
 \tabcolsep 0pt \vspace*{-5pt}
-\begin{minipage}{\0.88\textwidth}
+\begin{minipage}{0.88\textwidth}
 %\begin{center}
 \centering
 \caption{\textrm{FCC}的第一\textrm{Brillouin}区中高对称性点的列表}\label{Table-kpath}
@@ -1255,7 +1255,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Si_Band-EIGENVAL}
 \end{figure}
 
-文件\textrm{EIGENVAL}中第一行是倒晶格中的$\vec k$点位置，随后8行是对应的8个能带的能量本征值:~其中前4个(\textrm{No.}~1-4)能级表示价带，是0\textrm{K}下的占据态。从\textrm{EIGENVAL}文件中提取出各$\vec k$点的能量本征值$\varepsilon_{\vec k}^n$，并将\textrm{Fermi}能级设置为0~(可以用本讲义提供的脚本\textcolor{blue}{\textrm{vasp\_to\_image.py}}实现)。运行该脚本，将\textrm{Fermi}能级(由\textrm{OUTCAR}可知\textrm{Fermi}能级为5.6980\textrm{eV})设为0~\textrm{eV}，可以得到$\vec k$点和能量本征值关系的数据文件\textrm{Si-band.dat}，内容如图\ref{Si_Band-data}所示}
+文件\textrm{EIGENVAL}中第一行是倒晶格中的$\vec k$点位置，随后8行是对应的8个能带的能量本征值:~其中前4个(\textrm{No.}~1-4)能级表示价带，是0\textrm{K}下的占据态。从\textrm{EIGENVAL}文件中提取出各$\vec k$点的能量本征值$\varepsilon_{\vec k}^n$，并将\textrm{Fermi}能级设置为0~(可以用本讲义提供的脚本\textcolor{blue}{\textrm{vasp\_to\_image.py}}实现)。运行该脚本，将\textrm{Fermi}能级(由\textrm{OUTCAR}可知\textrm{Fermi}能级为5.6980\textrm{eV})设为0~\textrm{eV}，可以得到$\vec k$点和能量本征值关系的数据文件\textrm{Si-band.dat}，内容如图\ref{Si_Band-data}所示
 
 \begin{figure}[h!]
 \centering
@@ -1288,9 +1288,10 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{Si_phonon-POSCAR_primitve}
 \end{figure}
 
-在此基础上，通过\textrm{phonopy}程序产生若干超晶胞(如$2\times2\times2$超晶胞)，命令如下:~\\
-\textcolor{blue}{\textrm{phonopy~-d~--dim=~\`\`~2~2~2~\'\'}}\\
-该命令将产生三组文件，包括\textrm{SPOSCAR}，\textrm{DISP}和\textrm{POSCAR}-\{\textrm{number}\}。其中\textrm{SPOSCAR}保存的是理想超晶胞结构，\textrm{DISP}记录的是各方向的原子偏离信息，而\textrm{POSCAR}-\{\textrm{number}\}是超晶胞中原子发生偏离后的位置。将初基原胞结构文件\textrm{POSCAR}重命名为\textrm{POSCAR1}，而\textrm{SPOSCAR}重命名为\textrm{POSCAR}:~\\
+在此基础上，通过\textrm{phonopy}程序产生若干超晶胞(如$2\times2\times2$超晶胞)，%命令如下:~\\
+%\textcolor{blue}{\textrm{phonopy~-d~--dim=~\`\`~2~2~2~\'\'}}\\
+%该命令
+将产生三组文件，包括\textrm{SPOSCAR}，\textrm{DISP}和\textrm{POSCAR}-\{\textrm{number}\}。其中\textrm{SPOSCAR}保存的是理想超晶胞结构，\textrm{DISP}记录的是各方向的原子偏离信息，而\textrm{POSCAR}-\{\textrm{number}\}是超晶胞中原子发生偏离后的位置。将初基原胞结构文件\textrm{POSCAR}重命名为\textrm{POSCAR1}，而\textrm{SPOSCAR}重命名为\textrm{POSCAR}:~\\
 \textcolor{magenta}{\textrm{mv~POSCAR~POSCAR1}}\\
 \textcolor{magenta}{\textrm{mv~SPOSCAR~POSCAR}}
 
@@ -1456,7 +1457,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 \label{SiC-optic-Input}
 \end{figure}
 
-介电函数包括静态介电函数(\textrm{\textit{LEPSILON}=.TURE.}})和动态(频率相关)介电函数(\textrm{\textit{LOPITC}=.TURE.}})两类，这里将分别介绍。
+介电函数包括静态介电函数(\textrm{\textit{LEPSILON}=.TURE.})和动态(频率相关)介电函数(\textrm{\textit{LOPITC}=.TURE.})两类，这里将分别介绍。
 \subsubsection{\rm{静态介电函数的计算}}
 一般静态介电函数计算是通过密度泛函微扰理论(\textrm{Density Functional Perturbation Theory, DFPT})计算的，同时计算的物理量还包括\textrm{Born}有效电荷(\textrm{the Born effective charges})，铁电张量(\textrm{piezoelectric tensors})等。计算控制参数如图\ref{SiC-Epsilon-INCAR}所示。
 \begin{figure}[h!]
@@ -1469,7 +1470,7 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 根据微扰理论，计算静态介电函数时，
 \begin{displaymath}
-	\nabla_{\vec k}|\tilde u_{n\vec k}\rangle=\sum_{n^{\prime}\neq n}\dfrac{|\tilde u_{\n^{\prime}\vec k}\rangle\langle\tilde u_{\n^{\prime}\vec k}|\frac{\partial(\mathbf{H}(\vec k)-\varepsilon_{n\vec k}\mathbf{S}(\vec k))}{\partial\vec k}|\tilde u_{n\vec k}\rangle}{\varepsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k}}
+	\nabla_{\vec k}|\tilde u_{n\vec k}\rangle=\sum_{n^{\prime}\neq n}\dfrac{|\tilde u_{n^{\prime}\vec k}\rangle\langle\tilde u_{n^{\prime}\vec k}|\frac{\partial(\mathbf{H}(\vec k)-\varepsilon_{n\vec k}\mathbf{S}(\vec k))}{\partial\vec k}|\tilde u_{n\vec k}\rangle}{\varepsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k}}
 \end{displaymath}
 可用线性\textrm{Sternheimer}方程改写
 \begin{displaymath}
