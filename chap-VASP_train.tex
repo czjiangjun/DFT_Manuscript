@@ -1,4 +1,4 @@
-\setcounter{chapter}{10}
+%\setcounter{chapter}{10}
 \chapter{VASP的安装与应用示例}\label{chap:VASP_train}
 \textrm{VASP}是目前最流行的第一原理材料模拟软件包之一，由维也纳大学\textrm{(Universit\"at~Wien)}的\textrm{G.~Kresse}等开发。\cite{VASP_manual}\textrm{VASP}以其优异的计算性能，成为\textrm{DFT}计算的执牛耳者。\cite{CPC177-6_2007}只要几十个\textrm{CPU}的并行规模，即可处理上百个原子的体系。\textrm{VASP}能在众多材料模拟软件中脱颖而出，究其原因，一方面是因为\textrm{VASP}采用的\textrm{PAW~(Projector Augmented-Wave)}方法\cite{PRB50-17953_1994,PRB59-1758_1999}，平衡了传统赝势方法和全电子计算优点，保证了计算的精度;~另一方面是在计算过程中采用实空间优化的投影函数\textrm{(Projector)}的思想，将主要的计算任务变换到实空间完成，大大节省了基组的维度，并能兼顾计算过程中的计算精度和效率。在此基础上，\textrm{VASP}通过引入多种优化算法，有效提升了矩阵对角化和电荷密度搜索的效率。此外特别值得一提的是，程序的并行实现中，重点解决了快速\textrm{Fourier}变换\textrm{(Fast Fourier Transformation,~FFT)}网格与并行计算的计算格点的分配平衡问题，大大提升了软件的并行效率。相比于其他第一原理计算软件，\textrm{VASP}从物理思想与方法、优化算法和并行计算实现等多个方面都有出色的性能展示度。关于\textrm{VASP}软件实现的文献，主要如下:~
 \begin{enumerate}
