@@ -1,8 +1,8 @@
 \chapter{密度泛函理论基础} \label{chap:dft}
 
-二十世纪二十年代，Thomas-Fermi{建议的自由电子模型}\cite{PCPS23-542_1927,ZP48-73_1928}中，将经典体系的总能表示成为电子密度$\rho$的函数\cite{Parr-Yang,CR91-651_1991}，可以看成密度泛函(Density Functional)思想的源头；五十年代Slater用局域电荷密度代替离域的波函数乘积，简化了Hartree-Fock方法\cite{MPCPS24-111_1928,ZP61-126_1930, PR32-339_1928}中交换能的计算，这就是著名的X\,$\alpha$方法\cite{PR81-385_1951}，该方法表明，考虑量子效应后，电子体系的能量仍然可以用电子密度近似表示
+二十世纪二十年代，Thomas-Fermi{建议的自由电子模型}\cite{PCPS23-542_1927,ZP48-73_1928}中，将经典体系的总能表示成为电子密度$\rho$的函数\cite{Parr-Yang,CR91-651_1991}，可以看成密度泛函(Density Functional)思想的源头；五十年代Slater用局域电荷密度代替离域的波函数乘积，简化了Hartree-Fock方法\cite{MPCPS24-111_1928,ZP61-126_1930, PR32-339_1928}中交换能的计算，这就是著名的X\,$\alpha$方法\cite{PR81-385_1951}，该方法表明，考虑量子效应后，电子体系的能量仍可以用电子密度近似表示
 。%这些研究都显示，体系的能量有可能表示成为基态密度的函数。 %最早}) {思想的源头}可以上溯到%理论})
-采用电子密度计算体系总能量，最大的优点是有效地减少变量的数目，极大地方便了应用理论方法研究电子体系。但是真正将
+采用电子密度计算体系总能量，最大的优点是有效地减少变量的数目，极大地方便了应用理论方法研究电子体系，由此带动了密度泛函表示体系性质的研究热潮。但是真正将
 密度泛函理论\textrm{(Density Functional Theory,~DFT)}确立为严格的理论，要等到六十年代，Hohenberg和Kohn%最基本的变量是体系单粒子})
 完成密度泛函理论的基本定理的证明\cite{PR136-B864_1964}。
 Hohenberg-Kohn定理表明，体系的基态性质(如总能量)完全由%单})
@@ -569,6 +569,29 @@ $$E_{XC}^{\mathrm{B3LYP}}=(1-a)E_X^{\mathrm{LSDA}}+aE_X^{\mathrm{HF}}+bE_X^{\mat
 
 %一般来说})
 这几种泛函的近似公式的计算结果{一般}差别并不很大，对各种近似泛函的计算结果可以参考文献\inlinecite{JCP98-5612_1993,CPL316-160_2000}。
+
+\subsection{绝热关联与精确交换-相关泛函的特征}
+为了进一步讨论近似交换-相关泛函与精确交换-相关泛函的差别，按照绝热关联\textrm{(adiabatic connection)}过程，引入电子间相互作用:
+\begin{equation}
+	V_{\mathrm{C},\lambda}=\sum_{ij}\dfrac{\lambda}{|\vec r_i-\vec r^{\prime}_j|}=\lambda V_{\mathrm{C}}
+	\label{eq:electron-electron}
+\end{equation}
+于是，对于外势下的均匀电子气的\textrm{Hamiltonian}表示
+\begin{equation}
+	H_{\lambda}=H_{0,\lambda}+\sum_iV_{\mathrm{ext}}(\vec r_i)=(T+V_{\mathrm{C},\lambda})+\sum_iV_{\mathrm{ext}}(\vec r_i)
+	\label{eq:H-interaction}
+\end{equation}
+要求当体系密度$\rho(\vec r)$不变时，\textrm{Hamiltonian}的外势部分$\sum\limits_iV_{\mathrm{ext}}(\vec r_i)$对体系能量的贡献不变。不难看出$\lambda=0$时，表示无相互作用电子体系，$\lambda=1$表示完全相互作用电子体系。对于给定的电荷密度，最小化\textrm{Hamiltonian}的体系能量
+\begin{equation}
+	E_{\lambda}[\rho]=\min_{\Psi|\rho}\langle\Psi|H_{0,\lambda}|\Psi\rangle=\int V_{\mathrm{ext}}(\vec r)\rho(\vec r)\mathrm{d}^3r=F_{\lambda}[\rho]+\int V_{\mathrm{ext}}(\vec r)\rho(\vec r)\mathrm{d}^3 r
+	\label{eq:min-E}
+\end{equation}
+式中$F_{\lambda}[\rho]$定义为
+\begin{equation}
+	F_{\lambda}[\rho]=\min_{\Psi|\rho}\langle\Psi|H_{0,\lambda}|\Psi\rangle
+	\label{eq:General-Functional-lambda}
+\end{equation}
+体系能量最小化过程中，要求对于给定的电荷密度$\rho$，存在对应的体系波函数$\Psi$。
 
 由于原子中的电子密度的不均匀性比分子中的不均匀性更强，交换-相关能的梯度校正部分对原子{计算}影响比较大，%能够})
 比较明显%的})
