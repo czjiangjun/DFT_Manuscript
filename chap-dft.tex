@@ -579,6 +579,130 @@ $$E_{XC}^{\mathrm{B3LYP}}=(1-a)E_X^{\mathrm{LSDA}}+aE_X^{\mathrm{HF}}+bE_X^{\mat
 %一般来说})
 这几种泛函的近似公式的计算结果{一般}差别并不很大，对各种近似泛函的计算结果可以参考文献\inlinecite{JCP98-5612_1993,CPL316-160_2000}。
 
+\subsection{绝热关联与交换-相关孔}
+为了进一步讨论近似交换-相关泛函与精确交换-相关泛函的差别，按照绝热关联\textrm{(adiabatic connection)}过程，引入电子间相互作用:
+\begin{equation}
+	V_{\mathrm{C},\lambda}=\sum_{ij}\dfrac{\lambda}{|\vec r_i-\vec r^{\prime}_j|}=\lambda V_{\mathrm{C}}
+	\label{eq:electron-electron}
+\end{equation}
+于是，对于外势下的均匀电子气的\textrm{Hamiltonian}表示
+\begin{equation}
+	H_{\lambda}=H_{0,\lambda}+\sum_iV_{\mathrm{ext}}(\vec r_i)=(T+V_{\mathrm{C},\lambda})+\sum_iV_{\mathrm{ext}}(\vec r_i)
+	\label{eq:H-interaction}
+\end{equation}
+要求当体系密度$\rho(\vec r)$不变时，\textrm{Hamiltonian}的外势部分$\sum\limits_iV_{\mathrm{ext}}(\vec r_i)$对体系能量的贡献不变。不难看出$\lambda=0$时，表示无相互作用电子体系，$\lambda=1$表示完全相互作用电子体系。对于给定的电荷密度，最小化\textrm{Hamiltonian}的体系能量
+\begin{equation}
+	E_{\lambda}[\rho]=\min_{\psi|\rho}\langle\Psi|H_{0,\lambda}|\Psi\rangle=\int V_{\mathrm{ext}}(\vec r)\rho(\vec r)\mathrm{d}^3r=F_{\lambda}[\rho]+\int V_{\mathrm{ext}}(\vec r)\rho(\vec r)\mathrm{d}^3 r
+	\label{eq:min-E}
+\end{equation}
+式中$F_{\lambda}[\rho]$定义为
+\begin{equation}
+	F_{\lambda}[\rho]=\min_{\psi|\rho}\langle\Psi|H_{0,\lambda}|\Psi\rangle
+	\label{eq:General-Functional-lambda}
+\end{equation}
+体系能量最小化过程中，要求对于给定的电荷密度$\rho$，存在对应的体系波函数$\Psi$。根据\textrm{Hellmann-Feynman}定理\cite{Hellmann_Book,PR56-340_1939}，当\textrm{Hamiltonian}仅依赖于参数$\lambda$时，可有对含$\lambda$的\textrm{Schr\"odinger}方程
+\begin{equation}
+	H_{\lambda}|\psi_{\lambda}\rangle=E_{\lambda}|\psi_{\lambda}\rangle
+	\label{eq:lambda-Schrodinger}
+\end{equation}
+对$\lambda$求微分可有:
+\begin{equation}
+	H_{\lambda}^{\prime}|\psi_{\lambda}\rangle+H_{\lambda}|\psi_{\lambda}^{\prime}\rangle=E_{\lambda}^{\prime}|\psi_{\lambda}\rangle+E_{\lambda}|\psi_{\lambda}^{\prime}\rangle
+	\label{eq:Hellmann-Feynman}
+\end{equation}
+$H_{\lambda}^{\prime}$、$\psi_{\lambda}^{\prime}$和$E_{\lambda}^{\prime}$表示对$\lambda$的导数。方程两边左乘$\langle\Psi_{\lambda}$，并利用式\eqref{eq:lambda-Schrodinger}，可有
+\begin{equation}
+	\dfrac{\mathrm{d}E_{\lambda}}{\mathrm{d}\lambda}=\dfrac{\langle\psi_{\lambda}|\mathrm{d}H_{\lambda}/\mathrm{d}\lambda|\psi_{\lambda}\rangle}{\langle\psi_{\lambda}|\psi_{\lambda}\rangle}
+	\label{eq:HF-QMD}
+\end{equation}
+当$|\psi_{\lambda}\rangle$对应$F_{\lambda}$的变分基态($H_{0,\lambda}$的最低能级的本征态)，则参照\textrm{Hellmann-Feynman}定理，可以将$F_{\lambda}$的导数写成
+\begin{equation}
+	\dfrac{\mathrm{d}F_{\lambda}}{\mathrm{d}\lambda}=\langle\psi_{\lambda}|V_\mathrm{C}|\psi_{\lambda}\rangle
+	\label{eq:HF-F}
+\end{equation}
+因此对于完全相互作用体系的通用泛函
+\begin{equation}
+	F_{\lambda=1}[\rho]=T_{\mathrm{K-S}}[\rho]+\int_0^1\langle\psi_{\lambda}|V_{\mathrm{C}}|\psi_{\lambda}\rangle\mathrm{d}\lambda
+	\label{eq:General-F}
+\end{equation}
+因此交换-相关能可以表示为
+\begin{equation}
+	\begin{aligned}
+		E_{XC}=&F_{\lambda=1}[\rho]-T_{\mathrm{K-S}}[\rho]-\sum\dfrac12\int\rho(\vec r)\dfrac1{|\vec r-\vec r^{\prime}|}\rho(\vec r^{\prime})\mathrm{d}^3\vec r\mathrm{d}^3\vec r^{\prime}\\
+		=&\int_0^1\langle\psi_{\lambda}|V_{\mathrm{C}}|\psi_{\lambda}\rangle\mathrm{d}\lambda-E_{\mathrm{Hartree}}
+	\end{aligned}
+	\label{eq:EX-delta}
+\end{equation}
+上述推导不难看出，相互作用体系的动能部分贡献的交换-相关，可以通过绝热关联近似，计算\textrm{Coulomb}项对参数$\lambda$积分贡献得到。
+
+根据密度矩阵理论，对于电子体系，电子1和2分别位于位置$x$和$x^{\prime}$的概率密度可以表示为
+\begin{equation}
+	P(x,x^{\prime})=\int|\Psi(x,x^{\prime},x_3,\cdots,x_N)|^2\mathrm{d}x_3\cdots\mathrm{d}x_N
+	\label{eq:density-matrix}
+\end{equation}
+单电子密度则可以表示为
+\begin{equation}
+	\rho(x)=N\int|\Psi(x,x^{\prime},x_3,\cdots,x_N))|^2\mathrm{d}x^{\prime}\mathrm{d}x_3\cdots\mathrm{d}x_N
+	\label{eq:single-density}
+\end{equation}
+并有
+\begin{equation}
+	\int\rho(x)\mathrm{d}x=N
+	\label{eq:N-totlal}
+\end{equation}
+不难看出，存在等式
+\begin{equation}
+	N\int P(x,x^{\prime})\mathrm{d}x^{\prime}=\rho(x)
+	\label{eq:relation-matrix-N-tot}
+\end{equation}
+\textrm{Coulomb}相互作用能用密度矩阵表示
+\begin{equation}
+	E_{\mathrm{C}}=\dfrac{N(N-1)}2\int P(x,x^{\prime})\dfrac1{|\vec r-\vec r^{\prime}|}\mathrm{d}x\mathrm{d}x^{\prime}
+	\label{eq:Coulomb-matrix}
+\end{equation}
+引入交换-相关孔$n_{XC}(x,x^{\prime})$，满足
+\begin{equation}
+	N(N-1)P(x,x^{\prime})=\rho(x)\rho(x^{\prime})+\rho(x)n_{XC}(x,x^{\prime})
+	\label{eq:ex-ch-hole}
+\end{equation}
+这样定义的交换-相关孔，表明当考虑电子间相互作用后，第一个电子位于位置$x$时，根据体系的平均密度分布给出的第二个电子的概率分布。因此可以有
+\begin{equation}
+	E_{\mathrm{C}}=E_{\mathrm{Hartree}}+\dfrac12\int \rho(x)n_{XC}(x,x^{\prime})\dfrac1{|\vec r-\vec r^{\prime}|}\mathrm{d}x\mathrm{d}x^{\prime}
+	\label{eq:Coulomb-Hartree-XC}
+\end{equation}
+式\eqref{eq:Coulomb-Hartree-XC}的第二项，即交换-相关能来自对交换-相关孔的\textrm{Coulomb}积分形式。
+
+通过对交换-相关孔性质的讨论，可以获得精确交换-相关能需要满足的某些条件。由式\eqref{eq:N-totlal}和波函数的归一化条件，可有
+\begin{equation}
+	\int P(x,x^{\prime})\mathrm{d}x\mathrm{d}x^{\prime}=1
+	\label{eq:normalisation}
+\end{equation}
+对交换-相关孔定义式\eqref{eq:ex-ch-hole}两边对变量$x^{\prime}$(即空间坐标$\vec r^{\prime}$和自旋$s$)的积分，可有
+\begin{equation}
+	(N-1)\rho(x)=N\rho(x)+\rho(x)\int n_{XC}(x,x^{\prime})\mathrm{d}x^{\prime}
+	\label{eq:ex-ch-hole-integrate}
+\end{equation}
+不难得出，交换-相关孔应满足条件
+\begin{equation}
+	\int n_{XC}(x,x^{\prime})\mathrm{d}x^{\prime}=-1
+	\label{eq:ex-ch-hole-condition}
+\end{equation}
+因此式\eqref{eq:Coulomb-Hartree-XC}的第二项可以视为交换-相关效应对经典\textrm{Coulomb}相互作用(\textrm{Hartree}能)的修正。换言之，交换-相关孔可以视为具有单位正电荷的一种电荷密度分布。如果将交换-相关孔分为交换孔和相关孔两部分之和
+\begin{equation}
+	n_{XC}(x,x^{\prime})=n_X(x,x^{\prime})+n_C(x,x^{\prime})
+	\label{eq:ex-ch-devode}
+\end{equation}
+根据\textrm{Hartree-Fock}方法，波函数采用\textrm{Slater}行列式形式，即可完全地考虑交换作用，由此确定精确的交换孔满足
+\begin{equation}
+	\int n_{X}(x,x^{\prime})\mathrm{d}x^{\prime}=-1
+	\label{eq:ex-hole-condition}
+\end{equation}
+不难看出，精确相关孔满足
+\begin{equation}
+	\int n_{C}(x,x^{\prime})\mathrm{d}x^{\prime}=0
+	\label{eq:ch-hole-condition}
+\end{equation}
+
 由于原子中的电子密度的不均匀性比分子中的不均匀性更强，交换-相关能的梯度校正部分对原子{计算}影响比较大，%能够})
 比较明显%的})
 {地}降低原子的能量，而对分子{计算}影响较小{。}与LDA的结果相比，交换-相关能的梯度校正使得分子的原子化能{计算值}降低，键长{计算值}增加，总体%上得到的})
