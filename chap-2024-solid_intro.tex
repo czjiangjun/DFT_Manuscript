@@ -1098,7 +1098,7 @@ E_n(\vec k)=&E(-\vec k)
 这里对$l$的求和遍及晶格中所有格点。容易验证，$\Psi_{\vec k}(\vec r)$为Bloch函数。式\eqref{eq:Bloch-TB}也可通过待定系数方法确定。$\Psi_{\vec k}(\vec r)$应满足Schr\"odinger方程\eqref{eq:Schrondinger_equation}。利用孤立原子${\mathbf{H}}_0$的解，可得到$\Psi_{\vec k}(\vec r)$对应电子态的能量为
 \begin{equation}
 	\begin{aligned}
-		E(\vec k)\langle\Psi_{\vec k}|\hat{\mathrm{H}}|\Psi_{\vec k}\rangle=&\varepsilon_j-\sum_{l,l^{\prime}}\mathrm{e}^{\mathrm{i}\vec k\cdot(\vec R_l-\vec R_{l^{\prime}})}J(\vec R-\vec R_{\prime})\\
+		E(\vec k)=\langle\Psi_{\vec k}|\hat{\mathrm{H}}|\Psi_{\vec k}\rangle=&\varepsilon_j-\sum_{l,l^{\prime}}\mathrm{e}^{\mathrm{i}\vec k\cdot(\vec R_l-\vec R_{l^{\prime}})}J(\vec R-\vec R_{l^\prime})\\
 		=&\varepsilon_j-\sum_s\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
 	\end{aligned}
 	\label{eq:Energy-TB}
@@ -1119,7 +1119,7 @@ E_n(\vec k)=&E(-\vec k)
 如果只保留到近邻项而略去其他影响小的各项贡献，能量本征值可简化为
 \begin{equation}
 %	E(\vec k)=\varepsilon_j-J_0-\sum_{s=near~neighbour}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
-	E(\vec k)=\varepsilon_j-J_0-\sum_{s=\mbox{近邻}}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
+	E(\vec k)=\varepsilon_j-J_0-\sum_{s=\mbox{\fontsize{6.2pt}{4.2pt}\selectfont{近邻}}}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
 	\label{eq:Energy-TB-NN}
 \end{equation}
 % 	(6.4.22) 
