@@ -1,7 +1,6 @@
 \setcounter{chapter}{7}
 \chapter{固体物理概述}\label{chap:Solid-state_introduct}
 \section{固体的分类与结合}
-
 \subsection{固体的分类:~晶体、非晶体与准晶}
 固体是由大量原子(或离子)组成的复杂体系。根据内部的原子、离子的排布规范情况，固体一般可分为晶体(包括单晶与多晶)、非晶体和准晶。晶体与非晶体的最本质差别在于组成晶体的粒子(原子、离子或分子等)是长程有序排列的，而非晶体中，除了最近邻的粒子有可能有序排列外，一般粒子都呈现无规则堆积。石英的两种结构(石英晶体和石英玻璃)很好地说明了这两个不同序的区别，如图\ref{Fig:SSI-01} 所示。
 \begin{figure}[h!]
@@ -257,7 +256,128 @@ van der Waals力是非常弱的吸引力，因而分子晶体一般有非常低�
 $\vec a_1$和$\vec a_2$在$xy$平面上形成格点间距为$a$的三角格子，$\vec a_3$表示三角格子以间距$c$沿$z$方向重叠。由它们所构成的平行六面体即简单六角的原胞，其体积为晶胞体积的三分之一，故一个晶胞包含3个格点。它的Wigner-Seitz原胞为六角棱柱。
 
 \subsection{晶格的对称性及基本类型} 
-除了平移对称性外，晶体还具有一些额外的对称性，即经过一空间变换后，尽管其中各部分改变了位置和状态，但从整体来看，位置、大小、形状和状态都没有改变。例如，一个正方形绕它的中心转动$90^{\circ}$、$180^{\circ}$、$270^{\circ}$后看上去和未转动一样，而长方形只能旋转$180^{\circ}$才保持不变。也就是说，正方形比长方形具有更高的对称性。晶体的点对称元素包括旋转轴、镜面、对称中心以及它们的组合，这就决定了晶体仅有32种晶体学点群。而如果同时考虑微观对称元素(滑移面和螺旋面)的作用，在晶体中原子所有可能排列方式将分属230种空间群。这些对称性对简化某些理论计算是非常重要的，也经常被用在描述固体宏观性质的参数讨论上。完全利用这个理论的优势，需要借助于群论的知识，%这远远超过了本书的范围，
+除了平移对称性外，晶体还具有一些额外的对称性，即经过一空间变换后，尽管其中各部分改变了位置和状态，但从整体来看，位置、大小、形状和状态都没有改变。例如，一个正方形绕它的中心转动$90^{\circ}$、$180^{\circ}$、$270^{\circ}$后看上去和未转动一样，而长方形只能旋转$180^{\circ}$才保持不变。也就是说，正方形比长方形具有更高的对称性。从对称性的角度，Bravais格子可由其所有的对称操作刻画，这些对称操作的集合，称为对称群(symmetry group)或空间群(space group)，将平移操作扣除后，剩余的这些额外对称操作的集合叫作点群(point group)，因为这些对称操作完成的过程中，Bravais格子中的某个点将保持固定不动。
+
+群是一组元素的集合，$G\equiv\{E,A,B,C,D,\cdots\}$，具有如下性质:
+\begin{itemize}
+	\item 按照给定的``乘法''规则，群G中的任意两个元素之间的乘积，仍然是群G中的元素，即要求\\如果$A,B\in G$，则$AB=C\in G$\\
+		这个性质称为群的封闭性
+	\item 存在单位元素$E$，满足对所有群元素$P\in G$，有
+		\begin{displaymath}
+			PE=EP=P
+		\end{displaymath}
+	\item 对任意元素$P\in G$，存在逆元素$P^{-1}$，使得
+		\begin{displaymath}
+			PP^{-1}=P^{-1}P=E
+		\end{displaymath}
+	\item 元素之间的``乘法''运算，满足结合律
+		\begin{displaymath}
+			A(BC)=(AB)C
+		\end{displaymath}
+\end{itemize}
+比如队列动作立正、向左转、向右转和向后转可构成群，立正是单位元素。所有整数，以加法为运算法则，可组成整数群，其中0是单位元素。
+
+点群中的对称操作类型，固体物理中习惯用Schoenflie记号标记，晶体学家则惯于用国际晶体学记号标记。晶体的点对称元素共三类包括
+\begin{itemize}
+	\item 旋转轴，即绕固定轴的转动，$C_n(n)$，如转$2\pi/n$为对称操作，该轴称为$n$重对称轴或$n$重轴。$n=1$即旋转$2\pi$，相当于不动操作，一般记作$E(1)$。如当$z$轴为4重轴，则$C_4(x,y,z)\rightarrow(y,-x,z)$。
+	\item 镜面反映，$\sigma(m)$，相当于把所有点都映射到镜像位置。如以$xy$平面为镜像面，则$\sigma(x,y,z)\rightarrow(x,y,-z)$
+	\item 反演中心，$i(\bar{1})$，如取原点为反演中心，则$i(x,y,z)\rightarrow(-x,-y,-z)$
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.65in,width=2.85in,viewport=0 0 510 297,clip]{Figures/Crystallographic_restriction_2.png}
+\caption{\small \textrm{Bravais格子中旋转操作的约束示意.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Crystallographic_restriction}
+\end{figure}
+由于晶体的平移操作存在，对许可的转动操作有严格的限制，只允许有1,2,3,4和6重轴。可以简单说明示意如图\ref{Fig:Crystallographic_restriction}。Bravais格子的格点最近邻距离为$a$，通过绿色点并与纸面垂直的$n$重旋转轴，作用于格点，因此有
+\begin{displaymath}
+	\begin{aligned}
+		2a\cos\theta=2a\cos\dfrac{2\pi}n=&ma\\
+		\cos\dfrac{2\pi}n=&\dfrac{m}2\quad m\mbox{是整数}
+	\end{aligned}
+\end{displaymath}
+\begin{table}
+  \centering
+  \caption{32个晶体学点群}
+  \begin{tabular}{c|@{\extracolsep{\fill}}m{1.2cm}<{\raggedright}@{\extracolsep{\fill}}m{1.9cm}<{\raggedright}@{\extracolsep{\fill}}m{1.4cm}<{\raggedright}@{\extracolsep{\fill}}m{8.3cm}<{\raggedright}@{\extracolsep{\fill}}m{1.0cm}<{\raggedright}}
+    \toprule
+    \fontsize{7.2pt}{4.2pt}\selectfont{晶系} &\fontsize{7.2pt}{4.2pt}\selectfont{Schoenflie记号}  &\fontsize{7.2pt}{4.2pt}\selectfont{国际记号全称} &\fontsize{7.2pt}{4.2pt}\selectfont{简称}  &\fontsize{7.2pt}{4.2pt}\selectfont{对称元素} &\fontsize{7.2pt}{4.2pt}\selectfont{ 群元素个数} \\
+    \midrule
+    \fontsize{7.2pt}{4.2pt}\selectfont{三斜} &$C_1$ &$1$ &$1$ &$\mathrm{E}$ &1 \\
+    &$S_2$ &$\bar{1}$&$\bar{1}$ &$\mathrm{E}, i$ &2 \\\hline
+     &$C_2$ &$2$ &$2$ &$\mathrm{E}, C_2$ &2 \\
+     \fontsize{7.2pt}{4.2pt}\selectfont{单斜}&$C_{1h}$ &$m$ &$m$ &$\mathrm{E}, \sigma_h$ &2 \\
+    &$C_{2b}$ &$2/m$ &$2/m$ &$\mathrm{E}, C_2, i, \sigma_h$ &4\\\hline
+     &$D_2$ &$222$ &$222$ &$\mathrm{E}, C_2, 2C_2^{\prime}$ &4 \\
+     \fontsize{7.2pt}{4.2pt}\selectfont{正交}&$C_{2v}$ &$mm2$ &$mm2$ &$\mathrm{E}, C_2, 2\sigma_v$ &4 \\
+     &$D_{2h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(2/m)(2/m)(2/m)$} &$mmm$ &$\mathrm{E}, C_2, 2C_2^{\prime}, i, \sigma_h, 2\sigma_v$ &8\\\hline
+     &$C_4$ &$4$ &$4$ &$\mathrm{E}, 2C_4, C_2$ &4 \\
+    &$S_4$ &$\bar{4}$ &$\bar{4}$ &$\mathrm{E}, 2S_4, C_2$ &4 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{四方}&$D_4$ &$422$ &$422$ &$\mathrm{E}, 2C_4, C_2, 2C_2^{\prime}, 2C_2^{\prime\prime}$ &8 \\
+    &$C_{4v}$ &$4mm$ &$4mm$ &$\mathrm{E}, 2C_4, C_2, 2\sigma_v, 2\sigma_d$ &8 \\
+    &$D_{2d}$ &$\bar{4}2m$ &$\bar{4}2m$ &$\mathrm{E}, C_2, 2C_2^{\prime}, 2\sigma_d, 2S_4$ &8 \\
+    &$D_{4h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(4/m)(4/m)(4/m)$} &$4/mmm$ &$\mathrm{E}, 2C_4, C_2, 2C_2^{\prime}, 2C_2^{\prime\prime}, i, 2S_4, \sigma_h$ &16\\\hline
+     &$C_3$ &$3$ &$3$ &$\mathrm{E}, 2C_3$ &3 \\
+    &$S_6$ &$\bar{3}$ &$\bar{3}$ &$\mathrm{E}, 2C_3, i, 2S_6$ &6 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{三角}&$D_3$ &$32$ &$32$ &$\mathrm{E}, 2C_3, 2C_2^{\prime}$ &6 \\
+    &$C_{3v}$ &$3m$ &$3m$ &$\mathrm{E}, 2C_3, 3\sigma_v$ &6 \\ 
+    &$D_{3d}$ &$\bar{3}(2/m)$  &$\bar{3}m$ &$\mathrm{E}, 2C_3, 3C_2^{\prime}, i, 2S_6, 3\sigma_v$ &12\\\hline
+     &$C_6$ &$6$ &$6$ &$\mathrm{E}, 2C_6, 2C_3, C_2$ &6 \\
+    &$C_{3h}$ &$\bar{6}$ &$\bar{6}$ &$\mathrm{E}, 2C_3, \sigma_h, 2S_3$ &6 \\
+    &$C_{6h}$ &$6/m$ &$6/m$ &$\mathrm{E}, 2C_6, 2C_3, C_2, i, 2S_3, 2S_6, \sigma_h$ &12 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{六角}  &$D_6$ &$622$ &$622$ &$\mathrm{E}, 2C_6, 2C_3, C_2, 3C_2^{\prime}, 3C_2^{\prime\prime}$ &12 \\
+    &$C_{6v}$ &$6mm$ &$6mm$ &$\mathrm{E}, 2C_6, 2C_3, C_2, 3\sigma_v, 3\sigma_d$ &12 \\ 
+    &$D_{3h}$ &$\bar{6}m2$ &$\bar{6}m2$ &$\mathrm{E}, 2C_3, 3C_2^{\prime}, \sigma_h, 2S_3, 3\sigma_v$ &12 \\ 
+    &$D_{6h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(6/m)(2/m)(2/m)$} &$mmm$ &$\mathrm{E}, 2C_6, 2C_3, C_2, 3C_2^{\prime}, 3C_2^{\prime\prime},i, 2S_3, 2S_6, \sigma_h, 3\sigma_v, 3\sigma_d$ &24 \\\hline
+     &$T$ &$23$ &$23$ &$\mathrm{E}, 8C_3, 3C_2$ &12 \\
+    &$T_h$ &$(2/m)\bar{3}$ &$m3$ &$\mathrm{E}, 8C3, 3C_2, i, 8S_6, 3\sigma_h$ &24 \\
+    &$O$ &$432$ &$432$ &$\mathrm{E}, 8C_3, 3C_2, 6C_2, 6C_4$ &24 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{立方}   &$T_{d}$ &$\bar{4}3m$ &$\bar{4}3m$ &$\mathrm{E}, 8C_3, 3C_2, 6\sigma_d, 6S_4$ &24 \\
+    &$O_{h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(4/m)\bar{3}(2/m)$} &$m3m$ &$\mathrm{E}, 2C_4, 8C_3, 3C_2, 6C_2^{\prime}, 6C_4,i, 8S_6, 3\sigma_h, 6\sigma_v, 6S_4$ &48\\
+%    & & & & 自由电子\\
+%    \hline
+%    电子 & $\lambda(\mbox{\AA})\approx12/\sqrt{\mathrm{E(keV)}}$ & $20\sim250~\mathrm{eV}$ & 穿透深度小，主要用于晶体表面结构研究 \\\hline
+%    中子  & $\lambda(\mbox{\AA})\approx0.28/\sqrt{\mathrm{E(keV)}}$ & 与室温下的$k_{\mathrm{B}}T$(约$0.026~\mathrm{eV}$)同一数量级 & 适用于研究磁性材料晶体结构；热中子的能量特别适合于对固体中晶格振动的研究；入射强度低，需要大晶体，且很长的照射时间   \\
+    \bottomrule
+  \end{tabular}
+  \label{Tab:crystallographic_group}
+\end{table}
+由于$\left|\cos\dfrac{2\pi}n\right|\leqslant1$，所以$n$取值只能是1,2,3,4,6这几个值，不允许有5重轴、7重轴等存在。Bravais格子允许的点对称操作的组合形成的群称为晶体学点群。三维晶体共许可32种晶体学点群，列于表\ref{Tab:crystallographic_group}
+
+表\ref{Tab:crystallographic_group}中对称元素标记简要说明如下:
+\begin{itemize}
+	\item $c_n^{\prime},c_n^{\prime\prime}$，表示转动轴非主轴，主轴是晶体中对称性最高的转动轴，相应的对称操作数要多于其它轴。主轴通常选为$c$轴或$z$轴。
+	\item $\sigma_h$，表示反映的镜面包含原点并垂直于主轴，下标$h$表示水平面。
+	\item $\sigma_v$，表示反映的镜面包含主轴，下标$v$表示垂直面。
+	\item $\sigma_d$，表示反映的镜面包含主轴，且平分与主轴垂直的两根2重轴间的夹角。
+	\item $S_n$，表示转动$2\pi/n$后接着作水平镜面的反映。这是一种不能仅通过旋转操作实现的对称操作，也称为非真转动。
+\end{itemize}
+
+表\ref{Tab:crystallographic_group}还给出了32个点群的国际符号及其简写形式。国际点群符号的详细说明见表\ref{Tab:International_crystallographic_group}。$\dfrac{n}m$表示垂直于$C_n$轴的水平反应的镜面，因此$C_{4h}\rightarrow\dfrac4m$，两个$m$，或三个$m$连写，即$mm$或$mmm$表示两组或三组不等价的反应镜面。对立方晶系，$T\rightarrow23$，表示分别存在一组等价的$C_3$轴，一组等价的$C_2$轴，为了和$D_3$区分，不能写成$32$。$T_h\rightarrow m3$，有一组等价的$C_3$轴和一组等价的$\sigma$镜面($\sigma_h$)。$O\rightarrow432$，表示有等价的$C_4,C_3,C_2$轴。$T_d\rightarrow\bar{4}3m$，表示有一组等价的$S_4$轴，一组等价的$C_3$轴和一组等价的$\sigma$镜面($\sigma_d$)。$O_n\rightarrow m3m$，表示一组等价的$C_3$轴和两组不等价的$\sigma$镜面($\sigma_h,\sigma_d$)，习惯上$m3m$不写成$3mm$。
+
+\begin{table}
+  \centering
+  \caption{点群的国际符号}
+  \begin{tabular}{@{\extracolsep{\fill}}m{12.2cm}<{\raggedright}@{\extracolsep{\fill}}m{2.5cm}<{\raggedright}}
+    \toprule
+    转动轴  &符号   \\
+    \midrule
+$n$重转动轴 &$n$\\
+非真$n$重转动轴 &$\bar{n}$\\
+转动轴$\cap$与之垂直的水平反映镜面 &$\bar{m}$\\
+$n$重转动轴$\cap$与之垂直的$2$重轴 &$n2$\\
+$n$重转动轴$\cap$含$n$重转动轴的垂直反映镜面 &$nm$\\
+$n$重非真转动轴$\cap$与之垂直的$2$重轴 &$\bar{n}2$\\
+$n$重非真转动轴$\cap$含轴的垂直反映镜面 &$\bar{n}m$\\
+$n$重转动轴$\cap$与之垂直的反应镜面$\cap$一组含轴的反映镜面 &$\dfrac{n}{nm} \mbox{或} \dfrac{n}mm$\\ 
+    \bottomrule
+  \end{tabular}
+  \label{Tab:International_crystallographic_group}
+\end{table}
+
+如果在点群基础上，考虑平移对称性，并滑移面和螺旋面(类似非真转动中的镜面)的作用，在Bravais格子中所有许可的对称操作将可分属于230种空间群。这些空间群所包含的对称性对简化某些理论计算是非常重要的，也经常被用在描述固体宏观性质的参数讨论上。完全利用这个空间群理论的优势，需要借助于群论的知识，%这远远超过了本书的范围，
 有兴趣的读者可参考文献\inlinecite{Symmetry_Tang}。这里主要讨论一些非常简单的晶体，很容易直接看出它的对称性。
 
 根据晶格的对称性特征，可将晶格进行分类，同一类型的晶格具有相同的对称性。一维晶体只有一种类型点阵，即沿无限长直线等距排列的点。由于平移对称性的限制，晶体仅有2、3、4、6重旋转对称轴，而不具有5重或6重以上的旋转对称轴，从而导致二维平面晶体仅有5种点阵类型(图\ref{Fig:Lattice_Type-2D})，三维晶体仅有14种点阵类型(图\ref{Fig:Lattice_Type-3D})。将这种既能反映平移对称性又能反映所属晶格对称性特征的空间点阵称为Bravais格子，故共有5种二维Bravais格子和14种三维Bravais格子。14种三维Bravais格子根据轴矢$\vec a_1$、$\vec a_2$、$\vec a_3$和它们之间夹角的关系，又可划分为七大晶系：\textcircled{1}三斜晶系，\textcircled{2}单斜晶系，\textcircled{3}正交晶系，\textcircled{4}六角晶系，\textcircled{5}三角晶系，\textcircled{6}四方晶系，\textcircled{7}立方晶系。每个晶系都有一个能反映其对称性特征的晶胞。
