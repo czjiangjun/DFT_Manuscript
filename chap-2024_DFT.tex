@@ -2,17 +2,22 @@
 \chapter{第一原理计算}\label{chap:quantum-calculation}
 \section{密度泛函理论基础} \label{section:dft}
 
-二十世纪二十年代，Thomas-Fermi{建议的自由电子模型}\cite{PCPS23-542_1927,ZP48-73_1928}中，将经典体系的总能表示成为电子密度$\rho$的函数\cite{Parr-Yang,CR91-651_1991}，可以看成密度泛函(Density Functional)思想的源头；五十年代Slater用局域电荷密度代替离域的波函数乘积，该近似简化了Hartree-Fock方法\cite{MPCPS24-111_1928,ZP61-126_1930, PR32-339_1928}交换能的计算，这就是著名的X\,$\alpha$方法\cite{PR81-385_1951}。该方法表明，考虑量子效应后的电子体系，能量可以用电子密度近似表示
+二十世纪二十年代，Thomas-Fermi{建议的自由电子模型}%\cite{PCPS23-542_1927,ZP48-73_1928}
+中，将经典体系的总能表示成为电子密度$\rho$的函数%\cite{Parr-Yang,CR91-651_1991}
+，可以看成密度泛函(Density Functional)思想的源头；五十年代Slater用局域电荷密度代替离域的波函数乘积，该近似简化了Hartree-Fock方法%\cite{MPCPS24-111_1928,ZP61-126_1930, PR32-339_1928}
+交换能的计算，这就是著名的X\,$\alpha$方法%\cite{PR81-385_1951}
+。该方法表明，考虑量子效应后的电子体系，能量可以用电子密度近似表示
 。%这些研究都显示，体系的能量有可能表示成为基态密度的函数。 %最早}) {思想的源头}可以上溯到%理论})
 相比于波函数，用电子密度表示体系总能量，最大的优点是有效地减少变量的数目，%方便了应用理论方法研究电子体系，
 X\,$\alpha$方法带动了采用密度泛函表示体系性质的可行研究的深入。但是真正将
 密度泛函理论\textrm{(Density Functional Theory,~DFT)}确立为严格的理论，要等到六十年代，Hohenberg和Kohn%最基本的变量是体系单粒子})
-完成密度泛函理论的基本定理的证明\cite{PR136-B864_1964}。
-Hohenberg-Kohn定理表明，体系的基态性质(如总能量)完全由%单})
+完成密度泛函理论的基本定理的证明%\cite{PR136-B864_1964}
+。Hohenberg-Kohn定理表明，体系的基态性质(如总能量)完全由%单})
 %粒})
-基态{电}子密度决定；随后，Kohn和Sham\cite{PR140-A1133_1965}%采用了与相互作用体系有相同单粒子密度的无相互作用体系的动能近似来近似计算相互作用体系的动能，把剩余部分都放在交换-相关能项中予以考虑。本质上，这个方法把单粒子波函数又引入了密度泛函理论，但是基本解决了动能计算的问题。在他们的工作基础上，各种近似的交换-相关能泛函形式\cite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}被提出来并})
+基态{电}子密度决定；随后，Kohn和Sham%\cite{PR140-A1133_1965}%采用了与相互作用体系有相同单粒子密度的无相互作用体系的动能近似来近似计算相互作用体系的动能，把剩余部分都放在交换-相关能项中予以考虑。本质上，这个方法把单粒子波函数又引入了密度泛函理论，但是基本解决了动能计算的问题。在他们的工作基础上，各种近似的交换-相关能泛函形式\cite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}被提出来并})
 {提出了用基态密度表示体系总能量的成近似方案，使密度泛函理论可应用于实际体系的量子力学计算。七十年代之后，密度泛函理论的研究主要集中在寻求更精确的能量密度泛函表达形式上，其中有些泛函已被}广泛应用于%计算各类})
-原子、分子和固体体系{的计算中\cite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}}。
+原子、分子和固体体系{的计算中%\cite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}}
+。
 
 \subsection{Hohenberg-Kohn定理}
 Hohenberg-Kohn定理\cite{PR136-B864_1964}包含两部分{内容}:
@@ -120,7 +125,9 @@ $的泛函%形式})
 电子密度的壳层结构，也不能%得到})
 {说明存在}稳定%的})
 分子{的事实}。%后来经过})
-Dirac\cite{PCPS26-376_1930}和Weizsacker\cite{ZP96-431_1935}对能量泛函的改进取得%了})
+Dirac%\cite{PCPS26-376_1930}
+和Weizsacker%\cite{ZP96-431_1935}
+对能量泛函的改进取得%了})
 一定%的进展})
 {成功}，但%是同实验结果相比，仍然有比较大的差距})
 {没有取得实质性的进展}。
@@ -197,7 +204,7 @@ $为外势，第二项为%粒})
 {的体系相对应}。可以证明，按照该方法构造的无相互作用体系基态如果是非简并的，即这个无相互作用体系的基态可以用单行列式波函数表示，则用这个单行列式波函数构造的%单粒})
 {基态电}子密度与相互作用体系的%单粒})
 {基态电}子密度是一致的%，但是如果无相互作用体系的基态是简并的，相互作用{\it v}-可表示单粒子密度是否仍然与由单行列式波函数构造的无相互作用体系单粒子密度对应的问题还没有得到解决})
-。\cite{PNAS76-6062_1979,IJQC24-243_1983}
+。%\cite{PNAS76-6062_1979,IJQC24-243_1983}
 
 对于{电子}自旋{密度}%极化的情况，从})
 {不恒为零的体系，推广}Hohenberg-Kohn定理%可以知道，体系基态自旋为})
@@ -260,41 +267,63 @@ Kohn-Sham%理论})
 电子密度的不均匀性。通过引入电子密度的梯度对{局域近似的}交换-相关能的{泛函}形式加以校正，%即所谓的})
 {就是}梯度展开近似(Gradient Expansion Approximation, GEA)%和})
 {或}一般梯度近似(Generalized Gradient Approximation, GGA)，%即})
-此时能量泛函不仅依赖于局域密度值的分布，还与密度梯度有关，这在一定程度上改善LDA的计算结果。比较重要的GGA交换能泛函有P86$_x$\cite{PRB33-8800_1986}、B88\cite{PRA38-3098_1988}、PW91\cite{PRB46-6671_1992,PRB48-4978_1993,PRB54-16533_1996,PRB57-14999_1998}、PBE\cite{PRL77-1396_1996,IBID78-1396_1997}、HCTH\cite{JCP109-6264_1998}等。
+此时能量泛函不仅依赖于局域密度值的分布，还与密度梯度有关，这在一定程度上改善LDA的计算结果。比较重要的GGA交换能泛函有P86$_x$%\cite{PRB33-8800_1986}
+、B88%\cite{PRA38-3098_1988}
+、PW91%\cite{PRB46-6671_1992,PRB48-4978_1993,PRB54-16533_1996,PRB57-14999_1998}
+、PBE%\cite{PRL77-1396_1996,IBID78-1396_1997}
+、HCTH%\cite{JCP109-6264_1998}
+等。
 
 由于在交换-相关能泛函的定义中包含了一部分动能的贡献，因此很多研究者考虑{到}在交换-相关{能}泛函中应该包括动能密度为变量，%这就是所谓的})
-{提出}\textit{meta}-GGA泛函。自1980年代末以来，比较有代表性的\textit{meta}-GGA交换能泛函有BR89\cite{PRA39-3761_1989}、\linebreak VSXC\cite{JCP109-400_1998}、tauPBE\cite{JCP111-911_1999}、PKZB\cite{PRL82-2544_1999,PRL82-5179_1999}、B00\cite{JCP112-4020_2000}、PCS00\cite{JCP113-10013_2000}等。
+{提出}\textit{meta}-GGA泛函。自1980年代末以来，比较有代表性的\textit{meta}-GGA交换能泛函有BR89%\cite{PRA39-3761_1989}
+、\linebreak VSXC%\cite{JCP109-400_1998}
+、tauPBE%\cite{JCP111-911_1999}
+、PKZB%\cite{PRL82-2544_1999,PRL82-5179_1999}
+、B00%\cite{JCP112-4020_2000}
+、PCS00%\cite{JCP113-10013_2000}
+等。
 
 为了提高各种近似{能量}泛函的%计算结果的})
 精度，从1990年代初起，基于绝热关联\textrm{(adiabatic connection)}%(下面会详述)})
 {的推理}，Becke提出把部分按Hartree-Fock方法计算的交换能加入到能量密度泛函中的思想{，}%从而})
 构造出了一系列%的所谓})
 杂化型%的})
-交换-相关{能}泛函，其中比较重要的是“半对半(half and half)”泛函\cite{JCP98-1372_1993}、B3P\cite{JCP98-5648_1993}、B3LYP\cite{JPC98-11623_1994}、B1B95\cite{JCP104-1040_1995}等。
+交换-相关{能}泛函，其中比较重要的是“半对半(half and half)”泛函%\cite{JCP98-1372_1993}
+、B3P%\cite{JCP98-5648_1993}
+、B3LYP%\cite{JPC98-11623_1994}
+、B1B95%\cite{JCP104-1040_1995}
+等。
 
 由于%对})
 相关能的物理%定})
 {含}义不%很})
 {够}清晰，而且相关能的数值比交换能小一个数量级，既比较难准确估计，又不是计算中误差的最主要来源，因此提出的{近似}相关能泛函%模型})
 比交换能泛函%模型})
-少一些。最早提出把相关能表示成电子密度泛函的是Wigner\cite{PR46-1002_1934}，他的公式适用于均匀电子气：
+少一些。最早提出把相关能表示成电子密度泛函的是Wigner%\cite{PR46-1002_1934}
+，他的公式适用于均匀电子气：
 \begin{equation}
   E_C=-\dfrac a{r_s+b}
   \label{eq:dft-16}
 \end{equation}
 其中$a$、$b$是参数，$r_s$\,=\,$\left(\dfrac3{4\pi\rho}\right)^{\frac13}$称为表观半径。%实际上})
 对%于})
-均匀电子气的相关能并没有统一\linebreak 的解析式。von Barth\cite{JPC5-1629_1972}和Gunnarsson\cite{PRB13-4274_1976}等人都提出过一些近似的式子。1980年，\linebreak Vosko、Wilk和Nusair\cite{CJP58-1200_1980}利用Ceperley和Alder\cite{PRL45-566_1980}用量子Monte Carlo方法计算得到的{均匀电子气}相关能数据拟合出一个%均匀电子气的})
+均匀电子气的相关能并没有统一\linebreak 的解析式。von Barth%\cite{JPC5-1629_1972}和Gunnarsson\cite{PRB13-4274_1976}等人都提出过一些近似的式子。1980年，\linebreak Vosko、Wilk和Nusair\cite{CJP58-1200_1980}利用Ceperley和Alder\cite{PRL45-566_1980}用量子Monte Carlo方法计算得到的{均匀电子气}相关能数据拟合出一个%均匀电子气的})
 相关能的%公})
 {表达}式，即最常用的VWN%公})
-{表达}式。后来Perdew和Wang\cite{PRB45-13244_1992}把他们的%公})
+{表达}式。后来Perdew和Wang%\cite{PRB45-13244_1992}
+把他们的%公})
 {表达}式简化并重新拟合了参数。
 
 以上相关能%公式})
 {泛函}都是针对均匀电子气的，比较常用的考虑了梯度校正的相关能泛函%公})
-{表达}式有P86$_c$\cite{PRB33-8822_1986}、LYP\cite{PRB37-785_1988}、Bc88\cite{JCP88-1053_1988}、PW91\cite{PRB46-6671_1992,PRB48-4978_1993,PRB54-16533_1996,PRB57-14999_1998}等。
+{表达}式有P86$_c$%\cite{PRB33-8822_1986}
+、LYP%\cite{PRB37-785_1988}
+、Bc88%\cite{JCP88-1053_1988}
+、PW91%\cite{PRB46-6671_1992,PRB48-4978_1993,PRB54-16533_1996,PRB57-14999_1998}
+等。
 
-按照Perdew的建议\cite{Perdew-Schmidt_2001}，现有的交换-相关能密度泛函可以分为以下几类：
+按照Perdew的建议%\cite{Perdew-Schmidt_2001}
+，现有的交换-相关能密度泛函可以分为以下几类：
 \begin{enumerate}
   \item LDA: 即泛函只与密度分布的局域值有关；
   \item GGA: 泛函所依赖的变量除了局域密度之外，还包括局域密度的梯度；
@@ -305,14 +334,15 @@ Kohn-Sham%理论})
 \end{enumerate}
 \begin{figure}[!h]
 \centering
-\includegraphics[height=3.4in,width=3.18in,viewport=10 5 680 700,clip]{Jacobi-ladder.png}
+\includegraphics[height=3.4in,width=3.18in,viewport=10 5 680 700,clip]{Figures/Jacobi-ladder.png}
 \caption{\small The schematic digram of Jacob's Ladder for DFT.\cite{Perdew-Schmidt_2001,Science298-759_2002}}
 \label{Fig:Jacob-Ladder}
 \end{figure}
 
 上述{各类}泛函%的类别})
 从上到下越来越接近%化学})
-精确值，因此被形象地视为``Jacob's Ladder''(登天梯，见图\ref{Fig:Jacob-Ladder}):~将\textrm{LDA~}视为第一级阶梯，\textrm{GGA~}视为第二级阶梯，更复杂的泛函形式视为第三级及更高的阶梯。\cite{PRL91-146401_2003}但在密度泛函中过度引入轨道将会%造成})
+精确值，因此被形象地视为``Jacob's Ladder''(登天梯，见图\ref{Fig:Jacob-Ladder}):~将\textrm{LDA~}视为第一级阶梯，\textrm{GGA~}视为第二级阶梯，更复杂的泛函形式视为第三级及更高的阶梯。%\cite{PRL91-146401_2003}
+但在密度泛函中过度引入轨道将会%造成})
 {大大增加}计算量%的大大增加})
 ，失去密度泛函理论对%一般})
 从头计算方法的优势，因此是{并}不可取的。
@@ -651,19 +681,21 @@ Kohn-Sham%理论})
 周期体系的势函数与一般原子、分子的差别，主要表现在原子间区域，相应部分的波函数较为平缓，并且有周期特征，如图\ref{Potential-Wave}所示:
 \begin{figure}[h!]
 \centering
-\includegraphics[height=0.8in,width=4.in,viewport=41 458 539 546,clip]{Pseudo_wave.pdf}\\
-\includegraphics[height=0.8in,width=4.in,viewport=41 238 539 339,clip]{Pseudo_wave.pdf}
+\includegraphics[height=0.8in,width=4.in,viewport=41 458 539 546,clip]{Figures/Pseudo_wave.pdf}\\
+\includegraphics[height=0.8in,width=4.in,viewport=41 238 539 339,clip]{Figures/Pseudo_wave.pdf}
 \caption{\small \textrm{The periodic Potential (up) and the wave functions (down) in crystal.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Potential-Wave}
 \end{figure}
 
-最早的能带计算方法是Wigner-Seitz(WS)原胞方法\cite{PR43-804_1933}。该方法不考虑晶体对称性特征，将原胞简化为球，假定原胞势场仍保持球对称性，结果仅依赖于每个原胞平均占据的体积，忽略实际晶体结构的影响。%即$V(\vec r)=V(r)$，波函数为中心力场Schr\"odinger方程标准的线性组合，边条件为$\left(\dfrac{\partial\psi_{\vec k}(r)}{\partial r}\right)_{r_0}$，$r_0$为球半径。
+最早的能带计算方法是Wigner-Seitz(WS)原胞方法%\cite{PR43-804_1933}
+。该方法不考虑晶体对称性特征，将原胞简化为球，假定原胞势场仍保持球对称性，结果仅依赖于每个原胞平均占据的体积，忽略实际晶体结构的影响。%即$V(\vec r)=V(r)$，波函数为中心力场Schr\"odinger方程标准的线性组合，边条件为$\left(\dfrac{\partial\psi_{\vec k}(r)}{\partial r}\right)_{r_0}$，$r_0$为球半径。
 \textrm{WS}原胞方法在碱金属能带计算取得了很大的成功，但由于模型过于简化，无法应用于大多数晶体的计算。%如果采用真实的多面体WS原胞，为了满足表面边边界条件，计算将变得十分复杂，同时也会导致中心力场在原胞边界上导数的不连续。
-为了克服WS原胞方法的缺陷，Slater提出Muffin-Tin(MT)近似\cite{PR51-846_1937}。MT近似的主要思想是将WS原胞分为两个区域:~以原胞中的每个原子{\it i}\,为中心，半径为$r_i$的彼此不相交叠的球形区，此区域内势函数具有球对称性；球形区以外为间隙区，此处势能近似为一常数。
+为了克服WS原胞方法的缺陷，Slater提出Muffin-Tin(MT)近似%\cite{PR51-846_1937}
+。MT近似的主要思想是将WS原胞分为两个区域:~以原胞中的每个原子{\it i}\,为中心，半径为$r_i$的彼此不相交叠的球形区，此区域内势函数具有球对称性；球形区以外为间隙区，此处势能近似为一常数。
 如图\ref{Muffin_tin-1}所示:
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.45in,width=1.92in,viewport=1 22 317 295,clip]{Muffin-tin.png}
+\includegraphics[height=1.45in,width=1.92in,viewport=1 22 317 295,clip]{Figures/Muffin-tin.png}
 %\includegraphics[height=1.45in,width=1.92in,viewport=1 20 515 435,clip]{Muffin-Tin.png}
 \caption{\small \textrm{Division of the unit cell into spheres(I) and into interstitial region(II)}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Muffin_tin-1}
@@ -681,7 +713,8 @@ Kohn-Sham%理论})
 %为简化计算，
 通常取$V_c$=0，这等价于将晶体的势能零点移动到$V_c$位置上。
 
-MT势比WS原胞法相更接近实际情况，适用性更强。研究表明，对于过渡金属和具有密堆积结构的过渡金属化合物，间隙区势能近似为常数，MT方法是很好的近似，计算结果只会有很小的误差\cite{PR153-931_1967,PRB1-1318_1970,PLA33-414_1970}。%计算也表明， 
+MT势比WS原胞法相更接近实际情况，适用性更强。研究表明，对于过渡金属和具有密堆积结构的过渡金属化合物，间隙区势能近似为常数，MT方法是很好的近似，计算结果只会有很小的误差%\cite{PR153-931_1967,PRB1-1318_1970,PLA33-414_1970}
+。%计算也表明， 
 即使对于晶体势场不能完全用MT势描述的情况，如球内的非球形对称部分不能完全忽略的情况，也可以通过适当的方法修正。
 
 %为了计算周期性晶体势场，Mattheiss提出了一个构造MT势的方法，在中心原子的势场上叠加上周围原子势场以中心为原点的球谐函数展开的球对称部分\cite{PRA133-1399_1964}。将Coulomb势和交换项分开处理。Coulomb势用晶体中原子势的静电排斥叠加表示，临近原子的Coulomb势叠加用L\"owdin发展的$\alpha$展开方法计算：
@@ -749,7 +782,7 @@ MT势比WS原胞法相更接近实际情况，适用性更强。研究表明，�
 使用MT近似方法，MT球外的势能是一常数，但实际上MT球外有非零的电子密度，%无法通过MT近似构造出与此电荷密度一致的势能。假设MT球外的电荷满足式\eqref{eq:solid-59}，
 间隙区的Coulomb势$V_c$并非是一常数，而与位置有关。所以应用MT近似，假设$V_c$为一常数，是MT近似误差的主要来源。 
 %\subsection{非MT校正} %关于MT近似的改进方法有许多\cite{RPP44-139_1981}，%考虑对MT近似的修正，主要有两类方案。一种是在推导Hamiltonian的基函数时考虑非MT效应；另一种采用MT近似构造基函数，但对势能进行非MT修正。一般来说主要应用第二种方案，构造一般形式的势能。在MT近似下，WS原胞分为球形区(S)和间隙区(I)两部分。对这两部分区域，由于表达形式的差别，
-对不同区域的非MT校正，一般采用不同形式的校正形式:~在MT球内，晶体势用球谐函数(或者是满足晶体对称性的球谐函数)，MT球外的势能用Fourier级数展开\cite{PRB13-5362_1976}
+对不同区域的非MT校正，一般采用不同形式的校正形式:~在MT球内，晶体势用球谐函数(或者是满足晶体对称性的球谐函数)，MT球外的势能用Fourier级数展开%\cite{PRB13-5362_1976}
 \begin{equation}
   V(\vec r)=\left\{
   \begin{aligned}
@@ -823,7 +856,8 @@ $V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\
 		\end{aligned}
 	\end{equation}
 
-	$V_{\mathrm{ext}}$的\textrm{Fourier}分量在$\vec k=0$也是发散的。因此基态总能量的表达式中存在三个发散项。因为整个体系是电中性的，意味着这些发散项会相互抵消，它们的和是一个常数\cite{JPC-SSP12-4409_1979}。因此周期体系总能量计算的一般流程为:~求解\textrm{Kohn-Sham}方程时，先将$V_{\mathrm{Coul}}(\vec k=0)$和$V_{\mathrm{ext}}(\vec k=0)$同时置为零，这相当于将势能作一平移，或者说重新定义势能零点，而在总能量计算中补偿这一平移。这样得到的发散项之和为：
+	$V_{\mathrm{ext}}$的\textrm{Fourier}分量在$\vec k=0$也是发散的。因此基态总能量的表达式中存在三个发散项。因为整个体系是电中性的，意味着这些发散项会相互抵消，它们的和是一个常数%\cite{JPC-SSP12-4409_1979}
+	。因此周期体系总能量计算的一般流程为:~求解\textrm{Kohn-Sham}方程时，先将$V_{\mathrm{Coul}}(\vec k=0)$和$V_{\mathrm{ext}}(\vec k=0)$同时置为零，这相当于将势能作一平移，或者说重新定义势能零点，而在总能量计算中补偿这一平移。这样得到的发散项之和为：
 	\begin{equation}
 		\begin{aligned}
 			\lim_{\vec k\rightarrow0}\Omega&\bigg[\dfrac12V_{\mathrm{Coul}}(\vec k)+\sum_sv_{ext}^s(\vec k)\bigg]\rho^{\ast}(\vec k)+\dfrac12\sum_{\vec R,s}\sideset{}{^{\prime}}\sum_{\vec R^{\prime},\vec s^{\prime}}\dfrac{Z_sZ_{s^{\prime}}}{|\vec R+\vec r_s-\vec R^{\prime}-\vec r_s^{\prime}|}\\
@@ -993,7 +1027,8 @@ $V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\
 \subsection{计算方法简介}
 \subsubsection{赝势(Pseudo Potential, PP)方法}
 赝势方法是使用最多的计算晶体电子结构和物理性质的方法。1934年，Fermi为了解释碱金属的原子光谱的谱线移动提出了原子赝势的概念%(见图\ref{Pseudo-scatter-2})
-\cite{NC11-157_1934,AJP52-695_1984}，随后，Hellman等将赝势应用到原子和分子能级的描述\cite{JCP3-61_1935}%，见图\ref{Pseudo-scatter-2}
+%\cite{NC11-157_1934,AJP52-695_1984}
+，随后，Hellman等将赝势应用到原子和分子能级的描述%\cite{JCP3-61_1935}，见图\ref{Pseudo-scatter-2}
 。
 %\begin{figure}[h!]
 %\centering
@@ -1003,7 +1038,9 @@ $V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\
 %\label{Pseudo-scatter-2}
 %\end{figure}
 
-赝势理论的一个重要发展是在1960年前后，Phullips和Kleinman\cite{PR116-287_1959}在正交平面波(Orthogonalized Plane Wave, OPW)方法\cite{PR57-1169_1940}基础上导出赝势，广泛用于简单金属的能带计算。正交平面波的定义为：
+赝势理论的一个重要发展是在1960年前后，Phullips和Kleinman%\cite{PR116-287_1959}
+在正交平面波(Orthogonalized Plane Wave, OPW)方法%\cite{PR57-1169_1940}
+基础上导出赝势，广泛用于简单金属的能带计算。正交平面波的定义为：
 \begin{equation}
 	\psi_{\mathrm{OPW}}(\vec G)=\Phi_{\mathrm{PW}}(\vec G)-\sum_c\langle\chi_c|\Phi_{\mathrm{PW}}(\vec G)\rangle\chi_c,
   \label{eq:solid-108}
@@ -1053,14 +1090,15 @@ $V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\
 %赝势方程式\eqref{eq:solid-98}的能量本征值与真实的本征函数的解相同\cite{Harrison}。
 值得注意的是，赝势的构造是不唯一的。在式\eqref{eq:solid-VR}定义的$V_R$，其不唯一性源于OPW基组的过完备性。这样得到的赝势一般称为经验赝势(参见图\ref{Pseudo_model-empty_core})，通常选择赝势的Fourier分量参数使得计算结果与实验一致。
 
-在赝势方法发展的早期，广泛使用的赝势是基于实验数据提出的半经验模型赝势\cite{PM9-451_1964,PM12-529_1965,JPF2-270_1972,PRB11-2717_1975,PRB11-2726_1975,JPF6-L271_1976,PR174-769_1968}(参见图\ref{Pseudo-model})。此类模型赝势的一般形式为：
+在赝势方法发展的早期，广泛使用的赝势是基于实验数据提出的半经验模型赝势%\cite{PM9-451_1964,PM12-529_1965,JPF2-270_1972,PRB11-2717_1975,PRB11-2726_1975,JPF6-L271_1976,PR174-769_1968}
+(参见图\ref{Pseudo-model})。此类模型赝势的一般形式为：
 \begin{equation}
   V_p(q)=\frac{a_1}{q^2}[\cos(a_2q)+a_3]\exp(a_4q^4)
   \label{eq:solid-102}
 \end{equation}
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.60in,width=2.57in,viewport=0 0 980 600,clip]{Pseudo-model-empty_core.png}
+\includegraphics[height=1.60in,width=2.57in,viewport=0 0 980 600,clip]{Figures/Pseudo-model-empty_core.png}
 \caption{\small \textrm{Pseudopotential for metallic sodium, based on the empty core model and screened by the Thomas-Fermi dielectric function.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pseudo_model-empty_core}
 \end{figure}
@@ -1072,7 +1110,7 @@ $V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\
 %\end{enumerate}
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.30in,width=4.17in,viewport=0 0 1150 350,clip]{Pseudo-model.png}
+\includegraphics[height=1.30in,width=4.17in,viewport=0 0 1150 350,clip]{Figures/Pseudo-model.png}
 \caption{\small \textrm{Left:``Empty core'' model potential of Ashcroft in which the potential is zero inside radius $R_c(l)$ which is different for each $l$. Right: Square well model potential with value $A_l$ inside a cut-off radius $R_c$, proposed by Abarenkov and Heine and fit to atomic data by Animalu and Heine..}}% The fact that the potential are weak, zero, or even positive inside cut-off radius $R_c$ is an illustration of the ``cancellation theorem''(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Pseudo-model}
 \end{figure}
@@ -1087,7 +1125,8 @@ $V_{\mathrm{ext}}$在不存在其他外场时，一般只考虑离子-电子的\
 $V_{\mathrm{H}}(\rho,r)$是Hartree势，$V_{XC}^{\mathrm{LDA}}(\rho(r))$是LDA的交换-相关势。
 
 这样得到的赝势称为第一原理赝势，赝势构造的重点由构造赝势本身转移到构造并选择合适的赝波函数。%目前主要的赝势方法主要都都是先构造赝函数，再通过径向方程\eqref{eq:solid-103}确定赝势。 
-如果第一原理赝波函数满足以下条件\cite{PRB12-4200_1975,PRB18-5449_1978,PRB19-568_1979,PRB20-4082_1979,PRB26-4199_1982,PRL43-1494_1979,JPC13-L189_1980,PRB32-8412_1985,PRB43-1993_1991}:
+如果第一原理赝波函数满足以下条件%\cite{PRB12-4200_1975,PRB18-5449_1978,PRB19-568_1979,PRB20-4082_1979,PRB26-4199_1982,PRL43-1494_1979,JPC13-L189_1980,PRB32-8412_1985,PRB43-1993_1991}
+:
 \begin{itemize}
 	\item 首先，赝波函数是平滑的且不含节点；
 	\item 其次，在截断半径$r_{cl}$之外\cite{JPC13-L189_1980,PRB43-1993_1991}，具有相同角动量$l$的原子径向赝波函数与全电子(all-electron, AE)波函数相等%即
@@ -1105,7 +1144,8 @@ $V_{\mathrm{H}}(\rho,r)$是Hartree势，$V_{XC}^{\mathrm{LDA}}(\rho(r))$是LDA�
 \end{itemize}
 这样构造的赝势称为模守恒赝势(norm-conserving pseudo~potential, NCPP)\cite{PRL43-1494_1979}。
 
-实际应用模守恒赝势方法时，有很多方法可以构造出满足上述条件的赝波函数\cite{PRB18-5449_1978,PRB26-4199_1982,PRL43-1494_1979,JPC13-L189_1980,PRB32-8412_1985,PRB43-1993_1991}，%得到赝波函数后，逆向求解径向Schr\"odinger方程，可以
+实际应用模守恒赝势方法时，有很多方法可以构造出满足上述条件的赝波函数%\cite{PRB18-5449_1978,PRB26-4199_1982,PRL43-1494_1979,JPC13-L189_1980,PRB32-8412_1985,PRB43-1993_1991}
+，%得到赝波函数后，逆向求解径向Schr\"odinger方程，可以
 通过式\eqref{eq:solid-103}直接得到的是屏蔽赝势：
 \begin{equation}
 	V_{\mathrm{src},l}^{\mathrm{PP}}(r)=\varepsilon_l-\frac{l(l+1)}{2r^2}+\frac1{2P_l^{\mathrm{PP}}(r)}\frac{\mathrm{d}^2}{\mathrm{d}r^2}P_l^{\mathrm{PP}}(r)
@@ -1132,7 +1172,8 @@ $$V_{\mathrm{ion},l}^{\mathrm{PP}}(r)=V_{\mathrm{src},l}^{\mathrm{PP}}(r)-V_{\ma
 \end{equation}
 等式右侧第一项$V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}(r)$是去屏蔽赝势的主要部分，它只依赖径向变量$r$，在整个空间都是局域的；第二项是赝势的角度相关部分，其中$V_{\mathrm{nonlocal},l}(r)=V_{\mathrm{ion},l}^{\mathrm{PP}}(r)-V_{\mathrm{ion},\mathrm{local}}^{\mathrm{PP}}(r)$，$\hat P_l$是Legendre多项式，表示角度部分的投影算符。由于角度部分无法完全分离变量，因此式\eqref{eq:solid-107}这种形式称为半局域赝势。半局域赝势在平面波基函数下计算复杂度为$O(N^3)$，具体计算中使用起来非常不便。
 
-\textrm{Kleinman}和\textrm{Bylander}\textrm{(KB)}\cite{PRL48-1425_1982}针对半局域势引入变量可分离近似，并将赝势的球坐标表示变换到赝波函数空间，由此得到完全可分离赝势：
+\textrm{Kleinman}和\textrm{Bylander}\textrm{(KB)}%\cite{PRL48-1425_1982}
+针对半局域势引入变量可分离近似，并将赝势的球坐标表示变换到赝波函数空间，由此得到完全可分离赝势：
 $$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\sum_m\dfrac{|V_{\mathrm{nonlocal},l}(r)\Phi_{lm}^{\mathrm{PP}}(r)\rangle\langle\Phi_{lm}^{\mathrm{PP}}(r)V_{\mathrm{nonlocal},l}(r)|}{\langle\Phi_{lm}^{\mathrm{PP}}(r)|V_{\mathrm{nonlocal},l}(r)|\Phi_{lm}^{\mathrm{PP}}(r)\rangle}$$
 这里$\Phi_{lm}^{\mathrm{PP}}(r)$是赝波函数的原子角动量。这样构造的可分离赝势，使得Hamiltonian矩阵元中赝势的计算复杂度随基函数呈$O(N^2)$变化，便于程序实现，也节约了计算时间。
 
@@ -1140,7 +1181,7 @@ $$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\sum_m\dfrac{|V_{\mathrm{nonlocal},l}(r)
 赝势构造的模守恒条件很好地解决了赝势可移植性问题，但对$1s$、$2p$、$3d$等轨道，因为径向波函数本身没有节点(参见\ref{Norm-US-wave}中的实线)，模守恒方案无法有效地减少势函数展开所需平面波的数目(\ref{Norm-US-wave}中的点线)，因此得到的赝势依然很“硬”\footnote{赝势的“硬(hard)”和“软(soft)”之分，是用于展开赝势所需平面波数目多和少的一种形象说法。}。为此，\textrm{Vanderbilt}提出的超软\textrm{(Ultra-soft)}赝势\cite{PRB41-7892_1990}的构造方案，解除了模守恒约束，实现对$1s$、$2p$、$3d$为价电子元素的高效计算。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.35in,width=1.40in,viewport=30 55 415 500,clip]{Norm-US-wave.pdf}
+\includegraphics[height=1.35in,width=1.40in,viewport=30 55 415 500,clip]{Figures/Norm-US-wave.pdf}
 \caption{\small \textrm{Oxygen 2} \textit{p} \textrm{radical wave function (solid), NC-pseudo-wave (dotted) and US-pseudo-wave (dashed).}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Norm-US-wave}
 \end{figure}
@@ -1196,7 +1237,7 @@ $$V_{\mathrm{nonlocal},l}^{\mathrm{KB}}=\sum_m\dfrac{|V_{\mathrm{nonlocal},l}(r)
 针对周期体系中不同区域势能与波函数的差别，Slater提出MT球近似，并建议将波函数分区域表示方法\cite{PR51-846_1937,PR91-528_1953}，这也是缀加平面波(APW)方法的起源。如图\ref{Muffin_tin_0}所示，%后来Slater又对APW方法进行“简化”\cite{}%，但实际上原始的APW思想更直接。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.30in,width=1.45in,viewport=1 20 485 435,clip]{APW.png}
+\includegraphics[height=1.30in,width=1.45in,viewport=1 20 485 435,clip]{Figures/APW.png}
 \caption{\small \textrm{Partitioning of the unit cell into atomic spheres and an interstitial region.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Muffin_tin_0}
 \end{figure}
@@ -1256,7 +1297,8 @@ $$A_{lm}(\vec k_i)=4\pi e^{\mathrm{i}\vec k_i\cdot\vec r_s}\mathrm{i}^lY_{lm}(\h
 %\end{equation}
 %这里的球面积分是考虑波函数$\Psi$在MT球面上导数不连续。
 %因为APW基函数径向部分与能量参数$E_l$有关，因此矩阵元与$E_l$有关。为了获得能量本征值$E_l$，必须求解$\vec k$-空间中每个点的能量$E_l$高阶行列式，该过程非常麻烦。
-为了解除APW函数对能量$E_l$的相关，人们提出了多种线性化的实现方案\cite{PRB2-3098_1970,PRB2-290_1970,JPF9-661_1979,PRB19-6094_1979}。线性化缀加平面波(linearized augmented plane-wave, LAPW)方法是将径向波函数在给定能量值$E_{l0}$附近作Taylor展开到一阶\cite{PRB12-3060_1975}，LAPW方法的基函数为：
+为了解除APW函数对能量$E_l$的相关，人们提出了多种线性化的实现方案%\cite{PRB2-3098_1970,PRB2-290_1970,JPF9-661_1979,PRB19-6094_1979}
+。线性化缀加平面波(linearized augmented plane-wave, LAPW)方法是将径向波函数在给定能量值$E_{l0}$附近作Taylor展开到一阶\cite{PRB12-3060_1975}，LAPW方法的基函数为：
 \begin{equation}
   \varphi(\vec k_j,\vec r)=\left\{
   \begin{aligned}
@@ -1268,14 +1310,15 @@ $$A_{lm}(\vec k_i)=4\pi e^{\mathrm{i}\vec k_i\cdot\vec r_s}\mathrm{i}^lY_{lm}(\h
 这里$R_{MT}^s$是MT球半径；$\vec k_j=\vec k+\vec G_j$，$\vec k$是不可约Brillouin区中的波矢；$\vec G_j$是倒空间格矢；$u_l(E_l,r)$是满足能量为$E_l$的径向Schr\"odinger方程的解波函数，不同的角动量$l$可指定不同的能量参数；$\dot u_l(E_l,r)$是解波函数对能量$E_l$的一阶导数；$Y_{lm}$是球谐函数；$\Omega_0$是WS原胞体积。APW与LAPW方法径向部分h函数在球面上附近衔接如图\ref{Muffin_tin}所示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.30in,width=1.98in,viewport=1 20 585 435,clip]{WIEN2k-LAPW.png}
+\includegraphics[height=1.30in,width=1.98in,viewport=1 20 585 435,clip]{Figures/WIEN2k-LAPW.png}
 \caption{\small \textrm{Partitioning of the unit cell into atomic spheres(I) and an interstitial region(II)}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{Muffin_tin}
 \end{figure}
 显然LAPW方法的径向函数在球面上连续到一阶，比APW方法更平滑。另一方面，径向波函数线性化引入的误差，对势能的影响很小，因此能量参数的选择，对LAPW方法的基函数构造的Hamiltonian和重叠矩阵基本不会发生影响。这就是LAPW方法中能量参数$E_l$的取值范围可以比较大的原因。%Koelling和Arbman将LAPW方法应用于Cu的计算\cite{JPF5-2041_1975}。Smr\v cka提出了二次APW方法\cite{Smrcka}。
 %与APW不同，这里$E_l$是指定范围内的能量参数，而非变量，
 
-为了提高LAPW方法的线性化程度(即提高基组的变分自由度)，在同一能量范围处理半芯态(接近价态的能量较高的芯态)和价态，可采用外加基函数(与$\vec k$无关)方案，这部分外加基函数称为局域轨道(local orbitals, LO)\cite{PRB43-6388_1991,Singh}。由此构造的基函数包含两个指定能量的径向波函数和其中一个能量导数，这样的基函数即LAPW-LO：
+为了提高LAPW方法的线性化程度(即提高基组的变分自由度)，在同一能量范围处理半芯态(接近价态的能量较高的芯态)和价态，可采用外加基函数(与$\vec k$无关)方案，这部分外加基函数称为局域轨道(local orbitals, LO)%\cite{PRB43-6388_1991,Singh}
+。由此构造的基函数包含两个指定能量的径向波函数和其中一个能量导数，这样的基函数即LAPW-LO：
 \begin{equation}
   \phi_{lm}^{LO}(\vec r)=[A_{lm}u_l(E_{1,l},r)+B_{lm}\dot u_l(E_{1,l},r)+C_{lm}u_l(E_{2,l},r)]Y_{lm}(\hat{\vec r})
   \label{eq:LAPW-LO}
@@ -2259,7 +2302,9 @@ PAW方法是\textrm{Bl\"ochl}于1994年独立提出来的一种计算方法\cite
 同时结合了赝势方法和APW方法的优点，达到平衡计算效率和精度的目的。PAW方法刚提出来的时候并未引起注意，直到1999年\textrm{Kresse}指明了PAW方法和USPP方法的密切关联，USPP方法的计算程序只要经过简单改造就能扩展为PAW方法，有力地推动了PAW方法的广泛应用\cite{PRB59-1758_1999}。现在PAW已经成为支持第一原理分子动力学(Ab initio Molecular Dynamics, AIMD)计算的最主要的方法。
 
 %\subsubsection{PAW方法的基本思想}
-与一般赝势方法不同，PAW方法的目标是全电子(all-electron)波函数\footnote{注意，“全电子”在\textrm{Bl\"ochl}原始文献\inlinecite{PRB50-17953_1994}中与“真实电子波函数”意义相近，强调电子在原子核附近的振荡行为，但并未严格区分价电子与芯电子;~而在\textrm{Kresse}的文献\inlinecite{PRB59-1758_1999}中则是明确指价电子波函数。%强调价电子波函数因与芯层电子正交而在原子核附近振荡;
+与一般赝势方法不同，PAW方法的目标是全电子(all-electron)波函数\footnote{注意，“全电子”在\textrm{Bl\"ochl}原始文献%\inlinecite{PRB50-17953_1994}
+中与“真实电子波函数”意义相近，强调电子在原子核附近的振荡行为，但并未严格区分价电子与芯电子;~而在\textrm{Kresse}的文献%\inlinecite{PRB59-1758_1999}
+中则是明确指价电子波函数。%强调价电子波函数因与芯层电子正交而在原子核附近振荡;
 此外，与“全电子”概念密切关联的是“全势(full-potential)”，两者在具体语境中有一定的区别，“全势”强调的是重现价电子感受到的势函数的效果。}，体系中全部电子构成\textrm{Hilbert}空间，价电子与芯层态彼此正交，因此价电子波函数在原子核附近振荡。
 \textrm{Bl\"ochl}假设全电子波函数$|\Psi\rangle$与赝波函数$|\tilde\Psi\rangle$满足线性变换，即满足：
 \begin{equation}
@@ -2280,7 +2325,7 @@ PAW方法是\textrm{Bl\"ochl}于1994年独立提出来的一种计算方法\cite
 其中$|\tilde p_i\rangle$是\textrm{MT}球内的投影函数，$i$表示原子位置$\vec R$、原子轨道($l,m$)和能级$\epsilon_k$的指标。\textrm{PAW}的波函数与赝波函数的关系，可以用图\ref{PAW_basic}表示。
 \begin{figure}[h!]
 \centering
-\includegraphics[height=2.35in,width=4.1in,viewport=0 0 1280 745,clip]{PAW-baseset.png}
+\includegraphics[height=2.35in,width=4.1in,viewport=0 0 1280 745,clip]{Figures/PAW-baseset.png}
 %\includegraphics[height=1.8in,width=4.in,viewport=30 210 570 440,clip]{PAW_projector.eps}
 \caption{\small \textrm{The analysis of PAW basic function.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{PAW_basic}
@@ -2614,8 +2659,10 @@ PAW方法是\textrm{Bl\"ochl}于1994年独立提出来的一种计算方法\cite
 %\label{PAW_projector}
 %\end{figure}
 %}
-\textrm{PAW}方法在提出后的很长一段时间内都没有引起注意，直到\textrm{G. Kresse}等\cite{PRB59-1758_1999}将\textrm{Bl\"ochl}的原始方案中电荷密度重新划分，%明确了\textrm{PAW}方法与\textrm{USPP}方法的内在联系后，
-特别是在\textrm{Kresse}等将\textrm{PAW}方法引入第一原理分子动力学模拟软件包\textrm{VASP~(Vienna Ab-initio Simulation Package)}\cite{VASP_manual}中后，才有力地推动了\textrm{PAW}方法的广泛应用。
+\textrm{PAW}方法在提出后的很长一段时间内都没有引起注意，直到\textrm{G. Kresse}等%\cite{PRB59-1758_1999}
+将\textrm{Bl\"ochl}的原始方案中电荷密度重新划分，%明确了\textrm{PAW}方法与\textrm{USPP}方法的内在联系后，
+特别是在\textrm{Kresse}等将\textrm{PAW}方法引入第一原理分子动力学模拟软件包\textrm{VASP~(Vienna Ab-initio Simulation Package)}%\cite{VASP_manual}
+中后，才有力地推动了\textrm{PAW}方法的广泛应用。
 
 \textrm{Kresse}等分析了\textrm{PAW}方法与\textrm{USPP}方法的密切关系，引入冻芯近似(\textrm{frozen core approximation})，用$\tilde n$、$\tilde n^1$和$n^1$描述价电子电荷密度；对于芯电荷与核电荷，分别用$n_c$、$\tilde n_c$和$n_{\mathrm{Z}c}$和$\tilde n_{\mathrm{Z}c}$表示，其中$n_c$和$\tilde n_c$是动芯近似下的芯电荷密度和赝芯电荷密度，$n_{\mathrm{Z}c}$是核电荷(点电荷$n^Z$)和冻芯电荷$n_c$的和
 \begin{displaymath}
@@ -2899,7 +2946,8 @@ PAW方法是\textrm{Bl\"ochl}于1994年独立提出来的一种计算方法\cite
 \subsection{DFT+$U$方法}
 传统的基于DFT的能带理论采用平均场近似，得到的是单粒子图像。由于带电粒子间的\textrm{Coulomb}作用，实际运动中的电子间必然存在相互排斥，\textrm{DFT}理论虽然通过引入电子交换-相关泛函来修正电子间的相互作用，但由于精确的交换-相关泛函的形式未知，所以如何更好地描述电子关联(electron correlation)是伴随着\textrm{DFT}与生俱来的重要问题。
 
-\textrm{Perdew}的研究表明LDA近似和精确密度泛函方法的重要差别\cite{PRL49-1691_1982}:~尽管交换-相关泛函的精确形式不知，但总能量泛函对电子数的依赖$E(N)$应该具有折线特征(见图\ref{exact-DFT}):~
+\textrm{Perdew}的研究表明LDA近似和精确密度泛函方法的重要差别%\cite{PRL49-1691_1982}
+:~尽管交换-相关泛函的精确形式不知，但总能量泛函对电子数的依赖$E(N)$应该具有折线特征(见图\ref{exact-DFT}):~
 	\begin{displaymath}
 		\dfrac{\Delta E}{\Delta N}=\left\{
 		\begin{aligned}
@@ -2911,20 +2959,25 @@ PAW方法是\textrm{Bl\"ochl}于1994年独立提出来的一种计算方法\cite
 
 \begin{figure}[h!]
 \centering
-\vspace*{-0.4in}
-\includegraphics[height=2.4in,width=2.8in,viewport=0 0 1000 880,clip]{Koopmans-condition_LDA-U.png}
+\vspace*{-0.1in}
+\includegraphics[height=2.4in,width=2.8in,viewport=0 0 1100 880,clip]{Figures/Koopmans-condition_LDA-U.png}
 \caption{\small \textrm{The dependence of the total energy on the number of electron is a series of straight-line segments.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{exact-DFT}
 \end{figure}
 
-Gunnarsson和Schonhammer\cite{PRL56-1968_1986}证明，单电子势的不连续对能带的带隙有很大的贡献。LDA泛函的另一个不足还在于，LDA计算得到的轨道能量(定义为能量$E$对轨道占据数$n_i$的导数，即$\varepsilon_i=\partial E/\partial n_i$)，不满足\textrm{Koopmans}定理\cite{Physica1-104_1933}，与实验或者严格计算得到的轨道能量差相去甚远。但是另一方面，LDA泛函得到的体系总能量一般与实验结果符合的较好。一个典型的例子就是\textrm{H}原子的计算，LDA计算的轨道能为$-0.54\,\mathrm{Ry}$(实际结果为$-1.0\,\mathrm{Ry}$)，总能量($-0.976\,\mathrm{Ry}$)则非常接近$-1.0\,\mathrm{Ry}$\cite{PRB37-9919_1988}。文献\inlinecite{PRB44-943_1991}提出通过对LDA势加入轨道校正克服LDA方法的不足(称为LDA+$U$方法)。LDA+$U$方法与\textrm{Andersen}掺杂模型\cite{PR124-41_1961}思想相同，对局域的{\textit d}\,或{\textit f}\,电子，采用模型Hamiltonian方法考虑$d$-$d$或$f$-$f$间相互作用(定域Coulomb相互作用$U$)，离域的{\textit s}\,和{\textit p}\,电子的运动用LDA近似描述。
+Gunnarsson和Schonhammer%\cite{PRL56-1968_1986}
+证明，单电子势的不连续对能带的带隙有很大的贡献。LDA泛函的另一个不足还在于，LDA计算得到的轨道能量(定义为能量$E$对轨道占据数$n_i$的导数，即$\varepsilon_i=\partial E/\partial n_i$)，不满足\textrm{Koopmans}定理\cite{Physica1-104_1933}，与实验或者严格计算得到的轨道能量差相去甚远。但是另一方面，LDA泛函得到的体系总能量一般与实验结果符合的较好。一个典型的例子就是\textrm{H}原子的计算，LDA计算的轨道能为$-0.54\,\mathrm{Ry}$(实际结果为$-1.0\,\mathrm{Ry}$)，总能量($-0.976\,\mathrm{Ry}$)则非常接近$-1.0\,\mathrm{Ry}$%\cite{PRB37-9919_1988}
+。%文献\inlinecite{PRB44-943_1991}提出
+通过对LDA势加入轨道校正，可以克服LDA方法的不足(称为LDA+$U$方法)。LDA+$U$方法与\textrm{Andersen}掺杂模型%\cite{PR124-41_1961}
+思想相同，对局域的{\textit d}\,或{\textit f}\,电子，采用模型Hamiltonian方法考虑$d$-$d$或$f$-$f$间相互作用(定域Coulomb相互作用$U$)，离域的{\textit s}\,和{\textit p}\,电子的运动用LDA近似描述。
 
 %在文献\inlinecite{Herring}中，
 \textrm{Herring}讨论了$U$值的物理意义:~含有$n$个3{\textit d}\,电子的原子中，如果定义两个原子间转移一个{\textit d}\,电子，即
 $$2(d^n)\rightarrow d^{n+1}+d^{n-1}$$
 能量的改变为$U$
 $$U=E(d^{n+1})+E(d^{n-1})-2E(d^n)$$
-在\textrm{DFT}框架下，\textrm{L(S)DA}是弱耦合的平均场(\textrm{mean-filed, MF})理论，对于{\textit d}\,电子数目发生变化的原子/离子体系，$d$-$d$电子间的相互作用可以表示为$E=UN(N-1)/2$\cite{PRB48-16929_1993}，将总能量中扣除LDA的$d$-$d$电子相互作用，再加上局域的电子间相互作用，可有
+在\textrm{DFT}框架下，\textrm{L(S)DA}是弱耦合的平均场(\textrm{mean-filed, MF})理论，对于{\textit d}\,电子数目发生变化的原子/离子体系，$d$-$d$电子间的相互作用可以表示为$E=UN(N-1)/2$%\cite{PRB48-16929_1993}
+，将总能量中扣除LDA的$d$-$d$电子相互作用，再加上局域的电子间相互作用，可有
 \begin{equation}
   E=E_{LDA}-UN(N-1)/2+\frac12U\sum_{i\neq j}n_in_j
   \label{eq:solid-251}
@@ -2936,8 +2989,8 @@ $$U=E(d^{n+1})+E(d^{n-1})-2E(d^n)$$
 \end{equation}
 \begin{figure}[h!]
 \centering
-\includegraphics[height=1.35in,width=0.92in,viewport=1 1 240 375,clip]{LDA_U-1.png}
-\includegraphics[height=1.35in,width=2.32in,viewport=110 210 545 455,clip]{LDA_U.pdf}
+\includegraphics[height=1.35in,width=0.92in,viewport=1 1 240 375,clip]{Figures/LDA_U-1.png}
+\includegraphics[height=1.35in,width=2.32in,viewport=110 210 545 455,clip]{Figures/LDA_U.pdf}
 \caption{\small \textrm{The meaning of $U$, when the Coulomb-interaction of each electron is taken into account.}}%(与文献\cite{EPJB33-47_2003}图1对比)
 \label{U_means}
 \end{figure}
@@ -3001,12 +3054,16 @@ $$U=E(d^{n+1})+E(d^{n-1})-2E(d^n)$$
   J=(F^2=F^4)/4
   \label{eq:solid-218}
 \end{equation}
-为了由$U$和$J$得到所有的Slater积分，只需要知道$F^4/F^2$\cite{PRB42-5459_1990}。
+为了由$U$和$J$得到所有的Slater积分，只需要知道$F^4/F^2$%\cite{PRB42-5459_1990}
+。
 
-LDA+$U$方法最重要的特征是具备了单电子势的不连续性。计算表明LDA+$U$方法对含有定域强Coulomb相互作用的体系是可靠的\cite{PRB48-16929_1993,JPCS56-1521_1995,EPL36-551_1996}。无论对含有近芯层的局域4{\textit f}\,电子的稀土金属离子还是对过渡金属的氧化物(金属的3{\textit d}\,电子与氧原子2{\textit p}\,轨道有很强的相互作用)体系都有效。尽管LDA+$U$方法只是通过参数$U$唯象地考虑电子间的关联效应，并未突破平均场近似框架，因此不足以描述金属-绝缘体的\textrm{Mott}转变和具有强关联的金属。但对诸如FeSi和LaCaO$_3$这类化合物，LDA+$U$已经能够给出有关于金属-绝缘体转变的有用信息\cite{JPCM9-767_1997}。甚至对含有5{\textit f}\,电子的化合物的研究也取得一定的成功\cite{PRB54-R3706_1996}。
+LDA+$U$方法最重要的特征是具备了单电子势的不连续性。计算表明LDA+$U$方法对含有定域强Coulomb相互作用的体系是可靠的%\cite{PRB48-16929_1993,JPCS56-1521_1995,EPL36-551_1996}
+。无论对含有近芯层的局域4{\textit f}\,电子的稀土金属离子还是对过渡金属的氧化物(金属的3{\textit d}\,电子与氧原子2{\textit p}\,轨道有很强的相互作用)体系都有效。尽管LDA+$U$方法只是通过参数$U$唯象地考虑电子间的关联效应，并未突破平均场近似框架，因此不足以描述金属-绝缘体的\textrm{Mott}转变和具有强关联的金属。但对诸如FeSi和LaCaO$_3$这类化合物，LDA+$U$已经能够给出有关于金属-绝缘体转变的有用信息\cite{JPCM9-767_1997}。甚至对含有5{\textit f}\,电子的化合物的研究也取得一定的成功%\cite{PRB54-R3706_1996}
+。
 
 \subsection{电子激发与GW近似}
-Landau的Fermi液体理论是研究群体激发和多体Fermi子体系物理性质的重要方法\cite{Landau}。Fermi液体的特征是准粒子分布$\varepsilon=\varepsilon(\vec k)$由体系总能量$E$对分布函数的变分，即
+Landau的Fermi液体理论是研究群体激发和多体Fermi子体系物理性质的重要方法%\cite{Landau}
+。Fermi液体的特征是准粒子分布$\varepsilon=\varepsilon(\vec k)$由体系总能量$E$对分布函数的变分，即
 \begin{equation}
   \frac{\delta E}{\delta n(\vec k)}=\varepsilon(\vec k)
   \label{eq:solid-219}
@@ -3022,7 +3079,7 @@ Landau的Fermi液体理论是研究群体激发和多体Fermi子体系物理性�
   \label{eq:solid-221}
 \end{equation}
 
-Green函数是研究Fermi液体的重要数学工具。对宏观体系，Green函数定义为\cite{Lifshitz}
+Green函数是研究Fermi液体的重要数学工具。对宏观体系，Green函数定义为%\cite{Lifshitz}
 \begin{equation}
 	\tilde G(x,x^{\prime})=-\mathrm{i}\langle T\hat\Psi(x)\hat\Psi^{\ast}(x^{\prime})\rangle
   \label{eq:solid-222}
@@ -3039,7 +3096,7 @@ Green函数是研究Fermi液体的重要数学工具。对宏观体系，Green�
 \end{equation}
 这里$\vec a$是晶体平移格矢。
 
-临近Green函数的极点，式\eqref{eq:solid-223}右面的$\delta$函数为0，所得积分-微分方程的本征值确定体系激发能谱\cite{Lifshitz,PR145-561_1966}
+临近Green函数的极点，式\eqref{eq:solid-223}右面的$\delta$函数为0，所得积分-微分方程的本征值确定体系激发能谱%\cite{Lifshitz,PR145-561_1966}
 \begin{equation}
 	-\delta^2\Phi_{\vec k}(\vec r,E)+\int\mathrm{d}\vec r^{\prime}\Sigma(\vec r,\vec r^{\prime};E)\Phi_{\vec k}(\vec r^{\prime},E)=\varepsilon_{\vec k}\Phi_{\vec k}(\vec r,E) 
   \label{eq:solid-225}
@@ -3051,11 +3108,13 @@ Green函数是研究Fermi液体的重要数学工具。对宏观体系，Green�
 	\tilde G(\vec r,\vec r^{\prime};E)=\sum_{\vec k}\frac{\Phi_{\vec k}(\vec r,E)\Phi_{\vec k}^{\ast}(\vec r^{\prime},E)}{E-\varepsilon_{\vec k}(E)+\mathrm{i}0\mathrm{sgn}E}
   \label{eq:solid-226}
 \end{equation}
-$\varepsilon_{\vec k}(E)$是体系中加入一个粒子引起的能量改变。如果将单个准粒子改变引起得能量变化$\varepsilon_{\vec k}(E)$定义为式\eqref{eq:solid-219}中的准粒子能量，对临近Fermi面的态，函数$\tilde G(\vec r,\vec r^{\prime};E)$在$E=\varepsilon_{\vec k}(E)$有极值。因此Green函数极值确定了多Fermi子体系的元激发能谱。一般说，因为和其他粒子相互作用，准粒子能量为复数。复数能量使得体系激发态的寿命有限$(\tau\sim1/|\mathrm{Im}\varepsilon|)$\cite{Landau-Lifshitz}。能量宽度由$\mathrm{Im}\varepsilon$确定。
+$\varepsilon_{\vec k}(E)$是体系中加入一个粒子引起的能量改变。如果将单个准粒子改变引起得能量变化$\varepsilon_{\vec k}(E)$定义为式\eqref{eq:solid-219}中的准粒子能量，对临近Fermi面的态，函数$\tilde G(\vec r,\vec r^{\prime};E)$在$E=\varepsilon_{\vec k}(E)$有极值。因此Green函数极值确定了多Fermi子体系的元激发能谱。一般说，因为和其他粒子相互作用，准粒子能量为复数。复数能量使得体系激发态的寿命有限$(\tau\sim1/|\mathrm{Im}\varepsilon|)$%\cite{Landau-Lifshitz}
+。能量宽度由$\mathrm{Im}\varepsilon$确定。
 
 %临近Fermi能级，$\mathrm{Im}\varepsilon_{\vec k}(E)\rightarrow0$，相应的$\mathrm{Im}\Sigma\rightarrow0$，于是解方程\eqref{eq:solid-225}得到$\mathrm{Re}\varepsilon_{\vec k}(E)$和实数形式的$\Sigma(\vec r,\vec r^{\prime};E)$和$\epsilon_{\vec k}(E)$。
 
-根据Hohenberg-Kohn定理，本征值$\Sigma(\vec r,\vec r^{\prime};E)$由体系基态确定，它也是电子密度的函数。Sham和Kohn建议可用局域电子密度近似表示$\Sigma(\vec r,\vec r^{\prime};E)$\cite{PR145-561_1966}：
+根据Hohenberg-Kohn定理，本征值$\Sigma(\vec r,\vec r^{\prime};E)$由体系基态确定，它也是电子密度的函数。Sham和Kohn建议可用局域电子密度近似表示$\Sigma(\vec r,\vec r^{\prime};E)$%\cite{PR145-561_1966}
+：
 \begin{equation}
   \Sigma(\vec r,\vec r^{\prime};E)=V_C(\vec r)\delta(\vec r-\vec r^{\prime})+\Sigma_0(\vec r-\vec r^{\prime};E-V_C(\vec r_0);\rho(\vec r_0))
   \label{eq:solid-227}
@@ -3064,7 +3123,8 @@ $\varepsilon_{\vec k}(E)$是体系中加入一个粒子引起的能量改变。�
 
 对本征函数$\Phi_{\vec k}$作近似
 $$\Phi_{\vec k}(\vec r,E)=A(\vec k)\exp[\mathrm{i}\vec p(\vec r)\vec r]$$
-并认为$A$和电子动量与$\vec r$无关，将式\eqref{eq:solid-225}称为类似Kohn-Sham方程的表达式\cite{JPC4-2064_1971}，
+并认为$A$和电子动量与$\vec r$无关，将式\eqref{eq:solid-225}称为类似Kohn-Sham方程的表达式%\cite{JPC4-2064_1971}
+，
 \begin{equation}
   [-\dfrac12\nabla^2+V_C(\vec r)+\Sigma_{xc}(\rho(\vec r),E)]\Phi_{\vec k}(\vec r,E)=\varepsilon_{\vec k}(\vec r,E)
   \label{eq:solid-228}
@@ -3073,7 +3133,9 @@ $$\Phi_{\vec k}(\vec r,E)=A(\vec k)\exp[\mathrm{i}\vec p(\vec r)\vec r]$$
 
 因此基于DFT的能带计算，如果充分考虑交换-相关效应，可以计算多电子体系的元激发能量。注意，采用单电子近似，要求能带比较宽，即中心位于不同格点的波函数有较大的重叠，电子间相互作用不是很强。
 
-Hedin和Lundqvist详细回顾了用Green函数技术解决电子相关的问题\cite{Hedin-Lundqvist}。在单粒子近似下的Green函数，准粒子与谱函数的峰联系在一起。如果峰足够尖锐，表明存在一个明确的准粒子能量，对一般的非均匀体系，准粒子能量和波函数可以通过解Dyson方程\eqref{eq:solid-225}求得。对于准粒子问题，核心问题是对自能算符$\Sigma(\vec r,\vec r^{\prime};E)$的足够好的近似。常用的方法是GW近似\cite{PR139-A796_1965}，自能用屏蔽相互作用$W$计算到最低阶。
+Hedin和Lundqvist详细回顾了用Green函数技术解决电子相关的问题%\cite{Hedin-Lundqvist}
+。在单粒子近似下的Green函数，准粒子与谱函数的峰联系在一起。如果峰足够尖锐，表明存在一个明确的准粒子能量，对一般的非均匀体系，准粒子能量和波函数可以通过解Dyson方程\eqref{eq:solid-225}求得。对于准粒子问题，核心问题是对自能算符$\Sigma(\vec r,\vec r^{\prime};E)$的足够好的近似。常用的方法是GW近似%\cite{PR139-A796_1965}
+，自能用屏蔽相互作用$W$计算到最低阶。
 \begin{equation}
 	\Sigma(\vec r,\vec r^{\prime};E)=\dfrac{\mathrm{i}}{2\pi}\int_{-\infty}^{\infty}\mathrm{d}E^{\prime}\tilde G(\vec r,\vec r^{\prime};E+E^{\prime})W(\vec r,\vec r^{\prime};E^{\prime})
   \label{eq:solid-229}
@@ -3128,7 +3190,8 @@ $E_c$自能的相关部分，
   \end{split}
   \label{eq:solid-237}
 \end{equation}
-其中$W_c^{\pm}(\vec r,\vec r^{\prime};E)=\dfrac{\mathrm{i}}{2\pi}\int_{-\infty}^{+\infty}\mathrm{d}E^{\prime}\frac{W_c(\vec r,\vec r^{\prime};E^{\prime})}{E+E^{\prime}\pm i\delta}$。于是$\Sigma(\vec r,\vec r^{\prime};E)$可以记作\cite{JPCM9-767_1997}，
+其中$W_c^{\pm}(\vec r,\vec r^{\prime};E)=\dfrac{\mathrm{i}}{2\pi}\int_{-\infty}^{+\infty}\mathrm{d}E^{\prime}\frac{W_c(\vec r,\vec r^{\prime};E^{\prime})}{E+E^{\prime}\pm i\delta}$。于是$\Sigma(\vec r,\vec r^{\prime};E)$可以记作%\cite{JPCM9-767_1997}
+，
 \begin{displaymath}
   \Sigma(\vec r,\vec r^{\prime};E)=-\sum_{kn}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r^{\prime})W_0(\vec r,\vec r^{\prime};E-E_{kn})
 \end{displaymath}
@@ -3141,135 +3204,139 @@ $E_c$自能的相关部分，
 \end{displaymath}
 这样的GWA近似的自能与Hartree-Fock方法具有相同的形式，但是自能是能量的函数且因为包含相关作用，因此也依赖于未占据态。GWA可以看作是包含动态屏蔽Coulomb势$W_0$的推广Hartree-Fock方法，注意这里的$W_0$与动态屏蔽势$W$不同。
 
-在各种能带计算方法中引入GW近似，包括赝势方法\cite{PRB34-5390_1986}，LMTO-TB方法\cite{PRL74-3221_1995}。GWA校正主要应用于简单金属和过渡金属体系，但由于计算过程比较复杂所以目前还没有广泛应用到复杂体系的计算中。GWA校正的另一个问题是计算屏蔽相互作用所需的响应函数，要借助LDA得到的波函数和能带来计算得到\cite{JPCM9-767_1997}。但是这样的方法只适用于电子相关较小的体系(比如绝缘体或者半导体)；对电子强相关体系，则需要采用比LDA近似更好的Hamiltonian，一般可以通过自洽迭代来计算自能\cite{PRL74-3221_1995}。
+在各种能带计算方法中引入GW近似，包括赝势方法%\cite{PRB34-5390_1986}
+，LMTO-TB方法%\cite{PRL74-3221_1995}
+。GWA校正主要应用于简单金属和过渡金属体系，但由于计算过程比较复杂所以目前还没有广泛应用到复杂体系的计算中。GWA校正的另一个问题是计算屏蔽相互作用所需的响应函数，要借助LDA得到的波函数和能带来计算得到%\cite{JPCM9-767_1997}
+。但是这样的方法只适用于电子相关较小的体系(比如绝缘体或者半导体)；对电子强相关体系，则需要采用比LDA近似更好的Hamiltonian，一般可以通过自洽迭代来计算自能%\cite{PRL74-3221_1995}
+。
 
-\subsection{LDA+$U$和GWA校正的关系$^\ast$}
-尽管GWA是由多体微扰理论导出的最简单的自能近似，但是计算量已经很大。GWA和LDA+$U$可以分别看作包含依赖于频率和轨道屏蔽Coulomb作用的Hartree-Fock方法。至少对含有局域的{\textit d}\,或{\textit f}\,轨道的过渡金属和稀土金属离子，LDA+$U$可以看作是对GWA更粗略的近似\cite{JPCM9-767_1997}。
-
-LDA+$U$是针对包含在离域态中的定域态轨道的自能校正，定域态的强Coulomb相关用参数$U$校正，而离域态可以用LDA很好的描述。为了确定LDA+$U$和GWA之间的关系，对态$\psi_d$，考虑GWA中自能的相关部分
-\begin{equation}
-  \begin{split}
-    \langle\psi_d|\Sigma_c(E_d)|\psi_d\rangle=&\langle\psi_d\psi_d|W_c^-|\psi_d\psi_d\rangle\\
-    &+\sum_{kn\neq d}^{\mathrm{occ}}\langle\psi_d\psi_{kn}|W_c^-(E_d-E_{kn})|\psi_{kn}\psi_d\rangle\\
-    &+\sum_{kn}^{\mathrm{unocc}}\langle\psi_d\psi_{kn}|W_c^+(E_d-E_{kn})|\psi_{kn}\psi_d\rangle
-  \end{split}
-  \label{eq:solid-238}
-\end{equation}
-严格地说，自能应该是$\tilde E_d=E_d+$自能校正。如果$\psi_d$是局域的而且能量与其他态很好的分离，则式\eqref{eq:solid-238}第一项比剩下的其余项大得多，最后一项含未占据的$\psi_d$态，但因为这些项与占据态正交，因此这一项比第一项小得多。可作近似\cite{JPCM9-767_1997}
-\begin{equation}
-  \langle\psi_d|\Sigma_c(E_d)|\psi_d\rangle\approx\langle\psi_d\psi_d|W_c^-(0)|\psi_d\psi_d\rangle=-\frac12\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle
-  \label{eq:solid-239}
-\end{equation}
-将屏蔽势关联部分写成谱函数表象，
-\begin{equation}
-	W_c(E)=\int_{-\infty}^0\mathrm{d}E^{\prime}\frac{B(E^{\prime})}{E-E^{\prime}-i\delta}+\int_0^{\infty}\mathrm{d}E^{\prime}\frac{B(E^{\prime})}{E-E^{\prime}+i\delta}
-  \label{eq:solid-240}
-\end{equation}
-这里$B(E)=-\dfrac1{\pi}W_c(E)\mathrm{sgn}(E)$。
-$W_c$是$E$的偶函数，因此$B(E)$是奇函数，因此$W_c^-(0)=-1/2W_c(0)$，类似的对未占据的{\textit d}\,态，有$+1/2\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle$，因此能量差为
-\begin{equation}
-  \begin{split}
-	  \Delta&=E_2^{\mathrm{HF}}-E_1^{\mathrm{HF}}+\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle\\
-    &=\langle\psi_d\psi_d|V|\psi_d\psi_d\rangle+\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle\\
-    &=\langle\psi_d\psi_d|W(0)|\psi_d\psi_d\rangle
-  \end{split}
-  \label{eq:solid-241}
-\end{equation}
-这符合屏蔽Coulomb相互作用$\Delta=U\approx W(0)$。
-
-上述近似中，局域态的GW自能为
-\begin{equation}
-  \Sigma(\vec r,\vec r^{\prime};E_d)=\Sigma_x(\vec r,\vec r^{\prime})+\sum_{kn=d}\psi(\vec r)\psi_{kn}^{\ast}(\vec r^{\prime})W_c^0(\vec r,\vec r^{\prime};E_d)
-  \label{eq:solid-242}
-\end{equation}
-这里$$W_c^0(\vec r,\vec r^{\prime};E)=-\frac12W_c(\vec r,\vec r^{\prime};0)[\theta(\mu-E_d)-\theta(E_d-\mu)]$$
-LDA的自能校正
-\begin{equation}
-  \Delta\Sigma(\vec r,\vec r^{\prime};E_d)=\Sigma(\vec r,\vec r^{\prime};E_d)-V_{xc}^{LDA}(\vec r)\delta(\vec r-\vec r^{\prime})
-  \label{eq:solid-243}
-\end{equation}
-应该与LDA+$U$方法的$U$值相等。按照LDA+$U$思想，将空间分为定域部分$\phi_m$(一般是{\textit d}\,和{\textit f}\,态)和离域部分$\psi_{kn}$
-$$\delta(\vec r-\vec r^{\prime})=\sum_m\phi_m(\vec r)\phi_m^{\ast}(\vec r^{\prime})+\sum_{kn}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r^{\prime})$$
-自能校正可以写成
-\begin{equation}
-  \begin{split}
-    \Delta(\vec r,\vec r^{\prime};E_d)=&\sum_{mm^{\prime}}\phi_m(\vec r)\Delta\Sigma_{mm^{\prime}}(E_d)\phi_{m^{\prime}}^{\ast}(\vec r^{\prime})+\sum_{knn^{\prime}}\psi_{kn}(\vec r)\Delta\Sigma_{nn^{\prime}}(E_d)\psi_{kn}^{\ast}(\vec r^{\prime})\\
-    &+\sum_{knm}\psi_{kn}(\vec r)\delta\Sigma_{nm}(\vec k,E_d)\phi_m^{\ast}(\vec r^{\prime})+\sum_{kmn}\phi_m(\vec r)\Delta\Sigma_{mn}(\vec k,E_d)\psi_{kn}^{\ast}(\vec r^{\prime})
-  \end{split}
-  \label{eq:solid-244}
-\end{equation}
-其中第一项是主要的，有近似
-$$\Delta\Sigma(\vec r,\vec r;E_d)\approx\sum_{mm^{\prime}}\phi_m(\vec r)\Delta\Sigma_{mm^{\prime}}(E_d)\phi_{m^{\prime}}^{\ast}(\vec r^{\prime})$$
-这里$$\Delta\Sigma_{mm^{\prime}}(E_d)=\langle\phi_m|\Sigma_x-V_{xc}|\phi_m\rangle+\sum_{m^{\prime}m^{\prime\prime}}\langle m,m^{\prime\prime}|W_c^0|m^{\prime\prime\prime},m^{\prime}\rangle n_{m^{\prime\prime},m^{\prime\prime\prime}}$$
-这里$$n_{m^{\prime\prime},m^{\prime\prime\prime}}=\sum_{kn=d}\langle\phi_{m^{\prime\prime}}|\psi_{kn}\rangle\langle\psi_{kn}|\phi_{m^{\prime\prime\prime}}\rangle$$
-注意到选择的$\phi_m$是原子内的局域轨道，剩下的自能很小，可以包含在单电子项中。
-
-假设只有一个{\it d}\,轨道$\psi_{m\sigma}$的{\it d}\,离子，根据上述近似，局域态的GWA自能为
-\begin{equation}
-  \Sigma(\vec r,\vec r^{\prime};E_{m\sigma})=\Sigma_x(\vec r,\vec r^{\prime})+\sum_{m^{\prime}\omega^{\prime}}\psi_{m^{\prime}\omega^{\prime}}(\vec r)\psi_{m^{\prime}\sigma^{\prime}}^{\ast}(\vec r^{\prime})W_c^0(\vec r,\vec r^{\prime};E_{m\sigma})
-  \label{eq:solid-245}
-\end{equation}
-这里$$W_c^0(\vec r,\vec r^{\prime};E_{m\sigma})=-\frac12W_c(\vec r,\vec r^{\prime};0)[\theta(\mu-E_{m\omega})-\theta(E_{m\sigma}-\mu)]$$
-GWA中的电子-电子相互作用的总势能的矩阵元可以写成
-\begin{equation}
-  \begin{split}
-	  \langle\psi_{m\sigma}&|V_{\mathrm{H}}+\Sigma_x+\Sigma_c|\psi_{m\sigma}\rangle\\
-	  =&\sum_{m^{\prime}\sigma^{\prime}}^{\mathrm{occ}}\iint\mathrm{d}\vec rd\vec r^{\prime}\psi_{m\omega}^{\ast}(\vec r)\psi_{m\omega}(\vec r)V(\vec r-\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}^{\ast}(\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}(\vec r^{\prime})\\
-	  &-\sum_{m^{\prime}}^{\mathrm{occ}}\iint\mathrm{d}\vec rd\vec r^{\prime}\psi_{m\omega}^{\ast}(\vec r)\psi_{m^{\prime}\omega^{\prime}}(\vec r)V(\vec r-\vec r^{\prime})\psi_{m\sigma}^{\ast}(\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}(\vec r^{\prime})\\
-    &+\left(\frac12-n_{m\sigma}\right)\sum_{m^{\prime}}\iint\mathrm{d}\vec rd\vec r^{\prime}\psi_{m\omega}^{\ast}(\vec r)\psi_{m^{\prime}\omega^{\prime}}(\vec r)W_c(\vec r,\vec r^{\prime};0)\psi_{m\sigma}^{\ast}(\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}(\vec r^{\prime})
-  \end{split}
-  \label{eq:solid-246}
-\end{equation}
-这里$n_{m\sigma}$是$m\sigma$轨道占据状态，如$\mu-E_{m\sigma}>0$则$n_{m\sigma}=1$；$\mu-E_{m\sigma}<0$，有$n_{m\sigma}=0$。上述矩阵元可以写成
-$$V_{m\sigma}^{\mathrm{GWA}}=\sum_{m^{\prime}\sigma^{\prime}}U_{mm^{\prime}}^0n_{m^{\prime}\sigma^{\prime}}-U_{mm}^0n_{m\sigma}-\sum_{m^{\prime}\neq m}J_{mm^{\prime}}n_{m^{\prime}\sigma}+\left(\frac12-n_{m\sigma}\right)\sum_{m^{\prime}}W_{mm^{\prime}}$$
-这里$U_{mm^{\prime}}^0$是未屏蔽的Coulomb相互作用矩阵元。$J_{mm^{\prime}}$是交换矩阵，$W_{mm^{\prime}}$是交换势$W_c(\vec r,\vec r^{\prime};0)$矩阵元。将屏蔽参数定义为$W=-\sum\limits_{m^{\prime}}W_{mm^{\prime}}$，最终GWA的势能矩阵元表达式为\cite{JPCM9-767_1997}
-\begin{equation}
-	V_{m\sigma}^{\mathrm{GWA}}=\sum_{m^{\prime}\sigma^{\prime}}U_{mm^{\prime}}^0n_{m^{\prime}\sigma^{\prime}}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^{\prime}\neq m}J_{mm^{\prime}}n_{m^{\prime}\sigma}-\frac12W
-  \label{eq:solid-247}
-\end{equation}
-为了将LDA的校正写成GWA形式，必须将LSDA的势能矩阵元写成上述相似的形式，因为LSDA并非由轨道-轨道相互作用导出，而由类似于均匀电子气的处理方式，用与Coulomb相互作用能有关的电荷密度计算得到的与轨道无关的有效局域势，无法严格处理。{\textit d}\,电子的相互作用能作为总的{\textit d}\,电子数$N$的函数，$E_{\mathrm{LSDA}}[\rho(\vec r)]=E_{\mathrm{LSDA}}[N|\psi_{m\sigma}(\vec r)|^2]$。已知LSDA中单电子本征能不是很准确，但是总能量比较准确，于是假设Hartree-Fock计算是好的近似
-\begin{equation}
-  \begin{split}
-	  E_{\mathrm{LSDA}}[\rho_{\sigma}(\vec r)]&=E_{\mathrm{LSDA}}[N_{\sigma}|\psi_{m\sigma}(\vec r)|^2]\\
-   &=\frac12F^0N(N-1)-\frac14JN(N-2)\frac14J(N_{\uparrow}-N_{\downarrow})^2
- \end{split}
-  \label{eq:solid-248}
-\end{equation}
-这里$F^0$是第一Slater积分，$J$是交换能参数，$N_{\sigma}=\sum\nolimits_mn_{m\sigma}$，$N=N_{\uparrow}+N_{\downarrow}$
-
-LSDA的电子相互作用势能是总能量对电荷密度$\rho(\vec r)$的变分导数，相互作用能作为总的{\it d}\,电子总数$N_{\sigma}$的变分导数为：
-\begin{equation}
-  \begin{split}
-	  \frac{\partial E_{\mathrm{LSDA}}[N_{\sigma}|\psi_{m\sigma}(\vec r)|^2]}{\partial N_{\sigma}}&=\int\mathrm{d}\vec r\frac{\delta E_{\mathrm{LSDA}}[\rho(\vec r)]}{\delta\rho_{\sigma}(\vec r)}\frac{\partial\rho_{\sigma}(\vec r)}{\partial N_{\sigma}}\\
-	  &=\int\mathrm{d}\vec rV_{\mathrm{LSDA}}^{\sigma}(\rho(\vec r))|\psi_{m\sigma}(\vec r)|^2\\
-    &=F^0N-\frac12(F^0-J)-JN_{\sigma}
-  \end{split}
-  \label{eq:solid-257}
-\end{equation}
-由此可有LSDA的势能矩阵元为$V_{m\sigma}^{\mathrm{LSDA}}=F^0N-\frac12(F^0-J)-JN_{\sigma}$。
-GWA对LSDA的势能校正为\cite{JPCM9-767_1997}
-\begin{equation}
-  \begin{split}
-	  \delta V_{m\sigma}=&V_{m\sigma}^{\mathrm{GWA}}-V_{m\sigma}^{\mathrm{LSDA}}\\
-    =&\sum_{m^{\prime}\sigma^{\prime}}U_{mm^{\prime}}^0n_{m^{\prime}\sigma^{\prime}}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^{\prime}\neq m}j_{mm^{\prime}}n_{m^{\prime}\sigma}-\frac12W\\
-    &-F^0\sum_{m^{\prime}\sigma^{\prime}}n_{m^{\prime}\sigma^{\prime}}+J\sum_mn_{m\sigma}+\frac12(F^0-J)\\
-    =&\sum_{m^{\prime}\sigma^{\prime}}(U_{mm^{\prime}}^0-F^0)n_{m^{\prime}\sigma^{\prime}}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^{\prime}\neq m}j_{mm^{\prime}}n_{m^{\prime}\sigma}\\
-    &-\frac12W+J\sum_mn_{n\sigma}+\frac12(F^0-J)
-  \end{split}
-  \label{eq:solid-249}
-\end{equation}
-差值$U_{mm^{\prime}}^0-F^0$与Slater积分$F^0$无关(只与Slater积分$F^k$且$k\neq0$有关)，而且有$U_{mm^{\prime}}^0-F^0=U_{mm^{\prime}}-U$，这里$U=F^0-W$是屏蔽Coulomb参数，$U_{mm^{\prime}}$是屏蔽Coulomb矩阵元。
-\begin{equation}
-  \begin{split}
-	  \delta V_{m\sigma}=&V_{m\sigma}^{\mathrm{GWA}}-V_{m\sigma}^{\mathrm{LSDA}}\\
-    =&\sum_{m^{\prime}}U_{mm^{\prime}}n_{m^{\prime}-\sigma}+\sum_{m^{\prime}\neq m}(U_{mm^{\prime}}-J_{mm^{\prime}})n_{m^{\prime}\sigma}\\
-    &-U(N-\frac12)+J(N_{\sigma}-\frac12)
-  \end{split}
-  \label{eq:solid-250}
-\end{equation}
-如果占据矩阵是对角化的，式\eqref{eq:solid-250}等价于LDA+$U$势校正\eqref{eq:solid-215}。GWA和LDA+$U$的本质差别在于计算屏蔽Coulomb势参数$U$，在LDA+$U$中，$U$是通过构造LSDA超晶胞计算的，在GWA中则是通过计算响应函数得到的。
-%\newpage
-%\bibliographystyle{mythesis}
-%%  \phantomsection\addcontentsline{toc}{section}{bibliography}
-%  {\small\bibliography{bib/Myref}}
-%%  \nocite{*}
+%\subsection{LDA+$U$和GWA校正的关系$^\ast$}
+%尽管GWA是由多体微扰理论导出的最简单的自能近似，但是计算量已经很大。GWA和LDA+$U$可以分别看作包含依赖于频率和轨道屏蔽Coulomb作用的Hartree-Fock方法。至少对含有局域的{\textit d}\,或{\textit f}\,轨道的过渡金属和稀土金属离子，LDA+$U$可以看作是对GWA更粗略的近似\cite{JPCM9-767_1997}。
+%
+%LDA+$U$是针对包含在离域态中的定域态轨道的自能校正，定域态的强Coulomb相关用参数$U$校正，而离域态可以用LDA很好的描述。为了确定LDA+$U$和GWA之间的关系，对态$\psi_d$，考虑GWA中自能的相关部分
+%\begin{equation}
+%  \begin{split}
+%    \langle\psi_d|\Sigma_c(E_d)|\psi_d\rangle=&\langle\psi_d\psi_d|W_c^-|\psi_d\psi_d\rangle\\
+%    &+\sum_{kn\neq d}^{\mathrm{occ}}\langle\psi_d\psi_{kn}|W_c^-(E_d-E_{kn})|\psi_{kn}\psi_d\rangle\\
+%    &+\sum_{kn}^{\mathrm{unocc}}\langle\psi_d\psi_{kn}|W_c^+(E_d-E_{kn})|\psi_{kn}\psi_d\rangle
+%  \end{split}
+%  \label{eq:solid-238}
+%\end{equation}
+%严格地说，自能应该是$\tilde E_d=E_d+$自能校正。如果$\psi_d$是局域的而且能量与其他态很好的分离，则式\eqref{eq:solid-238}第一项比剩下的其余项大得多，最后一项含未占据的$\psi_d$态，但因为这些项与占据态正交，因此这一项比第一项小得多。可作近似\cite{JPCM9-767_1997}
+%\begin{equation}
+%  \langle\psi_d|\Sigma_c(E_d)|\psi_d\rangle\approx\langle\psi_d\psi_d|W_c^-(0)|\psi_d\psi_d\rangle=-\frac12\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle
+%  \label{eq:solid-239}
+%\end{equation}
+%将屏蔽势关联部分写成谱函数表象，
+%\begin{equation}
+%	W_c(E)=\int_{-\infty}^0\mathrm{d}E^{\prime}\frac{B(E^{\prime})}{E-E^{\prime}-i\delta}+\int_0^{\infty}\mathrm{d}E^{\prime}\frac{B(E^{\prime})}{E-E^{\prime}+i\delta}
+%  \label{eq:solid-240}
+%\end{equation}
+%这里$B(E)=-\dfrac1{\pi}W_c(E)\mathrm{sgn}(E)$。
+%$W_c$是$E$的偶函数，因此$B(E)$是奇函数，因此$W_c^-(0)=-1/2W_c(0)$，类似的对未占据的{\textit d}\,态，有$+1/2\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle$，因此能量差为
+%\begin{equation}
+%  \begin{split}
+%	  \Delta&=E_2^{\mathrm{HF}}-E_1^{\mathrm{HF}}+\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle\\
+%    &=\langle\psi_d\psi_d|V|\psi_d\psi_d\rangle+\langle\psi_d\psi_d|W_c(0)|\psi_d\psi_d\rangle\\
+%    &=\langle\psi_d\psi_d|W(0)|\psi_d\psi_d\rangle
+%  \end{split}
+%  \label{eq:solid-241}
+%\end{equation}
+%这符合屏蔽Coulomb相互作用$\Delta=U\approx W(0)$。
+%
+%上述近似中，局域态的GW自能为
+%\begin{equation}
+%  \Sigma(\vec r,\vec r^{\prime};E_d)=\Sigma_x(\vec r,\vec r^{\prime})+\sum_{kn=d}\psi(\vec r)\psi_{kn}^{\ast}(\vec r^{\prime})W_c^0(\vec r,\vec r^{\prime};E_d)
+%  \label{eq:solid-242}
+%\end{equation}
+%这里$$W_c^0(\vec r,\vec r^{\prime};E)=-\frac12W_c(\vec r,\vec r^{\prime};0)[\theta(\mu-E_d)-\theta(E_d-\mu)]$$
+%LDA的自能校正
+%\begin{equation}
+%  \Delta\Sigma(\vec r,\vec r^{\prime};E_d)=\Sigma(\vec r,\vec r^{\prime};E_d)-V_{xc}^{LDA}(\vec r)\delta(\vec r-\vec r^{\prime})
+%  \label{eq:solid-243}
+%\end{equation}
+%应该与LDA+$U$方法的$U$值相等。按照LDA+$U$思想，将空间分为定域部分$\phi_m$(一般是{\textit d}\,和{\textit f}\,态)和离域部分$\psi_{kn}$
+%$$\delta(\vec r-\vec r^{\prime})=\sum_m\phi_m(\vec r)\phi_m^{\ast}(\vec r^{\prime})+\sum_{kn}\psi_{kn}(\vec r)\psi_{kn}^{\ast}(\vec r^{\prime})$$
+%自能校正可以写成
+%\begin{equation}
+%  \begin{split}
+%    \Delta(\vec r,\vec r^{\prime};E_d)=&\sum_{mm^{\prime}}\phi_m(\vec r)\Delta\Sigma_{mm^{\prime}}(E_d)\phi_{m^{\prime}}^{\ast}(\vec r^{\prime})+\sum_{knn^{\prime}}\psi_{kn}(\vec r)\Delta\Sigma_{nn^{\prime}}(E_d)\psi_{kn}^{\ast}(\vec r^{\prime})\\
+%    &+\sum_{knm}\psi_{kn}(\vec r)\delta\Sigma_{nm}(\vec k,E_d)\phi_m^{\ast}(\vec r^{\prime})+\sum_{kmn}\phi_m(\vec r)\Delta\Sigma_{mn}(\vec k,E_d)\psi_{kn}^{\ast}(\vec r^{\prime})
+%  \end{split}
+%  \label{eq:solid-244}
+%\end{equation}
+%其中第一项是主要的，有近似
+%$$\Delta\Sigma(\vec r,\vec r;E_d)\approx\sum_{mm^{\prime}}\phi_m(\vec r)\Delta\Sigma_{mm^{\prime}}(E_d)\phi_{m^{\prime}}^{\ast}(\vec r^{\prime})$$
+%这里$$\Delta\Sigma_{mm^{\prime}}(E_d)=\langle\phi_m|\Sigma_x-V_{xc}|\phi_m\rangle+\sum_{m^{\prime}m^{\prime\prime}}\langle m,m^{\prime\prime}|W_c^0|m^{\prime\prime\prime},m^{\prime}\rangle n_{m^{\prime\prime},m^{\prime\prime\prime}}$$
+%这里$$n_{m^{\prime\prime},m^{\prime\prime\prime}}=\sum_{kn=d}\langle\phi_{m^{\prime\prime}}|\psi_{kn}\rangle\langle\psi_{kn}|\phi_{m^{\prime\prime\prime}}\rangle$$
+%注意到选择的$\phi_m$是原子内的局域轨道，剩下的自能很小，可以包含在单电子项中。
+%
+%假设只有一个{\it d}\,轨道$\psi_{m\sigma}$的{\it d}\,离子，根据上述近似，局域态的GWA自能为
+%\begin{equation}
+%  \Sigma(\vec r,\vec r^{\prime};E_{m\sigma})=\Sigma_x(\vec r,\vec r^{\prime})+\sum_{m^{\prime}\omega^{\prime}}\psi_{m^{\prime}\omega^{\prime}}(\vec r)\psi_{m^{\prime}\sigma^{\prime}}^{\ast}(\vec r^{\prime})W_c^0(\vec r,\vec r^{\prime};E_{m\sigma})
+%  \label{eq:solid-245}
+%\end{equation}
+%这里$$W_c^0(\vec r,\vec r^{\prime};E_{m\sigma})=-\frac12W_c(\vec r,\vec r^{\prime};0)[\theta(\mu-E_{m\omega})-\theta(E_{m\sigma}-\mu)]$$
+%GWA中的电子-电子相互作用的总势能的矩阵元可以写成
+%\begin{equation}
+%  \begin{split}
+%	  \langle\psi_{m\sigma}&|V_{\mathrm{H}}+\Sigma_x+\Sigma_c|\psi_{m\sigma}\rangle\\
+%	  =&\sum_{m^{\prime}\sigma^{\prime}}^{\mathrm{occ}}\iint\mathrm{d}\vec rd\vec r^{\prime}\psi_{m\omega}^{\ast}(\vec r)\psi_{m\omega}(\vec r)V(\vec r-\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}^{\ast}(\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}(\vec r^{\prime})\\
+%	  &-\sum_{m^{\prime}}^{\mathrm{occ}}\iint\mathrm{d}\vec rd\vec r^{\prime}\psi_{m\omega}^{\ast}(\vec r)\psi_{m^{\prime}\omega^{\prime}}(\vec r)V(\vec r-\vec r^{\prime})\psi_{m\sigma}^{\ast}(\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}(\vec r^{\prime})\\
+%    &+\left(\frac12-n_{m\sigma}\right)\sum_{m^{\prime}}\iint\mathrm{d}\vec rd\vec r^{\prime}\psi_{m\omega}^{\ast}(\vec r)\psi_{m^{\prime}\omega^{\prime}}(\vec r)W_c(\vec r,\vec r^{\prime};0)\psi_{m\sigma}^{\ast}(\vec r^{\prime})\psi_{m^{\prime}\sigma^{\prime}}(\vec r^{\prime})
+%  \end{split}
+%  \label{eq:solid-246}
+%\end{equation}
+%这里$n_{m\sigma}$是$m\sigma$轨道占据状态，如$\mu-E_{m\sigma}>0$则$n_{m\sigma}=1$；$\mu-E_{m\sigma}<0$，有$n_{m\sigma}=0$。上述矩阵元可以写成
+%$$V_{m\sigma}^{\mathrm{GWA}}=\sum_{m^{\prime}\sigma^{\prime}}U_{mm^{\prime}}^0n_{m^{\prime}\sigma^{\prime}}-U_{mm}^0n_{m\sigma}-\sum_{m^{\prime}\neq m}J_{mm^{\prime}}n_{m^{\prime}\sigma}+\left(\frac12-n_{m\sigma}\right)\sum_{m^{\prime}}W_{mm^{\prime}}$$
+%这里$U_{mm^{\prime}}^0$是未屏蔽的Coulomb相互作用矩阵元。$J_{mm^{\prime}}$是交换矩阵，$W_{mm^{\prime}}$是交换势$W_c(\vec r,\vec r^{\prime};0)$矩阵元。将屏蔽参数定义为$W=-\sum\limits_{m^{\prime}}W_{mm^{\prime}}$，最终GWA的势能矩阵元表达式为\cite{JPCM9-767_1997}
+%\begin{equation}
+%	V_{m\sigma}^{\mathrm{GWA}}=\sum_{m^{\prime}\sigma^{\prime}}U_{mm^{\prime}}^0n_{m^{\prime}\sigma^{\prime}}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^{\prime}\neq m}J_{mm^{\prime}}n_{m^{\prime}\sigma}-\frac12W
+%  \label{eq:solid-247}
+%\end{equation}
+%为了将LDA的校正写成GWA形式，必须将LSDA的势能矩阵元写成上述相似的形式，因为LSDA并非由轨道-轨道相互作用导出，而由类似于均匀电子气的处理方式，用与Coulomb相互作用能有关的电荷密度计算得到的与轨道无关的有效局域势，无法严格处理。{\textit d}\,电子的相互作用能作为总的{\textit d}\,电子数$N$的函数，$E_{\mathrm{LSDA}}[\rho(\vec r)]=E_{\mathrm{LSDA}}[N|\psi_{m\sigma}(\vec r)|^2]$。已知LSDA中单电子本征能不是很准确，但是总能量比较准确，于是假设Hartree-Fock计算是好的近似
+%\begin{equation}
+%  \begin{split}
+%	  E_{\mathrm{LSDA}}[\rho_{\sigma}(\vec r)]&=E_{\mathrm{LSDA}}[N_{\sigma}|\psi_{m\sigma}(\vec r)|^2]\\
+%   &=\frac12F^0N(N-1)-\frac14JN(N-2)\frac14J(N_{\uparrow}-N_{\downarrow})^2
+% \end{split}
+%  \label{eq:solid-248}
+%\end{equation}
+%这里$F^0$是第一Slater积分，$J$是交换能参数，$N_{\sigma}=\sum\nolimits_mn_{m\sigma}$，$N=N_{\uparrow}+N_{\downarrow}$
+%
+%LSDA的电子相互作用势能是总能量对电荷密度$\rho(\vec r)$的变分导数，相互作用能作为总的{\it d}\,电子总数$N_{\sigma}$的变分导数为：
+%\begin{equation}
+%  \begin{split}
+%	  \frac{\partial E_{\mathrm{LSDA}}[N_{\sigma}|\psi_{m\sigma}(\vec r)|^2]}{\partial N_{\sigma}}&=\int\mathrm{d}\vec r\frac{\delta E_{\mathrm{LSDA}}[\rho(\vec r)]}{\delta\rho_{\sigma}(\vec r)}\frac{\partial\rho_{\sigma}(\vec r)}{\partial N_{\sigma}}\\
+%	  &=\int\mathrm{d}\vec rV_{\mathrm{LSDA}}^{\sigma}(\rho(\vec r))|\psi_{m\sigma}(\vec r)|^2\\
+%    &=F^0N-\frac12(F^0-J)-JN_{\sigma}
+%  \end{split}
+%  \label{eq:solid-257}
+%\end{equation}
+%由此可有LSDA的势能矩阵元为$V_{m\sigma}^{\mathrm{LSDA}}=F^0N-\frac12(F^0-J)-JN_{\sigma}$。
+%GWA对LSDA的势能校正为\cite{JPCM9-767_1997}
+%\begin{equation}
+%  \begin{split}
+%	  \delta V_{m\sigma}=&V_{m\sigma}^{\mathrm{GWA}}-V_{m\sigma}^{\mathrm{LSDA}}\\
+%    =&\sum_{m^{\prime}\sigma^{\prime}}U_{mm^{\prime}}^0n_{m^{\prime}\sigma^{\prime}}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^{\prime}\neq m}j_{mm^{\prime}}n_{m^{\prime}\sigma}-\frac12W\\
+%    &-F^0\sum_{m^{\prime}\sigma^{\prime}}n_{m^{\prime}\sigma^{\prime}}+J\sum_mn_{m\sigma}+\frac12(F^0-J)\\
+%    =&\sum_{m^{\prime}\sigma^{\prime}}(U_{mm^{\prime}}^0-F^0)n_{m^{\prime}\sigma^{\prime}}-(U_{mm}^0-W)n_{m\sigma}-\sum_{m^{\prime}\neq m}j_{mm^{\prime}}n_{m^{\prime}\sigma}\\
+%    &-\frac12W+J\sum_mn_{n\sigma}+\frac12(F^0-J)
+%  \end{split}
+%  \label{eq:solid-249}
+%\end{equation}
+%差值$U_{mm^{\prime}}^0-F^0$与Slater积分$F^0$无关(只与Slater积分$F^k$且$k\neq0$有关)，而且有$U_{mm^{\prime}}^0-F^0=U_{mm^{\prime}}-U$，这里$U=F^0-W$是屏蔽Coulomb参数，$U_{mm^{\prime}}$是屏蔽Coulomb矩阵元。
+%\begin{equation}
+%  \begin{split}
+%	  \delta V_{m\sigma}=&V_{m\sigma}^{\mathrm{GWA}}-V_{m\sigma}^{\mathrm{LSDA}}\\
+%    =&\sum_{m^{\prime}}U_{mm^{\prime}}n_{m^{\prime}-\sigma}+\sum_{m^{\prime}\neq m}(U_{mm^{\prime}}-J_{mm^{\prime}})n_{m^{\prime}\sigma}\\
+%    &-U(N-\frac12)+J(N_{\sigma}-\frac12)
+%  \end{split}
+%  \label{eq:solid-250}
+%\end{equation}
+%如果占据矩阵是对角化的，式\eqref{eq:solid-250}等价于LDA+$U$势校正\eqref{eq:solid-215}。GWA和LDA+$U$的本质差别在于计算屏蔽Coulomb势参数$U$，在LDA+$U$中，$U$是通过构造LSDA超晶胞计算的，在GWA中则是通过计算响应函数得到的。
+%%\newpage
+%%\bibliographystyle{mythesis}
+%%%  \phantomsection\addcontentsline{toc}{section}{bibliography}
+%%  {\small\bibliography{bib/Myref}}
+%%%  \nocite{*}

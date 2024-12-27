@@ -1,0 +1,1902 @@
+\setcounter{chapter}{7}
+\chapter{固体物理概述}\label{chap:Solid-state_introduct}
+\section{固体的分类与结合}
+\subsection{固体的分类:~晶体、非晶体与准晶}
+固体是由大量原子(或离子)组成的复杂体系。根据内部的原子、离子的排布规范情况，固体一般可分为晶体(包括单晶与多晶)、非晶体和准晶。晶体与非晶体的最本质差别在于组成晶体的粒子(原子、离子或分子等)是长程有序排列的，而非晶体中，除了最近邻的粒子有可能有序排列外，一般粒子都呈现无规则堆积。石英的两种结构(石英晶体和石英玻璃)很好地说明了这两个不同序的区别，如图\ref{Fig:SSI-01} 所示。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.18in}
+\includegraphics[height=1.85in,width=3.8in,viewport=0 0 84 40,clip]{Figures/2D-SiO2.png}
+\caption{\small \textrm{Two structure of $\mathrm{SiO}_2$.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:SSI-01}
+\end{figure}
+在两种结构一个Si原子周围都有三个O原子，这表示短程有序(化学组分比相同)。石英晶体还呈现一个由六边形组成的规则网格的二维结构 ，这就是长程有序，石英玻璃则没有这一额外的规则性。因此，{\heiti 晶体是指其内部的原子、离子或分子在空间按一定的周期性排列(即晶体的周期性结构)、长短程均有序的固体物质，长程序使得晶体具备平移不变性。}
+
+许多重要的固体材料都是晶体，如大多数固态的金属与合金等。非晶体如橡胶 、塑料 、玻璃和松脂等，其原子排列没有周期性 ，不存在长程序，但保留有原子排列的短程序。固体的长程序导致晶体具有一些共同的特征，如规则外形、均匀性、各向异性、解理性、具有特定的熔点、宏观和微观对称性等。例如晶体具有固定熔点是由于当加热到一定温度(熔点)时，晶体内的结合键将同时断裂，破坏其规则排列的状态。而非晶体由于缺乏长程序，结合键能是变化的。当加热非晶体时，弱的键会在更低的温度断裂，因此非晶体宏观表现为慢慢熔化 ，没有固定的熔点。根据原子排列有序度的尺寸大小，晶体又可分为单晶与多晶。单晶在整体范围内原子都是规则排列的，因此其具有规则外形 ，一般呈现为平滑的凸多面体。受外力时，晶体可沿某些晶面劈裂开(晶体的解理性)，这些晶面称为解理面。%晶体呈现出的光滑凸多面体往往是一些解理面。
+多晶体则由许多细微晶体颗粒组成，在各晶粒范围内，原子是有序排列的，而晶粒间的取向是不同的(如图\ref{Fig:SSI-02}所示)，如金属以及陶瓷材料等。不论单晶还是多晶 ，在微米量级范围内，微观粒子排列都具有长程和短程有序。晶体这种整体有规则排列结构使得数学处理相对简单 ，理想的晶体结构是固体物理领域理论的出发点。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.18in}
+\includegraphics[height=1.85in,width=2.0in,viewport=0 0 45 40,clip]{Figures/Polycrystal.png}
+\caption{\small \textrm{Schematic diagram of Polycrystalline. }}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:SSI-02}
+\end{figure}
+
+非晶体与液体类似，具有短程有序而长程无序的结构特征，非晶体又称玻璃态，可看成是黏滞性很大的过冷液体。晶体的长程有序结构使其内能处在最低状态，而非晶体因为长程无序，内能没有处于最低状态，所以固体非晶态本质上是一种亚稳相。与此对应的是一类新型的固体材料——非晶态材料，包括我们日常所见的各种玻璃、塑料、高分子聚合物以及新近发展起来的金属玻璃、非晶态合金、非晶态半导体及非晶态超导体等。由于结构不同，非晶态材料具有许多晶体所不具备的优良性质，如优异的机械特性(强度高、弹性好)、电磁学特性 、化学特性(稳定性高、耐蚀性好、抗辐射等)、电化学特性及优异的催化活性等，已成为一类发展潜力很大的新材料，由于其用途广泛，备受青睐。不过由于非晶体的结构比晶体要复杂得多，无法直接将描述和研究晶体的理论直接应用到非晶体的研究中 ，因此必须寻找新的方法。经过几十年的努力，非晶态物理学的研究虽然取得了很大进展，但与基本成熟的晶态物理学相比，还处在发轫阶段，有大量的课题需要进一步研究。
+
+还有一类固体物质，由于其结构的有序程度介于晶体和非晶体之间，因此被称为准晶体。具体而言，准晶具有与晶体相似的长程有序原子排列，但却不具备晶体所应有的平移对称性。因而准晶可以具有晶体所不允许的宏观对称性(如五重对称轴)。%
+1982年美国国家标准局D. Shechtman等人在用快速冷却方法制备Al-Mn合金时发现了具有五重旋转对称但并无平移周期性的合金像(如图\ref{Fig:SSI-03})，彻底地改变了上述晶体局限定理的传统观念。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.85in,width=3.0in,viewport=0 0 791 504,clip]{Figures/quasicrystal.png}
+\caption{\small \textrm{Selected-area electron diffraction patterns taken from a single grain of the Al-Mn icosahedral phase. Cited from \inlinecite{PRL53-1951_1984}.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:SSI-03}
+\end{figure}
+根据晶体局限定理，普通晶体内只能允许二次、三次、四次或六次旋转对称轴存在，准晶是原子的排列存在五次和六次以上对称轴的一种特殊晶体。究其原因，因为传统的晶体局限定义存在缺陷，它把原子排列有序和三维周期性混为一谈:~即从一个更自然的角度，非晶与晶体的区分在于其内部结构中的原子、离子或分子是否呈有序排列，而有序是否会导致三维周期性在没有被证实的情况下，被默认为常识接受了。国际晶体学联合会下设的非周期晶体学术委员会在1992年建议，将晶体的定义改为``能够给出明锐衍射的固体''。在Shechtman发现准晶体后，实验室中还发现了许多稳定和亚稳准晶，这些通常是含铝的金属合金。2009年，在俄罗斯东部获取的一块铝铜铁矿($\mathrm{Al}_{63}\mathrm{Cu}_{24}\mathrm{Fe}_{13}$)上发现了天然准晶体。实际上 ，数学家在准晶体发现之前已经从理论上预言了准晶体的存在。1976年Roger Penrose构造了一种由两种拼图拼接而成的具有五次对称性的图案。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.85in,width=3.7in,viewport=0 0 1931 939,clip]{Figures/Penrose-puzzle.png}
+\caption{\small \textrm{A schematic diagram of 2D-Penrose tiling.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Penrose-puzzle}
+\end{figure}
+图\ref{Fig:Penrose-puzzle}为二维空间的Penrose拼图(左)及其五重对称性示意(右)，由内角为$36^{\circ}$、$144^{\circ}$和 $72^{\circ}$、$108^{\circ}$的两种菱形组成 ，能够无缝隙无交叠地排满二维平面。这种拼图没有平移对称性 ，但是一种长程有序的结构，并且具有晶体所不允许的五次旋转对称性。准晶体的这种特殊结构对其物理性能有明显的影响，使其具有独特的属性 ，如高电阻 、低热导率、低摩擦系数、良好的耐磨性和抗氧化性 、高硬度 、高温塑性等优异性能等 ，已被开发为有用的材料，如表面防护涂层、隔热材料 、储氢材料、太阳能工业薄膜材料等准晶复合材料。准晶体的实验发现被认为是固体物理学近几十年来的一项重大突破，它一方面极大地深化了我们对晶体学 、衍射物理和凝聚态物理的认识 ，另一方面 ，准晶体的各种独特性质使准晶体具有潜在的应用价值。因此D. Shechtman一人独享了2011年Nobel化学奖。但是除了一维情况外 ，目前无论是实验还是理论方面准晶体的物性研究都还处于起始阶段。
+
+\subsection{晶体结合:~离子晶体、共价晶体、金属晶体、分子晶体}
+晶体中原子、离子或分子由于粒子间相互作用而结合成一定的稳定结构，晶体的总能量要比自由状态的原子或分子的总能量低。晶体的结合能定义为自由原子能与晶体能量之差。不同晶体的结合能相差很大 ，从0.01eV到10eV不等，结合能决定了晶体的性质，主要与晶体中原子间的互作用(包括吸引作用和排斥作用)相关。图\ref{Fig:SSI-04}示意的是双原子体系间互作用的典型势能曲线，近似的数学表达式为
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.85in,width=2.5in,viewport=0 0 50 40,clip]{Figures/Interaction-2_Atoms.png}
+\caption{\small \textrm{原子间相互作用.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:SSI-04}
+\end{figure}
+\begin{equation}
+	U(r)=-\dfrac{A}{r^m}+\dfrac{B}{r^n}
+	\label{eq:SSI-01}
+\end{equation}
+式中r表示两原子间距。参数A、B、n、m>0且m<n，是与晶体性质相关的常数，负号表示吸引势，正号表示排斥势，斥力高度短程，而引力是长程的。两原子间的互作用力由势函数的梯度决定:
+\begin{equation}
+	f(r)=-\dfrac{\mathrm{d}U(r)}{\mathrm{d}r}
+	\label{eq:SSI-02}
+\end{equation}
+当两原子间距$r\rightarrow\infty$，势能为零，作用力为零，表示自由原子状态的能量。当两原子逐渐靠拢且$r\rightarrow r_0$时，势能为负，随着原子间距r减小而逐渐减小，此时$f(r)<0$，表明引力大于斥力。到达平衡位置$r=r_0$时，势能取最小值$f(r)=0$，则，表明引力与斥力达到平衡。当两原子间距继续减小，即$r<r_0$，随着原子间距r减小，势能迅速增加，此时$f(r)>0$，表明斥力大于引力。
+
+晶体的结构和性质与晶体中原子结合作用的性质密切相关。固体中粒子的相互吸引完全根源于电子的负电荷与原子核的正电荷之间的静电吸引相互作用，是晶体中原子或分子不同结合键的反映，一般具有多种表现形式。在根据晶体中最小重复单元的原子间相互作用类型 ，可将晶体分为几种典型类型：离子晶体、共价晶体、金属晶体和分子晶体，前三种为强键结合 ，后一种为弱键结合。图\ref{Fig:SSI-05}是这几种典型类型的示意图。尽管在不同晶体中引力(键)的形式差别很大，然而在所有固体中排斥力的来源几乎是相似的，主要来自于同种电荷的库仑排斥力(如核排斥力)和Pauli不相容原理所导致的量子效应。在吸引力作用下原子聚合，就会出现电子云重叠现象，由Pauli不相容原理可知 ，要求部分电子被激发到没有被占据的更高能量 态上，因而使得系统的总能量增加 ，可看成是对斥力的贡献。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.85in,width=2.5in,viewport=0 0 90 70,clip]{Figures/Four_Crystal-type.png}
+\caption{\small \textrm{晶体的结合类型示意.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:SSI-05}
+\end{figure}
+
+\subsubsection{离子晶体} 
+离子晶体是由正负离子交替排列而成的，每个离子周围最近邻的都是异性电荷离子，离子间库仑作用的净效果表现为吸引性，因此其结合力主要来自于正、负离子间的Coulomb吸引作用，习惯上称为离子键。离子键是易于失去电子形成阳离子的原子和易于俘获电子形成阴离子的原子间形成的强极性相互作用。
+典型的离子晶体有碱金属元素和卤族元素的结合物，如NaCl和KCl。Na原子的电离能为5.14~eV,Cl原子的电子亲和能\footnote{电子亲和能是指中性原子获得一个电子形成负离子时所释放的能量。}为3.62~eV,故从自由的Na和C1原子形成$\mathrm{Na}^+$和$\mathrm{Cl}^-$所需能量为$5.14-3.62=1.52\mathrm{eV}$，实验结果显示，%离子间静电相互作用，Na+和Cl-间距离的变化由图5.1.3中红线所示，NaCl中的结合能为-4.2eV，$\mathrm{Na}^+$和$\mathrm{Cl}^-$的距离为0.24nm。
+在NaCl晶体中%情况有所不同，
+离子的平衡位置间距离为0.28nm，晶体中每对离子的结合能为7.84eV, 因此NaCl晶体中$\mathrm{Na}^+$和$\mathrm{Cl}^-$的结合能为$7.84-1.52=6.32\mathrm{eV}$，%结合成离子晶体后总能量比分离原子的总能量低。
+在离子晶体中，不同原子通过获得或失去电子形成闭壳层的离子，电荷近似球对称，故当离子间距较远时可把离子当点电荷处理，同时也说明了离子键是无方向性的，每个离子周围吸引尽可能多的异性电荷离子，原子排列结构部分取决于正负离子的相对大小。对于一个有N个原胞的晶体，总的势能可以写成
+\begin{equation}
+	U=N\bigg[-\dfrac{\alpha q^2}{4\pi\varepsilon_0r}+n\lambda\exp\big(-\dfrac r{\rho}\big)\bigg]
+	\label{eq:SSI-03}
+\end{equation} 
+上式中第一项是正负离子交替的Coulomb能，其中$\alpha$是一个完全取决于晶体结构的无量纲的数值，称为Madlung常数。第二项是电子云重叠时排斥能的唯象表示，排斥势呈指数性衰减，其中$n$为最近邻原子数目，$\rho$为范围参数，$\lambda$为无量纲参数。
+
+由于正、负离子之间结合比较牢固，离子键能较大，因此离子晶体具有熔点高、硬度大的特点。满壳层的离子构型使得晶体中没有可自由移动的电子，因而不具备导电条件，而离子本身又被紧紧地束缚在晶格点上，因而也不导热。在外部机械力的作用下，离子之间的相对位置一旦发生滑动，原来异性离子的相间排列就变成了同性离子的相邻排列，吸引力变成了排斥力，晶体结构被破坏，因而质地脆。
+
+\subsubsection{共价晶体} 
+共价晶体是靠原子之间形成共价键而结合成的，亦称原子晶体、同极晶体。常见的共价晶体有金刚石、硅、SiC、$\mathrm{SiO}_2$等。由于共价键的饱和性与方向性，共价晶体只能按照某种特殊的结构排列。例如在金刚石晶体中，C原子通过$sp^3$杂化形成共价键，由于共价键的方向性，每个原子与相邻的原子都是以四面体方式结合，导致这种结的排列方式空间占用率很低。
+
+由于共价键比离子键具有更高的结合能 ，非常稳定，因此共价晶体具有高力学强度、高熔点、高沸点和低挥发等特性。所有的价电子都参与成键，不能自由运动 ，因而低温时电导率很低，温度增加或加入杂质时电导率增大 ，如半导体Si、Ge等。
+
+\subsubsection{金属晶体} 
+金属晶体基本特点每个原子的价电子不再束缚在某一特定的原子上，而是遍及在整个晶体内。金属元素的阳离子可看成是浸没在近均匀的电子海洋中 ，正离子与电子之间的Coulomb力提供了聚合作用，而且体积越小时，Coulomb能越低，聚合作用越强烈。但是当体积缩小，由Thomas-Fermi统计知道，动能正比于电子云密度的三分之二次方，即会增大电子的动能 ，这是排斥势的来源之一；排斥势的另一来源是Pauli不相容原理 ，当原子实靠近时电子云重叠产生强烈的排斥作用。
+
+金属原子结合比离子键和共价键结合都弱，但仍属于强结合。例如金属Na的熔点大约是$400^{\circ}\mathrm{C}$，NaCl的熔点大约是$1100^{\circ}\mathrm{C}$，金刚石的熔点大约是$4000^{\circ}\mathrm{C}$。金属键是无方向性也无饱和性的，故金属元素总是倾向于密堆积的结构:~面心立方或六角密排列，而不倾向于排列疏松的结构，如金刚石结构。金属所具有的特性，如金属光泽(即对可见光强烈反射)、良好的导电、导热性，富有延展性和可塑性等，都与这些在整个金属内可自由运动的非局域化电子有关。例如对于金属在形变过程中不易断裂的典型特征，可以进行以下简单的定性解释:~周期排列的正离子之间有可流动的电子，使得金属键在整个晶体范围内起作用，因而断开它比较困难；另外，受外力作用金属原子的移位滑动不影响离域的电子对金属离子的维系作用，因而对原子移动时克服势垒起到调节作用。也正是由于价电子被所有原子所分享，因此如果原子大小相近，可或多或少按任意比例形成不同的合金。
+
+过渡金属(如Fe、Ni、Ti、Co 等)的结合机制更为复杂，这是因为除了$s$电子行为像自由电子外 ，还有较局域化的$3d$电子和邻近的电子形成共价键，有时这些$d$电子和$s$电子强烈杂化形成更复杂的结合。
+
+\subsubsection{分子晶体} 
+分子晶体是具有饱和结构的原子或分子依靠van der Waals力相结合而成的。不像前述的三种结合中原子价电子状态在形成晶体后都发生了改变，形成分子晶体的原子或分子电子状态没有改变。van der Waals力有三种不同类型：极性分子之间的分子固有偶极矩之间的力，为Keeson力；极性分子与非极性分子的感应偶极矩之间产生的力，为Debye力；中性分子之间主要是瞬时电偶极矩之间的感应作用力 ，为London力或色散力，这是所有分子都具有的互作用力。
+
+以中性分子的分子晶体(如惰性气体元素、双原子分子$\mathrm{H}_2$、$\mathrm{O}_2$、$\mathrm{N}_2$等)为例，van der Waals结合是一种瞬时的电偶极矩感应作用，排斥势则是由于Pauli不相容原理导致的，两原子或分子间的总势能可以表示为Lennard-Jones势:
+\begin{equation}
+	U=4\varepsilon\bigg[\big(\dfrac{\sigma}r\big)^{12}-\big(\dfrac{\sigma}r\big)^6\bigg]
+	\label{eq:SSI-04}
+\end{equation}
+式中$r$为原子间距，$\varepsilon$和$\sigma$是经验参数，可由实验测得。其中$r^{12}$项由实验数据拟合给出，$r^6$项可通过简单的物理模型推导给出。分子1、2 相距$r$，第一个分子瞬时偶极矩为$p_1$，其在第二个分子处的电场正比于$E\propto p_1/r^3$，分子2将被诱导产生偶极矩$p_2\propto E$，从而两个分子间偶极矩作用能为$\dfrac{p_1p_2}{r^3}\propto\dfrac{p_1^2}{r^6}$。因此分子间的van der Waals力正比于$1/r^7$，随着距离增加，van der Waals力将迅速减小。
+
+van der Waals力是非常弱的吸引力，因而分子晶体一般有非常低的熔点和沸点，而且参与分子间相互作用的电子是局域的，故分子晶体通常也不导电。如固态氨的结合能仅仅0.8eV/原子，熔点-$189^{\circ}\mathrm{C}$，固态氢的结合能仅仅0.01eV/原子，熔点-$259^{\circ}\mathrm{C}$，固态甲烷的结合能仅仅0.1 eV/原子，熔点-$183^{\circ}\mathrm{C}$。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.85in,width=1.5in,viewport=0 0 70 90,clip]{Figures/Double_helix-structure-DNA.png}
+\caption{\small \textrm{DNA的双螺旋结构.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:DNA}
+\end{figure}
+当分子包含H原子时形成一类特别强的van der Waals力，称为H键。由于H原子仅仅包含一个电子，当与一个电负性强的元素结合时，电子倾向于聚集在电负性强的元素附近，导致带正电的裸露H原子核(就是一个质子)处在分子边缘，故还可以与另一极性分子的负电荷端发生相互作用。裸露的H原子核比一般的原子的半径小很多，因此与另一极性分子的负电荷部分能靠得很近，形成较强的van der Waals力。普通纸中纤维间的主要结合力来自纤维素纤维间的H键作用，遇水时H键解体，这就是为什么普通纸在完全被水湿透之后，就几乎完全失去了强度。H键也广泛存在于生物体中，是一种理解细胞活动的重要机制。例如脱氧核糖核酸(DNA)的双螺旋结构(图\ref{Fig:DNA})，主要是两条互补的多聚脱糖核苷链由H键的作用配对在一起而形成的，DNA的复制机制正是依赖于这种结构。在细胞中分子的平均动能大约为0.04eV, 和H键大小同一量级。这就意味着通过分子的碰撞，氢键很容易断裂。因此H键不是非常牢固的，它们仅仅是简单地连接，也正因为如此，在细胞中H键起着重要的作用。另一方面，在DNA链内部的强键将原子紧紧结合在一起，不能仅仅通过分子碰撞而断裂。2013年11月，中国科学家利用原子力显微镜在国际上首次发布了H键的照片(图\ref{Fig:H-bond})，实现了H键的实空间成像，为``氢键的本质''这一化学界争论了80 多年的问题提供了直观证据。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=2.15in,width=2.5in,viewport=0 0 840 730,clip]{Figures/Image-of-H_bond.png}
+\caption{\small \textrm{中国科学院国家纳米科学中心发布的H键的照片.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:H-bond}
+\end{figure}
+
+\begin{table}
+  \centering
+  \caption{晶体类型}
+  \begin{tabular}{c|@{\extracolsep{\fill}}m{2.7cm}<\centering|m{2.7cm}<\centering|@{\extracolsep{\fill}}m{2.7cm}<\centering|@{\extracolsep{\fill}}m{2.7cm}<\centering}
+    \toprule
+    晶体类型 & 离子晶体 & 共价晶体 & 分子晶体 & 金属晶体 \\
+    \midrule
+    组成粒子 & 正、负离子 & 原子 & 分子 &金属离子和自由电子 \\
+%    & & & & 自由电子\\
+    \hline
+    键 & 离子键 & 共价键 & van der Waals力 & 金属键 \\\hline
+    结合能 & 4$\sim$14eV &2$\sim$10eV &0.02$\sim$0.3eV &0.7$\sim$6 eV \\\hline
+    性质   & 熔点高、硬度大。多数易溶于水等极性液体，低温下一般不导电、不导热(溶于水或熔化时可导电)  & 熔点极高、硬度大，不导电，延展性很差，不能在一般溶剂中溶解 & 熔点、沸点低，硬度低，固态不导电 & 具有金属光泽，易导电、导热，有较好的延展性和可塑性   \\\hline
+    实例   & NaCl ($E=3.28\mathrm{eV/atom}$) & 金刚石 ($E=3.28\mathrm{eV/atom}$) & $\mathrm{CH}_4$ ($E=3.28\mathrm{eV/atom}$) & 金属Na ($E=1.1\mathrm{eV/atom}$)\\
+    \bottomrule
+  \end{tabular}
+  \label{Tab:SSI-01}
+\end{table}
+
+为了研究方便，我们将晶体划分为上述几种典型类型，表\ref{Tab:SSI-01}总结了这几种典型类型的基本特点。实际上，不同类型的晶体并不存在绝对的界限，更可能是具有几种结合形式的复杂结合。例如，离子键和共价键是两种极端的情形，在离子键中电子从一个原子完全转移到另一个原子中 ，而共价键中电子完全被两个原子分享。实际的原子之间化学键往往是介于这两种极端情形之间，对于一个给定的键，我们可以从多大程度上具有离子性或共价性结合给予适当的描述，通常引入电离度的概念来描述共价结合中的离子成分。除了原子之间的化学键，晶体的形成也可能有分子键的参与。石墨是一个典型的例子(图\ref{Fig:Graphe}),由具有六角蜂房结构的二维石墨烯层堆积而成，层内的C原子通过$sp^2$杂化形成强的共价键结合，C原子的最外层还留下一个能够在层内自由移动的价电子 ，这解释了为什么石墨具有接近金属的光泽和在某一方向的导电性。层与层之间靠弱的van der Waals力结合，因此不同层能相对容易地彼此滑动 ，这就是石墨能作为润滑剂和铅笔的缘故。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.75in,width=1.6in,viewport=0 0 55 50,clip]{Figures/Graphe.png}
+\caption{\small \textrm{石墨的晶体结构.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Graphe}
+\end{figure}
+
+\section{晶体结构学基础}
+结构是认识和研究物质的基础，从根源上揭示了固体的一系列现象和性质。晶体最本质的结构特性是晶体中原子的周期性排列，或称为晶体的平移对称性，它的存在大大简化了所需处理的问题。%这一节我们将介绍
+本部分将介绍如何描述晶体的周期性结构、对称性以及晶体结构的测定等晶体结构学的一些基础知识。
+
+\subsection{晶格与平移对称性}
+晶体结构学关心的是晶体的几何周期性结构，为了形象地描述晶体结构，将晶体中原子、离子或分子的重复单元数学抽象为几何学上的点，所有点的集合所连成的空间周期性排列网格定义为晶格，也称Bravais格子。选择任意一点作为原点，Bravais格子中所有点都可由平移矢量表示为
+\begin{equation}
+	\vec R_n=n_1\vec a_1+n_2\vec a_2+n_3\vec a_3\qquad (n_1,n_2,n_3\mbox{均为整数})
+	\label{eq:SSI-06}
+\end{equation}
+其中$\vec a_1$、$\vec a_2$、$\vec a_3$是不共面的基矢，称为Bravais格子的基矢，$\vec R_n$称为Bravais格子的格矢，端点称为格点。沿任意一格矢平移，Bravais格子不变。注意基矢$\vec a_1$、$\vec a_2$、$\vec a_3$的选择并不唯一，例如$\vec a_1+\vec a_2$、$\vec a_2$、$\vec a_3$也能产生与式\eqref{eq:SSI-06}相同的Bravais格子。图\ref{Fig:Bravais_Lattice-basis}示意了二维Bravais格子中基矢的几种不同取法。由定义可知，Bravais格子是一个无限延展的点阵，点阵上所有格点完全等价(几何位置上等价、周边环境都相同)，它代表了晶体最本质的平移对称性。需要指出的是，固体是一个物理的结构，不是一套抽象的数学点的集合。对于一个实际的晶体，必须考虑每个Bravais格点上所代表的具体物理内容，这就是基元，它可能是单个原子或离子，也可能是由多个原子或离子组成的原子(或离子)团簇。因此晶体结构可以概括描述为结构基元以相同的方式重复放置在点阵格点上所构成，即
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.65in,width=2.15in,viewport=0 0 45 30,clip]{Figures/Bravais_Lattice-basis_set.png}
+\caption{\small \textrm{二维斜格子的Bravais基矢选择.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Bravais_Lattice-basis}
+\end{figure}
+\begin{displaymath}
+	\mbox{晶体结构} = \mbox{Bravais格子(数学抽象)}+ \mbox{结构基元(物理内容)}
+\end{displaymath} 
+晶体结构的描述不仅需要知道Bravais格子的基矢$\vec a_1$、$\vec a_2$、$\vec a_3$，还需要知道结构基元所包含的具体内容。根据结构基元所包含的内容，Bravais格子有简单格子与复式格子之分。结构基元中仅包含一个原子的晶格称为简单格子，原子所构成的列阵与此晶体的Bravais格子完全相同，选取合适的原点，Bravais格点即可表示原子的平衡位置。基元中包含两个或两个以上原子的晶格称为复式格子，此时还需要额外引入一组合适的矢量$\vec t_1$、$\vec t_2$、$\cdots$、$\vec t_v$来描述$v$个不同原子在基元中的相对位置，因此每个不等价原子的平衡位置可由平移矢量决定。由此可见，基元中每个不同原子所构成的阵列都与此晶体的Bravais格子相同。这些由基元中不同原子的平移矢量所构成的阵列常称为子格子，整个复式格子可视为$v$个与晶体的Bravais格子相同的子格子套构而成。因此 ，晶体结构的几何描述由Bravais格子的基矢$\vec a_1$、$\vec a_2$、$\vec a_3$和形成基元原子的位置矢量$\vec t_1$、$\vec t_2$、$\cdots$、$\vec t_v$共同决定。图\ref{Fig:Graphe_Bravais-Lattice}示意了基元由两个不同原子组成的二维石墨烯复式晶格，属于三角(或六角)二维Bravais格子，其中原子A、B 表示基元中两个不同原子。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.55in,width=3.35in,viewport=0 0 80 40,clip]{Figures/Graphe_Bravais-Lattice.png}
+\caption{\small \textrm{基元由两个不同原子组成的二维石墨烯复式晶格.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Graphe_Bravais-Lattice}
+\end{figure}
+
+严格地说 ，完全理想的无限延伸的完美晶体是不存在的，在实际晶体材料中，必然存在以下几种不完美性破坏其周期性结构：
+\begin{enumerate}
+	\item 实际晶体具有一定的尺寸大小，存在表面和边缘，不是无限延伸的。
+	\item 当温度$T>0~\mathrm{K}$时，原子在它们的平衡位置附近热振动导致晶格的畸变等。
+	\item 实际晶体总是包含一些缺陷和杂质。
+\end{enumerate}
+
+\subsection{基本重复单元：原胞和晶胞}
+原胞，又称初基原胞(primitive cell)，是将整个晶格划分为只包含一个Bravais格点的周期性重复单元。通过重复堆积原胞将精确地填满整个空间，既没有重叠也没有遗漏。原胞常取以基矢为边的平行六面体(图\ref{Fig:Primitive_Cell}),体积为
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.55in,width=2.35in,viewport=0 0 38 25,clip]{Figures/Primitive_cell.png}
+\caption{\small \textrm{初基原胞示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Primitive_Cell}
+\end{figure}
+上述原胞取法只是习惯的取法，原则上原胞可以有任意多种取法，只要满足晶体的最小重复单元这个条件。无论如何选取，原胞均有相同的体积，并且原胞含有一个格点。另一种重要的取法是Wigner-Seitz原胞，即以某个格点为中心，做其与邻近格点的中垂面，这些中垂面所包含最小体积的区域。这种取法{\heiti 不仅反映了晶体的平移对称性，并且反映了与相应的Bravais格子完全相同的对称性，是一种对称性原胞，不依赖于基矢的选择。}在二维晶格中则是以某个格点为中心，做其与邻近格点的中垂线，这些中垂线包含最小面积的区域，即Wigner-Seitz原胞。
+
+有时，为了更加直观地反映晶体的宏观对称性，取一个包含若干个原胞的平行六面体作为重复单元，该重复单元被称为结晶学原胞，简称晶胞或单胞，它是保持晶体宏观对称性的基本结构。晶胞一般为Bravais格子中对称性最高、体积最小的某种平行六面体。设描述晶胞的矢量为$\vec a$、$\vec b$、$\vec c$平移矢量能则表示为
+\begin{equation}
+	\vec R_n=l\vec a +m\vec b+p\vec c
+	\label{eq:SSI-09}
+\end{equation}
+其中$l$、$m$、$p$为有理数(不一定是整数)，$\vec a$、$\vec b$、$\vec c$为该Bravais格子的轴矢。图\ref{Fig:Crystal-Primitive_Cell}示意了二维有心矩形格子的原胞、Wigner-Seitz原胞与晶胞的取法。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.35in,width=3.35in,viewport=0 0 80 55,clip]{Figures/Crystal-Primitive_Cell.png}
+\caption{\small \textrm{二维有心矩形格子的原胞、Wigner-Seitz原胞与晶胞.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Crystal-Primitive_Cell}
+\end{figure}
+
+\subsection{常见的三维Bravais格子}
+\subsubsection{简单立方(Simple Cubic, SC)}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.35in,width=3.35in,viewport=0 0 85 60,clip]{Figures/Bravais_Lattice.png}
+\caption{\small \textrm{简单立方、体心立方、面心立方和简单六角的晶胞与原胞.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Bravais_Lattice-1}
+\end{figure}
+基矢为立方单元(边长为$a$)的边矢量：
+\begin{displaymath}
+\vec a_1=a(1,0,0),~\vec a_2=a(0,1,0),~\vec a_3=a(0,0,1)
+\end{displaymath} 
+立方单元即为它的原胞，晶胞与原胞相同，体积都为$\Omega=\vec a_1\cdot(\vec a_2\times\vec a_3)=a^3$，每个晶胞包含1个格点，它的Wigner-Seitz原胞同样为一立方单元。84号元素Po的$\alpha$相($T_C$为$54^{\circ}\mathrm{C}$)具有这样的晶体结构。
+
+\subsubsection{体心立方(Body-Centered Cubic, BCC)}
+基矢为立方单元的一个顶点到三个最近邻体心的矢量：
+\begin{displaymath}
+	\vec a_1=\frac a2(1,-1,1),~\vec a_2=\frac a2(1,1,-1),~\vec a_3=\frac a2(-1,1,1)
+\end{displaymath} 
+由它们所构成的平行六面体即体心立方的原胞 ，其体积为$\Omega=\vec a_1\cdot(\vec a_2\times\vec a_3)=\frac12a^3$，是晶胞体积的二分之一，故一个晶胞包含两个格点。它的Wigner-Seitz原胞为截角八面体。具有这样结构的晶体有碱金属晶体Li、Na、K和过渡金属晶体V、Nb、Ta等。
+
+\subsubsection{面心立方(Face-Centered Cubic, FCC)}
+基矢为立方单元的一个顶点到三个最近邻面心的矢量：
+\begin{displaymath}
+	\vec a_1=\frac a2(1,0,1),~\vec a_2=\frac a2(1,1,0),~\vec a_3=\frac a2(0,1,1)
+\end{displaymath} 
+由它们所构成的平行六面体即面心立方的原胞 ，其体积为$\Omega=\vec a_1\cdot(\vec a_2\times\vec a_3)=\frac14a^3$，是晶胞体积的四分之一，故一个晶胞包含4个格点。它的Wigner-Seitz原胞为菱形十二面体。具有这样结构的晶体有Al、Au、Ag、Cu 等。如果把原子看成是具有一定等效半径的刚性球，这是一种立方密堆积结构，空间利用率最大约为74\%。
+
+另外一种最紧密排列的方式是六角密堆积结构(复式晶格 ，如图\ref{Fig:Bravais_Lattice-1})。
+
+\subsubsection{简单六角(Simple Hexagonal, SH)}
+基矢为
+\begin{displaymath}
+	\vec a_1=a(1,0,0),~\vec a_2=a(\frac12,\frac{\sqrt3}2,0),~\vec a_3=c(0,0,1)
+\end{displaymath} 
+$\vec a_1$和$\vec a_2$在$xy$平面上形成格点间距为$a$的三角格子，$\vec a_3$表示三角格子以间距$c$沿$z$方向重叠。由它们所构成的平行六面体即简单六角的原胞，其体积为晶胞体积的三分之一，故一个晶胞包含3个格点。它的Wigner-Seitz原胞为六角棱柱。
+
+\subsection{晶格的对称性及基本类型} 
+除了平移对称性外，晶体还具有一些额外的对称性，即经过一空间变换后，尽管其中各部分改变了位置和状态，但从整体来看，位置、大小、形状和状态都没有改变。例如，一个正方形绕它的中心转动$90^{\circ}$、$180^{\circ}$、$270^{\circ}$后看上去和未转动一样，而长方形只能旋转$180^{\circ}$才保持不变。也就是说，正方形比长方形具有更高的对称性。从对称性的角度，Bravais格子可由其所有的对称操作刻画，这些对称操作的集合，称为对称群(symmetry group)或空间群(space group)，将平移操作扣除后，剩余的这些额外对称操作的集合叫作点群(point group)，因为这些对称操作完成的过程中，Bravais格子中的某个点将保持固定不动。
+
+群是一组元素的集合，$G\equiv\{E,A,B,C,D,\cdots\}$，具有如下性质:
+\begin{itemize}
+	\item 按照给定的``乘法''规则，群G中的任意两个元素之间的乘积，仍然是群G中的元素，即要求\\如果$A,B\in G$，则$AB=C\in G$\\
+		这个性质称为群的封闭性
+	\item 存在单位元素$E$，满足对所有群元素$P\in G$，有
+		\begin{displaymath}
+			PE=EP=P
+		\end{displaymath}
+	\item 对任意元素$P\in G$，存在逆元素$P^{-1}$，使得
+		\begin{displaymath}
+			PP^{-1}=P^{-1}P=E
+		\end{displaymath}
+	\item 元素之间的``乘法''运算，满足结合律
+		\begin{displaymath}
+			A(BC)=(AB)C
+		\end{displaymath}
+\end{itemize}
+比如队列动作立正、向左转、向右转和向后转可构成群，立正是单位元素。所有整数，以加法为运算法则，可组成整数群，其中0是单位元素。
+
+点群中的对称操作类型，固体物理中习惯用Schoenflie记号标记，晶体学家则惯于用国际晶体学记号标记。晶体的点对称元素共三类包括
+\begin{itemize}
+	\item 旋转轴，即绕固定轴的转动，$C_n(n)$，如转$2\pi/n$为对称操作，该轴称为$n$重对称轴或$n$重轴。$n=1$即旋转$2\pi$，相当于不动操作，一般记作$E(1)$。如当$z$轴为4重轴，则$C_4(x,y,z)\rightarrow(y,-x,z)$。
+	\item 镜面反映，$\sigma(m)$，相当于把所有点都映射到镜像位置。如以$xy$平面为镜像面，则$\sigma(x,y,z)\rightarrow(x,y,-z)$
+	\item 反演中心，$i(\bar{1})$，如取原点为反演中心，则$i(x,y,z)\rightarrow(-x,-y,-z)$
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.65in,width=2.85in,viewport=0 0 510 297,clip]{Figures/Crystallographic_restriction_2.png}
+\caption{\small \textrm{Bravais格子中旋转操作的约束示意.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Crystallographic_restriction}
+\end{figure}
+由于晶体的平移操作存在，对许可的转动操作有严格的限制，只允许有1,2,3,4和6重轴。可以简单说明示意如图\ref{Fig:Crystallographic_restriction}。Bravais格子的格点最近邻距离为$a$，通过绿色点并与纸面垂直的$n$重旋转轴，作用于格点，因此有
+\begin{displaymath}
+	\begin{aligned}
+		2a\cos\theta=2a\cos\dfrac{2\pi}n=&ma\\
+		\cos\dfrac{2\pi}n=&\dfrac{m}2\quad m\mbox{是整数}
+	\end{aligned}
+\end{displaymath}
+\begin{table}
+  \centering
+  \caption{32个晶体学点群}
+  \begin{tabular}{c|@{\extracolsep{\fill}}m{1.2cm}<{\raggedright}@{\extracolsep{\fill}}m{1.9cm}<{\raggedright}@{\extracolsep{\fill}}m{1.4cm}<{\raggedright}@{\extracolsep{\fill}}m{8.3cm}<{\raggedright}@{\extracolsep{\fill}}m{1.0cm}<{\raggedright}}
+    \toprule
+    \fontsize{7.2pt}{4.2pt}\selectfont{晶系} &\fontsize{7.2pt}{4.2pt}\selectfont{Schoenflie记号}  &\fontsize{7.2pt}{4.2pt}\selectfont{国际记号全称} &\fontsize{7.2pt}{4.2pt}\selectfont{简称}  &\fontsize{7.2pt}{4.2pt}\selectfont{对称元素} &\fontsize{7.2pt}{4.2pt}\selectfont{ 群元素个数} \\
+    \midrule
+    \fontsize{7.2pt}{4.2pt}\selectfont{三斜} &$C_1$ &$1$ &$1$ &$\mathrm{E}$ &1 \\
+    &$S_2$ &$\bar{1}$&$\bar{1}$ &$\mathrm{E}, i$ &2 \\\hline
+     &$C_2$ &$2$ &$2$ &$\mathrm{E}, C_2$ &2 \\
+     \fontsize{7.2pt}{4.2pt}\selectfont{单斜}&$C_{1h}$ &$m$ &$m$ &$\mathrm{E}, \sigma_h$ &2 \\
+    &$C_{2b}$ &$2/m$ &$2/m$ &$\mathrm{E}, C_2, i, \sigma_h$ &4\\\hline
+     &$D_2$ &$222$ &$222$ &$\mathrm{E}, C_2, 2C_2^{\prime}$ &4 \\
+     \fontsize{7.2pt}{4.2pt}\selectfont{正交}&$C_{2v}$ &$mm2$ &$mm2$ &$\mathrm{E}, C_2, 2\sigma_v$ &4 \\
+     &$D_{2h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(2/m)(2/m)(2/m)$} &$mmm$ &$\mathrm{E}, C_2, 2C_2^{\prime}, i, \sigma_h, 2\sigma_v$ &8\\\hline
+     &$C_4$ &$4$ &$4$ &$\mathrm{E}, 2C_4, C_2$ &4 \\
+    &$S_4$ &$\bar{4}$ &$\bar{4}$ &$\mathrm{E}, 2S_4, C_2$ &4 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{四方}&$D_4$ &$422$ &$422$ &$\mathrm{E}, 2C_4, C_2, 2C_2^{\prime}, 2C_2^{\prime\prime}$ &8 \\
+    &$C_{4v}$ &$4mm$ &$4mm$ &$\mathrm{E}, 2C_4, C_2, 2\sigma_v, 2\sigma_d$ &8 \\
+    &$D_{2d}$ &$\bar{4}2m$ &$\bar{4}2m$ &$\mathrm{E}, C_2, 2C_2^{\prime}, 2\sigma_d, 2S_4$ &8 \\
+    &$D_{4h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(4/m)(4/m)(4/m)$} &$4/mmm$ &$\mathrm{E}, 2C_4, C_2, 2C_2^{\prime}, 2C_2^{\prime\prime}, i, 2S_4, \sigma_h$ &16\\\hline
+     &$C_3$ &$3$ &$3$ &$\mathrm{E}, 2C_3$ &3 \\
+    &$S_6$ &$\bar{3}$ &$\bar{3}$ &$\mathrm{E}, 2C_3, i, 2S_6$ &6 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{三角}&$D_3$ &$32$ &$32$ &$\mathrm{E}, 2C_3, 2C_2^{\prime}$ &6 \\
+    &$C_{3v}$ &$3m$ &$3m$ &$\mathrm{E}, 2C_3, 3\sigma_v$ &6 \\ 
+    &$D_{3d}$ &$\bar{3}(2/m)$  &$\bar{3}m$ &$\mathrm{E}, 2C_3, 3C_2^{\prime}, i, 2S_6, 3\sigma_v$ &12\\\hline
+     &$C_6$ &$6$ &$6$ &$\mathrm{E}, 2C_6, 2C_3, C_2$ &6 \\
+    &$C_{3h}$ &$\bar{6}$ &$\bar{6}$ &$\mathrm{E}, 2C_3, \sigma_h, 2S_3$ &6 \\
+    &$C_{6h}$ &$6/m$ &$6/m$ &$\mathrm{E}, 2C_6, 2C_3, C_2, i, 2S_3, 2S_6, \sigma_h$ &12 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{六角}  &$D_6$ &$622$ &$622$ &$\mathrm{E}, 2C_6, 2C_3, C_2, 3C_2^{\prime}, 3C_2^{\prime\prime}$ &12 \\
+    &$C_{6v}$ &$6mm$ &$6mm$ &$\mathrm{E}, 2C_6, 2C_3, C_2, 3\sigma_v, 3\sigma_d$ &12 \\ 
+    &$D_{3h}$ &$\bar{6}m2$ &$\bar{6}m2$ &$\mathrm{E}, 2C_3, 3C_2^{\prime}, \sigma_h, 2S_3, 3\sigma_v$ &12 \\ 
+    &$D_{6h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(6/m)(2/m)(2/m)$} &$mmm$ &$\mathrm{E}, 2C_6, 2C_3, C_2, 3C_2^{\prime}, 3C_2^{\prime\prime},i, 2S_3, 2S_6, \sigma_h, 3\sigma_v, 3\sigma_d$ &24 \\\hline
+     &$T$ &$23$ &$23$ &$\mathrm{E}, 8C_3, 3C_2$ &12 \\
+    &$T_h$ &$(2/m)\bar{3}$ &$m3$ &$\mathrm{E}, 8C3, 3C_2, i, 8S_6, 3\sigma_h$ &24 \\
+    &$O$ &$432$ &$432$ &$\mathrm{E}, 8C_3, 3C_2, 6C_2, 6C_4$ &24 \\
+    \fontsize{7.2pt}{4.2pt}\selectfont{立方}   &$T_{d}$ &$\bar{4}3m$ &$\bar{4}3m$ &$\mathrm{E}, 8C_3, 3C_2, 6\sigma_d, 6S_4$ &24 \\
+    &$O_{h}$ &\fontsize{7.2pt}{4.2pt}\selectfont{$(4/m)\bar{3}(2/m)$} &$m3m$ &$\mathrm{E}, 2C_4, 8C_3, 3C_2, 6C_2^{\prime}, 6C_4,i, 8S_6, 3\sigma_h, 6\sigma_v, 6S_4$ &48\\
+%    & & & & 自由电子\\
+%    \hline
+%    电子 & $\lambda(\mbox{\AA})\approx12/\sqrt{\mathrm{E(keV)}}$ & $20\sim250~\mathrm{eV}$ & 穿透深度小，主要用于晶体表面结构研究 \\\hline
+%    中子  & $\lambda(\mbox{\AA})\approx0.28/\sqrt{\mathrm{E(keV)}}$ & 与室温下的$k_{\mathrm{B}}T$(约$0.026~\mathrm{eV}$)同一数量级 & 适用于研究磁性材料晶体结构；热中子的能量特别适合于对固体中晶格振动的研究；入射强度低，需要大晶体，且很长的照射时间   \\
+    \bottomrule
+  \end{tabular}
+  \label{Tab:crystallographic_group}
+\end{table}
+由于$\left|\cos\dfrac{2\pi}n\right|\leqslant1$，所以$n$取值只能是1,2,3,4,6这几个值，不允许有5重轴、7重轴等存在。Bravais格子允许的点对称操作的组合形成的群称为晶体学点群。三维晶体共许可32种晶体学点群，列于表\ref{Tab:crystallographic_group}
+
+表\ref{Tab:crystallographic_group}中对称元素标记简要说明如下:
+\begin{itemize}
+	\item $c_n^{\prime},c_n^{\prime\prime}$，表示转动轴非主轴，主轴是晶体中对称性最高的转动轴，相应的对称操作数要多于其它轴。主轴通常选为$c$轴或$z$轴。
+	\item $\sigma_h$，表示反映的镜面包含原点并垂直于主轴，下标$h$表示水平面。
+	\item $\sigma_v$，表示反映的镜面包含主轴，下标$v$表示垂直面。
+	\item $\sigma_d$，表示反映的镜面包含主轴，且平分与主轴垂直的两根2重轴间的夹角。
+	\item $S_n$，表示转动$2\pi/n$后接着作水平镜面的反映。这是一种不能仅通过旋转操作实现的对称操作，也称为非真转动。
+\end{itemize}
+
+表\ref{Tab:crystallographic_group}还给出了32个点群的国际符号及其简写形式。国际点群符号的详细说明见表\ref{Tab:International_crystallographic_group}。$\dfrac{n}m$表示垂直于$C_n$轴的水平反应的镜面，因此$C_{4h}\rightarrow\dfrac4m$，两个$m$，或三个$m$连写，即$mm$或$mmm$表示两组或三组不等价的反应镜面。对立方晶系，$T\rightarrow23$，表示分别存在一组等价的$C_3$轴，一组等价的$C_2$轴，为了和$D_3$区分，不能写成$32$。$T_h\rightarrow m3$，有一组等价的$C_3$轴和一组等价的$\sigma$镜面($\sigma_h$)。$O\rightarrow432$，表示有等价的$C_4,C_3,C_2$轴。$T_d\rightarrow\bar{4}3m$，表示有一组等价的$S_4$轴，一组等价的$C_3$轴和一组等价的$\sigma$镜面($\sigma_d$)。$O_n\rightarrow m3m$，表示一组等价的$C_3$轴和两组不等价的$\sigma$镜面($\sigma_h,\sigma_d$)，习惯上$m3m$不写成$3mm$。
+
+\begin{table}
+  \centering
+  \caption{点群的国际符号}
+  \begin{tabular}{@{\extracolsep{\fill}}m{12.2cm}<{\raggedright}@{\extracolsep{\fill}}m{2.5cm}<{\raggedright}}
+    \toprule
+    转动轴  &符号   \\
+    \midrule
+$n$重转动轴 &$n$\\
+非真$n$重转动轴 &$\bar{n}$\\
+转动轴$\cap$与之垂直的水平反映镜面 &$\bar{m}$\\
+$n$重转动轴$\cap$与之垂直的$2$重轴 &$n2$\\
+$n$重转动轴$\cap$含$n$重转动轴的垂直反映镜面 &$nm$\\
+$n$重非真转动轴$\cap$与之垂直的$2$重轴 &$\bar{n}2$\\
+$n$重非真转动轴$\cap$含轴的垂直反映镜面 &$\bar{n}m$\\
+$n$重转动轴$\cap$与之垂直的反应镜面$\cap$一组含轴的反映镜面 &$\dfrac{n}{nm} \mbox{或} \dfrac{n}mm$\\ 
+    \bottomrule
+  \end{tabular}
+  \label{Tab:International_crystallographic_group}
+\end{table}
+
+如果在点群基础上，考虑平移对称性，并滑移面和螺旋面(类似非真转动中的镜面)的作用，在Bravais格子中所有许可的对称操作将可分属于230种空间群。这些空间群所包含的对称性对简化某些理论计算是非常重要的，也经常被用在描述固体宏观性质的参数讨论上。完全利用这个空间群理论的优势，需要借助于群论的知识，%这远远超过了本书的范围，
+有兴趣的读者可参考文献\inlinecite{Symmetry_Tang}。这里主要讨论一些非常简单的晶体，很容易直接看出它的对称性。
+
+根据晶格的对称性特征，可将晶格进行分类，同一类型的晶格具有相同的对称性。一维晶体只有一种类型点阵，即沿无限长直线等距排列的点。由于平移对称性的限制，晶体仅有2、3、4、6重旋转对称轴，而不具有5重或6重以上的旋转对称轴，从而导致二维平面晶体仅有5种点阵类型(图\ref{Fig:Lattice_Type-2D})，三维晶体仅有14种点阵类型(图\ref{Fig:Lattice_Type-3D})。将这种既能反映平移对称性又能反映所属晶格对称性特征的空间点阵称为Bravais格子，故共有5种二维Bravais格子和14种三维Bravais格子。14种三维Bravais格子根据轴矢$\vec a_1$、$\vec a_2$、$\vec a_3$和它们之间夹角的关系，又可划分为七大晶系：\textcircled{1}三斜晶系，\textcircled{2}单斜晶系，\textcircled{3}正交晶系，\textcircled{4}六角晶系，\textcircled{5}三角晶系，\textcircled{6}四方晶系，\textcircled{7}立方晶系。每个晶系都有一个能反映其对称性特征的晶胞。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.35in,width=3.65in,viewport=0 0 90 60,clip]{Figures/Bravais_Lattice-2D.jpg}
+\caption{\small \textrm{5种基本的二维Bravais格子示意.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Lattice_Type-2D}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=4.15in,width=3.55in,viewport=0 25 487 581,clip]{Figures/Bravais_Lattice-3D.jpg}
+\caption{\small \textrm{14种基本的三维Bravais格子示意.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Lattice_Type-3D}
+\end{figure}
+
+\textcolor{red}{\heiti 思考 ：为什么没有有心正方二维Bravais格子和三维面心四方Bravais格子？}
+
+\subsection{晶体结构实例}
+图\ref{Fig:Crystal-structure-example}展示了一些常见的实际晶体结构的例子，它们都是复式晶格。金刚石结构和闪锌矿结构类似，是由同种或不同原子组成的两个面心立方子晶格套构而成的。半导体(如Si、Ge、$\alpha$-Sn)或半导体化合物(如GaAs、AlAs、InAs、GaSb、CdTe、HgTe、ZnTe)中有典型的这种结构。石墨烯结构是碳的一种同素异形体，二维石墨烯晶体结构是由两类不等价原子分别组成的两个三角二维子晶格套构而成的，属于三角(或六角)二维Bravais格子(图\ref{Fig:Graphe_Bravais-Lattice})。三维石墨烯(石墨)晶体结构(图\ref{Fig:Graphe})，由二维石墨烯层沿$z$方向堆积而成，两个相邻的层旋转$60^{\circ}$,沿$z$方向的晶格常数$c=6.71$，其中有四类不等价原子，属于六角Bravais格子。碳的另一种同素异形体——$\mathrm{C}_{60}$(Fullerene)分子，由60个C原子构成形似足球的分子，具有60个顶点和32个面，其中12个为正五边形，20个为正六边形。当$\mathrm{C}_{60}$分子形成晶体时，分子中心排列成面心立方结构，基元是包含60个碳原子的Fullerene分子。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=5.35in,width=3.55in,viewport=0 0 70 110,clip]{Figures/Crystal_Structure-examples.jpg}
+\caption{\small \textrm{一些实际晶体结构的实例.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Crystal-structure-example}
+\end{figure}
+
+\subsection{晶列与晶向指数} 
+晶体通常是各向异性的，因此在研究晶体的性质时常常需要区别和标志晶体的不同方向。通过晶格中任意两个格点连一条直线，称为晶列。Bravais格子的格点可以看成分布在一系列平行周期排列的晶列族上。晶列的取向称为晶向，描写晶向的一组数称为晶向指数。如果从一个格点出发，沿晶向前进到最近邻格点的位移矢量为$l_1\vec a_1+l_2\vec a_2+l_3\vec a_3$，则晶向可用i$l_1$，$l_2$，$l_3$标志，记作$[l_1,l_2,l_3]$，称为晶向指数，不难证明$l_1$，$l_2$，$l_3$为互质的整数。实际中常常采用结晶学单胞的轴矢$\vec a$，$\vec b$，$\vec c$来表示这个位移矢量$m^{\prime}\vec a+n^{\prime}\vec b+p^{\prime}\vec c$，此时$m^{\prime}$，$n^{\prime}$，$p^{\prime}$为有理数，将$m^{\prime}$，$n^{\prime}$，$p^{\prime}$化为互质的整数，记为$[m,n,p]$，即该晶列指数。图\ref{Fig:Crystal_orientation}示意了立方晶格中的一些晶向。晶向指数中的负数按习惯将``-''号写在数字上方 ，如-1写成$\bar{1}$。由于晶格的对称性，一些晶向在物理上是完全等价的，可以统一地或表示。例如，图\ref{Fig:Cubic_orientation}示意了立方晶格中沿立方边的6个等价晶列,统称这些方向为等效晶向，写成$\langle1,0,0\rangle$。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.05in,width=2.05in,viewport=0 0 45 45,clip]{Figures/Crystal_orientation.png}
+\caption{\small \textrm{立方晶格的晶向示意. OA:$[1,0,0]$, OB:$[0,1,0]$, OC:$[0,0,1]$, OD:$[1,1,0]$, OF:$[1,1,1]$, OH:$[2,1,0]$, BO:$[0,\bar{1},0]$, FD:$[0,0,\bar{1}]$.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Crystal_orientation}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.05in,width=2.55in,viewport=0 0 45 33,clip]{Figures/Cubic_equal-orientation.png}
+\caption{\small \textrm{等效晶向$\langle1,0,0\rangle$.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Cubic_orientation}
+\end{figure}
+
+\subsection{晶面与Miller指数}\label{sub:Crystal_Plane} 
+在晶格中通过任意三个不在同一直线上的格点做一平面，称为晶面。Bravais格子的格点可以看成分布在一系列等间距的平面族上。对任一Bravais格子，都有无限多族具有这样性质的晶面，因此需要一定的办法标志不同的晶面。常用的是晶面指数和Miller指数，由以下方法确定。在一平面族中，取一个不过原点的平面，它在基矢$\vec a_1$、$\vec a_2$、$\vec a_3$上的截距分别为$S$、$T$、$U$：
+\begin{equation}
+	\frac1S:\frac1T:\frac1U=m_1:m_2:m_3
+	\label{eq:SSI-10}
+\end{equation} 
+其中$m_1$、$m_2$、$m_3$为互质整数，则定义该晶面的晶面指数为$(m_1,m_2,m_3)$。晶面指数表示的意义是基矢$\vec a_1$、$\vec a_2$、$\vec a_3$被平行的晶面等间距地分割成$|m_1|$、$|m_2|$、$|m_3|$等份。当选择的坐标轴为轴矢$\vec a$、$\vec b$、$\vec c$时，按上述步骤确定的晶面指数称为Miller指数，相应地记为$(hkl)$。图\ref{Fig:Cubic_plane}给出了立方晶体中常用的一些晶面。由于对称性，在物理上与$(hjl)$晶面族完全等价的晶面可统一记为$\{hkl\}$，如立方晶格$(100)$、$(010)$、$(001)$等可概括为$\{100\}$；$(110)$、$(101)$、$011)$等可统一为$\{110\}$。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.45in,width=3.75in,viewport=0 0 92 33,clip]{Figures/Cubic_Plane.png}
+\caption{\small \textrm{立方晶格中的$(100)$、$(110)$、$(111)$面.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Cubic_plane}
+\end{figure}
+
+\subsection{倒格子与Fourier分析}
+由于晶格的平移对称性，晶体的物理性质(如局域电子密度、静电势等)也应具有相同的对称性，即晶格上某点$\vec r$的物理量$\Gamma(\vec r)$满足
+\begin{equation}
+	\Gamma(\vec r)=\Gamma(\vec r+\vec R_n)
+	\label{eq:Transfer}
+\end{equation} 
+式中$\vec R_n=n_1\vec a_1+n_2\vec a_2+n_3\vec a_3$为Bravais格子的格矢。任何的一个周期函数都能展开为傅里叶级数形式：
+\begin{equation}
+	\Gamma(\vec r)=\sum_h\Gamma(\vec G_h)\mathrm{e}^{\mathrm{i}\vec G_h\cdot\vec r}
+	\label{eq:Fourier_Vec-r}
+\end{equation} 
+其中展开系数
+\begin{equation}
+	\Gamma(\vec G_h)=\dfrac1V\int_{\mathrm{cell}}\Gamma(\vec r)\mathrm{e}^{-\mathrm{i}\vec G_h\cdot\vec r}\mathrm{d}r
+	\label{eq:Fourier_Coeff}
+\end{equation}
+由于函数的周期性，只需要在一个周期的区域内积分。式中$\vec G_h$为某一波矢量，式\eqref{eq:Transfer}的周期性约束，则$\vec G_h$要求满足$\mathrm{e}^{\mathrm{i}\vec G_h\cdot\vec r}=1$，因此有
+\begin{equation}
+	\vec G_h\cdot\vec R_n=2\pi\mu\quad(\mu\mbox{为整数})
+	\label{eq:Real-Reciprocal}
+\end{equation} 
+即如果实空间矢量$\vec R_n$有平移对称性，那么在Fourier空间一定存在矢量$\vec G_h$满足此约束关系。因此，对Bravais格子中所有格矢$\vec R_n$，定义在动量空间满足式\eqref{eq:Real-Reciprocal}的全部矢量$\vec G_h$的集合，构成该Bravais格子的倒空间格子，$\vec G_h$所有端点即构成倒格点，因此也将$\vec G_h$称为倒格矢。任意周期函数都可以在该函数所定义的倒格空间中展开成为Fourier级数。 
+
+与正空间格子(Bravais格子)类似，倒空间格矢也具有平移对称性，将倒格矢$\vec G_h$用一组倒格矢基矢$\vec b_1$、$\vec b_2$、$\vec b_3$表示：
+\begin{equation}
+	\vec G_h=h_1\vec b_1+h_2\vec b_2+h_3\vec b_3~(h_1,h_2,h_3\mbox{为任意整数})
+	\label{eq:Reciprocal-vector}
+\end{equation}
+由式\eqref{eq:Real-Reciprocal}约束条件，可知基矢$\vec b_1$、$\vec b_2$、$\vec b_3$满足
+\begin{equation}
+	\vec b_i\cdot\vec a_j=2\pi\delta_{ij},\quad\delta=
+	\left\{\begin{aligned}
+		&1 \quad &i=j\\
+		&0 \quad &i\neq j
+	\end{aligned}\right.
+	\label{eq:Real_Reciprocal-Basis_set}
+\end{equation} 
+不难证明倒空间基矢$\vec b_1$、$\vec b_2$、$\vec b_3$的形式：
+\begin{equation}
+	\begin{aligned}
+		\vec b1=&2\pi\dfrac{\vec a_2\times\vec a_3}{\vec a_1\cdot(\vec a_2\times\vec a_3)}\\
+		\vec b2=&2\pi\dfrac{\vec a_3\times\vec a_1}{\vec a_1\cdot(\vec a_2\times\vec a_3)}\\
+		\vec b3=&2\pi\dfrac{\vec a_1\times\vec a_2}{\vec a_1\cdot(\vec a_2\times\vec a_3)}
+	\end{aligned}
+	\label{eq:Reciprocal_Basis-set}
+\end{equation} 
+所以，如果$\vec a_1$、$\vec a_2$、$\vec a_3$为Bravais格子原胞基矢，则式\eqref{eq:Reciprocal_Basis-set}中$\vec b_1$、$\vec b_2$、$\vec b_3$为对应的倒空间原胞基矢。
+
+真实的原子排列是在正空间，那么为什么要引入倒空间\footnote{倒空间也称为动量空间或Fourier空间}的概念?从矢量的定义很容易看出倒格矢$\vec b_i$线度量纲为$[\mbox{长度}]^{-1}$，与波矢相同，因此倒空间与波矢(动量)空间对应。正空间格点的周期平移性导致倒空间中动量变量也只能取具有同样周期平移性的离散值，它们之间通过Fourier变换一一对应。每个晶体结构都有两个点阵空间与其相联系，一是正格点构成的点阵空间，反映构成晶体的原子在三维位置空间中周期有序排列的图像，另一个是倒格子空间，反映周期结构物理性质的基本特征。换句话说，倒格空间就是空间平移对称性在动量空间的展现。引入倒格子是固体物理中一种重要的数学处理，用倒格矢可以很方便地表示动量空间的物理量，从而简化问题，方便处理，如研究晶体与光波的相互作用。在X射线衍射、电子衍射等过程中，晶体的衍射图形是晶体倒格子的映像，因此用倒格子描述晶体衍射十分方便。%在
+后续讨论中，会经常用到倒空间的概念。
+
+根据上述定义和讨论，可以推导出倒格子的一些基本性质：
+\begin{enumerate}
+	\item 任意正格矢$\vec R_n=n_1\vec a_1+n_2\vec a_2+n_3\vec a_3$与倒格矢$G_h=h_1\vec b_1+h_2\vec b_2+h_3\vec b_3$之间满足式\eqref{eq:Real-Reciprocal}，其基矢满足关系式\eqref{eq:Real_Reciprocal-Basis_set}。 反过来，对于任意正空间格矢$\vec R_n$，一个矢量$\vec q$始终满足$\vec q\cdot\vec R_n=2\pi\mu$，则$\vec q$一定是倒格矢。 
+	\item 正空间格矢和倒空间格矢互为Fourier变换关系，即式\eqref{eq:Fourier_Vec-r}。
+	\item 倒空间原胞的体积$\Omega^{\ast}$反比于正空间原胞的体积$\Omega$：
+\begin{displaymath}
+	\Omega^{\ast}=\vec b_1\cdot(\vec b_2\times\vec b_3)=\dfrac{(2\pi)^3}{\Omega^3}(\vec a_2\times\vec a_3)\cdot[(\vec a_3\times\vec a_1)\times(\vec a_1\times\vec a_2]=\dfrac{(2\pi)^3}{\Omega}
+\end{displaymath} 
+%上式推导中利用了公式$\vec a\cdot(\vec b\times\vec c)\equiv\vec b$，
+这里正空间原胞的体积为$\Omega=\vec a_1\cdot(\vec a_2\times\vec a_3)$。
+
+\item 正空间和倒空间格矢互为倒正，换言之，倒空间格矢的倒格子即为正空间格矢。利用式\eqref{eq:Reciprocal-vector}的相似推导可得
+	\begin{displaymath}
+		\begin{aligned}
+			\vec a_1=2\pi\dfrac{\vec b_2\times\vec b_3}{\vec b_1\cdot(\vec b_2\times\vec b_3)}\\
+			\vec a_2=2\pi\dfrac{\vec b_3\times\vec b_1}{\vec b_1\cdot(\vec b_2\times\vec b_3)}\\
+			\vec a_3=2\pi\dfrac{\vec b_1\times\vec b_2}{\vec b_1\cdot(\vec b_2\times\vec b_3)}\\
+		\end{aligned}
+	\end{displaymath}
+\item 倒格矢$\vec G_m=m_1\vec b_1+m_2\vec b_2+m_3\vec b_3$与晶面族$(m_1m_2m_3)$垂直，且该晶面族的面间距为
+	\begin{equation}
+		d=\dfrac{2\pi}{|\vec G_m|}
+		\label{eq:Crystal_plane-displace}
+	\end{equation} 
+	根据\ref{sub:Crystal_Plane}晶面族的定义，$\frac{\vec a_1}{m_1}-\frac{\vec a_2}{m_2}$为晶面族$(m_1m_2m_3)$中离原点最近晶面上的矢量，由式\eqref{eq:Real_Reciprocal-Basis_set}可得$\vec G_m\cdot\big(\frac{\vec a_1}{m_1}-\frac{\vec a_2}{m_2}\big)=0$，因此$\vec G_m$垂直于该矢量，同理可证，$\vec G_m$垂直于晶面上另一矢量$\big(\frac{\vec a_1}{m_1}-\frac{\vec a_3}{m_3}\big)$，因此$\vec G_m$垂直晶面族$(m_1m_2m_3)$。晶面族$(m_1m_2m_3)$的面间距为矢量$\frac{\vec a_1}{m_1}$在垂直于晶面族的单位矢量$\frac{\vec G_m}{|\vec G_m|}$上的投影，即$d=\frac{\vec a_1}{m_1}\cdot\frac{\vec G_m}{|\vec G_m|}=\frac{2\pi}{|\vec G_m|}$。正空间中的一个晶面就变成倒空间中的一个点，反之亦然，这正是晶格周期性的体现。注意这里$m_1$、$m_2$、$m_3$互质。对于任意格矢$\vec G_h$，总有$\vec G_h=n\vec G_m$($n$为整数)，则$d=\frac{2\pi n}{|\vec G_h|}$。
+
+\item 简单立方的倒空间格子依然为简单立方，面心立方格子的倒空间格子是体心立方，而体心立方的倒空间格子是面心立方。
+\end{enumerate}
+
+\subsection{Brillouin区} 
+在倒空间中，以某一倒格点为原点，作所有倒格矢的垂直平分面，这些平面把倒格空间分割成许多包围原点的多面体，其中离原点最近的多面体称为第一Brillouin区，离原点次近的多面体与第一Brillouin区的表面所围成的区域称为第二Brillouin区，依此类推，可得到第三、第四等各Brillouin区。图\ref{Fig:Brillouin-2D}示意了二维六角晶格的Brillouin区。第一Brillouin区(又称简约Brillouin区)实际上就是倒格子的Wigner-Seitz原胞，其体积是一个倒格点所占的体积，与倒格子原胞体积相等。Brillouin区的形状是围绕原点中心对称的，具体形状取决于晶体所属Bravais点阵的类型，具有与相应晶体结构点阵相同的点群对称性，Brillouin区的边界由倒格矢的垂直平分面构成。简单立方、体心立方和面心立方点阵的第一Brillouin区分别为立方体、菱十二面体和截角八面体(十四面体)。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.65in,width=3.35in,viewport=0 0 510 440,clip]{Figures/2D-Brillouin-Zone.jpg}
+\caption{\small \textrm{二维六角晶格的Brillouin区.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Brillouin-2D}
+\end{figure}
+
+\subsection{晶体结构的测定} 
+%在3.8.1节中已经提到能够利用X射线测定晶体的结构。
+晶体衍射实际上是入射波或粒子与晶体中原子核外电子作用的结果，电子对入射波或粒子的散射可以是弹性或非弹性散射。如果只考虑晶体几何结构的影响，即假设晶体中原子固定不动，入射波或粒子与静止的晶格发生的是弹性散射；%对简单晶格和复式晶格两种结构做简单分析，
+当讨论入射波或粒子和振动的晶格($T\neq0$时，晶体中原子围绕平衡位置做微小的热振动)相互作用时，需要考虑非弹性散射的情形。X射线衍射技术是分析晶体结构的常用方法，电子衍射技术和中子衍射技术是对X射线衍射技术不足的补充。
+
+\subsubsection{简单晶格(Bravais格子)的X衍射：Laue条件和Bragg反射条件} 
+这里我们从三维Bravais格点对X射线衍射的角度分析衍射加强条件。设入射波和衍射波的波矢分别为$\vec k$和$\vec k^{\prime}$，由于弹性散射条件$|\vec k|=|\vec k^{\prime}|=2\pi/\lambda$，在任意两格点$O$、$P$,如图\ref{Fig:Laue_condition}所示 ，入射波与衍射波光程差为$OA+OB=\vec{OP}\cdot(\vec k^{\prime}-\vec k)$，其中$\vec k$和$\vec k^{\prime}$分别是和方向的单位矢量。取格点$O$为原点，则是$\vec{OP}=\vec R_i$格矢，发生长干涉的条件为$\vec R_i\cdot(\vec k^{\prime}-\vec k)=\mu\lambda$，即$\vec R_i\cdot(\vec k^{\prime}-\vec k)=2\mu\pi$($\mu$为整数)。根据正、倒格子的关系式\eqref{eq:Real-Reciprocal}，Laue衍射加强条件可写为
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=2.65in,width=2.65in,viewport=0 0 40 40,clip]{Figures/Laue_condition.png}
+\caption{\small \textrm{Laue条件.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Laue_condition}
+\end{figure}
+\begin{equation}
+	(\vec k^{\prime}-\vec k)=\vec G_h
+	\label{eq:Laue-condition}
+\end{equation} 
+即衍射波矢与入射波矢之差必须是一个倒格矢。实际上，式\eqref{eq:Laue-condition}的Laue衍射加强条件等价于将晶体看作为一组等间距d的镜面对X射线衍射的Bragg反射%满足式的条件是等价的（见习题 6.9）。
+\begin{equation}
+	2d\sin\theta=n\lambda
+	\label{eq:Bragg-condition}
+\end{equation}
+注意到-$\vec G_h$也是倒格矢，Laue条件也可写为$\vec k^{\prime}=\vec k-\vec G_h$，两边平方可得
+\begin{equation}
+	\vec k\cdot\vec G_h=\dfrac12|\vec G_h|^2
+	\label{eq:SSI-11}
+\end{equation} 
+说明入射波矢$\vec k$在倒格矢$\vec G_h$方向上的投影为$\vec G_h$长度的一半，即$\vec k$的端点应落在$\vec G_h$的垂直平分面上。因此式\eqref{eq:SSI-11}定义Brillouin区边界面，又称Bragg面，从原点出发到Brillouin区边界面上的入射波矢都满足劳厄条件。Brillouin区的意义和价值是为Laue衍射加强条件提供了一个清晰的几何解释。
+
+\subsubsection{复式晶格的X射线衍射：几何结构因子与原子形状因子} 
+Laue条件给出了晶格格点的散射波相互干涉的结果，但没有涉及组成晶体的原子和原胞的具体性质，也没有涉及衍射条纹的强度问题。X射线与晶体的相互作用，实际上是晶体中每个原子的电子分布对X射线的散射。对于复式晶格的X射线衍射，我们需要引入原子散射因子和几何结构因子，考虑原胞内不等价原子(种类和分布)对衍射的影响。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.75in,width=2.75in,viewport=0 0 45 28,clip]{Figures/Electron_dispersion.png}
+\caption{\small \textrm{体积元$\mathrm{d}\tau$的散射贡献.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Dispersion}
+\end{figure}
+
+如果原子散射中心$O$附近分布的电子云密度函数为$\rho(\vec r)$，如图\ref{Fig:Dispersion}所示，$P$为原子内某点，与$O$点之间的散射波相位差是$\Delta\varphi=(\vec k^{\prime}-\vec k)\cdot\vec r$，则在$P$点附近体积元$\mathrm{d}\tau$内，$\vec k^{\prime}$方向的散射波振幅正比于$\mathrm{e}^{\mathrm{i}(\vec k^{\prime}-\vec k)\cdot\vec r}\rho(\tau)\mathrm{d}\tau$，原子内所有电子在$\vec k$方向的散射波振幅将正比于
+\begin{equation}
+	f=\int\mathrm{e}^{\mathrm{i}(\vec k^{\prime}-\vec k)\cdot\vec r}\rho(\tau)\mathrm{d}\tau
+	\label{eq:dispersion-coeff} \end{equation} 
+	这就是原子散射因子，反映某个原子的电子云分布对散射的影响。设原胞中含有不同的原子，第$j$个原子散射因子为$f_j$，位置矢量为$\vec t_j$的原子与原点处原子的散射波的相位差$\Delta\varphi=(\vec k^{\prime}-\vec k)\cdot\vec t_j$，则在$\vec k^{|prime}$方向原胞散射波的总振幅正比于
+	\begin{equation}
+		F(\vec k^{\prime}-\vec k)=\sum_jf_j\mathrm{e}^{\mathrm{i}(\vec k^{\prime}-\vec k)\cdot\vec t_j}
+		\label{eq:Geom_Structure-Coeff}
+	\end{equation} 
+定义为几何结构因子，反映原胞中原子的种类及分布对散射的影响。Laue条件确定了晶体出现衍射极大的可能方向，然而它的衍射强度则由晶体的几何结构因子$F(\vec G_h)$决定：
+\begin{equation}
+	I\propto\left|F(\vec k^{\prime})-\vec k\right|^2=\bigg|F(\vec G_h)^2\bigg|
+	\label{eq:SSI-12}
+\end{equation} 
+若$F(\vec G_h)=0$，则在Laue条件所允许的衍射极大方向也不会出现衍射线 相应衍射峰消失，这种现象叫消光现象。
+
+\textcolor{red}{【例 6.2.1】计算 CsCl 结构的几何结构因子及消光条件。}
+
+【解】CsCl 结构为复式简单立方晶格，基元中包含两个原子 ，其坐标矢量为$\vec t_1=(0,0,0)$，$\vec t_2=\frac{a}2(1,1,1)$，根据定义，其几何结构因子式\eqref{eq:Geom_Structure-Coeff}为
+	\begin{displaymath}
+		F(\vec G_h)=\sum_jf_j\mathrm{e}^{\mathrm{i}\vec G_h\cdot\vec t_j}=f_1+f_2\mathrm{e}^{\mathrm{i}\pi(h_1+h_2+h_3)}
+	\end{displaymath} 
+因此，衍射强度$I$取决于的$h_1+h_2+h_3$取值，当$h_1+h_2+h_3$为偶数时，$I\propto(f_1+f_2)^2$，衍射极大。当$h_1+h_2+h_3$为奇数时，$I\propto(f_1+f_2)^2$，衍射极小。
+
+在实际X射线衍射强度的分析中，晶体的特殊对称性起着重要作用，因此在讨论几何结构因子时，应采用晶胞，可引入赝复式格子的概念。例如在\textcolor{red}{例6.2.1}中，考虑体心立方晶格的几何结构因子，即$f_1=f_2$，若采用以上的晶胞分析，因此得到在$h_1+h_2+h_3$为奇数时，出现消光现象。用同样的方法计算面心立方晶格衍射的消光条件是当$h_1$、$h_2$、$h_3$部分为奇数，部分为偶数时，因此观察不到$(100)$、$(110)$、$(211)$晶面的衍射，但能观察到$(111)$、$(200)$等晶面的衍射。
+
+\subsubsection{其他衍射方法：电子衍射和中子衍射} 
+对于X射线衍射、电子衍射和中子衍射，弹性散射的衍射理论是完全相同的。X射线衍射是电磁波光子的衍射，而电子和中子衍射是物质波的衍射，它们服从不同能量-动量关系，光子服从相对论的关系，而非相对论性的电子和中子都服从经典力学的关系，电子质量比中子质量小三个量级。因此，达到同样波长时，其中的光子、电子和中子的能量有很大的区别，能量比大约在$106:103:1$的量级，这使得它们在测定晶体结构方面有不同的特点（参见表\ref{Tab:SSI-02}）。
+
+\begin{table}
+  \centering
+  \caption{X射线衍射、电子衍射和中子衍射技术比较}
+  \begin{tabular}{c|@{\extracolsep{\fill}}m{3.6cm}<\raggedright|@{\extracolsep{\fill}}m{4.0cm}<{\raggedright}|@{\extracolsep{\fill}}m{4.3cm}<{\raggedright}}
+    \toprule
+    衍射技术 &  ~~~~~~~~~~~~波长 & $\lambda=0.01~\mathrm{nm}$相应的能量 &   ~~~~~~~~~~~~~~~~~~~~特点 \\
+    \midrule
+    X射线 & $\lambda(\mbox{\AA})\approx12.4/\mathrm{E(keV)}$ & $10^4~\mathrm{keV}$ & 最简单，应用范围广 \\
+%    & & & & 自由电子\\
+    \hline
+    电子 & $\lambda(\mbox{\AA})\approx12/\sqrt{\mathrm{E(keV)}}$ & $20\sim250~\mathrm{eV}$ & 穿透深度小，主要用于晶体表面结构研究 \\\hline
+    中子  & $\lambda(\mbox{\AA})\approx0.28/\sqrt{\mathrm{E(keV)}}$ & 与室温下的$k_{\mathrm{B}}T$(约$0.026~\mathrm{eV}$)同一数量级 & 适用于研究磁性材料晶体结构；热中子的能量特别适合于对固体中晶格振动的研究；入射强度低，需要大晶体，且很长的照射时间   \\
+    \bottomrule
+  \end{tabular}
+  \label{Tab:SSI-02}
+\end{table}
+
+由于中子还具有磁矩，可与固体中磁性电子发生相互作用，因此中子衍射的独特之处是能研究磁性材料的磁结构(原子磁矩的相互取向、排列及磁相变等)。 对于铁磁材料，磁化强度与晶体结构具有相同的周期性。因此，磁散射只是增强衍射峰。然而对于反铁磁材料，情况就完全不同。如图\ref{Fig:AFM-dispersion}所示，一维反铁磁链磁化强度和晶体结构具有不同的周期性，晶体的晶格常数为$a$，而磁结构的晶格常数是$2a$。对于无磁性晶体衍射，在$G=2\pi/a$的整数倍处出现衍射峰(图\ref{Fig:AFM-dispersion}(b)实线所示)，对于磁的衍射，应在$g=2\pi/2a$的整数倍处出现衍射峰，因此有如图\ref{Fig:AFM-dispersion}(b)虚线所示的额外衍射峰出现。图\ref{Fig:Diffration}展示了CoO的X射线和中子衍射实验结果，观察到低温中子衍射实验中出现了额外的衍射峰，清晰地说明了该效应。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.38in,width=3.55in,viewport=0 0 103 40,clip]{Figures/AFM_dispersion.png}
+\caption{\small \textrm{(a)~一维反铁磁有序结构;~(b)~晶体散射的示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:AFM-dispersion}
+\end{figure}
+衍射的方法是在获得晶体倒格子空间的映像后，通过Fourier变换来获得晶体结构信息，也有真实晶格结构在正格子空间的直接成像方法，如电子显微镜、利用量子隧穿效应的扫描隧道显微镜等。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.90in,width=3.15in,viewport=0 0 130 80,clip]{Figures/X-Ray_Neutron-diffration.png}
+\caption{\small \textrm{(a)~CoO的X射线和中子衍射实验结果;~(b)~CoO的自旋磁序.引自文献\inlinecite{PRL101-117202_2008}.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Diffration}
+\end{figure}
+
+\section{金属自由电子气模型}\label{Section:Free-electron}
+在元素周期表中，可以固态单质形式存在的元素有2/3以上是金属。金属一般都具有良好的导电、导热性能，优良的机械性能，很多金属还具有典型的金属光泽。对金属的这些性质的认识和了解，是推动现代固体理论发展的重要动力。
+%金属是最基本物质状态之一,元素周期表中有2/3是金属元素，人类很早就对金属进行了利用和研究,发现它们具有良好的电导率、热导率等,尝试对金属特性的理解也是现代固体理论的发端。这一节将介绍
+这里首先介绍最早尝试解释金属性质的简单模型，也是相当成功的模型——金属自由电子气模型。 
+
+\subsection{经典理论:~Drude模型}
+1897年英国物理学家J. J. Thomsom发现电子后不久,德国物理学家P.Drude意识到金属的导电导热性质可能与电子有关,将当时(20世纪初)非常成功的经典理想气体的运动学理论运用到固体的电子中，即把自由运动的电子当作理想气体处理，于1900年提出了解释金属特性的第一个微观模型--Druce模型。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.90in,width=3.15in,viewport=0 0 130 80,clip]{Figures/Drude_Model.png}
+\caption{\small \textrm{Drude模型的物理解释.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Drude_model}
+\end{figure} 
+德鲁德模型(图\ref{Fig:Drude_model})的基本框架是基于价电子假设，认为金属可以看成由原子核与内层电子(称为芯电子)组成的离子实和外层自由运动的价电子两部分。由于离子实的质量远远大于电子质量，假定离子实分散排列，固定不动，只提供一个大的背景势将整个原子核和电子的体系束缚为固体。而价电子由于受到原子核的束缚力较弱，巡游于整个金属内部。与理想气体类似，电子只与固定的离子实发生瞬时的弹性碰撞。这些游离的价电子构成自由电子气，通常认为是对金属导电的主要贡献，因而也被称为传导电子。可根据原子密度求得传导电子密度$n$:
+\begin{equation}
+	n=N_0\times\dfrac{Z\rho_m}A=6.022\times10^{23}\times\dfrac{Z\rho_m}A
+	\label{eq:valence_density}
+\end{equation}
+其中A和$\rho_m$分别为金属元素的原子量和密度，$Z$为每个原子提供的价电子数目, 为Avogadro常数。对于金属，$n$值的典型范围约为$10^{22}\sim10^{23}$，该值比理想气体的密度高上千倍。如金属钠(原子组态$1s^22s^22p^63s^1$，$Z=1$，$\rho_m=0.971~g/cm^3$，$A=23$)，$n\approx2.541\times10^{22}/cm^3$。如果将其视为理想气体，在室温下自由电子气的气压约为$P=(n/N_0)RT\approx1015~\mathrm{atm}$，远超空气压强。这里普适气体常数$R=k_{\mathrm{m}}N_0$，$k_{\mathrm{B}}$为Boltzmann常数。如此庞大的气压，全靠金属晶体中的结合能，例如金属键、共价键、离子键等能量来平衡的，限制电子不逸出金属表面。
+
+按照这个基本框架，Drude建立了简单模型并在解释金属的导电、导热性质的同时，引入了几个基本近似(Drude模型的基本假设):
+\begin{enumerate}
+	\item 自由电子近似:~除了偶尔和离子实发生碰撞外，忽略电子与离子之间的相互作用。 
+	\item 独立电子近似:~忽略电子-电子之间的相互作用。尽管组成自由电子气的电子数很多，密度很大，但是它们之间并不存在相互作用，每个电子都可以独立运动，偶尔与离子实发生碰撞。因此可将一个复杂的多体问题简化为一个独立电子的问题进行处理。
+
+	\item 碰撞假设:~电子与离子之间的碰撞是瞬时的。经过碰撞，电子速度瞬时发生改变，即碰撞后的电子速度只与碰撞时的温度有关，与碰撞前的速度无关。速度的方向是各向同性的。电子通过碰撞达到热平衡状态。
+
+	\item 弛豫时间近似:~一个电子发生两次碰撞之间的平均时间$z$通常被称为弛豫时间，电子在$\mathrm{d}t$时间所受碰撞的概率正比于$\mathrm{d}t/\tau$。在没受外力的情况下，电子在$\tau$时间内以平均均方根速度$v_{\max}=\sqrt{\bar{v}_0^2}$作自由运动，相应移动的平均距离$l=v_{\max}\tau$叫作平均自由程。在室温下$v_{\max}$的典型值为$10^5~\mathrm{m/s}$。
+
+	\item 经典粒子假设(隐含的假设):~电子被假设成经典粒子，用经典力学和电磁学描述。电子热平衡分布服从经典Mexwell-Boltzmann统计，根据经典能量均分定理，单个电子的平均能量为
+		\begin{displaymath}
+			\varepsilon=\dfrac12m_e\bar{v}_0^2=\dfrac32k_{\mathrm{B}}T
+		\end{displaymath}
+\end{enumerate}
+根据上述Drube模型的基本假设，首先可导出经典的电子运动的动力学方程。假定$t$时刻电子的平均动量为$\vec p(t)$，经过$\mathrm{d}t$时间，电子受到碰撞的概率为$\mathrm{d}t/\tau$，碰撞后的电子向各个方向运动(无规取向)，对平均动量无贡献$\vec p_{mathrm c}(t+\mathrm{d}t)=0$，而电子没有受到碰撞的概率为$1-\mathrm{d}t/\tau$，没有受到碰撞的电子的动量变为$\vec p_{\mathrm{nc}}(t+\mathrm{d}t)=\vec p(t)+\vec F(t)\mathrm{d}t$，$\vec F(t)$是存在外场时电子所受的外力。因此在$t+\mathrm{d}t$时刻,电子的平均动量为
+\begin{equation}
+	\vec p(t+\mathrm{d}t)=\bigg(1-\dfrac{\mathrm{d}t}{\tau}\bigg)\bigg[\vec p(t)+\vec F(t)\mathrm{d}t\bigg]
+	\label{eq:Drude-electron_movement}
+\end{equation} 
+即电子动量完全来自没有受到碰撞的电子对平均动量的贡献。这里涉及$\mathrm{d}t$的二次项是一个二阶小量，可略去。在一级近似下式\eqref{eq:Drude-electron_movement}为
+\begin{equation}
+	\vec p(t+\mathrm{d}t)-\vec p(t)=\vec F(t)\mathrm{d}t-\vec p(t)\dfrac{\mathrm{d}t}{\tau}
+	\label{eq:Drude-electron_movement-2}
+\end{equation} 
+可写为微分形式
+\begin{equation}
+	\dfrac{\mathrm{d}\vec p(t)}{\mathrm{d}t}=\vec F(t)-\dfrac{\vec p(t)}{\tau}
+	\label{eq:Drude-electron_movement-3}
+\end{equation} 
+这就是电子的平均运动方程。引人外场作用下电子的漂移速度$\vec v_d$，则有
+\begin{equation}
+	m_e\dfrac{\mathrm{d}\vec v_d(t)}{\mathrm{d}t}=\vec F(t)-m_e\dfrac{\vec v_d(t)}{\tau}
+	\label{eq:SSI-13}
+\end{equation} 
+其中$m_e$是电子质量，碰撞的作用相当于一个阻尼项。考虑两种特殊情况:
+\begin{itemize}
+	\item 当$\vec F(t)=0$时，方程的解为$\vec p(t)=\vec p(0)\mathrm{e}^{-t/\tau}$，这意味着在$t=0$时刻给予电子一个平均动量$\vec p(0)$，电子平均动量将按一常数时间$\tau$以指数形式衰减到零,这也是为什么把$\tau$称为弛豫时间的原因。
+	\item 当$\vec F(t)=F$(常数)时，方程的解为$\vec p(t)=\vec p(0)\mathrm{e}^{-t/\tau}+\vec F\tau$，在短时间内，电子的平均动量随时间变化:~当$t\gg\tau$时,指数时间项可以忽略，电子平均动量将达一稳态$\vec p(t)=\vec F\tau$。如果弛豫时间$\tau\rightarrow\infty$，电子的状态将无法达到平衡。
+\end{itemize}
+
+\subsubsection{金属直流电导:~Ohm定律} 
+按照式\eqref{eq:SSI-13}，加外电场$E$后电子到达稳态时$\vec p(t)=\vec F\tau-eF\tau$，此时对应电子漂移速度$\vec v_d=-e\vec E\tau/m_e$。由电流密度了的定义$\vec J$其大小定义为单位时间内通过某一单位面积的电量，方向向量为单位面积相应截面的法向量)，可知$\vec J=-ne\vec v_d$，即得
+\begin{equation}
+	\vec J=\dfrac{ne^2\tau}{m_e}\vec E
+	\label{eq:Electron_current}
+\end{equation} 
+写为$\vec J=\sigma\vec E$形式，即为Ohm定律，电流密度$\vec J$与所加电场$\vec E$成正比，最早是从实验上确定的。其中电导率
+\begin{equation}
+	\sigma=\dfrac{ne^2\tau}{m_e}=\dfrac{ne^2\mathscr{l}}{m_ev_{\mathrm{rms}}}
+	\label{eq:Electron_conduct}
+\end{equation} 
+可见电导率$\sigma$只与金属材料的性质(如传导电子密度$n$和弛豫时间$\tau$)有关，与外加电场$\vec E$无关。也就是说，对一定的金属，$\sigma$为一常数。注意没有碰撞时,即$\tau\rightarrow\infty$，电导率$\sigma\rightarrow\infty$。这里电子的弛豫时间$\tau$是一个非常重要的参数，按照室温下金属典型的电阻值$10^{-6}~\Omega\cdot\mathrm{cm}$估计，弛豫时间大约在$10^{-14}~\mathrm{s}$量级,则金属中电子的平均自由程$\mathscr{l}=v_{\mathrm{rms}}\sim1~\mathrm{nm}$,正好是原子间距的量级，因此Drude模型本身是自治的。
+
+\subsubsection{金属热导率} 
+金属的热导率一般大于绝缘体的，这也可以归结为自由电子的贡献。当存在温度梯度时,在金属中就会产生热流:
+\begin{equation}
+	\mathscr{j}^q=-\kappa\nabla T
+	\label{eq:thermo_current}
+\end{equation} 
+其中$\mathscr{j}^q$是热流密度，定义为单位时间内通过单位面积的热量，$\kappa$是热导率，$\nabla T$是温度梯度，这就是Fourier定律。负号表示热流从高温到低温。简单将分子气体运动论应用于金属中自由电子气，可得热导率
+\begin{equation}
+	\kappa=\dfrac13C_ev_{\mathrm{rms}}^2\tau=\dfrac13C_ev_{\mathrm{rms}}\mathscr{l}
+	\label{eq:thermo_conduct}
+\end{equation}
+按照经典能量均分定理，可得电子热容量
+\begin{equation}
+	C_e=\dfrac12\pi^2nk_{\mathrm{B}}T
+	\label{eq:electron_thermo-capacity}
+\end{equation}
+因此可有
+\begin{equation}
+	\kappa=\dfrac{\pi^2k_{\mathrm{B}}^2n\tau}{3m_e}T
+	\label{eq:electron_thermo-conduct}
+\end{equation}
+\subsubsection{Wiedeman-Franz定律}
+经典理论推导的电导率公式\eqref{eq:Electron_conduct}和热导率公式\eqref{eq:electron_thermo-conduct}，很容易发现一个事实，即它们之间的比值
+\begin{equation}
+	\dfrac{\kappa}{\sigma}=\dfrac13\bigg(\dfrac{\pi k_{\mathrm{B}}}e\bigg)^2T
+	\label{eq:thermo-electric}
+\end{equation}
+其中Boltzmann常数$k_{\mathrm{B}}$和电子电量$e$都是常量，式\eqref{eq:thermo-electric}表明了在一定温度下所有金属的热导率和电导率的比值都是常数，这一规律被称为Wiedeman-Franz定律。最初是由德国物理学家G.Wiedeman和R.Franz于1853年由大量实验事实发现的。这一常数
+\begin{equation}
+	L=\dfrac{\kappa}{\sigma T}=\dfrac32\bigg(\dfrac{k_{\mathrm{B}}}e\bigg)^2=1.11\times10^{-8}~\mathrm{W}\cdot\Omega/\mathrm{K}^2
+	\label{eq:Wiedeman-Franz_Lorenz}
+\end{equation} 
+被称为Lorenz数。实验测得的Lorenz数$L$在不同温度下对不同金属接近一常数，但比上述数值大一倍(见表\ref{Tab:SSI-03})。Drude模型无法描述该现象。
+
+\begin{table}
+  \centering
+  \caption{不同温度下实验测得的Lorenz数($10^{-8}~\mathrm{W}\cdot\Omega/\mathrm{K}^2$)}
+  \begin{tabular}{c|@{\extracolsep{\fill}}m{2.7cm}<\centering|@{\extracolsep{\fill}}m{2.7cm}<{\centering}}
+    \toprule
+    金属 &  237~K & 373 K \\
+    \midrule
+    Ag & 2.31 & 2.37 \\
+    \hline
+    Au & 2.35 & 2.40 \\
+    \hline
+    Cd & 2.42 & 2.43 \\
+    \hline
+    Cu & 2.23 & 2.33 \\
+    \hline
+    Ir & 2.49 & 2.49 \\
+    \hline
+    Mo & 2.61 & 2.79 \\
+    \hline
+    Pb & 2.47 & 2.56 \\
+    \hline
+    Pt & 2.51 & 2.60 \\
+    \hline
+    Sn & 2.52 & 2.49 \\
+    \hline
+    W & 3.04 & 3.2 \\
+    \hline
+    Zn & 2.31 & 2.33 \\
+    \bottomrule
+  \end{tabular}
+  \label{Tab:SSI-03}
+\end{table}
+\textcolor{red}{【例6.3.1】一横切面积为$2~\mathrm{mm}\times2~\mathrm{mm}$的铜导线，通过的电流为$10~\mathrm{A}$，假设一个铜原子贡献一个传导电子，室温下铜的密度为$8.96~\mathrm{g/cm}^3$，用Drude模型\textcircled{1}计算在 $300~K$ 时电子的平均均方根速度和漂移速度 ;\textcircled{2}假设平均自由程为原子间距2.6,估计弛豫时间 ;\textcircled{3}计算铜的电导率。}
+
+【解】\textcircled{1}由经典的能量均分定理可以得到
+\begin{displaymath}
+	v_{\mathrm{rms}}=\bigg(\dfrac{3k_{\mathrm{B}}T}{m_e}\bigg)^2=\bigg[\dfrac{3\big(1.38\times10^{-23}\mathrm{J/K}\big)(300\mathrm{K})}{9.11\times10^{-31}}\mathrm{kg}\bigg]=1.17\times10^5\mathrm{m/s}
+\end{displaymath} 
+由式\eqref{eq:valence_density}可得传导电子密度为
+\begin{displaymath}
+	n=N_0\times\dfrac{Z\rho_m}{A}=6.02\times10^{23}\times\dfrac{1\times8.96}{63.5}\mathrm{cm}^{-3}=8.49\times10^{22}\mathrm{cm}^{-3}
+\end{displaymath} 
+由电流密度$\vec J=-nev_d$，可得电子的漂移速度
+\begin{displaymath}
+	v_d=\dfrac{J}{ne}=\dfrac{10\mathrm{A}}{4\times10^{-6}\mathrm{m}^2}\times\dfrac1{(8.49\times10^{28}\mathrm{m}^{-3})(1.6\times10^{-19}\mathrm{C})}=1.8\times10^{-4}\mathrm{m/s}
+\end{displaymath} 
+电子的漂移速度$v_d$和平均均方根速度$v_{\mathrm{rms}}$比值为
+\begin{displaymath}
+	v_d/v_{\mathrm{rms}}=1.5\times10^{-9}
+\end{displaymath}
+\textcircled{2}电子的弛豫时间为
+\begin{displaymath}
+	\tau=\dfrac{\mathscr{l}}{r_{\mathrm{rms}}}=\dfrac{2.6\times10^{-10}\mathrm{m}}{1.2\times10^5\mathrm{m/s}}=2.2\times10^{-15}\mathrm{s}
+\end{displaymath}
+因此该模型中电子每秒完成几百万亿次碰撞。
+\textcircled{3}由式\eqref{eq:Electron_conduct}计算得到铜的电导率为
+\begin{displaymath}
+	\sigma=\dfrac{ne^2\mathscr{l}}{m_2v_{\mathrm{rms}}}=5.3\times10^6(\Omega\cdot\mathrm{m})^{-1}
+\end{displaymath} 
+
+尽管Drude模型成功解释了Ohm定理和Wiedeman-Franz定律，并提供了电子运动的第一个微观理解，但还有许多事实与实验结果不符。如表\ref{Tab:SSI-03}中实际测得Lorenz数的值大约是式\eqref{eq:Wiedeman-Franz_Lorenz}的理论值的一倍，且与温度有关。%:~在例6.3.1中
+根据Drude模型理论计算的铜电导率与实际测得的值$5.9\times10^7~(\Omega\cdot\mathrm{m})^{-1}$相差一个数量级，并且
+实验中发现电阻与温度成正比$(\rho\propto T)$，而电导率公式\eqref{eq:Electron_conduct}说明了电阻与温度的平方根成正比$(\rho\propto\sqrt{T})$；经典理论给出电子热容$C_e=3nk_{\mathrm{B}}/2$，而实验上并没有观测到金属的这一部分热容的贡献，实际绝缘体与金属有近似的热容$(\sim3R)$。
+%\subsection{温度对Fermi-Dirac分布的影响}
+\subsection{半经典理论:~Sommerfeld模型}\label{subsec:Sommerfeld-Model} 
+Drude模型假设中电子是经典粒子，它的运动分布Maxwell-Boltzmann统计。随着量子力学的创立，发现电子不同于经典粒子的性质。1925年美籍奥地利物理学家W.E.Pauli提出不相容原理，1926年提出电子等Fermi子所遵循的Fermi-Dirac统计。1928年德国物理学家A.Sommerfeld用Fermi-Dirac统计取代Maxwell-Boltzmann统计，将经典理想气体变为量子理想气体，提出了金属自由电子气的半经典理论。
+
+\subsubsection{电子态和电子态密度} 
+根据量子自由电子气模型，金属价电子在金属内的三维无限深势阱中运动，体积$V=L_1\times L_2\times L_3$。无限深势阱中粒子的Schr\"odinger方程的解为
+\begin{equation}
+	\Psi_{\vec k}(\vec r)=\dfrac1{\sqrt V}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec r}
+	\label{eq:Schrodinger-3D}
+\end{equation} 
+电子的能量为 
+\begin{equation}
+	E_k=\dfrac{\hbar^2k^2}{2m_e}
+	\label{eq:Electron_Energy}
+\end{equation}
+为简单起见，选取电子在势阱底部所具有的势能为零。不难证明$\Psi_{\vec k}(\vec r)$也是动量算符$\hat p=-\mathrm{i}\hbar\hat{\nabla}$的本征态，其本征值为$\hbar\vec k$，因此处在$\Psi_{\vec k}(\vec r)$态上的电子有确定的动量$\vec p=\hbar\vec k$，相应的速度为$\vec v=\vec p/m_e=\hbar\vec k/m_e$。
+
+对于足够大的材料，表面效应对材料性质的影响比较小。忽略晶体表面效应，只研究晶体内部体性质的情况下，可采用周期边界条件免除有限尺度带来的限制。通过周期性边界条件可有
+\begin{equation}
+	\left.\begin{aligned}
+	\Psi(x+L_1,y,z)=&\Psi(x,y,z)	\\
+	\Psi(x,y+L_2,z)=&\Psi(x,y,z)	\\
+	\Psi(x,y,z+L_3)=&\Psi(x,y,z)
+\end{aligned}\right\}
+	\label{eq:Wave_Perodic}
+\end{equation}
+
+将式\eqref{eq:Wave_Perodic}代入，则有$\mathrm{e}^{\mathrm{i}\vec k_x\cdot\vec L_1}=\mathrm{e}^{\mathrm{i}\vec k_y\cdot\vec L_2}=\mathrm{e}^{\mathrm{i}\vec k_z\cdot\vec L_3}=1$因而有
+\begin{equation}
+	k_x=\dfrac{2\pi}{L_1}n_x,~k_y=\dfrac{2\pi}{L_2}n_y,~k_z=\dfrac{2\pi}{L_3}n_z \qquad (n_x,n_y,n_z\mbox{为整数})
+	\label{eq:Perodic_Condition}
+\end{equation}
+附加边界条件导致波矢$\vec k$取值量子化，单电子本征态能量式\eqref{eq:Electron_Energy}也取离散值。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.18in}
+\includegraphics[height=2.55in,width=3.0in,viewport=0 0 55 45,clip]{Figures/K_space-discrete.png}
+\caption{\small \textrm{$\vec k$空间态分布.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:K_space}
+\end{figure}
+把波矢看作是空间矢量，相应的空间称为$\vec k$空间，不同值对应不同电子态式\eqref{eq:Perodic_Condition}说明$\vec k$空间中的可能取值可用分立点表示(如图\ref{Fig:K_space})，其分布在$\vec k$空间中是均匀的，每个点在k空间占据的体积相等: $\Delta\vec k=8\pi^3/(L_1L_2L_3)=8\pi^3/V$，因此可得$\vec k$空间态密度:
+\begin{equation}
+	\rho(\vec k)=\dfrac1{\Delta\vec k}=\dfrac{V}{8\pi^3}
+	\label{eq:k-density}
+\end{equation}
+表示$k$空间内单位体积中的许可态的数目为常数。
+
+电子是自旋1/2的Fermi子，在能级上的填充应遵守Pauli不相容原理。每一个$\vec k$的取值确定一个电子能级，若考虑电子自旋,根据Pauli不相容原理每一个能级可以填充自旋方向相反的两个电子。在$\vec k$空间中,由式\eqref{eq:Electron_Energy}表明电子态的等能面为球面:~在能量为$E$的球体中,波矢的取值总数为$\rho(\vec k)\cdot\dfrac43\pi k^3$。如将每一个自旋态看作一个电子态，电子态总数为$Z(E)=2\cdot \rho(\vec k)\cdot\dfrac43\pi k^3$。如果定义电子态密度$N(E)$是在单位能量间隔内允许存在的量子态数目，则有
+\begin{equation}
+	N(E)=\dfrac{\mathrm{d}Z}{\mathrm{d}E}=\dfrac{V(2m_e)^{\frac{3}{2}}}{2\pi^2\hbar^3}E^{\frac{1}{2}}=CE^{\frac{1}{2}}
+	\label{eq:DOS}
+\end{equation}
+其中常数$C=\dfrac{V(2m_e)^{\frac{3}{2}}}{2\pi^2\hbar^3}$，可见电子态密度$N(E)$并不是均匀分布的，电子能量越高,电子态密度就越大。
+
+\subsubsection{Fermi-Dirac分布} 
+在独立粒子近似下计算得到电子许可能占据的能级及其状态后，考虑不同温度下,电子在各能级上的分布情形。由于Pauli不相容原理限制,电子的分布将服从Fermi-Dirac统计，即在温度$T$，电子处在能量为$E$的状态被占据的概率为
+\begin{equation}
+	f(E)=\dfrac1{\mathrm{e}^{(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}+1}
+	\label{eq:Fermi_Dirac}
+\end{equation}
+其中$E_{\mathrm{F}}$是Fermi能量或化学势(有时用$\mu$来表示)，其物理意义是在体积不变的情况下，系统增加一个电子所需的自由能。图\ref{Fig:Fermi-Dirac}展示了不同温度下Fermi-Dirac分布函数形式。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.18in}
+\includegraphics[height=2.25in,width=3.5in,viewport=0 0 70 45,clip]{Figures/Fermi-Dirac.png}
+\caption{\small \textrm{不同温度下的Fermi-Dirac分布函数.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Fermi-Dirac}
+\end{figure}
+\begin{itemize}
+	\item $T=0~\mathrm{K}$时的基态性质
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.25in,width=2.55in,viewport=0 0 55 50,clip]{Figures/Fermi_Sphere.png}
+\caption{\small \textrm{Fermi球、Fermi面和Fermi半径.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Fermi-sphere}
+\end{figure}
+
+如果电子按照可辨认的经典粒子服从的Maxwell-Boltzmann统计分布，所有的电子应该在系统的最低能量态。但电子是全同的Fermi子，遵从Pauli不相容原理，每个能级上只能有两个自旋相反的电子占据。因此电子从最低能级开始填充(能量最低原理)，如能量低的能态已经填满电子，其他电子就必须填充到能量较高的态上。正如式\eqref{eq:Fermi_Dirac}的Fermi-Dirac分布函数所示，当$T\rightarrow0~\mathrm{K}$，$E<E_{\mathrm{F}}$时，有$\mathrm{e}^{(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}=\mathrm{e}^{(E_{\mathrm{F}}-E)/k_{\mathrm{B}}T}\rightarrow0$，因而有$f(E)=1$，表明所有能量低于$E_{\mathrm{F}}$的状态都已被填满；而$E>E_{\mathrm{F}}$时，有$\mathrm{e}^{(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}\rightarrow\infty$，因此$f(E)=0$，即所有能量高于$E_{\mathrm{F}}$的状态都是空的。此时的Fermi能标记为$E_{\mathrm{F}}^0$，代表绝对零度时电子填充的最高能级。在$\vec k$空间中，电子从能量最低位置开始，依照低能量到高能量逐层向外填充，直到所有电子都填完。图\ref{Fig:Fermi-sphere}所示，由于等能面为球面，所以在$\vec k$空间中电子填充部分为球体，称为Fermi球。Fermi球的半径称为Fermi半径$\vec k_{\mathrm{F}}$，Fermi球的表面称为Fermi面，Fermi面所对应的能量就是Fermi能。如果金属中有$N$个传导电子，$N$应等于$\vec k$空间态密度与Fermi球体积的乘积:
+\begin{equation}
+	2\cdot\bigg(\dfrac{4\pi k_{\mathrm F}^3}e\bigg)\cdot\bigg(\dfrac{V}{8\pi^3}\bigg)=N
+	\label{eq:total_ele-Number}
+\end{equation}
+2是自旋因子，因此不难得到
+\begin{equation}
+	k_{\mathrm F}=\big(3\pi^2n\big)^{1/3}
+	\label{eq:Fermi-radius}
+\end{equation}
+式中，$n=N/V$是传导电子密度，其典型取值($10^{22}\sim10^{23}~/\mathrm{cm}^3$)，可估算出对应的Fermi能$E_{\mathrm{F}}^0=\hbar^2k_{\mathrm F}^2/2m_e\sim1-10~\mathrm{eV}$(远大于室温所对应的热能$\sim0.025~\mathrm{eV}$)、Fermi速度$v_{\mathrm{F}}=\hbar k_{\mathrm{F}}/m_e\sim10^8~\mathrm{cm/s}$(远大于室温所对应的热运动速度)和Fermi温度$T_{\mathrm{F}}=E_{\mathrm{F}}^0/k_{\mathrm{B}}\sim10^4~\mathrm{K}$(远大于室温$T$)。根据能态密度$N(E)$，还可以计算出电子基态的平均能量:
+\begin{equation}
+	\bar{E}=\dfrac1N\int_0^{\infty}EN(E)\mathrm{d}E=\dfrac1N\int_0^{E_{\mathrm{F}}^0}EN(E)\mathrm{d}E=\dfrac35E_{\mathrm{F}}^0
+	\label{eq:Electron_energy-ave}
+\end{equation} 
+即在$T=0~\mathrm{K}$时，电子具有和Fermi能级同一量级的平均能量
+
+\item $T\neq0~\mathrm{K}$ 时 
+	从图\ref{Fig:Fermi-Dirac}可以看出，随着温度升高，分布函数会变得越来越平滑。当$E=E_{\mathrm{F}}$时，$\mathrm{e}^{(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}=1$，即$f(E)=1/2$，代表电子填充概率为$1/2$的能态。当$E>E_{\mathrm{F}}$时，$f(E)<1/2$；当$E<E_{\mathrm{F}}$时， $f(E)>1/2$。因此分布函数具体形状取决于$E_{\mathrm{F}}/k_{\mathrm{B}}T$比值的大小。对金属而言，$E_{\mathrm{F}}/k_{\mathrm{B}}T\gg1$。因此当$E$比小几个$E_{\mathrm{F}}$时，$\mathrm{e}^{(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}\ll1$，此时$f(E)$\approx1。表明$E$比$E_{\mathrm{F}}$小几个$k_{\mathrm{B}}T$的能态基本上是满态。当$E$比$E_{\mathrm{F}}$大几个$k_{\mathrm{B}}T$时，$\mathrm{e}^{(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}\gg1$，有$f(E)\approx\mathrm{e}^{-(E-E_{\mathrm{F}})/k_{\mathrm{B}}T}\approx0$。此时Fermi-Dirac分布过渡到经典的Maxwell-Boltzmann分布，且$f(E)$随$E$的增大而迅速趋于零。表明$E$比$E_{\mathrm{F}}$大几个$k_{\mathrm{B}}T$的能态是没有电子占据的空态。不难看出，电子的分布函数$f(E)$只在Fermi能附近几个$k_{\mathrm{B}}T$的范围内变化，而离Fermi能较远处电子的分布与$T=0~K$时相同。
+\end{itemize}
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.25in,width=2.55in,viewport=0 0 58 50,clip]{Figures/Fermi-DOS.png}
+\caption{\small \textrm{能量在$E\sim E+\mathrm{d}E$之间的电子数.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:fE-DOS}
+\end{figure}
+Fermi-Dirac分布只描述了能量为$E$的能态被电子占据概率，而能量在$E\sim E+\mathrm{d}E$之间的占据电子数，还需要考虑晶体本身的能态密度函数，即
+\begin{equation}
+	\mathrm{d}N=f(E)N(E)\mathrm{d}E
+	\label{eq:DOS-dN}
+\end{equation}
+所以函数$f(E)N(E)$才能具体概括电子按能量的统计分布。如图\ref{Fig:fE-DOS}所示，$T=0~\mathrm{K}$时，Fermi面$E_{\mathrm{F}}^0$以下的能态被电子占满，其能态密度为$N(E)$；当温度升高，原来处在Fermi面$E_{\mathrm{F}}^0$以下的电子由于热激发，跃迁到以上的能态只要$E_{\mathrm{F}}/k_{\mathrm{B}}T\gg1$成立，受激发的电子仅仅限制于Fermi面附近几个$k_{\mathrm{B}}T$能量范围内。而离Fermi面较远的电子则仍被Pauli原理束缚，其分布与$T=0~\mathrm{K}$时相同。对金属而言，由于$T\ll T_{\mathrm{F}}$总能成立，有$E\approx E_{\mathrm{F}}^0$，所以只有Fermi面附近的一小部分电子可以被激发到更高能态，而距离Fermi面较远的电子则仍保持原来$T=0~\mathrm{K}$时的状态。可以理解为这部分电子被``冷冻''住。这就是为什么虽然金属中有大量的自由电子，但是决定金属许多性质的并不是其全部的自由电子，而只是在Fermi面附近的那一小部分。所以对金属来说，Fermi面的研究显得尤为重要。以下将据此讨论关于金属输运性质的例子。
+
+\subsubsection{电子热容量(半经典模型估计比热)}
+电子从$T=0~\mathrm{K}$起加热，与经典粒子不同，并非每个电子都得到$k_{\mathrm{B}}T$的能量，而仅限于Fermi面级附近的电子被激发，因此只有这小部分电子对比热有贡献。Drude高估了对热容有贡献的电子数目。这部分被热激发的电子约为$N(T/T_{\mathrm{F}})$，其对内能的贡献为
+\begin{equation}
+	U\approx N\cdot\bigg(\dfrac{T}{T_{\mathrm{F}}}\bigg)\cdot\dfrac32k_{\mathrm{B}}T
+	\label{eq:electron-thermo-U}
+\end{equation}
+因此电子热容为
+\begin{equation}
+	C_e=\dfrac{\partial U}{\partial T}\approx3Nk_{\mathrm{B}}\cdot\bigg(\dfrac{T}{T_{\mathrm{F}}}\bigg)
+	\label{eq:electron-thermo-capacity-approx}
+\end{equation} 
+\textcolor{red}{更精确的计算可得(见习题6.14)}
+\begin{equation}
+	C_e=\dfrac{2\pi^2}2Nk_{\mathrm{B}}\cdot\bigg(\dfrac{T}{T_{\mathrm{F}}}\bigg)
+	\label{eq:electron-thermo-capacity}
+\end{equation}
+在室温$T=300~\mathrm{K}$下， $T_{\mathrm{F}}=5\times10^4~\mathrm{K}$，因此电子热容$C_e\approx0.018nk_{\mathrm{B}}$只是式\eqref{eq:electron_thermo-capacity}经典预期的$1\%$左右。这就是为什么室温下观察不到电子的这部分热容量的贡献的原因所在。
+
+\subsubsection{修正的Wiedeman-Franz定律} 
+在Drude模型中电子满足经典的Maxwell-Boltzmann统计，电子的速度取为平均热运动速度(Maxwell-Boltzmann均方根速度$v_{\mathrm{rms}}=\sqrt{3k_{\mathrm{B}}T/m_e}$)，而Sommerfeld模型中，电子服从Fermi-Dirac统计，因此电子对金属性质的贡献只来自Fermi面附近部分的贡献。这部分电子的速度$v\approx v_{\mathrm{F}}$，比经典值大$T_{\mathrm{F}}/T$倍。对外场作用下的电子(外场变化缓慢)，采用经典的处理方式但取$v_{\mathrm{F}}$为其平均速度的方法，称为半经典模型。半经典模型下电子的电导率和热导率分别为
+\begin{equation}
+	\begin{aligned}
+		\sigma=&\dfrac{ne^2\tau}{m_e}=\dfrac{ne^2\mathscr{l}}{m_ev_{\mathrm{F}}}\\
+		\kappa=&\dfrac13C_ev_{\mathrm{F}}\mathscr{l}
+	\end{aligned}
+	\label{eq:electron-thermo_conduct}
+\end{equation}
+尽管半经典模型得到的结果和Drude模型类似，然而两者有着不同的物理内涵，根据Drude模型，电导率和热导率是来自高浓度但低速度($v_{\mathrm{rms}}$)运动的电子的贡献，而半经典模型中则是由于Fermi面附近一小部分但高速运动($v_{\mathrm{F}}$)的电子的贡献。将式\eqref{eq:electron-thermo-capacity}电子的量子热容代入，可得Lorenz数为
+\begin{equation}
+	L=\dfrac{\kappa}{\sigma T}=\dfrac13\bigg(\dfrac{\pi k_{\mathrm{B}}}e\bigg)^2=2.45\times10^{-8}~\mathrm{W}\cdot\Omega/\mathrm{K}^2=2.45\times10^{-8}~\mathrm{W}\cdot\Omega/\mathrm{K}^2
+	\label{eq:Lorenz-num}
+\end{equation}
+恰好是Drude模型值的两倍，基本与实验值相吻合(见表\ref{Tab:SSI-03})。实际上,Drude模型能够给出数量级正确的结果也是巧合，对$C_e$估计大了两个数量级而对$v_{\mathrm{F}}^2$估计小了两个数量级。
+
+\subsubsection{电子平均自由程}
+在Drude模型中，弛豫时间$\tau$定义为与正离子实发生两次碰撞间的平均时间；而在Sommerfeld模型中，上述推导过程并未明确地显示其定义。%例6.3.2中我们将看到
+由于将电子看作为量子化的粒子，其波动性质导致电子有很长的平均自由程，大约是原子间距的150倍。如果仅假设原子间距为平均自由程，得到的电导率将是实测值的$1/200$。因此碰撞不再是指电子与正离子实之间的散射，而是指电子的de Broglie波被不完美晶格的散射，如晶格振动(声子)、点缺陷或杂质原子等。在理想晶格中，电子不发生散射，意味着电子波没有衰减地通过晶体，类似于光通过透明的晶体一样,这时晶体内的电子是完全自由的，有无限大的平均自由程，意味着晶体没有电阻。
+
+实验中观察到晶体的电阻与温度相关的部分$\rho_L$是电子与晶格振动散射相互作用的结果。因为温度越高，晶格振动的幅度越大，偏离理想晶格的程度也越大，导致晶体的电阻也越大。从量子力学角度观察晶体，晶格振动相当于一系列能量为$\hbar\omega$的量子化简谐振子，其中$\omega$为晶格振动的角频率，这种量子化的简谐振子称为声子。声子的行为类似于电子或光子，具有粒子的性质。但声子与电于或光子有本质区别，声子只是反映晶体原子集体运动状态的激发单元，它不能脱离固体而单独存在，所以声子不是一种真实的粒子。%我们将
+这种具有粒子性质,但又不是真实物理实体的概念称为准粒子。声子是Bose子，在温度$T$下，具有$\hbar\omega$能量的声子数$n_p$遵从Bose-Einstein统计:
+\begin{equation}
+	n_p=\dfrac1{\mathrm{e}^{\hbar\omega/k_{\mathrm{B}T}}-1}
+	\label{eq:Bose-Einstein}
+\end{equation}
+在高温条件下(即$\hbar\omega\ll k_{\mathrm{B}}T$)，$n_p\propto k_{\mathrm{B}}T/\hbar\omega$，分布函数与温度$T$成正比。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.25in,width=3.05in,viewport=0 0 70 50,clip]{Figures/Na_Resistity-Temperature.png}
+\caption{\small \textrm{Na的电阻随温度变化.引自文献\inlinecite{PRSA202-103_1950}}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Na-Resistity}
+\end{figure}
+
+此外，晶体中还存在与温度无关的剩余电阻$\rho_i$，它是自由电子与晶格中缺陷或杂质原子等散射所产生的。$\rho_i$仅仅依赖于缺陷或杂质的浓度，在低温下占主要贡献。图\ref{Fig:Na-Resistity}是两种不同缺陷浓度的金属Na的电阻与温度的关系曲线。因此，金属的电阻可以写为$\rho=\rho_L+\rho_i$，这就是Matthlessen定则。在一个超纯、几乎没有缺陷的样品中，$\rho_i$是很小的，当温度非常低时，$\rho_L$也是非常小的。当这两个条件都满足时，电子的平均自由程也将非常大。例如，在铜中能达到厘米量级。
+
+\textcolor{red}{【例6.3.2】用Sommerfeld模型，重新计算例6.3.1。\textcircled{1}计算绝对零温下的Fermi能$E_{\mathrm{F}}^0$和Fermi速度$v_{\mathrm{F}}$；\textcircled{2}假设平均自由程为原子间距$2.6~\mbox{\AA}$，计算Cu的电导率$\sigma$；\textcircled{3}已知测得的电导率$\sigma=5.9\times10^{7}~(\Omega\cdot\mathrm{m})^{-1}$，计算电子平均自由程$\mathscr{l}$和弛豫时间$\tau$。}
+
+【解】\textcircled{1}由式\eqref{eq:Electron_Energy}和式\eqref{eq:Fermi-radius}求出Fermi能级:
+\begin{displaymath}
+	\begin{aligned}
+		E_{\mathrm{F}}^0=&\dfrac{\hbar^2}{2m_e}\bigg(\dfrac{3\pi^2N}V\bigg)^{\frac23}=\dfrac{(6.625\times10^{-34}~\mathrm{J\cdot s})^2}{2(9.11\times10^{-31}~\mathrm{kg})}\bigg(\dfrac{3\times5.90\times10^{28}~\mathrm{m}^3}{8\pi}\bigg)^{\frac23}\\
+		=&8.85\times10^{-19}~\mathrm{J}=5.53~\mathrm{eV}
+	\end{aligned}
+\end{displaymath} 
+因而可求出Fermi速度:
+\begin{displaymath}
+	v_{\mathrm{F}}=\bigg(\dfrac{2E_{\mathrm{F}}^0}{m_e}\bigg)^{\frac12}=\bigg(\dfrac{2\times5.85\times10^{-19}~\mathrm{J}}{9.11\times10^{-31}~\mathrm{kg}}\bigg)^{\frac12}=1.39\times10^6~\mathrm{m/s}
+\end{displaymath} 
+\textcircled{2}由电导率的公式\eqref{eq:electron-thermo_conduct}，可求出电导率:
+\begin{displaymath}
+	\sigma=\dfrac{ne^2\mathscr{l}}{m_ev_{\mathrm{F}}}=4.16\times10^5~\Omega^{-1}\cdot\mathrm{m}^{-1}
+\end{displaymath} 
+\textcircled{3}同样，由式\eqref{eq:electron-thermo_conduct}，已知电导率$\sigma$，可得出平均自由程$\mathscr{l}$和驰豫时间$\tau$:
+\begin{displaymath}
+	\begin{aligned}
+		\mathscr{l}=&\dfrac{mv_{\mathrm{F}}\sigma}{ne^2}=390~\mbox{\AA}\\
+		\tau=&\dfrac{\mathscr{l}}{v_{\mathrm{F}}}=2.50\times10^{-14}~\mathrm{s} 
+	\end{aligned}
+\end{displaymath}
+
+\subsection{自由电子气模型的局限性}
+金属自由电子理论虽然非常简单，但是在理解金属，尤其是一价金属的物理本质方面，诸如电子热容量、Pauli顺磁\textcolor{red}{(见习题6.16)}、Wiedeman-Franz定律等，已证明是相当成功的。然而，也正因为其过于简单，将不同金属间的差异仅仅归结于电子密度$n$和Fermi能$E_{\mathrm{F}}$，却完全不考虑电子与晶格之间的相互作用，因此也导致该模型对很多实验结果无法解释。
+\begin{enumerate}
+	\item Wiedeman-Franz定律在较高温度(室温)和很低的温度(绝对零度附近)成立得很好，但是在中等温度，Lorenz数却依赖于温度。
+	\item 直流电导率依赖于温度，且各向异性。比如石墨两个方向相差四个数量级
+	\item 低温下碱金属的比热与温度的线性关系符合得很好，但线性关系对贵金属则符合不好，对过渡金属偏差则更大。如对Fe、Mn，理论值偏小，而对Bi和At，理论值又偏大，自由电子气模型无法解释实验中观测的比热与$T$的关系。
+
+	\item 根据自由电子理论，金属的电导率$\sigma$正比于电子密度$n$。但为什么电子密度较大的二价金属(如Be、Mg、Zn、Cd 等)和三价金属(如Al、In等)的电导率反而低于一价金属(如Cu、Ag、Au等)；所有的原子都有价电子，但为什么有的材料是导体，有的材料是绝缘体；同一种原子构成不同结构的晶体(如金刚石、石墨和$\mathrm{C}_{60}$分子固体)，为什么物理性质差别如此之大；自由电子理论认为金属Fermi面的形状为球面，但是实验结果表明，在通常情况下,金属Fermi面的形状并非是球面等等。
+\end{enumerate}
+
+%在下一节中我们将看到
+通过修改自由电子近似，考虑离子实的存在对电子的周期性影响后，将能解决上述自由电子理论的一些困难。有必要指出的是，独立粒子近似，或者与此本质相同的用平均场处理电子-电子相互作用的单电子近似，很多时候是一个很好的近似，在固体物理大部分内容中，这个近似不需要太多的修正。需要考虑单电子近似修正的一种典型情况BCS机制讨论超导电性，不可能用独立电子近似的单电子模型来描述超导体中的电子。尽管弛豫时间近似忽略了有关碰撞的所有细节，如果不考虑具体的散射机制，但仍然是一个很普适的近似。
+
+\subsection{三维情况下的自由电子气}
+
+\section{能带理论基础} 
+通过自由电子气模型讨论了金属中电子的运动及其性质，同时也看到该模型过于简化的存在问题，尤其是因为忽略晶格原子势场对电子的作用，遗留下来了许多问题。通过考虑晶格对电子的影响来解决这些问题的理论是能带理论，它是目前研究固体中的电子状态，说明固体性质最重要的理论基础。 
+\subsection{能带理论的基本假设} 
+对于一定体积的固体，包含$N\sim10^{23}$个带正电荷$Z$的离子实，相应地有$N\cdot Z$个价电子，%,类似于双原子分子体系(式(5.1.1))
+则该系统的Hamilton量可写为
+\begin{equation}
+	\begin{aligned}
+		\hat{\mathbf H}=&-\sum_{i=1}^{NZ}\dfrac{\hbar^2}{2m_e}\nabla_i^2+\dfrac12\sideset{}{^{\prime}}\sum_{i,j}\dfrac1{4\pi\varepsilon_0}\dfrac{e^2}{|\vec r_i-\vec r_j|}-\sum_{n=1}^N\dfrac{\hbar^2}{2M}\nabla_n^2\\
+		&+\dfrac12\sideset{}{^{\prime}}\sum_{m,n}\dfrac1{4\pi\varepsilon_0}\dfrac{(Ze)^2}{|\vec R_n-\vec R_m|}-\sum_{i=1}^{NZ}\sum_{n=1}^{N}\dfrac1{4\pi\varepsilon_0}\dfrac{Ze^2}{|\vec r_i-\vec R_n|}\\
+		=&\hat T_e+\hat U_{ee}(\vec r_i-\vec r_j)+\hat T_n+\hat U_{nm}(\vec R_n,\vec R_m)+\hat U_{en}(\vec r_i,\vec R_n)
+	\end{aligned}
+	\label{eq:electron-Nuclear_Hamiltonian}
+\end{equation}
+该Hamilton量由五部分组成，前两项为电子的动能和电子之间的相互作用能，第三、四项为离子实动能和离子之间的相互作用能，第五项为电子与离子实之间的相互作用能。这是一个非常复杂的多体问题的运动方程，必须经必要简化处理后才能求解。以下所有分析都是建立在以下几个假设基础上的。
+\begin{enumerate}
+	\item Born-Oppenheimer近似:~因为离子实的质量比电子大$3\sim4$个数量级，因此相比于离子实，电子在原子核外运动的运动速度高得多。因此将离子实的运动和电子的运动分开考虑:~一方面，在处理电子运动问题时，可将离子实视为静止于它们的瞬时位置上，在极端情况下认为离子实不动。这样可将多粒子问题转化为多电子问题，但依然还是包含$NZ$个价电子的多体问题。因此在处理实际的固体材料时，需要进一步引人更多的近似。另一方面，在处理离子实运动的时候，则认为离子与电子间是绝热的，但电子的存在，成为离子实感受的势函数，离子实的每一步运动都是在电子能量构成的势能表面上的运动。
+	\item 单电子近似(Hatree-Fock平均场近似):~忽略电子与电子间的瞬时相互作用，把每一个电子所受其他电子的Coulomb作用,以及考虑电子波函数反对称性而带来的交换作用,用一个平均的等效势场代替，这样每个电子在平均场中彼此独立运动。因此，Born-Oppenheimer近似后的多电子问题转化为在固定的离子势场和其他电子的平均场中运动的单电子问题。
+	\item 忽略相对论效应:~求解单电子的Scrh\"odinger方程
+		\begin{equation}
+			\bigg[\dfrac{\hat p^2}{2m_e}+\hat U(\vec r)\bigg]\Psi(\vec r)=E\Psi(\vec r)
+				\label{eq:Schrondinger_equation}
+		\end{equation} 
+式中$\hat U(\vec r)$包含离子势场和其他电子的平均场。在需要考虑相对论效应时,则用Dirac方程代替Schr\"odinger方程。
+\item 周期场近似:~由于晶体的周期性结构，将所有离子势场和其他电子的平均场都认为具有周期性，即
+	\begin{equation}
+		\hat U(\vec r)=\hat U(\vec r+\vec R_i)
+		\label{eq:Perodic_Potential}
+	\end{equation}
+\end{enumerate} 
+基于以上基本假设，原本复杂的多体运动就简化成为求解周期性势场中运动的单电子Schr\"odinger方程问题。
+
+\subsection{Bloch定理} 
+%在求解具体能带模型之前,我们先给出一个非常重要的理论,
+Bloch指出\cite{ZP52-555_1928}周期势场作用下电子波函数的共性:~周期势场中运动的电子，其单电子薛定谔方程的解必须具备的一般形式:
+\begin{equation}
+	\Psi_{\vec k}(\vec r+\vec R_i)=\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_i}\Psi_{\vec k}(\vec r)
+	\label{eq:Bloch_theorme}
+\end{equation} 
+这就是Bloch定理，描述了平移对称性本身对波函数的约束。%它是数学上Floquet定理的直接应用。详细的证明能在许多固体物理教科书上找到,这里只做简单分析。
+在周期势场式\eqref{eq:Perodic_Potential}下，Hamilton量$\hat{\mathbf{H}}$也具有平移对称性。波函数$\Psi_{\vec k}(\vec r+\vec R_i)$和$\Psi_{\vec k}(\vec r)$应有相同的能量本征值$E$。设$E$是非简并的,则有
+\begin{equation}
+	\Psi_{\vec k}(\vec r+\vec R_i)=C_{\vec R_i}\Psi_{\vec k}(\vec r)\quad C_{\vec R_i}\mbox{为常数}
+	\label{eq:Bloch_Theorme-1}
+\end{equation}
+% 	(6.4.5) 
+按照归一化条件$|C_{\vec R_i}|^2=1$，可有$C_{\vec R_i}=\mathrm{e}^{\mathrm{i}\varphi}(\vec R_i)$。假设晶体为一个平行六面体，其棱边取为三个基矢$\vec a_1$、$\vec a_2$、$\vec a_3$方向,各方向的原胞数目分别为$N_1$、$N_2$和$N_3$，即晶体的总原胞数为$N=N_1N_2N_3$。根据周期性边界条件
+\begin{equation}
+	\Psi_{\vec k}(\vec r+N_{\alpha}\vec a_{\alpha})=C_{\vec a_{\alpha}}^{N_{\alpha}}\Psi_{\vec k}(\vec r)=\Psi_{\vec k}(\vec r)\quad\alpha=1,2,3
+	\label{eq:Bloch_Therome-2}
+\end{equation}
+%	 (6.4.6) 
+不难看出$C_{\vec a_{\alpha}}^{N_{\alpha}}=1$则有$C_{\vec a_{\alpha}}=\mathrm{e}^{\mathrm{i}h_{\alpha}/N_{alpha}}$。引人矢量
+\begin{equation}
+	\vec k=\dfrac{h_1}{N_1}\vec b_1+\dfrac{h_2}{N_2}\vec b_2+\dfrac{h_3}{N_3}\vec b_3
+	\label{eq:Bloch_Therome-3}
+\end{equation}
+% 	(6.4.7) 
+这里$h_1$、$h_2$和$h_3$为整数，$\vec b_1$、$\vec b_2$、$\vec b_3$为倒空间格子的基矢。因此可得$C_{\vec R_i}=\mathrm{e}^{\mathrm{i}\vec k}\cdot\vec R_i$。
+
+以上讨论是对Bloch定理的简要证明。如果定义一个新的函数$u_{\vec k}(\vec r)=\mathrm{e}^{-\mathrm{i}\vec k\cdot\vec r}\Psi_{\vec k}(\vec r)$，不难看出，$u_{\vec k}(\vec r)$是与$\Psi_{\vec k}(\vec r)$具有相同周期的函数
+\begin{displaymath}
+	u_{\vec k}(\vec r+\vec R_i)=\mathrm{e}^{-\mathrm{i}\vec k\cdot(\vec r+\vec R_i)}\Psi_{\vec k}(\vec r+\vec R_i)=\mathrm{e}^{-\mathrm{i}\vec k\cdot\vec r}\mathrm{e}^{-\mathrm{i}\vec k\cdot\vec R_i}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_i}\Psi_{\vec k}(\vec r)=u_{\vec k}(\vec r)
+\end{displaymath}
+因此，可以得到Bloch定理的另一种等价表述
+\begin{equation}
+	\Psi_{\vec k}(\vec r)=\mathrm{e}^{\mathrm{i}\vec k\cdot\vec r}\u_{\vec k}(\vec r)
+	\label{eq:Bloch_Theorme-equal}
+\end{equation}
+其中周期函数$u_{\vec k}(\vec r)=u_{\vec k}(\vec r+\vec R_i)$，具有式\eqref{eq:Bloch_Theorme-equal}形式的波函数为Bloch波函数。对于自由电子，电子的速度$\vec k$与波矢$\vec k$成正比，其方向与$\vec k$的方向也是一致的。可以证明，Bloch波函数$\Psi_{\vec k}(\vec r)$不是动量算符$\hat p=-\mathrm{i}\hbar\hat{\\nabla}$的本征态，因此Bloch波函数没有确定的动量。
+
+Bloch定理说明了不同原胞之间电子波函数仅仅相差一个相位，而波矢$\vec k$的物理意义正好表示了该位相的变化。不同的波矢$\vec k$表示原胞间的位相差不同，即描述晶体中电子不同的运动状态。当两个波矢$\vec k$和$\vec k^{\prime}$相差一个倒格矢$G_h$，即满足等式$\vec k^{\prime}=\vec k+\vec G_h$，它们所描述的电子在晶体中的运动状态相同。因此通常习惯上将$\vec k$取在第一Brillouin区(简约Brillouin区)中。若将$G_h$的取值限制在简约Brillouin区中，则称$G_h$为简约波矢。波矢$\vec k$在整个$\vec k$空间中取值，称为广延波矢。由等式\eqref{eq:Bloch_Therome-3}可知，$\vec k$的取值不连续。在第一Brillouin区内，波矢的取值总数为$N=N_1N_2N_3$，即晶体的总原胞数。和自由电子类似，波矢$\vec k$分布在$\vec k$空间中是均匀的，并且空间态密度为$V/8\pi^3$。
+
+从Bloch定理可以看出，在周期势场下运动的电子，波函数由两部分组成:~一部分具有类似行进平面波的形式$\mathrm{e}^{\mathrm{i}\vec k\cdot\vec r}$，表明晶体中的电子已不再局域于某个原子周围，而是可以在整个晶体中运动的，这种电子称为巡游电子；另一部分是周期函数$u_{\vec k}(\vec r)$，反映了电子与晶格相互作用的强弱，由于晶体中原子周期排列，导致电子波函数从一个原胞到下一个原胞感受到的势函数也呈现周期性振荡，但这并不影响态函数具有行进波的特性。如果晶体中电子是完全自由的，则具有自由电子波函数的形式$A\mathrm{e}^{\mathrm{i}\vec k\cdot\vec r}$；若电子完全被束缚在某个原子周围,则电子处在完全束缚态$Cu_{\vec k}(\vec r)$，成为局域化电子。而晶体中运动电子的波函数实际上介于自由电子与孤立原子中的电子之间。
+
+将Bloch波函数式\eqref{eq:Bloch_Theorme-equal}代人Schr\"odinger方程式\eqref{eq:Schrondinger_equation}，得到周期函数$u_{\vec k}(\vec r)$所须满足的方程
+\begin{equation}
+	\bigg[-\dfrac{\hbar^2}{2m_e}\bigg(\dfrac{\hat{\nabla}}{\mathrm{i}}+\hat{U}(\vec r)\bigg)\bigg]u_{\vec k}(\vec r)=\varepsilon(\vec k)u_{\vec k}(\vec r)
+	\label{eq:Schrodinger-Bloch-wave}
+\end{equation}
+% 	(6.4.9) 
+该方程的求解限定在一个原胞内。对于一个确定的$\vec k$,方程\eqref{eq:Schrodinger-Bloch-wave}的本征值是分立的，用i$n$表示，可代表不同的能带指标。改变$\vec k$的值也将改变$\varepsilon(\vec k)$，因此在Brillouin区内一系列准连续分布的能量本征值$\varepsilon(\vec k)$将会导致能带，每个$n$标志一个不同的能带。通常用$\Psi_{n\vec k}=\mathrm{e}^{\mathrm{i}\vec k\cdot\vec r}u_{n\vec k}(\vec r)$标记电子态。除了在Brillouin区边界上，能量是准连续的,因此形成能带结构。\textcolor{red}{一个简单的例子就是一维周期势场下的Kronig-Penney模型。}%(见习题6.23)
+
+需要指出的是，在固体物理中，尽管能带论是从周期性势场中推导出来的，但周期性势场并不是电子具有能带结构的必要条件。已有实验证实，在非晶体中，电子同样具有能带结构。正如上述讨论的，电子能带的形成，是由于当原子与原子结合成固体时，原子之间存在相互作用的结果。并不取决于原子聚集在一起是晶体还是非晶体，即原子的排列是否具有平移对称性并不是形成能带的必要条件。
+
+由于晶体具有的平移对称性、点群对称性以及时间反演对称性，晶体的能带也具有如下对称性:
+\begin{equation}
+	\begin{aligned}
+		E_n(\vec k)=&E_n(\vec k+\vec G_h)\\
+		E_n(\vec k)=&E_n(\alpha\vec k)\\
+E_n(\vec k)=&E(-\vec k)
+	\end{aligned}
+	\label{eq:E_band-symmetry}
+\end{equation}
+%	(6.4.10) 
+其中$\alpha$为晶体所属点群的任一对称操作。
+
+尽管Bloch定理给出了晶体中电子波函数的一般性质，然而要获得能带的具体结构，还需要求解式\eqref{eq:Schrodinger-Bloch-wave}形式的Schr\"odinger方程。现在已经发展了许多的近似方法求解，如近自由电子方法、紧束缚方法、赝势方法、Green函数方法等。建立在密度泛函理论(Density Functional Theory, DFT)基础上的局域密度近似的方法是目前计算机模拟实验中最先进、最重要的方法之一。%这里我们只介绍处理两种简单极端情形的方法:近自由电子近似和紧束缚近似,来阐明能带论的基本特点。
+
+\subsection{近自由电子模型} 
+在周期性势场中，若电子的势能随位置的变化比较小，而电子的平均动能要比其势能的绝对值大得多，此时可以将自由电子看成是零级近似，而将周期场的影响看成小的微扰，这就是近自由电子近似，也称弱晶格势近似。主要适用于金属的价电子，对其他晶体中的电子，即使是金属的内层电子也并不适用。
+
+在近自由电子模型中系统Hamilton量可写为
+\begin{equation}
+	\begin{aligned}
+		\hat{\mathbf{H}}=&\hat{\mathbf{H}}_0+\hat{\mathbf{H}}^{\prime}\\
+		\hat{\mathbf{H}}_0=&-\dfrac{\hat p^2}{2m_e}+\bar{U}\\
+		\hat{\mathbf{H}}^{\prime}=&\Delta U(\vec r)
+	\end{aligned}
+	\label{eq:near-free-electron-model}
+\end{equation}
+%	（6.4.11） 
+其中${\mathbf{H}}_0$是自由电子Hamilton量，从Sommerfeld模型中已经知道了它的波函数$\Psi_{\vec k}^0(\vec r)$与本征能量$E_{\vec k}^0$(式\eqref{eq:Schrodinger-3D}和式\eqref{eq:Electron_Energy})。显然，因为$\vec k$可以取任意值，$\Psi_{\vec k}^0(\vec r)$并不满足Bloch定理。但可将$\vec k$约化到第一Brillouin区域内(取为简约波矢$\vec q$)，则有$\vec k=\vec q+\vec G$，因此波函数可表示为
+\begin{equation}
+	\Psi_{\vec G,\vec q}^0(\vec r)=u_{\vec G}\mathrm{e}^{\mathrm{i}\vec q\cdot\vec r}/\sqrt{V}
+	\label{eq:reduce-G-q}
+\end{equation} 
+这里$u_{\vec G}$就是周期函数；$\Psi_{\vec G,\vec q}^0(\vec r)$是空晶格的Bloch函数，所以这就是空晶格模型。图\eqref{Fig:1D-Free-electron_Band}给出一维自由电子的空晶格模型能带的扩展Brillouin区图像、周期Brillouin区图像和简约Brillouin区图像。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.25in,width=5.50in,viewport=0 0 90 38,clip]{Figures/1D-Free-electron_Band.png}
+\caption{\small \textrm{一维自由电子空晶格模型的能带结构.(a)~扩展Brillouin区图像:~不同的能带展示在$\vec k$空间中不同的Brillouin区内；(b)~周期Brillouin区图像:~所有能带都在每个Brillouin区展示；(c)~简约Brillouin区图像:~所有能带都在简约Brillouin区展示.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:1D-Free-electron_Band}
+\end{figure}
+
+当$\Delta\hat{U}\neq0$为起伏较小的周期函数时，可在倒空间中展开$\Delta\hat{U}(\vec r)=\sum\Delta U(\vec G)\mathrm{e}^{\mathrm{i}\vec G\cdot\vec r}$，运用量子力学中的微扰方法，可计算矩阵元
+\begin{displaymath}
+	{\mathbf{H}}_{\vec k,\vec k^{\prime}}^{\prime}=\bigg\langle\Psi_{\vec k^{\prime}}^0\bigg|\hat{\mathbf H}^{\prime}\bigg|\Psi_{\vec k}^0\bigg\rangle=\bigg\langle\Psi_{\vec k^{\prime}}^0\bigg|\sum_{\vec G^{\prime\prime}}\Delta\hat{U}(\vec G^{\prime\prime})\mathrm{e}^{\mathrm{i}\vec G^{\prime\prime}\cdot\vec r}\bigg|\Psi_{\vec k}^0\bigg\rangle=\Delta\hat{U}(\vec G^{\prime}-\vec G)\delta_{\vec q^{\prime},\vec q}
+\end{displaymath} 
+因此有$\mathbf{H}_{\vec k,\vec k^{\prime}}^{\prime}=\Delta\hat{U}(\vec G=0)=0$，一阶微扰能量$E^{(1)}(\vec k)=0$，所以还需要用二阶微优，则对于被$\vec G$标志的能带二结微扰能量为
+\begin{equation}
+	E(\vec k)=E_0(\vec q+\vec G)+\sum_{\vec G\neq\vec G^{\prime}}\dfrac{|\Delta U(\vec G^{\prime}-\vec G)|^2}{E_0(\vec q+\vec G)-E_0(\vec q+\vec G^{\prime})}
+	\label{eq:Electron-energy-p-2order}
+\end{equation}
+%	（6.4.12） 
+和电子波函数为
+\begin{equation}
+	\Psi_{\vec k}(\vec r)=\Psi_{\vec q+\vec G}^0(\vec r)+\sum_{\vec G\neq\vec G^{\prime}}\dfrac{|\Delta U(\vec G^{\prime}-\vec G)|}{E_0(\vec q+\vec G)-E_0(\vec q+\vec G^{\prime})}\Psi_{\vec q+\vec G}^0(\vec r)
+	\label{eq:Electron-Wave-p-2order}
+\end{equation}
+% 	(6.4.13) 
+不难看出，$\Psi_{\vec k}(\vec r)$满足Bloch定理。特别需要注意的是，当$E_0(\vec q+\vec G)=E_0(\vec q+\vec G^{\prime})$时，能级将出现简并，能量$E(\vec k)$发散，必须采用简并微扰理论处理。这种情形发生在$|\vec q+\vec G|=|\vec q+\vec G^{\prime}|$，在扩展Brillouin区图像中，对应$|\vec k|=|\vec k^{\prime}|$，因此有$\vec k^{\prime}-\vec k=\vec G^{\prime}-\vec G$，这对应于Brillouin区边界方程\eqref{eq:Laue-condition}。在这种情形下，由简并态微扰求解本征值和本征态的矩阵为:
+\begin{displaymath}
+	\begin{pmatrix}
+		E_0(\vec k) &\Delta U(\vec G)\\
+		\Delta U^{\ast}(\vec G) &E_0(\vec k+\vec G)
+	\end{pmatrix}
+\end{displaymath} 
+其中用$\vec G$代替$\vec G-\vec G^{\prime}$，因为都是倒格矢。对角化该矩阵可得解除简并后的能量本征值: 
+\begin{equation}
+	E_{\pm}(\vec k)=\left\{
+		\begin{aligned}
+			E_0(\vec k)+\vec E_0(\vec k+\vec G)-\sqrt{[E_0(\vec k)-E_0(\vec k+\vec G)]^2+[2\Delta U(\vec G)]^2}\\
+			E_0(\vec k)+\vec E_0(\vec k+\vec G)+\sqrt{[E_0(\vec k)-E_0(\vec k+\vec G)]^2+[2\Delta U(\vec G)]^2}
+		\end{aligned}\right.
+	\label{eq:degenerate-per-2order}
+\end{equation}
+% (6.4.14) 
+在Brillouin区边界$||\vec k=|\vec k+\vec G|$处，
+\begin{equation}
+	E_{\pm}(\vec k)=E_0(\vec k)\pm|\Delta U(\vec G)|
+	\label{eq:Electron-degenerate-per-2order}
+\end{equation}
+% 	(6.4.15)
+能带发生劈裂，能量变化大小为
+\begin{equation}
+	E_{\mathrm{g}}(\vec k)=E_{+}(\vec k)-E_{-}(\vec k)=2|\Delta U(\vec G)|
+	\label{eq:Electron-Basic-Gap}
+\end{equation}
+% (6.4.16) 
+这个能带劈裂称为能隙，即禁带宽度。禁带宽度与晶格势的强弱有关，这是周期场作用的结果。图\ref{Fig:Electron-Band-gap}是一维周期势中电子能带的示意图。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.05in}
+\includegraphics[height=1.55in,width=3.50in,viewport=0 0 130 60,clip]{Figures/Electron-Band_Gap.png}
+\caption{\small \textrm{一维周期势中电子能带结构示意.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Electron-Band-gap}
+\end{figure}
+
+从式\eqref{eq:degenerate-per-2order}还可以看出，在近Brillouin区边界附近(即$E_0(\vec k)-E_0(\vec k+\vec G)\ll|\Delta U(\vec G)|$)，两个相互影响的态$\vec k$和$\vec k+\vec G$，在微扰后的能量分别为$E_-$和$E_+$，会使得态$\vec q$和$\vec q+\vec G$的能量差进一步放大，并以抛物线形式趋于Brillouin区边界的能量值。在Brillouin区边界上正好满足Bragg反射条件，反射波与入射波相互干涉,形成两种不同能量的驻波，原来简并的能级发生劈裂并形成能隙。能隙宽度是两种驻波的能量差，这就是形成禁带的物理机制。而在离Brillouin区边界较远处(即$E_0(\vec k)-E_0(\vec k+\vec G)\gg|\Delta U(\vec G)|$)，式\eqref{eq:degenerate-per-2order}的结果与上述讨论的非简并微扰计算的结果类似，差别是只考虑和在微扰中的相互影响。如果忽略影响微小的其余散射波贡献，此时电子的能量近似等于自由电子的能量，并且仍然是$\vec k$的连续函数，此时不满足Bragg条件，晶格的影响也很弱，意味着电子几乎可以不受阻碍地通过晶体。
+
+\subsection{紧束缚近似} 
+与近自由电子模型相对的另一种极端就是紧束缚模型。在该模型中离子实对电子有很强的束缚作用，电子的运动主要受该原子势场的影响，此时电子的行为与孤立原子中电子类似。因此可将孤立原子当作零级近似，而将其他原子势场的影响看成小的微扰。紧束缚近似对离子实内层的电子是相当好的近似，还可用来近似地描述过渡金属的$d$带，类金刚石晶体以及惰性元素晶体的价带。紧束缚近似是定量计算绝缘体、化合物及半导体特性的有效工具。
+
+考虑一简单晶格，在某个格点$\vec R_i$附近的电子感受到晶格中所有格点上的原子势的作用，系统Hamilton量可写为
+\begin{equation}
+	\begin{aligned}
+		{\mathbf{H}}=&{\mathbf{H}}_0+{\mathbf{H}}^{\prime}\\
+		{\mathbf{H}}_0=&-\dfrac{\hbar^2}{2m_e}\nabla^2+V_{\alpha}(\vec r-\vec R_i)
+		{\mathbf{H}}^{\prime}=&=\hat{V}_{\alpha}(\vec r-\vec R_j)
+	\end{aligned}
+	\label{eq:Hamiltonian-tight-bondiing}
+\end{equation}
+% 	(6.4.17) 
+其中${\mathbf{H}}_0$是孤立原子中电子的Hamilton量，有本征方程${\mathbf{H}}_0\varphi_j(\vec r-\vec R_l)=\varepsilon_j\varphi_j(\vec r-\vec R_l)$，其中$\varepsilon_j$为分立的原子能级，$\varphi_j(\vec r-\vec R_l)$为对应的原子束缚态波函数。如果晶体是由$N$个相同的原子构成的Bravais格子，则将有$N$个相同能量$\varepsilon_j$的类似$\varphi_j(\vec r-\vec R_l)$的波函数(即有$N$个简并态)。在紧束缚模型中，来自其余格点的贡献${\mathbf{H}}^{\prime}$可当作微扰项处理，因此晶体中电子的波函数可用$N$个独立原子轨道波函数$\varphi_j(\vec r-\vec R_l)$的线性组合来构造。通常将这种用原子轨道$\varphi_j(\vec r-\vec R_l)$线性组合来构成晶体巡游电子轨道$\Psi_{\vec k}(\vec r)$的方法称为原子轨道线性组合(Linear Combination of Atomic Orbitals, LCAO)方法。根据Bloch定理，可选择如下形式的Bloch波函数:
+\begin{equation}
+	\Psi_{\vec k}(\vec r)=\dfrac1{\sqrt N}\sum_l\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_l}\varphi_j(\vec r-\vec R_l)
+	\label{eq:Bloch-TB}
+\end{equation}
+% 	(6.4.18) 
+这里对$l$的求和遍及晶格中所有格点。容易验证，$\Psi_{\vec k}(\vec r)$为Bloch函数。式\eqref{eq:Bloch-TB}也可通过待定系数方法确定。$\Psi_{\vec k}(\vec r)$应满足Schr\"odinger方程\eqref{eq:Schrondinger_equation}。利用孤立原子${\mathbf{H}}_0$的解，可得到$\Psi_{\vec k}(\vec r)$对应电子态的能量为
+\begin{equation}
+	\begin{aligned}
+		E(\vec k)=\langle\Psi_{\vec k}|\hat{\mathrm{H}}|\Psi_{\vec k}\rangle=&\varepsilon_j-\sum_{l,l^{\prime}}\mathrm{e}^{\mathrm{i}\vec k\cdot(\vec R_l-\vec R_{l^{\prime}})}J(\vec R-\vec R_{l^\prime})\\
+		=&\varepsilon_j-\sum_s\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
+	\end{aligned}
+	\label{eq:Energy-TB}
+\end{equation} 
+% 	(6.4.19) 
+在式\eqref{eq:Energy-TB}的推导中，利用了原子束缚态$\varphi_j(\vec r-\vec R_l)$正交归一条件$\langle\varphi_j(\vec r-\vec R_l)|\varphi_j(\vec r-\vec R_{l^{\prime}})=\delta_{ll^{\prime}}$。特别是当原子间距较大时，不同格点的重叠很小，容易满足式\eqref{eq:Energy-TB}。其中重叠积分:
+\begin{equation}
+	J(\vec R_s)=-\langle\varphi_j(\vec r-\vec R_s)|\hat{U}(\vec r)-\hat{V}_{\alpha}(\vec r-\vec R_l)|\varphi_j(\vec r)\rangle
+	\label{eq:Overlap-Integal}
+\end{equation}
+% 	(6.4.20) 
+其中$\varphi_j(\vec r-\vec R_s)$和$\varphi_j(\vec r)$表示相距为$R_s$的格点上的原子轨道波函数。显然，只有当两者有一定相互重叠时，积分$J(\vec R_s)$才不为零。当$J(\vec R_s)=0$时，意味着两个波函完全重叠，令
+\begin{equation}
+	J_0=-\langle\varphi_j(\vec r)|\hat{U}(\vec r)-\hat{V}_{\alpha}(\vec r)|\varphi_j(\vec r)\rangle
+	\label{eq:Overlap-Integal_fully}
+\end{equation}
+% 	(6.4.21) 
+如果只保留到近邻项而略去其他影响小的各项贡献，能量本征值可简化为
+\begin{equation}
+%	E(\vec k)=\varepsilon_j-J_0-\sum_{s=near~neighbour}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
+	E(\vec k)=\varepsilon_j-J_0-\sum_{s=\mbox{\fontsize{6.2pt}{4.2pt}\selectfont{近邻}}}\mathrm{e}^{\mathrm{i}\vec k\cdot\vec R_s}J(\vec R_s)
+	\label{eq:Energy-TB-NN}
+\end{equation}
+% 	(6.4.22) 
+利用周期性边界条件，在简约Brillouin区中，波矢$\vec k$共有$N$个准连续的取值，即可得$N$个电子的本征态$\Psi_{\vec k}(\vec r)$对应于$N$个准连续的值。这样，将形成一个准连续的能带$E(\vec k)$。当原子结合形成固体时，一个原子能级将展宽为一个相应的能带，其Bloch波函数是各格点上原子波函数$\varphi_j(\vec r-\vec R_s)$的线性组合。
+
+\textcolor{red}{【例6.4.1】求简单立方晶体中自由电子的s态所形成的能带。}
+
+【解】对于简单立方晶体，每个格点都有6个近邻格点(配位数为6)，近邻格矢$\vec R_s=(\pm a,0,0)$，$(0,\pm a,0)$，$(0,0,\pm a)$，由于$s$态的原子波函数是球对称的,沿各个方向的重叠积分相同。因此对于不同方向的近邻都有$J(\vec R_s)=J_1$。由于$s$态波函数是偶宇称，即满足$\varphi(\vec r)=\varphi(-\vec r)$，因此在近邻重叠积分中波函数的贡献为正，即$J_1>0$。代人式\eqref{eq:Energy-TB-NN}，可有
+\begin{displaymath}
+	E(\vec k)=\varepsilon_s-J_0-2J_1(\cos k_xa+\cos k_ya+\cos_za)
+\end{displaymath} 
+从上式可知，在倒空间中，$\Gamma$点:~$\vec k=(0,0,0)$，有$E(\Gamma)=\varepsilon-J_0-6J_1$。对应能量最低点(能带底)；R点:~$\vec k=(\pi/a,\pi/a,\pi/a)$，有$E(R)=\varepsilon_s-J_0+6J_1$，对应能量最高点(能带顶)；X点:~$\vec k=(\pi/a,0,0)$，有$E(X)=\varepsilon_s-J_0-2J_1$，对应能带中某点。该能带宽度为$\Delta E=E(R)-E(\Gamma)=12J_1$。图\ref{Fig:1D-TB-Band}是简单立方的第一Brillouin区等能面及能带结构示意图。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.15in,width=3.50in,viewport=0 0 130 42,clip]{Figures/TB-Band-s.png}
+\caption{\small \textrm{紧束缚近似下简单立方的能带结构.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:1D-TB-Band}
+\end{figure}
+
+不难看出，紧束缚的简单能带宽度主要取决于重叠积分$J_1$，而$J_1$的大小取决于近邻原子波函数间的重叠程度，波函数重叠越多，形成的能带就越宽。由于能量最低的带对应于最内层的电子，其电子轨道在空间延展很小，不同原子间波函数的重叠很少，因而能带较窄；而能量较高的能带对应于外层电子，不同原子间波函数有较大的重叠，因而能带就较宽。这里只讨论了原子的$s$态电子非简并的情况。对于简并能级情形，Bloch函数需要考虑所有简并态的和，如$p$态电子和$sp$杂化情形。%(见习题6.27) 
+
+\subsection{态密度和Fermi面}
+态密度(Density of States, DOS)的概念在\ref{subsec:Sommerfeld-Model}中已经涉及，其定义为能带中单位能量区域内的电子态数目。态密度是一个重要的函数，它和能带结构密切相关。对于三维的自由电子气，能带结构的色散关系$E(\vec k)$为一抛物线，具有球形等能面，因而能态密度与$\sqrt{E}$成正比(式\eqref{eq:DOS})。然而，在周期场的影响下，色散关系$E(\vec k)$偏离抛物线，能带结构趋于比较复杂，等能面形状一般也不再是规则图案。图\ref{Fig:1D-TB-Band}是紧束缚近似下的简单例子，即能带底($\Gamma$点)附近，等能面近似为球面，但随着能量$E$的增大，等能面明显偏离球面。根据定义$\mathrm{d}Z=N(E)\mathrm{d}E$，即能量在$E\sim E+\mathrm{d}E$两个等能面间的能态数目(考虑电子自旋)，态密度更一般的表达式
+\begin{equation}
+	N(E)=\dfrac{\mathrm{d}Z}{\mathrm{d}E}=\dfrac{V}{4\pi^3}\oiint_{E=\mathrm{const}}\dfrac{\mathrm{d}S}{\nabla_{\vec k}E(\vec k)}
+	\label{eq:DOS_definition}
+\end{equation}
+% 	(6.4.23) 
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.25in,width=2.00in,viewport=0 0 35 40,clip]{Figures/DOS_FE-model.png}
+\caption{\small \textrm{近自由电子的等能面和态密度.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Fermi_Surface-1}
+\end{figure}
+可见态密度的结构同样取决于色散关系$E(\vec k)$。对于近自由电子，周期场的影响主要表现在Brillouin区边界附近形成能隙，偏离自由电子模型，因而态密度$N(E)$也偏离了$\sqrt{E}$关系(如\ref{Fig:Fermi_Surface-1}所示)。当能量较低时，Brillouin区中心处离边界较远，色散关系与自由电子情形类似，因而$N(E)$也近似为$\sqrt{E}$关系。注意到在近自由电子模型中，$N(E)$存在最大值，此时等能面正好与Brillouin边界相交；如果能带没有重叠, $N(E)$遇到带隙就会消失，直到下个新的能带开始。
+
+在\ref{Section:Free-electron}已经讨论过Fermi面的重要性，固体的输运性质与Fermi面附近的电子密切关联。与自由电子类似，由于Pauli不相容原理，晶体中价电子从最低能级向更高的能级填充，直到填充所有价电子,此时形成的填充面即为Fermi面。因此Fermi面的形状与等能面的几何形状相关。如果价电子填充完后，填充面靠近Brillouin区边界，此时由于等能面偏离球形，因此Fermi面也将偏离球面，这解决了自由电子论的困难之一。严格地讲，这个定义当且仅当绝对零度时成立，但是从上述讨论也能看到，温度(室温或更高温度)对Fermi面的影响非常小。图\ref{Fig:Fermi_Surface-metal}是金属Na、Cu、Al的Fermi面。金属Na是体心立方晶格面，价电子只填充了第一Brillouin区的一半能级，Fermi面远离Brillouin区边界，因此仍可保持近似球形。金属Cu为面心立方晶格，价电子也只填充了第一Brillouin区的一半能级，但是由于第一Brillouin区为截角十二面体，在$[111]$方向上Fermi面靠近Brillouin区，因此形成向外凸的形状。金属Al也是面心立方晶格，但是每个原胞提供三个价电子，Fermi球完全填充第一Brillouin区，并延伸到第二、第三和第四Brillouin区，因此有更复杂的Fermi面。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.75in,width=4.50in,viewport=0 0 100 34,clip]{Figures/Fermi_Surface-metal.png}
+\caption{\small \textrm{金属Na、Cu、Al的Fermi面.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Fermi_Surface-metal}
+\end{figure}
+
+\subsection{Bloch电子的准经典运动(速度、准动量与有效质量)} 
+晶体中电子的运动不仅受到外加场的影响，还受到晶格周期场的作用。晶体中电子准经典运动与\subsection{subsec:Sommerfeld-Model}中提到半经典模型类似，即外场采用经典方式处理，晶格周期场按照量子力学(能带论)的处理，电子的位置可用Bloch函数组成波包的中心位置代替(量子力学中，不确定性原理只是规定无法同时确定电子的位置和动量值，但同时确定一个波包的中心位置和平均动量是被允许的)。准经典模型成立的条件为:~一方面，外场需要是时间和空间的缓变函数，即外场变化的波长远远大于晶格常数$\lambda\gg a$；另一方面，不须考虑电子在能带之间的跃迁情况，即外场频率远远小于能带宽度$\hbar\omega\ll E$。因此Bloch电子运动满足以下两个基本关系式:
+\begin{subequations}
+	\begin{align}
+		\vec v=&\vec v_n(\vec k)=\dfrac1{\hbar}\nabla_{\vec k}E_n(\vec k)
+	\label{eq:v-p-a}\\
+	\hbar\vec k=&\vec F=-e\bigg[\vec E(\vec r,t)+\vec v_n(\vec k)\times\vec B(\vec r,t)\bigg]
+	\label{eq:v-p-b}
+	\end{align}
+\label{eq:v-p}
+\end{subequations} 
+%	 (6.4.24b) 
+式中利用了$\omega(\vec k)=E_n(\vec k)/\hbar$和功能能原理$\vec F\cdot \vec v_n\mathrm{d}t=\mathrm{d}E_n(\vec k)=\nabla_{\vec k}(\vec k)\cdot\mathrm{d}\vec k=\nabla_{\vec k}E_n(\vec k)\cdot\vec k\mathrm{d}t$。式\eqref{eq:v-p-b}虽具有与经典力学中Newton定律相似的形式，但并没出现晶格周期场作用力，因此$\hbar\vec k$并不是Bloch电子的真实动量，只是动量概念的扩展，一般称为准动量或电子晶格动量。电子速度$v_n(\vec k)$是波包运动的群速度$v_{\vec k\omega}(\vec k)$。实际上，波包的群速度严格等于电子在$\Psi_{n\vec k}(\vec r)$态中的平均速度
+\begin{displaymath}
+	\bar{\hat v}=\dfrac{\bar{\hat p}}{m_e}=\int\Psi_{n\vec k}^{\ast}\hat{\nabla}\Psi_{n\vec k}(\vec r)\mathrm{d}\vec r
+\end{displaymath}
+\textcolor{red}{(见习题6.21)。}该公式表述了一个非常重要的事实，平均速度仅与能量$E_n(\vec k)$和波矢$\vec k$有关，取决于能带结构在$\vec k$空间的变化率，而与时间无关，%即为常数,
+也就是说随着时间变化，平均速度将永远保持不变而不会衰减，因此严格周期性晶体的电阻率为零，与Bloch定理一致。由于能带的对称性(式\eqref{eq:E_band-symmetry})，晶体体电子速度是的奇函数:$\vec v_n(\vec k)=-\vec v_n(-\vec k)$% (见习题6.22)
+。在能带顶部和能带底部，$E_n(\vec k)$具有最大值与最小值，因此其电子速度为零。Bloch电子速度的方向为$\vec k$空间中能量梯度的方向，即垂直于等能面。因此，$\vec v_n$的方向一般不与$\vec k$的方向相同。
+
+从式\eqref{eq:v-p}还能直接导出Bloch电子的加速度和有效质量的概念:
+\begin{equation}
+	\dfrac{\mathrm{d}\vec v_n(\vec k)}{\mathrm{d}t}=\dfrac{\mathrm{d}}{\mathrm{d}x}\bigg(\dfrac1{\hbar}\nabla_{\vec k} E_n(\vec k)\bigg)=\dfrac1{\hbar}\dfrac{\mathrm{d}\vec k}{\mathrm{dt}}\nabla_{\vec k}E_n(\vec k)=\vec F\hbar^2\nabla_{\vec k}\nabla_{\vec k}E_n(\vec k)
+	\label{eq:electron-additi}
+\end{equation}
+% 	(6.4.25) 
+定义倒有效质量张量$\dfrac1{m^{\ast}}$，其分量形式为:
+\begin{equation}
+	\bigg[\dfrac1{m^{\ast}}\bigg]_{ij}=\dfrac1{\hbar}\dfrac{\partial^2E_n(\vec k)}{\partial\vec k_i\partial\vec k_j}\quad(i,j,k=1,2,3)
+	\label{eq:effective-mass_inverse}
+\end{equation}
+% (6.4.26) 
+则有如Newton力学的$\vec F=m\vec a$。由于微商可以交换顺序，倒有效质量张量是一个对称张量。同时，晶体的点群对称性也会使张量的独立分量减少，对于各向同性晶体，将退化为一个标量。由于倒有效质量张量是对称张量，如将$\vec k_x$、$\vec k_y$、$\vec k_z$:(即对应$\vec k_1$、$\vec k_2$、$\vec k_3$)取为张量的主轴方向，可将其对角化:
+\begin{equation}
+	m_i^{\ast}=\hbar^2/\dfrac{\partial^2 E_n(\vec k)}{\partial k_i^2}\quad(i=1,2,3)
+	\label{eq:effective-mass}
+\end{equation}
+% 	(6.4.27)
+有效质量的作用在于它概括晶体体内部周期场的作用，能够简单地由外场力确定电子的运动。图\ref{Fig:E-V-mass}是一维Bloch电子的典型能带、速度和有效质量的示意图
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.75in,width=4.80in,viewport=0 0 90 30,clip]{Figures/E-v-mass.png}
+\caption{\small \textrm{一维Bloch电子的典型能带、速度和有效质量。}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:E-V-mass}
+\end{figure}
+
+需要注意的是，电子的加速度方向并不一定与外场力的方向一致,而由倒有效质量张量的性质决定。因此,Bloch电子在外场中的运动可视为质量为$m^{\ast}$速度为$v_n(\vec k)$的粒子在电磁场中的运动，且遵从经典力学规律。注意有效质量不是常数，而是与$E_n(\vec k)$有关，是$\vec k$的函数，能取正、取负值。通常在能带顶附近由于负的能带曲率，导致负的有效质量,而在能带底附近,有正的有效质量。负有效质量表示电子状态由$\vec k$变化到$\vec k+\mathrm{d}\vec k$时，由电子转移给晶格的动量大于外场转移给电子的动量，而正的有效质量则相反。
+
+\subsection{Bloch电子在恒定电场下的运动(Bloch振荡)} 
+若在一维能带中，沿$-x$方向加一恒定电场$\mathscr{E}$，则电子在$x$方向受到电场力$\vec F=e\mathscr{E}$。根据准经典运动方程(式\eqref{eq:v-p-b})，当$\vec k$为常数，表明电子将在$\vec k$空间中作匀速运动，这意味着电子的能量本征值$E(\vec k)$将在$\vec k$空间沿曲线变化。如果没有周期势场的作用(自由电子)，电场将不断加速电子，$\vec k$的匀速变化导致能量不断地增加。Bloch电子在晶格的周期性势场下会在Brillouin区边界出现能隙，其准经典运动会被限制在同一能带中，不能越过能隙运动到另一个能带中，因此会出现在简约区图像的另一边(Brillouin边界$k=-\pi/a$和$k=\pi/a$表示等价的点)，速度变为负值，如图\ref{Fig:E-V-mass}所示。因此，电子将在$k$空间中作循环运动，导致电子的速度随时间做周期性振荡(Bloch振荡)。电子完成一次振荡所需的时间为
+\begin{equation}
+	T=\dfrac{\mbox{简约Brillouin区的宽度}}{\mbox{电子在$\vec k$空间的速度}}=\dfrac{2\pi/a}{e\mathscr{E}/\hbar}=\dfrac{2\pi\hbar}{e\mathscr{E}a}
+	\label{eq:T_vibration}
+\end{equation}
+% 	(6.4.28) 
+事实上，上述振荡现象很难被观察到。因为电子在运动过程中不断受到声子、杂质或缺陷的散射，若相邻两次散射(碰撞)间的平均时间间隔为$\tau$(弛豫时间)，$\tau$一般很小，电子还来不及完成一次振荡过程就已被散射。为了观察到电子的振荡过程，要求$\tau\approx T$。在晶体中，$\tau\sim10^{-13}~s$，$a\approx3\times10^{-10}~m$，由不难估算出，若要观察到晶体中电子的振荡现象，需加的外加电场为$\mathscr{E}\approx10^4~{V/cm}$。对金属，无法实现如此高的电场；对绝缘体，加载这样高的电场，半导体将会被击穿。因此若要观测到Bloch振荡，需延长材料的弛豫时间$\tau$(低温、高纯度样品)或减小Bloch振荡的周期时间$T$(增大晶格周期$a$)。1969年，在美国IBM公司的日本科学家江崎(L.Esaki)和华裔科学家朱兆祥共同提出超晶格的概念，通过两种不同半导体材料以几个纳米到几十个纳米的薄层交替生长并保持严格周期性的一种合成层状结构(图\ref{Fig:Super_cell})，其晶格周期大，在极低温和高纯度(散射可忽略)的这种人工材料中观察到与这一振荡有关的负阻现象。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.15in,width=2.50in,viewport=0 0 35 27,clip]{Figures/Super_Cell.png}
+\caption{\small \textrm{超晶格结构示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Super_cell}
+\end{figure}
+
+当没有外加电场时，由于$E_n(\vec k)=E_n(-\vec k)$和$\vec v_n(\vec k)=-\vec v_n(-\vec k)$，电子在能带中对称分布，而能带中所有电子对电流的贡献相互抵消，电流密度对整条能带积分后也没有宏观电流。当存在外加电场时，由于满带中所有能态均已被电子填满，在外场作用下电子发生周期性的Bloch振荡，从Brillouin边界$k=\pi/a$的点移出的电子实际上同时就从$k=-\pi/a$的等价点移进来，保持整个能带处于同样填满的状态，因此外电场并不改变电子在满带中的对称分布，所以不产生宏观电流。而不满带中由于还有部分没有电子填充的空态，因而不满带中的电子在外场的作用下发生Bloch振荡，从而使导带中电子的对称分布被破坏，产生宏观电流，因此不满带也称为导带。如果没有散射，产生的电流是以Bloch振荡相同周期的交变电流，只有在一定散射机制(在实际晶体中总是存在的)下，导带中电子的不对称分布达到稳态，这样产生恒定电流。因此材料的导电能力取决于晶体中电子的不同填充情况(满带不导电，导带才能导电)。
+
+\subsection{金属、半导体和绝缘体} 
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.95in,width=4.50in,viewport=0 0 85 55,clip]{Figures/Band_Gap.png}
+\caption{\small \textrm{金属、半金属、半导体和绝缘体的能带示意说明.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Band_Gap}
+\end{figure}
+不同材料的导电性能差别非常大，可根据电阻率的不同，大致划分为金属(电阻率$<10^{-4}\Omega\cdot\mathrm{cm}$)、半导体($10^{-4}\Omega\cdot\mathrm{cm}<$电阻率$<10^9\Omega\cdot\mathrm{cm}$)和绝缘体(电阻率$>10^{9}\Omega\cdot\mathrm{rm}$)三大类。根据上述分析，图\ref{Fig:Band_Gap}定性地解释了不同材料导电性的能带特征。
+
+\subsubsection{金属} 
+金属中的电子除填满能量低的一系列能带外，在满带和空带之间还存在被电子部分填充的导带。例如碱金属元素，如Li:~$1s^22s^1$、Na:~$[\mathrm{Ne}] 3s^1$、K:~$[\mathrm{Ar}]4s^1$ 、Rb:~$[\mathrm{Kr}]5s^1$ 、Cs:~$[\mathrm{Xe}]6s^1$等，内壳层饱和，最外层的$ns$态有一个价电子，可用自由电子模型很好地描述。其Fermi面偏离球形只有0,1\%。晶体结构都为体心立方结构(BCC)，每个原胞只包含一个价电子，原子的内层电子刚好填满相应的能带，而与外层价电子$ns$态相应的导带却只填充了一半，因此具有良好的导电性。第三族元素，如 A1:~$[\mathrm{Ne}] 3s^23p^1$、Ga:~$[\mathrm{Ar}]3d^{10}4s^24p^1$ 、In:~$[\mathrm{Kr}]4d^{10}5s^25p^1$ 、Tl:~$[\mathrm{Xe}] 4f^{14}5d^{10}6s^26p^1$等，也有类似的情况。只不过这时形成导带的是$np$电子，而不是$ns$电子，所以第三族元素的晶体绝大多数为金属。对于二价的碱土金属元素，如Be:~$1s^22s^2$、Mg:~$[\mathrm{Ne}]3s^2$ 、Ca:~$[\mathrm{Ar}]4s^2$、Sr:~$[\mathrm{Kr}]5s^2$、Ba:~$[\mathrm{Xe}]6s^2$等，其外层有两个$ns$电子，具有面心立方(Ca、Sr、Ba)或六角密排结构(Be、Mg)。若按对碱金属的讨论，与外层价电子$s$态相应的能带应刚好被填满而形成非导体，但实际上它们是金属导体，而不是非导体。这是由于在这些晶体中，与$ns$态相应的能带与上面的能带发生重叠，因此$ns$带尚未填满就已开始填人更高的能带，结果使得这两个能带都是部分填充的，这种材料通常称为半金属。贵金属，如Cu:~$[\mathrm{Ar}] 3d^{10}4s^1$、Ag:~$[\mathrm{Kr}]4d^{10}5s^1 $、Au:~$[\mathrm{Xe}]4f^{14}5d^{10}6s^1$ 等，与碱金属一样，也只有一个价电子，但与碱金属的主要区别是最外层的$s$带和$d$带发生交叠，在半满的$s$带中存在靠近Fermi面、全满的窄的$d$带，$s$带可由近自由电子模型近似，但$d$带不能。贵金属为面心立方结构，Fermi面尽管仍为球形，但偏离球形程度比碱金属更大(图\ref{Fig:Fermi_Surface-metal})。而那些$d$带被部分填充的过渡金属则更为复杂，如 Ti:~$[\mathrm{Ar}]3d^24s^2$、V:~$[\mathrm{Ar}] 3d^34s^2$、Cr:~$[\mathrm{Ar}]3d^54s^1$ 、Fe:~$[\mathrm{Ar}] 3d^64s^2$、Co:~$[\mathrm{Ar}]3d^74s^2$ 、Ni:~$[\mathrm{Ar}] 3d^84s^2$等。%图6,4.9-6.4.11是用 Nanodcal 软件得到的一些材料的能带图。
+图\ref{Fig:Band_structure-metal}示意了一些金属的能带图。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.60in,width=4.70in,viewport=0 0 105 30,clip]{Figures/Band_Structure-metal.png}
+\caption{\small \textrm{一些金属的能带(标注了Fermi面).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Band_structure-metal}
+\end{figure}
+
+\subsubsection{绝缘体}
+在绝对零度时，绝缘体中的电子刚好填满能量低的一系列能带，而能量再高的各能带都是没有电子填充的空带。被电子填满的最高占据能带称为价带，而将最低的未被占据能带称为导带。绝缘体中价带和导带之间的禁带宽度$E_\mathrm{g}$一般都较宽(大于几个eV)，此时电子很难从满的价带跃迁到空的导带，因此无法导电。只有当晶体中原胞内的价电子数目为偶数时，晶体才有可能是绝缘体。分子晶体是由具有饱和电子结构的分子组成的，一般而言，它们都是绝缘体，如稀有气体元素组成的单原子晶体He、Ne、Ar、Kr、Xe等和双原子分子晶体$\mathrm{N}_2$、$\mathrm{O}_2$、$\mathrm{F}_2$、$\mathrm{Cl}_2$、$\mathrm{H}_2$、CO、HCl等。在高压条件下，一些晶体会发生绝缘体-金属转变:~单原子晶体中只有Xe在50~GPa发生金属化转变；双原子分子晶体$\mathrm{I}_2$在16~18~GPa、$\mathrm{Br}_2$在80~GPa、$\mathrm{O}_2$在95~GPa出现绝缘体-金属转变。由于离子晶体是由闭合壳层的离子组成的，因此一般也为绝缘体，例如当Na原子($[\mathrm{Ne}]3s^1$)与Cl原子($[\mathrm{Ne}]3s^23p^5$)结合成NaCl晶体时，Na的$3s$带比Cl的$3p$带高约6~eV，在Cl的$3p$能带中可以填充$6N$个电子,但$N$个Cl原子中只有$5N$个$3p$电子，因此能量较高的Na的$3s$带中的$N$个电子就转移到能量较低的Cl的$3p$带中，刚好填满Cl的$3p$能带,而Na的$3s$带成为空带，其能隙约为~6eV。所以NaCl晶体为绝缘体。导带与价带之间的能隙可通过光学跃迁方法测量。图\ref{Fig:Band_structure-insulator}是一些绝缘体的能带图。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.70in,width=3.50in,viewport=0 0 95 47,clip]{Figures/Band_Structure-insulator.png}
+\caption{\small \textrm{一些绝缘体的能带(标注了Fermi面).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Band_structure-insulator}
+\end{figure}
+
+\subsubsection{半导体} 
+半导体中电子的能带结构和绝缘体相似，但价带和导带之间的禁带宽度$E_{\mathrm{g}}$一般较窄(在1~eV的量级)。在绝对零度时，半导体中的电子填满价带，导带为空带，因此不导电。如常规半导体是具有金刚石结构的Si($E_{\mathrm{g}}\approx1.1~\mathrm{eV}$)、Ge($E_{\mathrm{g}}\approx0.7~\mathrm{eV}$)、GaAs($E_{\mathrm{g}}\approx1.5~\mathrm{eV}$),它们的最外层都有2个$s$电子和2个$p$电子，原胞中两个原子的$s$与$p_x$、$p_y$、$p_z$轨道进行$sp^2$杂化，形成成键态和反键态。成键态对应的四个能带交叠在一起形成价带，反键态对应的四个能带交叠在一起形成导带。$T=0$时，每个原胞中的8个价电子正好填满成键态对应的价带，反健态对应的导带为空带，因此Si不导电。但由于半导体材料的能隙较窄，因而在一定温度下，有少量电子可以从价带顶跃迁到导带底，使得导带和价带都为不满带，半导体因此可以导电。在一定温度下，如果半导体具有一定的导电性，则称为本征导电性。半导体电子的跃迁概率$\sim\mathrm{e}^{(-E_{\mathrm{g}/k_{\mathrm{B}}T})}$。在一般情况下，由于$E_{\mathrm{g}}\gg k_{\mathrm{B}}T$，所以电子的跃迁概率很小，半导体的本征导电率较低。随着温度$T$的升高，电子跃迁概率指数上升，半导体的本征电导率也将迅速增大。而在金属中，因为其导带部分填充，导带中有足够多的载流子，温度升高，载流子的数目基本上不增加，但温度升高，原子的热运动加剧，电子受声子散射的概率增大，电子的平均自由程减小。因此金属的电导率随温度的升高反而下降。图\ref{Fig:Band_structure-semi_conductor}是一些半导体的能带图。此外。由C元素组成的石墨烯也是一带隙为零的半导体%(见习题6.32)
+，而由C元素组成的金刚石($E_{\mathrm{g}}\approx5.4~\mathrm{eV}$)是绝缘体。
+
+有必要指出的是，当价带上一个$\vec k$态的电子被激发到导带后，价带上留下了一个空的$\vec k$态。在外电场作用下，价带中附近的电子能够填充这个空的能态，而在电子原来的位置留下一个新的空态，因此整个价带中的电流以及电流在外电磁场作用下的变化，就如同存在一个带正电荷$e$，具有正有效质量$m^{\ast}$和速度$\vec v_n(\vec k)$的粒子的情况一样。这种假想的粒子称为空穴，是在整个能带的基础上提出来的，代表近满带中所有电子的一种集体行为。注意，空穴是一种准粒子，不能脱离晶体而单独存在。引入空穴概念后，近满带的导电问题就与导带中少量电子的问题十分相似。由于带正电荷的空穴及带负电荷的电子都能导电，因而将它们称为载流子。当$T>0$时，半导体中价带和导带都存在非充满带，因而同时有正、负电荷的载流子(电子和空穴)可参与导电。在包含仅有一个元素的单质和由简单化学组分比的化合物纯晶体中，导带中电子数目和价带中空穴数目相等，通常称为电子-空穴对。仅包含电子-空穴对的半导体为本征半导体。如果半导体中存在一定的杂质，其能带的填充情况将有所改变，从而使半导体有一定的导电性，称为非本征导电性。下一节将具体讨论半导体的性质。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.70in,width=4.70in,viewport=0 0 105 35,clip]{Figures/Band_Structure-semi_conductor.png}
+\caption{\small \textrm{一些半导体的能带(标注了Fermi面).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Band_structure-semi_conductor}
+\end{figure}
+
+\subsection{Bloch电子在恒定磁场下的运动(回旋运动)}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.70in,width=3.30in,viewport=0 0 95 47,clip]{Figures/Electron-in-Magnetic_Field.png}
+\caption{\small \textrm{磁场作用下电子在$\vec k$空间中运动轨道示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Electron-in-Magnetic_Field}
+\end{figure}
+根据准经典运动方程\eqref{eq:v-p}，恒定磁场下的载流子在$\vec k$空间中运动轨迹为垂直于磁场平面与等能面的交线(类似带电粒子在磁场中运动一样)即$\vec k\perp\mathscr{B}$，并有$\mathrm{d}E(\vec k)/\mathrm{d}t=0$，其物理根源是Lorentz力$\vec F\perp\vec v$不做功。图\ref{Fig:Electron-in-Magnetic_Field}示意了Bloch电子和自由电子在恒定磁场$\mathscr{B}$(设沿$z$方向)下运动的径迹。和Bloch振荡一样，恒定磁场下的载流子在$\vec k$空间做回旋运动，运动周期为
+
+\begin{equation}
+	T=\oint\mathrm{d}t=\dfrac{\hbar}{q\mathscr{B}}\oint\dfrac{\mathrm{d}\vec k}{v_{\perp}(\vec k)}
+	\label{eq:Magnet-Time}
+\end{equation}
+% 	(6.4.29) 
+式中积分是沿着$\vec k$空间运动的闭合路径，$v_{\perp}(\vec k)=(\nabla_{\vec k})E(\vec k)$是垂直于磁场$\mathscr{B}$和运动轨迹的速度分量。因此运动的角频率为
+\begin{equation}
+	\omega=\dfrac{2\pi}{T}=\dfrac{2\pi|q\mathscr{B}|}{\hbar}/\oint\dfrac{\mathrm{d}\vec k}{v_{\perp}(\vec k)}
+	\label{eq:Magnetic-quency}
+\end{equation}
+% 	(6.4.30) 
+这就是载流子的回旋频率。对于自由电子，因为等能面为球形，所以运动轨迹为垂直于磁场$\mathscr{B}$与等能面$E(\vec k)$相交的圆，故有
+\begin{equation}
+	\omega_c=\dfrac{q\mathscr{B}}{m_e}
+	\label{eq:Magnetic-circle-quency}
+\end{equation}
+% 	(6.4.31) 
+其中考虑了载流子的正、负电荷$q$的影响(对于电子，$q=-e$；对于空穴，$q=e$)，根据量子理论%(具体见量子力学教材),
+，以上分析的载流子恒定磁场下在$x$-$y$平面内的圆周运动对应一种简谐振动，能量是量子化的，被称为Landau能级，Landau能级具有很高的简并度。载流子在实空间的运动可以描述为:~在垂直于磁场的平面内做圆周运动，具体运动方向与载流子的电荷有关，同时以速度%$v_{\parallel}(\vec k)$
+$v_{\mathrel{/\mskip-2.5mu/}}(\vec k)$沿磁场$\mathscr{B}$方向作匀速运动，因此总的运动轨迹为一螺旋线，若晶体中电子的能带结构有
+\begin{equation}
+	E(\vec k)=\dfrac{\hbar^2k^2}{m^{\ast}}
+	\label{eq:like-Free_electron-energy}
+\end{equation}
+% 	(6.4.32) 
+的抛物线形式，只需将自由电子质量$m_e$用有效质量$m^{\ast}$代替。一般情况下$E(\vec k)$是复杂的，因此式\ref{eq:Magnetic-quency}中的积分也是复杂的。
+
+\subsection{回旋共振}\label{Band:Hall_effect}
+若在恒定磁场下的导体或半导体外加一频率为$\omega$的交变电场(频率为微波-红外电磁波)，电场的方向垂直于场方向。当$\omega=\omega_c$时，载流子运动与电场同步，载流子吸收电场能量达到极大，该现象称为回旋共振吸收。产生回旋共振的物理原因就是载流子在均匀恒定磁场中沿磁场方向作频率为$\omega$的回旋运动。由于回旋的方向与载流子$q$有关，回旋共振不仅可以测量载流子的有效质量$m^{\ast}$，还可以根据出射波的偏振方向来判断电场的能量是被电子还是被空穴吸收的。从量子理论的观点看，电子吸收电场能量，相当于实现了电子在Landau能级间的跃迁。
+
+回旋共振首先在半导体中观测到。与Bloch振荡类似，为了能观察到回旋共振现象，必须满足条件$\omega_c\tau>>1$，因此通常实验都必须在高纯、低温($\tau$足够大)和强磁场高频率($\omega_c$足够高)的条件下进行观测。不过在这种条件下，半导体中导带上电子的密度是非常小的，因此在实验中需要利用光激发电子到导带。近年来利用红外激光为交变信号源，可以观测到非常清晰的共振线。这种回旋共振现象也可以在金属中观测到，但是金属电阻率低，射频信号不能透入样品太深，导致普通回旋共振现象难以观察。一种可以用于测量金属回旋共振的方法称作Azbel-Kaner共振，是沿着金属表面加上磁场和交变电场，电子以角频率$\omega_c$作回旋运动，频率为$\omega$的逆时针方向圆振交变电磁场沿金属表面传播，它只能穿透很小的范围，穿透值等于趋肤深度。但电子的回旋运动是超过这个深度，因此共振条件变为:$\omega=n\omega_c~(n=1,2,3,\cdots)$。图\ref{Fig:Azbel-Kaner}示意了 Azbel-Kaner 共振实验的几何设置。实际测量中是维持$\omega_c$不变，改变场强度以满足上式。这种方法不仅可以用来测出$\omega_c$，进而算出有效质量$m^{\ast}$，还可以通过改变磁场取向测得各个方向的极值截面来确定Fermi面的形状。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.70in,width=4.20in,viewport=0 0 65 25,clip]{Figures/Azbel-Kaner.png}
+\caption{\small \textrm{Azbel-Kaner共振的几何结构.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Azbel-Kaner}
+\end{figure}
+
+
+\subsubsection{Hall效应} 
+将导体放在恒定磁场中并通以一恒定电流，若磁场方向与电流方向垂直，则在垂直于电流和磁场的第三方向上的导体两端将会产生电位差，这个电磁输运现象就是著名的Hall效应,如图\ref{Fig:Hall_effect}所示。Hall效应是磁电效应的一种，由美国物理学家Hall在1879年研究金属的导电机制时发现。在普通物理中业已知道，产生Hall效应的原因是形成电流做定向运动的带电粒子即载流子，在磁场中所受到的Lorentz力作用而产生的。以下按照Drude模型对Hall效应进行简要解析。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=1.70in,width=2.20in,viewport=0 0 42 28,clip]{Figures/Hall_effect.png}
+\caption{\small \textrm{Hall效应.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Hall_effect}
+\end{figure}
+在电场和磁场共同作用下，考虑弛豫近似，导体或半导体中带电荷$q$的单个载流子的运动遵守准经典方程：
+\begin{equation}
+	m^{\ast}\dfrac{\mathrm{d}\vec v_d}{\mathrm{d}t}+m^{\ast}\dfrac{\vec v_d}{\tau}=q(\mathscr{E}+\vec v_d\times\mathscr{B})
+	\label{eq:Hall_effect-movement}
+\end{equation}
+% 	(6.4.33) 
+设磁场$\mathscr{B}$沿$z$方向，电流沿$x$方向，此时$v_y=v_z=0$，对于达到稳态的体系，即满足$\mathrm{d}\vec v_d/\mathrm{d}t=0$，由式\eqref{eq:Hall_effect-movement}可得
+\begin{displaymath}
+	\begin{aligned}
+		v_x=&\dfrac{q\tau}{m^{\ast}}(\mathscr{E}_x+v_y\mathscr{B})=\dfrac{q\tau}{m^{\ast}}\mathscr{E}\\
+		v_y=&\dfrac{q\tau}{m^{\ast}}(\mathscr{E}_y+v_x\mathscr{B})=0
+	\end{aligned}
+\end{displaymath} 
+由电流密度$\vec j=nq\vec v_d$，可得
+\begin{equation}
+	\begin{aligned}
+		\mathscr{E}_x=&\dfrac{m^{\ast}}{nq^2\tau}j_x\\
+	\mathscr{E}_y=&\dfrac{\mathscr{B}}{nq}j_x
+	\end{aligned} 
+	\label{eq:Hall_effect-Electric_Field}
+\end{equation} 
+% 	(6.4.34) 
+可见引人磁场后$x$方向上的样品电阻率没有变化，而$y$方向上获得和磁场$\mathscr{B}$成正比的电场，这被称为Hall电场，其电阻率称为Hall电阻率。可定义Hall系数
+\begin{equation}
+	R_{\mathrm{H}}=\dfrac{\mathscr{E}_y}{j_x\mathscr{B}}=\dfrac1{nq}
+	\label{eq:Hall_coefficient}
+\end{equation}
+%	 (6.4.35) 
+Hall系数是反映材料Hall效应强弱的重要参数，由材料的性质所决定。当载流子为电子，$=-e$，Hall系数为负；当载流子为空穴，$q=e$，Hall系数为正。在只存在一种载流子的简单情况下，Hall系数与载流子浓度成反比。所以Hall效应常被用来实验测量载流子浓度和判断载流子类型。半导体中载流子的浓度远远小于金属中载流子的浓度，所以半导体材料的Hall效应比较明显(产生的Hall电压$V_{\mathrm{H}}\propto R_{\mathrm{H}}$)，是制造Hall元件较理想的材料。
+
+\subsection{能带理论的局限性} 
+%经过一些近似后,
+能带理论将复杂的多体问题，通过近似处理转，化为单电子问题，以单电子在周期场中运动的特征来表达晶体中电子的行为。尽管能带理论比较简单，但它可以解释自由电子论所无法解释的许多实验现象，特别是在说明简单金属及半导体特性上是非常成功的。能带理论是研究固体电子运动的一个主要理论，被广泛地应用于研究导体、绝缘体及半导体的物理性质。它可以对不同材料的电子状态给出较为系统、正确的物理描述，因此也是固体物理学中极重要的部分。但是也要注意，能带理论依然是一种基于理想晶体的近似理论，根据上面的分析，不难看出，能带理论主要用于处理无限大的、均匀的周期体系，即体积相对大的均匀晶体的体性质。在涉及表面/界面、结点或者存在其他非均匀结构附近的电子行为时，采用能带理论来描述往往是失效的。另一方面，对于一个非常小的系统(如小分子、量子点等)，它们的能带结构将不再连续。小尺寸和大尺寸之间的交叉学科属于介观物理。此外，非晶体中没有长程序但仍存在能带，这些的电子能带结构也绝非由周期性引起的。
+
+特别需要说明的是，能带论是单电子理论，是将一个原本复杂、相互关联运动的多粒子体系近似在一定的平均周期势场中彼此独立运动的粒子图像，因此它不是精确的理论。在能带理论的实际应用中，必然存在局限性。如能带论在解释过渡金属化合物的导电性方面往往是失败的，一个例子是MnO晶体，按能带理论，它应该是导体，实阿上是绝缘体，其在室温下的电阻率为$10^{15}~\Omega\cdot\mathrm{cm}$。又如能带理论预言$\mathrm{Re}_5\mathrm{O}_3$是绝缘体，实际上却是良导体，室温下的电阻率为$10^{-5}~\Omega\cdot\mathrm{cm}$，与铜的电阻率相近。其次，能带理论无法解释金属-绝缘体转变。根据能带理论，原胞中含奇数个电子的晶体必然是金属。当晶格常数足够大时，导体将会成为绝缘体。当$a$达到某一临界值$a_c$时，电导率突然下降为零，成为绝缘体；当$a>a_c$时，电导率仍然为零。这一转变的原因在于，$a$愈大时，所形成的能带将愈窄，致使电子的动能愈小而局域于原子的周围，不参与导电。同样的，能带理论也不能解释绝缘体-金属的转变，如上述提及的双原子分子晶体在高压下完成绝缘体-金属的转变。而超导体中，电子与晶格的相互作用导致超导态的形成，以及描述晶体中电子的集体运动等等，都还需要考虑电子-声子之间以及电子-电子之间的关联作用，无法用单电子的能带论予以直接解释，但可在能带理论的基础上加以改进，形成更严格、精确的理论
+
+\section{半导体} 
+能带理论解释了为什么有些材料为金属，有些材料为绝缘体，而另外材料为半导体。半导体的导电性介于金属与绝缘体之间，除了受到材料自身性质的影响，还可以通过外场调节加以控制，是一类非常有意思的材料。制作成不同用途的半导体器件，已广泛应用于不同领域，如计算机、电视机、照相机等方面。半导体技术是信息科学技术发展的基础，是20世纪最伟大的科技成就之一。无论从科学、技术或是经济发展的角度来看，半导体都是非常重要的，其对人类社会的发展产生了深刻影响。但是，即使在半导体技术飞速发展的今天，它仍面临着不可忽视的技术发展瓶颈问题，这也对信息技术的进一步发展提出了新的挑战。
+
+\subsection{典型半导体的能带结构}\label{Classic_Semi-conductor}
+典型的半导体有具有金刚石结构的族元素半导体(如Si和Ge)，具有闪锌矿结构的III-V族(如CdS和ZnS)以及II-VI族化合物半导体(如GaAs和InSb)，它们大多都是以共价键结合，化合物半导体兼有一定的离子性结合。半导体能带结构的共同点是在$T=0~K$时，电子填充整个价带而导带全空，价带与导带之间的禁带宽度较窄($<\!2~\mathrm{eV}$)。纯净的半导体的导电性是源于热激发而引起的本征导电机制，少量电子主要位于导带底附近，而少量空穴主要位于价带顶附近。因此，导带底和价带顶附近的能带结构部分决定半导体的性质。
+
+设能带的极值点(导带底或价带顶)对应波矢$\vec k_0$处，能量值为$E_0$，则有$\left.\dfrac{\partial E(\vec k)}{\partial\vec k}\right|_{\vec k=\vec k_0}=0$，将能量$E(\vec k)$在$\vec k_0$附近做Taylor展开并保留到二阶项:
+\begin{equation}
+	E(\vec k)=E_0+\dfrac12\sum_{i,j}\left.\dfrac{\partial^2E(\vec k)}{\partial k_i\partial k_j}\right|_{\vec k=\vec k_0}(k_i-k_{0,i})(k_j-k_{0,j})
+	\label{eq:E_k-Taylor}
+\end{equation}
+%	 (6.5.1) 
+其中$i, j=x, y, z$，在主轴坐标系下可写为
+\begin{equation}
+	E(\vec k)=E_0+\dfrac12\sum_{i}\left.\dfrac{\partial^2E(\vec k)}{\partial^2 k_i}\right|_{\vec k=\vec k_0}(k_i-k_{0,i})^2=E_0+\dfrac{\pi}2\sum_i\dfrac{(k_i-k_0)^2}{m^{\ast}}
+	\label{eq:E_k-Taylor-main}
+\end{equation}
+% 	(6.5.2) 
+这里利用了有效质量公式\eqref{eq:effective-mass}，$m^{\ast}$为沿主轴坐标系三个轴向的有效质量。式\eqref{eq:E_k-Taylor-main}表明，在能带极值点附近的等能面为椭球面。通常导带底有效质量$m^{\ast}>0$，价带顶有效质量$m^{\ast}<0$(一般定义空穴的有效质量为$m_v^{\ast}=m_h^{\ast}=|m^{\ast}|$)。如果$\vec k_0=0$且极值点的有效质量保持各向同性($m_x^{\ast}=m_y^{\ast}=m_z^{\ast}=m_n^{\ast}$)，则有
+\begin{equation}
+	E(\vec k)=E_0+\dfrac{\hbar^2k^2}{2m_n^{\ast}}
+	\label{eq:E_Taylor-isotropic}
+\end{equation}
+% 	(6.5.3) 
+此时等能面为一球面，导带底时取``$+$''，$m_n^{\ast}=m_c^{\ast}=m_e^{\ast}$，价带顶时取``$-$''，$m_n^{\ast}=m_v^{\ast}$。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.30in,width=3.50in,viewport=0 0 100 60,clip]{Figures/Band_Structure-Si-GaAs.png}
+\caption{\small \textrm{Si和GaAs的能带结构的特点.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Band_Structure-Si-GaAs}
+\end{figure}
+
+图\ref{Fig:Band_Structure-Si-GaAs}给出Si和GaAs的部分能带结构。Si的导带极小值在沿$<\!100\!>$方向的某点，由于Si具有立方对称性(面心Bravais格子)，因此沿$<\!100\!>$方向有六个等价的极小值，其附近的等能面为旋转椭球面，旋转轴为$<\!100\!>$轴，回旋共振实验验证了这一点，并测得沿$<\!100\!>$方向的纵向有效质量$m_l=0.19m_e$。垂直于$<\!100\!>$方向的横向有效质量$m_l=0.98m_e$。GaAs的导带极小值在$\vec k=0$ 位置(Brillouin区中心$\Gamma$点)，其附近的等能面为球形，电子有效质量各向同性。另外在$<\!100\!>$方向还有极小值存在，其能量比点能量高$0.29~\mathrm{eV}$。在强电场作用下，电子可以从$\vec k=0$处导带底转移到$<\!100\!>$方向的导带底，产生所谓转移电子效应。Si和GaAs的价带都有三个能带，价带顶在$E(\vec k)$处是两重简并的。上面能带$E(\vec k)$随$\vec k$的变化曲率小，空穴的有效质量大，称为重空穴带，相应的空穴称为重空穴；下面能带$E(\vec k)$随$\vec k$的变化曲率大，空穴的有效质量小，称为轻空穴带，相应的空穴称为轻空穴。轻、重空穴带带顶附近的等能面都不是球面，而是所谓``扭曲的球面''。由于自旋-轨道耦合而分离出来的第三支能带也在$\vec k=0$处有极大值，但比上述两个带的极大值低，且其附近的等能面为球面。
+
+Si和GaAs的能带结构有一个很大的不同点:~Si的能带中导带底和价带顶发生在$\vec k$空间的不同点，而GaAs能带中导带底和价带顶发生在$\vec k$空间的相同点。当光照激发价带的电子到导带发生光吸收过程时，除了必须满足能量守恒外，还必须满足晶格的准动量守恒，即$\hbar\vec k^{\prime}-\hbar\vec k=\mbox{光子动量}$。因此，在GaAs中，吸收一个频率等于或大于$E_g/\hbar$的光子能使电子从价带顶跃迁到导带底，这种跃迁称为``直接跃迁''，对应的半导体称为直接带隙半导体。而在Si中，单纯吸收光子不能使电子从价带顶跃迁到导带底，必须在吸收光子的同时伴随有吸收或发射一个声子，这种跃迁称为``非直接跃迁''，对应的半导体称为间接带隙半导体。例如在Si中，对应的光子频率为$E_g/\hbar-\omega(\vec q)$，这里吸收波矢为$\vec q$的声子提供丢失的晶格准动量$\hbar\vec q$与能量$\hbar\omega(\vec q)$。相比于光子能量，声子的能量较小，一般可以忽略，因此声子主要提供跃迁所需的准动量。
+
+\subsection{掺杂半导体} 
+如果在纯净半导体中掺人少量杂质原子或引人某些缺陷，这些杂质或缺陷会在半导体中导致附加的势场，在禁带中引人相应的杂质能级或缺陷能级，其导电性能将与掺杂原子类型及浓度等密切相关，此类半导体的导电机制与本征半导体的导电机制差别很大，这种类型的半导体称为非本征半导体或``掺杂半导体''。正是由于这种特性，通过控制掺入杂质的形式，可以用来制备各种符合不同要求的半导体器件。如果在IV族元素半导体Si、Ge中掺入V族元素(如P、As、Sb等)，通常杂质原子取代Si或Ge原子的位置(图\ref{Fig:N-conductor}(a))，V族元素贡献五个价电子，其中四个价电子与近邻的硅或锗原子形成共价键，而额外的一个价电子只被V族元素原子束缚，且束缚能量较低，很容易电离形成自由电子在晶体中移动。这样V族的五价原子的电子有效地提供导带电子而形成正离子，因此将其称为施主(donor)杂质。施主杂质在能隙中引人新的局部能级，形成施主能级，因此可以用``类H原子''理论进行简单分析。将V族元素原子看成``类H原子''，而半导体看成相对介电常数为$\varepsilon$的介质，施主杂质所引起的势能可近似为
+\begin{equation}
+	V(r)=\dfrac{e^2}{4\pi\varepsilon\varepsilon_0r}
+	\label{eq:donor-V}
+\end{equation}
+% 	(6.5.4) 
+式中$\varepsilon_0$是真空介质常数，$r$为额外电子与杂质离子之间的距离。根据Bohr模型，额外电子的电离能为
+\begin{equation}
+	E_d=-\dfrac{m_e^{\ast}}{2(4\pi\varepsilon\varepsilon_0\hbar)^2}=-\dfrac1{\varepsilon^2}\dfrac{m_e^{\ast}}{m_e}E_{\mathrm{H}}
+	\label{eq:donor-deion}
+\end{equation}
+%	(6.5.5)
+式中$E_{\mathrm{H}}=-13.6~\mathrm{eV}$，为H原子的电离能，第一轨道半径为
+\begin{equation}
+	r_d=\dfrac{m_e^{\ast}}{m_e}\varepsilon a_{\mathrm{B}}
+	\label{eq:donor-1-radius}
+\end{equation}
+% 	(6.5.6) 
+玻尔半径$a_{\mathrm{B}}=0.53~\mbox{\AA}$。一般半导体的介电常数$\varepsilon$比较大，有效质量$m_e^{\ast}$比较小，因此电离能$E_d$比较小，大约$0.01~\mathrm{eV}$的量级，远小于禁带宽度$E_g$($1\sim2~\mathrm{eV}$)，而轨道半径$r_d$比较大。例如对于Si，禁带宽度$E_g=1.14~\mathrm{eV}$，$\varepsilon=11.7$，$m_e^{\ast}\approx0.2m_e$，$E_d\approx20~\mathrm{eV}$，$r_d\approx60a_{\mathrm{B}}$。如图\ref{Fig:N-conductor}(b)所示，施主能级应位于导带底以下$E$处，施主杂质原子的电子极易由于热激发($\sim0.025~\mathrm{eV}$)而摆脱杂质原子的束缚，进人导带成为导带载流子。此时导带上的电子是多数载流子(多子)，而价带上的空穴为少数载流子(少子)。这种掺杂半导体中主要依靠电子导电，因此称为$N$型半导体。 \begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.30in,width=4.70in,viewport=0 0 105 55,clip]{Figures/N-semi_conductor.png}
+\caption{\small \textrm{N-型半导体.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:N-conductor}
+\end{figure}
+
+如果在IV族元素半导体Si、Ge中掺人III族元素(如B、Al、In等)，III族元素原子只有三个价电子，因此与近邻的Si或Ge原子形成共价键时，一个共价键中缺少一个电子，留下一个空穴，邻近共价键的电子很易填充此空穴，在那里又产生新的空穴(图\ref{Fig:P-conductor}(a))，这就等效于空穴在晶体中自由运动。这样III族的三价原子有效地接收价带电子而形成负离子，因此将其称为受主(acceptor)杂质。同样受主杂质在能隙中引人新的局部能级，形成受主能级，用``类氢原子''理论得到受主能级位于价带顶以上$E_d$处(图\ref{Fig:P-conductor}(b))，这样价带上的电子极易由于热激发而进入受主能级，在价带上形成空穴，成为价带载流子。此时价带上的空穴是多子，而导带上的电子为少子。这种掺杂半导体中主要依靠空穴导电，因此称为P型半导体。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.30in,width=4.70in,viewport=0 0 105 60,clip]{Figures/P-semi_conductor.png}
+\caption{\small \textrm{P-型半导体.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:P-conductor}
+\end{figure}
+
+\subsection{热平衡载流子的统计分布} 
+假设导带和价带电子单位体积的能态密度分别为$n_c(E)=n_c(E)/V$和$n_v(E)=n_v(E)/V$，利用等能面方程式\eqref{eq:E_Taylor-isotropic}，计算导带底和价带顶附近的态密度分别为
+\begin{subequations}
+	\begin{align}
+		\mbox{电子}:~n_c(E)=&\dfrac{4\pi(2m_c^{\ast})^{\frac32}}{\hbar^3}(E-E_c)^{\frac12}\label{eq:DOS-n_c}\\
+% 	(6.5.7a)
+		\mbox{空穴}:~n_v(E)=&\dfrac{4\pi(2m_v^{\ast})^{\frac32}}{\hbar^3}(E_v-E)^{\frac12} \label{eq:DOS-n_v}
+% 	(6.5.7b)
+	\end{align}
+	\label{eq:DOS}
+\end{subequations}
+式中$m_c^{\ast}$、$m_v^{\ast}$分别为导带电子、价带空穴能态密度有效质量。当满足$0<E<E_g=E_c-E_v$时，带隙中态密度为零。这样温度$T$时，热平衡态中导带电子和价带空穴浓度分别为
+\begin{subequations}
+	\begin{align}
+		\mbox{电子}:~n(T)=&\int_{E_c}^{+\infty}f(E)n_c(E)\mathrm{d}E\label{eq:density-n_T}\\
+% 	(6.5.8a)
+		\mbox{空穴}:~p(T)=&\int_{-\infty}^{E_v}[1-f(E)]n_v(E)\mathrm{d}E \label{eq:density-p_T}
+% 	(6.5.8b)
+	\end{align}
+	\label{eq:density}
+\end{subequations} 
+式中$f(E)$是电子的Fermi-Dirac概率分布函数(式\eqref{eq:Fermi_Dirac})，$1-f(E)$为空穴(即不被电子占据)的概率分布函数。在一般半导体(掺杂浓度不高)中，非简并条件(这里用来表示Fermi能级或化学势):
+\begin{equation}
+	E_v<\mu(T)<E_c,~\mbox{并有}E_c-\mu(T)\gg k_{\mathrm{B}}T,~\mu(T)-E_v\gg k_{\mathrm{B}}T
+	\label{eq:Fermi_energy-chemical_potential}
+\end{equation}
+% 	(6.5.9) 
+一般都满足，故可有
+\begin{subequations}
+	\begin{align}
+		\mbox{电子}:~f(E)\approx&\mathrm{e}^{-(E-\mu)/k_{\mathrm{B}}T}\label{eq:dispersion-n_c}\\
+% 	(6.5.10a)
+		\mbox{空穴}:~1-f(E)\approx&\mathrm{e}^{(E-\mu)/k_{\mathrm{B}}T} \label{eq:dispersion-p_v}
+% 	(6.5.10b)
+	\end{align}
+	\label{eq:dispersion}
+\end{subequations} 
+这样导带电子和价带空穴能近似为经典的Boltzmann分布，这就是非简并含义。将式\eqref{eq:DOS}和式\eqref{eq:dispersion}代人式\eqref{eq:density}，得到导带电子和价带空穴浓度可写为
+\begin{subequations}
+	\begin{align}
+		\mbox{电子}:~n(T)=&N_c(T)\mathrm{e}^{-(E_c-\nu)/k_{\mathrm{B}}T}\label{eq:density_detail-n_T}\\
+% 	(6.5.11a)
+		\mbox{空穴}:~p(T)=&N_v(T)\mathrm{e}^{-(\mu-E_v)/k_{\mathrm{B}}T} \label{eq:density_detail-p_T}
+% 	(6.5.11b)
+	\end{align}
+	\label{eq:density_detail}
+\end{subequations} 
+式中有效能态密度
+\begin{subequations}
+	\begin{align}
+		\mbox{电子}:~N_c(T)=&\int_{E_c}^{+\infty}n_c(E)\mathrm{e}^{-(E-E_c)/k_{\mathrm{B}}T}\mathrm{d}E=\dfrac{2(2\pi m_c^{\ast}k_{\mathrm{B}}T)^{\frac32}}{\hbar^3}\label{eq:DOS_effective-N-c_T}\\
+% 	(6.5.12a)
+		\mbox{空穴}:~N_v(T)=&\int_{-\infty}^{E_v}n_v(E)\mathrm{e}^{-(E_v-E)/k_{\mathrm{B}}T}\mathrm{d}E=\dfrac{2(2\pi m_v^{\ast}k_{\mathrm{B}}T)^{\frac32}}{\hbar^3} \label{eq:DOS_effective-N-v_T}
+% 	(6.5.12b)
+	\end{align}
+	\label{eq:DOS_effective}
+\end{subequations} 
+其中利用了式\eqref{eq:DOS}和关系$\int_0^{+\infty}\sqrt{t}\mathrm{e}^{-t}\mathrm{d}t=\dfrac{\sqrt{\pi}}2$。将式\eqref{eq:DOS_effective-N-c_T}和式\eqref{eq:DOS_effective-N-v_T}相乘可有
+\begin{equation}
+	n(T)p(T)=N_c(T)N_v(T)\mathrm{e}^{-\frac{E_g}{k_{\mathrm{B}}T}}=n_i^2(T)
+	\label{eq:mass_interaction}
+\end{equation}
+% 	(6.5.13) 
+式\eqref{eq:mass_interaction}称质量作用定律，它表明，尽管半导体中热平衡两种载流子浓度各自都依赖于化学势，但是它们的乘积却与化学势无关，而只与有效能态密度(或有效质量)和禁带宽度有关。这里并没有假设半导体掺杂情况，因此载流子浓度也与杂质浓度无关。
+
+\subsubsection{本征半导体} 
+对于本征半导体，导带上的电子浓度与价带上的空穴浓度必然相等，即$n(T)=p(T)$，由式\eqref{eq:mass_interaction}可得
+\begin{equation}
+	n(T)=p(T)=n_i(T)=\sqrt{N_c(T)N_v(T)}\mathrm{e}^{-\frac{E_g}{2k_{\mathrm{B}}T}}
+	\label{eq:intrinct_density}
+\end{equation}
+% 	(6.5.14) 
+说明本征载流子浓度只与能带结构和温度有关。对于给定的半导体，本征载流子浓度随温度上升而指数增加；而在温度一定时，载流子浓度随$E_g$的增大而指数下降。取$T=300~\mathrm{K}$，$E_g=1~\mathrm{eV}$，$m_c^{\ast}=m_v^{\ast}=m_e$，计算可得$n(T)=p(T)\approx10^{11}~\mathrm{cm}^{-3}$，这是典型的半导体本征载流子浓度。再代入式\eqref{eq:DOS_effective}，整理可得化学势为
+\begin{equation}
+	\mu(T)=\dfrac12(E_c+E_v)+\dfrac{3k_{\mathrm{B}}T}4\ln\dfrac{m_v^{\ast}}{m_c^{\ast}}
+	\label{eq:Chemical_Potential}
+\end{equation}
+%	 (6.5.15) 
+当$T=0$时，$\mu(T)=\dfrac12(E_c+E_v)$，即本征半导体的化学势处在带隙中心。当$m_v^{\ast}=m_c^{\ast}$时，$\mu(T)=\dfrac12(E_c+E_v)$，且与温度无关，否则化学势随温度增加向有效质量较小(即更低的能态密度)的能带方向移动$k_{\mathrm{B}}T$量级。在大多数半导体中有$k_{\mathrm{B}}T\ll E_g/2$，因此一般总是能满足非简并条件式\eqref{eq:Fermi_energy-chemical_potential}。
+
+\subsubsection{掺杂半导体} 
+由于杂质能级的存在，使得掺杂半导体的化学势$\mu$发生变化，可以通过电子数守恒的约束条件来计算掺杂半导体的化学势。以N-型半导体为例，设施主原子浓度为$N_d$，则热平衡时在导带中电子浓度
+\begin{equation}
+	n(T)=N_d[1-P(E_d)]+p(T)
+	\label{eq:doped-density}
+\end{equation}
+% 	(6.5.16) 
+其中$n(T)$和$p(T)$是热平衡时载流子浓度(参见式\eqref{eq:density_detail})，即施主能级被电子占有的概率。由于一个五价的原子在提供第二个电子到导带时需要克服静电吸引作用，所以需要更高的能量。这样在受主能级上电子可能状态只有三种:~没有电子占据、一个自旋向上或向下的电子。通过在热力学统计中Fermi-Dirac分布的类似推导，得到
+\begin{equation}
+	P(E_d)=\dfrac2{\mathrm{e}^{\frac{E_d-\mu}{k_{\mathrm{B}}T}}+2}
+	\label{eq:doped-dispersion}
+\end{equation}
+%	 (6.5.17) 
+如果满足非简并条件\eqref{eq:Fermi_energy-chemical_potential}，将式\eqref{eq:density_detail}、\eqref{eq:DOS_effective}和\eqref{eq:doped-dispersion}代人式\eqref{eq:doped-density}，通过求解的一元三次方程可以得到化学势$\mu$。这里只是简单考虑了物理上感兴趣的三个区域。如果定义施主能级的电离温度$T_d=E_g/k_{\mathrm{B}}$。
+\begin{enumerate}
+	\item ``冻结''区:~当温度非常低($T\ll T_d$)时，价带上的电子基本没有激发，而施主能级的电子有部分被激发。当$T=0$时，半导体中的价带和施主能级全满而导带全空。因此有$E_d<\!\mu(T)\!<E_c$，并且$E_c-\mu\gg k_{\mathrm{B}}T$，所以$1-P(E_d)\approx\dfrac12\mathrm{e}^{(E_d-\mu)/k_{\mathrm{B}}T}$，代入式\eqref{eq:doped-density}，得
+		\begin{equation}
+			n(T)=N_c(T)\mathrm{e}^{-(E_c-\mu)/k_{\mathrm{B}}T}=\dfrac12N_d\mathrm{e}^{(E_d-\mu)/k_{\mathrm{B}}T}
+			\label{eq:doped-density-1}
+		\end{equation}
+% 	(6.5.18) 
+取对数，整理后可得
+\begin{equation}
+	\mu(T)=\dfrac12(E_c+E_d)+\dfrac{k_{\mathrm{B}}T}2\ln{N_d}{2N_c(T)}
+	\label{eq:ln_doped-density-1}
+\end{equation}
+% 	(6.5.19) 
+代入式\eqref{eq:doped-density-1}，可得导带上电子浓度
+\begin{equation}
+	n(T)=\sqrt{N_c(T)\dfrac{N_d}2}\mathrm{e}^{-E_d/2k_{\mathrm{B}}T}
+	\label{eq:doped-density-CB}
+\end{equation}
+% 	(6.5.20) 
+因此在温度$T\ll R_d$的范围内，由式\eqref{eq:doped-density-CB}可知，载流子浓度$n(T)$非常小，因此被称为``冻结''区。式\eqref{eq:ln_doped-density-1}也表明:~$\mu(T=0)=\dfrac12(E_c+E_d)$，位于施主能级和与导带底中心。随着施主杂质浓度$N_d$的增加，化学势$\mu(T)$有向导带底移动的趋势。因此，如果掺杂浓度过高，有可能使得化学势$\mu(T)$达到或进人导带，从而破坏非简单条件，此时就需要直接从式\eqref{eq:doped-density}来重新推导化学势。
+
+\item 非本征区:~当温度$T$满足$T_d<T\ll E_g/k_{\mathrm{B}}$时，可认为所有的施主杂质被电离，而位于价带上的电子不受影响，此时
+	\begin{equation}
+		n(T)=N_c(T)_{e}-(E_c-\mu)/k_{\mathrm{B}}T\approx N_d
+		\label{eq:uninstriic_nT}
+	\end{equation}
+%	 (6.5.21) 
+多数载流子浓度$n(T)$是常数，因此也称为饱和区，所以有
+\begin{equation}
+	\mu(T)=E_c+k_{\mathrm{B}}T\ln\dfrac{N_d}{N_c(T)}
+	\label{eq:uninstric_chemical-potential}
+\end{equation}
+%	(6.5.22) 
+根据质量作用定律\eqref{eq:mass_interaction}，可有少数载流子浓度为
+\begin{equation}
+	p(T)\approx\dfrac{n_i^2(T)}{N_d}
+	\label{eq:uninstric-p_T}
+\end{equation}
+%	(6.5.23) 
+在该区域因为满足$n_i(T)\ll N_dn$，因此可有$p(T)\ll N)d=n(T)$，电子浓度远远大于空穴浓度。如在室温下，纯净Si的本征载流子浓度$n_i(T)\approx10^{10}~\mathrm{cm}^{-3}$，若N-型半导体Si中掺杂浓度$N_d\approx14^{10}~\mathrm{cm}^{-3}$，则有$n(T)\approx10^{14}~\mathrm{cm}^{-3}$和$p(T)\approx10^{6}~\mathrm{cm}^{-3}$。注意到在Si中$n_c\approx10^{19}~\mathrm{cm}^{-3}$，所以可以估计$E_c-\mu(T)\sim5k_{\mathrm{B}}T$，满足非简并条件。N-型半导体GaAs中则有$n_i(T)\approx10^{7}~\mathrm{cm}^{-3}$，$n(T)\approx N_d\approx10^{14}~\mathrm{cm}^{-3}$和$p(T)\approx1\mathrm{cm}^{-3}$。
+
+\item 本征区:~当温度继续升高，达到$T>E_g/k_{\mathrm{B}}\gg T_d$时，价带上的热激发将显著增加，本征激发的导带电子数远远超过施主杂质激发的电子数($n_i(T)\gg N_d$)，杂质激发的影响可以忽略不计。显然，随着温度不断升高，所有半导体将到达本征区。图\ref{Fig:N-conductor_density}示意了N-型半导体中导带中电子浓度随温度的变化趋势。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.30in,width=4.30in,viewport=0 0 85 45,clip]{Figures/N-semi_conductor-density.png}
+\caption{\small \textrm{P-型半导体中电子浓度与温度的关系.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:N-conductor_density}
+\end{figure}
+\end{enumerate} 
+同样地，也可以考虑P-型半导体的化学势和载流子浓度。设受主原子浓度为$N_p$，受主能级$E_g$被电子占有的概率$P(E_a)$相应修改为
+\begin{equation}
+	P(E_a)=\dfrac2{\mathrm{e}^{\frac{\mu-E_a}{k_{\mathrm{B}}T}}+2}
+	\label{eq:P-semi-conductor-probality}
+\end{equation}
+% 	(6.5.24) 
+由于静电排斥，受主能级上电子可能状态也只有三种:~自旋向上、向下电子同时占据、自旋向上或向下有一个电子。定义受主能级的电离温度为$T_a=E_a/k_{\mathrm{B}}$，在三个区域内将得到与N-型半导体类似的结果。
+
+通常情况下,掺杂半导体既可能包含施主杂质也同时包含受主杂质。设$N_d\geqslant N_a$，则施主杂质中的$N_d$个电子将从施主能级跃迁到受主能级，于是$T=0$时，价带和受主能级都将被填满，$N_d-N_a$施主能级被填充，而导带则为全空。因此有效的施主杂质浓度为$N_d-N_a$，然后可以按照以上方法同样处理。
+
+\subsection{磁场效应:回旋共振和Hall效应} 
+在\ref{Band:Hall_effect}讨论了磁场条件下固体中电子的磁场效应，如回旋共振和Hall效应。由于这些特殊的效应对于研究固体材料的性质非常有用，此处将先前的结果应用到半导体中。
+
+\subsubsection{回旋共振与有效质量测定} 
+由于半导体中能带结构的特征(参见式\eqref{eq:E_k-Taylor-main})，回旋共振被广泛地用来测定半导体导带底电子或价带顶空穴的有效质量，研究其能带结构。在半导体的导带底或价带顶附近，等能面一般接近椭球面，因此有效质量是各向异性的。在主轴坐标系中，有
+\begin{equation}
+	E(\vec k)=\dfrac{\hbar^2}2\bigg\lgroup\dfrac{k_x^2}{m_x}+\dfrac{k_y^2}{m_y}+\dfrac{k_z^2}{m_z}\bigg\rgroup
+	\label{eq:E-effectiver_mass}
+\end{equation}
+% 	(6.5.25) 
+此时原点设在导带底或价带顶位置。当发生电子回旋共振时，交变电场的频率为$\omega_c=q\mathscr{B}/m_n^{\ast}$，其中有效质量$m^{\ast}$与外加磁场的方向有关，%(见习题6.35),
+可以记作
+\begin{equation}
+	\dfrac1{m_n^{\ast}}=\sqrt{\dfrac{\alpha^2m_x^{\ast}+\beta^2m_y^{\ast}+\gamma^2m_z^{\ast}}{m_x^{\ast}m_y^{\ast}m_z^{\ast}}}
+	\label{eq:effective-mass-inverse}
+\end{equation}
+%	 (6.5.26) 
+式中$\alpha$、$\beta$、$\gamma$为磁场在主轴坐标系中的方向余弦。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.20in,width=4.60in,viewport=0 0 105 50,clip]{Figures/Si-Cycicle_Responant.png}
+\caption{\small \textrm{Si的回旋共振吸收谱.引自文献\inlinecite{PR98-368_1955}}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Si-response-absorption}
+\end{figure}
+
+\textcolor{red}{【例6.5.1】根据回旋共振测量Si导带底的有效质量，并证明:~$\mathscr{B}$沿任意方向时可观察到三个共振吸收峰，当$\mathscr{B}$沿$[110]$方向时可观察到两个共振吸收峰，$\mathscr{B}$当沿$[111]$方向时可观察到一个共振吸收峰。}
+
+【解】由\ref{Classic_Semi-conductor}可知，Si导带底位于$\langle100\rangle$方向,共有六个等价的极值点，极值点附近的等能面为长轴沿$\langle100\rangle$方向的旋转椭球面(图\ref{Fig:Si-response-absorption}(a))。若主轴的$k_z$轴沿方向$\langle100\rangle$，将极值点取为$E_c=0$，则等能面方程形如式\eqref{eq:E-effectiver_mass}，并且电子的横向有效质量满足$m_x^{\ast}=m_y^{\ast}=m_t$，纵向有效质量则满足$m_z^{\ast}=m_l$。由于在$k_x$，$k_y$方向上是各向同性的，因此可以选择主轴方向使得实验中磁感应强度$\mathscr{B}$位于$k_x-k_y$平面内。设$\mathscr{B}$与$k_z$轴的夹角为$\theta$，则磁场$\mathscr{B}$的方向余弦为$\alpha=\sin\theta$，$\beta=0$，$\gamma=\cos\theta$，代人式\eqref{eq:effective-mass-inverse}可得
+\begin{displaymath}
+	m_h^{\ast}=m_t\sqrt{\dfrac{m_l}{m_t\sin^2\theta+m_l\cos^2\theta}}
+\end{displaymath} 
+如果磁感应强度$\mathscr{B}$沿任意方向$(n_1,n_2,n_3)$，$\mathscr{B}$与$[100]$和$[\bar{1}00]$的夹角给出$\cos^2\theta=n_1^2/|\mathscr{B}|^2$，与$[010]$和$[0\bar{1}0]$的夹角给出$\cos^2\theta=n_2^2/|\mathscr{B}|^2$|，与$[001]$和$[00\bar{1}]$的夹角给出$\cos^2\varphi=n_3^2/|\mathscr{B}|^2$。因此$m_n^{\ast}$有三个取值，对应三个回旋共振频率。所以一般实验当中可以观察到三个吸收峰。测出回旋共振频率就能确定有效质量$m_l$和$m_t$。当$\mathscr{B}$沿$[110]$方向时，$\mathscr{B}$与$[100]$、$[\bar{1}00]$、$[010]$和$[0\bar{1}0]$的夹角给出$\cos^2\theta=1/2$，而与$[001]$和$[00\bar{1}]$的夹角给出$\cos^\varphi=0$，于是$m_n^{\ast}$有两个取值，对应的两个回旋共振频率。于是实验中可以观察到两个共振吸收峰。当$\mathscr{B}$a沿$[\bar{1}11]$方向时，与六个方向的夹角都给出$\cos^2\theta=1/3$，因此只能在此方向上观察到一个共振吸收峰，
+
+图\ref{Fig:Si-response-absorption}(b)给出了$T=4~\mathrm{K}$下Si的回旋共振吸收谱。磁场$\mathscr{B}$的方向在$(110)$平面内，与$[100]$方向的夹角为$30^{circ}$，可以观测到两个共振吸收峰。对于价带顶的空穴，空穴运动的回旋轨道方向与电子相反。因此能够用沿磁场$\mathscr{B}$方向的圆偏极化高频场加以区分。从图\ref{Fig:Si-response-absorption}(b)中不难看到，对应于空穴有两个共振峰，这是来自于价带顶$\vec k=0$处的轻、重空穴，它们有各自不同的有效质量。
+
+\subsubsection{Hall效应} 
+Hall效应是测量半导体特性(如载流子类型与浓度等)的主要手段。在半导体中一般可能存在电子和空穴两种载流子。%根据\ref{}节中的分析,
+对于只有一种载流子的情形，即导带上的电子或价带上的空穴时，Hall系数可以表示为:
+\begin{equation}
+	\begin{aligned}
+		\mbox{电子}:~R_{\mathrm{H}}=&-\dfrac1{ne}\\
+		\mbox{空穴}:~R_{\mathrm{H}}=&-\dfrac1{pe}
+	\end{aligned}
+	\label{eq:Hall_coeffective}
+\end{equation}
+% 	(6.5.27) 
+如果同时存在电子和空穴，此时Hall系数能用以下公式描述:%(见习题6.33):
+\begin{equation}
+	R_{\mathrm{H}}=\dfrac{p\mu_h^2-n\mu_e^2}{\mathrm{e}(n\mu_e+p\mu_h)^2}
+	\label{eq:Hall_coeffective-double}
+\end{equation}
+% 	(6.5.28) 
+其中$n$、$p$分别为电子和空穴浓度，$\mu_e$、$\mu_h$分别为电子和空穴迁移率(定义为单位电场强度所产生的漂移速度$\mu=\sigma/(ne)$)。对于大多数半导体来说，电子的迁移率$\mu_e$大于空穴的迁移率$\mu_h$。对于本征半导体，总是有等式$n=p$，由式\eqref{eq:Hall_coeffective-double}可知，其Hall系数$R_{\mathrm{H}}$为负。随着温度升高，载流子浓度增大，$R_{\mathrm{H}}$的绝对值减小。对于N-型半导体,由于$n>p$，因此总有$R_{\mathrm{H}}<0$。对于P-型半导体，情况则变得复杂一些。在杂质激发区域，只有杂质激发存在而本征激发几乎可忽略，$p\gg n$则有$p\mu_h^2>n\mu_e^2$。此时$R_{\mathrm{H}}>0$，随着温度升高，经过饱和区后，本征激发的电子和空穴的浓度都不断增加，而此时杂质激发的空穴浓度保持不变，当满足$p\mu_h^2=n\mu_e^2$时，$R_{\mathrm{H}}=0$；当温度继续升高，使得$p\mu_h^2<n\mu_e^2$,则有$R_{\mathrm{H}}<0$。因此随着温度从杂质激发增加至本征激发范围，P-型半导体的Hall系数将由正变为负。图\ref{Fig:Hall_effect-R}给出了N-型及P-型InSb的Hall系数随温度变化的曲线。从图中可以看出，P-型样品的Hall系数在某一温度时出现突变点(此时Hall系数的符号改变,图中只按照绝对值画出),在高温($\approx300~\mathrm{K}$)时，N-型和P-型的数据融合到相同的本征曲线(曲线左侧)。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=4.30in,width=3.60in,viewport=0 0 75 90,clip]{Figures/InSb-Hall-coeffectivity.png}
+\caption{\small \textrm{N-型及P-型InSb的Hall系数随温度$1/T$的变化.引自文献\inlinecite{PR100-1672_1955}}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Hall_effect-R}
+\end{figure}
+
+Hall效应的应用非常广泛，除了测量半导体特性外，利用该效应制成的Hall器件还广泛应用于电磁测量、非电量测量、自动控制、计算与通信装置、信息处理等方面。例如利用Hall效应原理构成的Hall传感器在日常生活家用电器中到处可见。如录音机的换向机构就是使用Hall传感器检测带终点并完成自动换向功能的；录像机中的磁鼓电机，通常采用InSb半导体材质的Hall元件；洗衣机中的电动机都必须具有正、反转和高、低速旋转功能，主要依靠Hall传感器检测与控制电动机的转速、转向来实现。Hall开关类传感器还用于电饭煲、气炉的温度控制和电冰箱的除霜等方面。此外Hall传感器在飞机、军舰、航天器、新军事装备及通信中应用也相当广泛。如我国的远程导弹、``风云''号卫星、``神舟''号飞船等均使用特别研制的Hall传感器。
+
+\subsubsection{量子Hall效应} 
+%按5.4.9节中
+在经典Hall效应理论中，Hall电阻率$\rho_{yx}$与磁感应强度$\mathscr{B}$成线性的连续变化，并随着载流子浓度$n$成反比。1980年，德国物理学家Von Klitzing等在极低温度($1.5~\mathrm{K}$)和强磁场($18.9~\mathrm{T}$)下，在金属-氧化物-半导体场效应晶体管(MOSFET)的二维电子气中发现了与经典Hall效应非常不同的行为:~Hall电阻率$\rho_{yx}$随$\mathscr{B}$的变化出现了一系列量子化平台(图\ref{Fig:Quantum-Hall}红线所示)，即($i=1,2,\cdots,\mbox{整数}$)，对应的纵向电阻率消失(图\ref{Fig:Quantum-Hall}蓝线所示)，这种现象称为整数量子Hall效应。Von Klitzing以``发现量子Hall效应并开发了测定物理常数的技术''获得了1985年的Nobel物理学奖。整数量子Hall效应可以用载流子在外场中运动的量子理论来解释。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=3.00in,width=4.00in,viewport=0 0 82 60,clip]{Figures/Quantum_Hall-integer.png}
+\caption{\small \textrm{整数量子Hall效应.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Quantum-Hall}
+\end{figure} 
+在整数量子Hall效应中，每一个量子平台与量子电阻$(h/e^2)$有严格的整数关系，与样品的材料、形状等因素无关，而只与材料的一个整体性质有关，这就是``倒空间''中电子能带的拓扑性质，因而极稳定。实验上测得这些电阻平台的精确度可以达到$10^{-8}$，甚至更高。从1990年1月1日起，国际计量委员会在世界范围内启用量子Hall电阻标准代替原来的实物标准，并给出了国际推荐值$R_{\mathrm{K}}=h/e^2=25812.807~\Omega$，将其作为电阻单位欧姆的自然基准。量子Hall效应的一个重要应用是高精度地测定了精细结构常数。由量子Hall效应测定的的$\alpha$倒数不确定度为$6.2\times10^{-8}$，这种测量方法比H原子的精细结构和超精细结构分裂法的精度还要高。
+
+1982年,美籍华人物理学家崔琦(D. Tsui)和德国物理学家H. St\"omer等人在更低的温度($0.1~\mathrm{K}$)和更强的磁场($20~\mathrm{T}$)条件下，研究更高质量(具有高迁移率和更纯净)的二维GaAs异质结时发现了分数量子Hall效应，即观测到的横向Hall电阻平台$h/(ie^2)$，不是原来量子Hall效应的整数值，而是分数值。如$i=\frac13,\frac15,\frac27,\frac49,\cdots$。该效应不久由另一位美国物理学家R. Laughlin给出理论解释。不像整数量子Hall效应能用单电子近似图像完全解释，对分数量子Hall效应则必须考虑粒子间的相互作用的多体问题。崔琦、H. St\"omer和R. Laughlin三人因此也以``他们发现了一种新形态的量子流体，其中有带分数电荷的激发态''分享了1998年的Nobel物理学奖。分数量子Hall效应开创了一个研究多体现象的新时代，新的物理效应有可能开拓出新的学科领域。
+
+\subsubsection{Hall效应家族} 
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.00in,width=4.20in,viewport=0 0 1368 576,clip]{Figures/Hall-Family_Science.png}
+\caption{\small \textrm{量子Hall家族.括号内的数字表示每个效应的发现年代，$H$表示外加磁场强度，$M$表示磁化强度.对于所有的三种量子Hall效应，电子都是沿着无耗散的边缘运动，材料内部都是绝缘的. Hall测量是测量一个方法的``净''电荷，量子Hall效应中，边缘不同自旋的电子都是朝着一个方向运动;~量子自旋Hall效应中，不同自旋电子的运动方向不同;反常量子Hall效应中，沿边缘运动的只有自旋向下的电子，自旋和电荷运动方向的``锁定''机制和边缘通道的数量取决于材料本身.这里只是示意了最简单的类型.引自文献\inlinecite{Science340-153_2013}}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Hall-Family}
+\end{figure} 
+除了以上介绍的经典Hall效应和量子Hall效应，还发现了反常Hall效应和反常量子Hall效应，自旋Hall效应和量子自旋Hall效应。这些成员组成了Hall效应的整个家族，如图\ref{Fig:Hall-Family}所示。反常Hall效应是指零磁场(不加外磁场)中的Hall效应，是1881年Hall在研究磁性金属的Hall效应时发现的。而反常量子Hall效应于1988年由美国物理学家M.Haldane从理论上提出，其Hall电阻恰好为$h/e^2$。2013年，清华大学薛其坤院士领衔的团队在高质量的磁性杂拓扑绝缘体薄膜中实验上首次观测到反常量子Hall效应。1971年，俄罗斯物理学家M. I. Dyakonov和V. I. Perel理论上预期了一种在没有外磁场情况下，自旋极化在样品两侧的积累，引起的自旋Hall效应，于2005年在半导体中也被实验观测到。在特殊的二维体系和极端物理条件下，将形成量子化的自旋Hall电导，这就是量子自旋Hall效应。2007年德国伍尔兹堡大学的研究组首次成功观测到这一现象。
+
+自从Hall效应被发现以来，已经被广泛应用于各行各业，同时也引出了很多新的物理现象，开拓出了新的学科领域。%在后面我们将看到
+随着微电子技术的高速发展，也遭遇到了经典上不可逾越的物理极限。人们正在探索新的信息处理方式，其中一条路径就是利用电子的自旋代替传统电子学中所使用的电子电荷作为信息载体，对电子自旋进行操控，从而产生了自旋电子学。在量子Hall效应中，电子的传输是没有能耗的过程，如果能够利用无耗损的边缘态发展新的电子学器件，特别是类似利用零磁场中的量子Hall效应，摆脱量子Hall效应中强磁场的限制，此类研究，将对于未来在电子器件中克服经典物理极限发挥特殊的作用。 
+
+\subsection{重要的半导体器件简介:PN 结、晶体管与集成电路}
+在本征半导体中通过控制杂质的情况，其导电能力会有很大的改变。利用这种特性可以制备掺杂半导体，由此生产二极管、三极管等重要的半导体器件。此外还可以利用半导体材料的其他特性(如热敏性、光敏性以及以上介绍的磁效应等)制成热敏电阻、光敏电阻、光电二极管、光电池等器件。这里将介绍在微电子技术中起着非常重要作用的几个半导体器件:~PN结、晶体管与集成电路。
+
+\subsubsection{PN结} 
+考虑不同的掺杂工艺，将P-型半导体和N-型半导体同时制作在一块单晶半导体基片的两边，在它们的交界面处形成很薄的空间电荷区域，称为PN结。如图\ref{Fig:P-N_node}所示。在杂质激发的范围内，界面两边存在着载流子的浓度差，N-区电子的浓度远远大于P-区，而P-区空穴的浓度远远大于N-区。因此在交界区域载流子会发生扩散现象，N-区的电子向P-区扩散，P-区的空穴向N-区扩散电子和空穴在中间的交界区复合而消失，使P-区留下带负电荷的受主离子，N-区留下带正电荷的施主离子。这样交界区域出现了空间电荷区，即形成了由N-区指向P区的内建电场(一般为$10^3\sim10^5~\mathrm{V/cm}$量级)。在内建电场的作用下，多子的扩散运动受到阻碍，但却使P-区少子(电子)向N-区漂移，N-区的少子(空穴)向P-区漂移。当扩散与漂移达到动态平衡时，便在交界面处形成了一定厚度(约几个$\mu\mathrm{m}$范围)的空间电荷区域,即为PN结。由于在这区域内没有移动的载流子，故又称PN结为耗尽层或阻挡层，整体对外还是显电中性。 
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.80in,width=4.00in,viewport=0 0 90 66,clip]{Figures/P-N_node.png}
+\caption{\small \textrm{PN结.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:P-N_node}
+\end{figure} 
+PN结最显著的特性是它的V-I特性，即PN结正向导通和反向截止的特性。如图\ref{Fig:P-N_node}所示，形成PN结时，内建电场的存在，导致PN结两侧存在电势差(可由质量作用定律\eqref{eq:mass_interaction}和平衡时，服从Boltzmann分布的P-区和N-区电子浓度关系$n_{P0}/n_{N0}=\mathrm{e}^{-\frac{eV_D}{k_{\mathrm{B}}T}}$得到，也可以通过求解势垒中的Poisson方程得到)。当PN结处于正向偏压V时，即PN结的P-区接电源正极，N-区接负极，此时$-V_D$在势垒区产生的电场方向与内建电场方向相反，PN结的势垒高度下降，对多子扩散运动的阻碍减弱，形成较大的正向扩散电流，由P-区流向N-区，此时PN结对外呈现低阻性，处于正向导通状态。同样地，当PN结处于反向偏压时，即PN结的P-区接电源负极，N-区接正极，此时$-V_D$在势垒区产生的电场方向与内建电场方向一致，PN结的势垒高度增加，对多子扩散运动的阻碍增强，扩散电流大大减小，可以忽略;~而少子的漂移运动增强，形成很小的反向漂移电流，由N-区流向P-区。这时PN结对外呈高阻性，处于反向截止状态。少子浓度由本征激发决定，在一定温度条件下是恒定的，故少子形成的漂移电流也是恒定的，基本与所加反向电压的大小无关，这个电流也称为反向饱和电流。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.50in,width=4.00in,viewport=0 0 80 50,clip]{Figures/P-N_I-V.png}
+\caption{\small \textrm{PN结的V-I特性曲线.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:PN_I-V}
+\end{figure} 
+外加偏压$V_D$时，耗尽区边界的载流子浓度可近似用Boltzmann分布描述，因此可得流过PN结的总电流
+\begin{equation}
+	I=I_0\bigg\lgroup\mathrm{e}^{\frac{eV_D}{k_{\mathrm{B}}T}}-1\bigg\rgroup
+	\label{eq:PN-current}
+\end{equation}
+% 	(6.5.29) 
+式\eqref{eq:PN-current}常称为Shockely方程。从方程中可以看出，当$V_D>0$(正向偏压)时，$\mathrm{e}^{\frac{eV_D}{k_{\mathrm{B}}T}}\gg1$，正向电流$I\approx I_0\mathrm{e}^{\frac{eV_D}{k_{\mathrm{B}}T}}$随外加电压增加而指数上升;~当$V_D<0$(反向偏压)，时$\mathrm{e}^{\frac{eV_D}{k_{\mathrm{B}}T}}\ll1$，$I\approx I_0$。即为PN结的反向饱和电流。图\ref{Fig:PN-I_V}给出PN结的I-V特性曲线，利用这种单向导电性可以制成检波二极管和整流二极管。当外加反向电压大于一定数值(反向击穿电压)时，反向电流突然急剧增加，这种现象称为PN结的反向击穿。反向击穿电压一般在几十V以上。反向击穿后，电流很大变化只会引起很小的电压变化，利用此特性能制成稳压二极管。 
+
+\subsubsection{晶体管} 
+1947年，美国Bell实验室的W. Shockley、J. Bardeen和W. Brattain研制出第一个Ge晶体管，晶体管是20世纪的一项重大发明，开创了微电子技术的新时代。三人因此分享了1956年的Nobel物理学奖。晶体管可以用于检波、整流、放大、开关、稳压、信号调制以及许多其他电路信号的处理，是所有现代电子设备(如电脑、手机、收音机、CD和DVD等)必不可少的基本构建块。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.50in,width=4.00in,viewport=0 0 90 55,clip]{Figures/PNP-circle.png}
+\caption{\small \textrm{共发射极电路(电流放大).}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:PNP_Circle}
+\end{figure} 
+半导体晶体管有两大类型:~双极型晶体管和场效应晶体管。双极型晶体管由两个靠得很近的PN结构成，有N-PN和PN-P型两种结构。如图\ref{Fig:PNP-Circle}所示的PN-P型结构。中间薄的部分称为基区，连上电极称为基极B。两侧分别为发射区和集电区，相应的电极为发射极E和集电极C。C-B间的PN结称为集电结;~E-B间的PN结称为发射结。发射区的掺杂浓度最高，集电区掺杂浓度最低,且集电结面积大，基区要制造得很薄，厚度一般在几个$\mu\mathrm{m}$到几十个$\mu\mathrm{m}$。在发射结和集电结加上适当的偏压，可使双极型晶体管处在不同的工作模式。当发射结和集电结都加反向偏压时，两个PN结都处在反向截止状态，因此只有非常小的反向饱和电流，晶体管处在截止模式。当发射结加正向电压集电结加反向电压时，晶体管处在正向有源工作模式，具有放大作用。如图\ref{Fig:PNP-Circle}所示，发射结加正偏压$V_{eb}$，势垒高度降低，与PN结中的正向导通状态相同，大量的空穴将从发射区向基区扩散，形成的电流为$I_E$，电子也将从基区向发射区扩散，但数量很少。因发射区掺杂浓度高，基区很薄且掺杂浓度低，进入基区的空穴流除少部分被复合外，大部分能到达集电结的耗尽区边界。在发射极和集电极间加正向偏压$V_{ec}$，使得集电结处于反向偏压，集电结势垒高度增加，到达集电结边缘的空穴被集电结电场扫人集电区，形成的集电极电流$I_c$，远远大于集电结区的少子形成漂移电流$I_{CE0}$。另外，还会有非常少的一部分空穴从发射极流向基极，形成基极电流。这里$I_E\approx I_B+I_C$，$I_B\ll I_C$，并且有
+\begin{equation}
+	I_C=\beta I_B+I_{CE0}
+	\label{eq:Integrated-Current}
+\end{equation}
+% 	(6.5.30) 
+式中$\beta$是共发射极直流电流放大系数，$I_{CE0}$是基极开路时发射结的电流，称为漏电流或穿透电流，通常很小。$\beta$的典型值为$10\sim100$，因此基极电流的微小变化能够引起集电极电流较大变化，晶体管具有电流放大作用。
+
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.50in,width=4.40in,viewport=0 0 100 55,clip]{Figures/MOSFET.png}
+\caption{\small \textrm{MOSFET结构和原理示意图.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:MOSFET}
+\end{figure} 
+场效应晶体管(简称场效应管)是仅由一种载流子参与导电的半导体器件，也称为单极型晶体管。从参与导电的载流子来划分,它有以电子为载流子的N-沟道器件和空穴为载流子的P-沟道器件。图\ref{Fig:MOSFET}示意了绝缘栅型场效应管IGFET(Insulated Gate Field Effect Transistor)，也称金属氧化物半导体晶体管MOSFET(Metal Oxide Semiconductor FET)。它的基本结构:~在P-型半导体衬底上生成一层$\mathrm{SiO}_2$薄膜绝缘层，然后用光刻工艺，扩散两个高掺杂的N-型区，引出电极即为源极-S和漏极-D，在源极和漏极之间的绝缘层上镀一层金属Al作为栅极-G。P-型半导体称为衬底B。 
+
+当栅极-G上不加电压时，源极-S、衬底和漏极-D构成两个背靠背的PN结，不论源极-S和漏极-D之间的偏压如何，总有一个PN结处在反偏截止状态，因此只有很小的反向饱和电流通过。若栅极-G加上正电压$V_{GS}$(图\ref{Fig:MOSFET}(b))，产生的电场将靠近栅极下方P区的空穴(多子)向下方排斥，而电子(少子)将向表层运动，栅极下方出现了一薄层负离子的耗尽层。当$V_{GS}$小于一阈值$V_{\mathrm{TH}}$，由于聚集在栅极下方的P-型半导体表层的电子数量有限,不足以形成沟道将漏极和源极沟通形成电流。当$V_{GS}>V_{\mathrm{TH}}$时(称为开启电压)，栅极电压已较强，聚集的电子增多，足以形成沟道将漏极和源极沟通。如果此时加正的漏源电压$V_{DS}$，就会有较大的电流从漏极-D流入源极-S,形成漏极电流$I_D$。在栅极下方形成的导电沟道中的电子，因与P-型半导体的流子空穴极性相反，故称为反型层。改变栅极电压$V_{GS}$将改变所产生的电场，也将改变漏极电流$I_D$，这就是``场效''的含义。栅极电压$V_{GS}$的微小变化能够引起电阻上电流较大变化，导致较大电压输出。因此，MOSFET可作为电压放大器。不断级联的MOSFET电路可能将麦克风中输人的一个很小信号放大来驱动强大的扬声器。
+
+与双极型晶体管相比，尽管场效应管操作稍慢，但它具有输入电阻高、噪声小、功耗低、动态范围大、易于集成、没有二次击穿现象、安全工作区域宽等优点，在集成电路中具有非常重要的位置。
+
+\subsubsection{集成电路} 
+集成电路(Integrated Circuit， IC)是20世纪60年代初期发展起来的一种新型半导体器件，是采用一定的工艺，将晶体管、二极管、电阻、电容和电感等元件按照一定的电路互连并``集成''在一块半导体晶片上，然后封装在一个管壳内，执行特定电路或系统功能。第一个集成电路由J. Kilby于1958年完成，数月后R. Noyce采用先进的平面处理技术研制出集成电路，被誉为``提出了适合于工业生产的集成电路理论的人''。二人是公认为集成电路共同发明者。仅仅在其开发后半个世纪，集成电路已经无处不在，成为现代社会结构不可或缺的一部分，包括电脑、手机在内的几乎所有数字电器，以及以移动互联网、三网融合、物联网、云计算、智能电网、新能源汽车为代表的战略性新兴产业，都依赖于集成电路的存在。集成电路的发明标志着电子元件向着微小型化、低功耗和高可靠性方面迈进了一大步，开创了世界微电子学的历史。J. Kilby也因此获得了2000年的Nobel物理学奖。
+
+对于离散晶体管，微小型化的集成电路带来了两个主要优势:~低成本和高性能(低消耗，快速开关等)。实际上，集成电路的发明是在实现电路的小型化和解决元件之间连接研究的产物。自从1958年集成电路诞生以来，集成电路持续向更小型化和高速化的趋势发展，其集成度经历了小规模($100$个晶体管以下)、中规模($0.1\sim1\mathrm{K}$个晶体管)、大规模($1\sim10\mathrm{K}$个晶体管)、超大规模($10\sim100\mathrm{K}$个晶体管)到特大规模($100\mathrm{K}\sim10\mathrm{M}$个晶体管)、超特大规模($1\mathrm{M}$个晶体管以上)的迅速发展。早在1965年，Intel创始人之一G. Moore就注意到了微电子小型化的这个发展趋势，并指出集成电路上可容纳的晶体管数目约每隔18个月便会增加一倍，而其特征尺寸相应地以相似的速度减小。这就是著名的Moore定律，揭示了信息技术进步的速度。这个趋势已经延续了40多年之久，特别是微处理器方面，从1971年推出的第一款4004的2300个增加到奔腾II处理器的750万个，而现在Intel最新的Itanium芯片上有17亿个硅晶体管。每一次更新换代都是Moore定律的直接结果(参见图\ref{Fig:Moore})。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.20in,width=4.70in,viewport=0 0 110 50,clip]{Figures/Integrated.png}
+\caption{\small \textrm{微处理器和内存存储器集成度的发展.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Moore}
+\end{figure} 
+
+\subsection{物理极限与量子计算} 
+器件特征尺寸的进一步微型化依然是微电子技术发展的关键。然而持续了40多年之久的Moore定律是否一直有效?~半导体器件的物理极限是什么?~当它达到最终的极限时，信息技术将如何发展?~实际上，传统集成电路的发展已经受到器件工艺和器件物理本身的限制。一些限制本质上是技术的，因此许多天才工程师正不断努力寻找克服这些限制的方法，例如改善工艺过程，采用新的Si-Ge半导体或者新的绝缘体材料代替硅。然而有些限制是更基本的问题不能用简单的材料替换来克服，例如电子元件尺寸的小型化和不可逆电路的热耗散等问题。
+
+1988年，Keyes发表了一篇关于``电子器件的小型化及其限制''的综述性评述文章，图\ref{Fig:Diode_tube}是该文中的部分数据。图\ref{Fig:Diode_tube}(a)给出晶体二极管中包含掺杂物数目随年份的调查报告，可以看出，如果该趋势继续下去，电子器件尺寸将达到原子的量级，其工作原理将只涉及少数几个电子的行为，因而计算必将在原子尺度下进行，不可避免地出现量子效应，因而它所遵循的经典物理规律不再适用，必须用量子力学的规律来描述。因此另辟蹊径发展利用量子效应原理的新型纳米电子器件，如单电子晶体管、共振隧穿器件、分子电子器件、自旋电子器件等，是克服这一极限的途径之一。另一方面，图\ref{Fig:Diode_tube}(b)展示了执行一个逻辑操作所需能耗随年代指数减少的情况，最终也将达到不可逆操作所需的$\mathrm{kT}$量级极限。早在1961年，Landau就指出了经典计算的这个限制，并强调可逆操作原则上没有热耗散。现在我们已经看到的Moore定律的减速，基本原因正是微处理器的热耗散问题。尽管当前微处理器的热耗散依然处在最终物理极限之上很远，然而进一步减少热耗散变得越来越困难。在量子力学中，量子系统的演化本身就是可逆的，因而很自然地实现原则上没有热耗散的可逆操作。因此，另一种更广泛的克服经典计算中根本物理极限的途径是使用量子态(如电子自旋)来编码，现在电子计算机(称经典计算机)中的二进制信息利用量子力学原理处理和操控信息的方式，建造新型的量子计算机。Moore定律与可逆计算的研究为量子计算机的发展奠定了基础。器件微型化将微电子技术带入了纳米领域，这一方面对半导体器件的发展提出了多方面的挑战，同时也为开发新型的器件提供了机遇。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.10in}
+\includegraphics[height=2.20in,width=4.70in,viewport=0 0 105 50,clip]{Figures/Diode_tube.png}
+\caption{\small \textrm{晶体二极管特性随年份的变化.}}%(与文献\cite{EPJB33-47_2003}图1对比)
+\label{Fig:Diode_tube}
+\end{figure} 
+
+经典计算机将信息编码在经典载体上，以比特(bit)作为信息单元，一个比特可以表示为具有两个可识别状态的抽象实体，如是或非、真或假、$0$或$1$，一般采用二进制数据位，每一个二进制数据位$0$或$1$表示$1~\mathrm{bit}$信息(物理上可用高低电压或有无电荷实现)。而量子计算机将信息编码在量子载体上，采用量子比特(qu-bit)或量子位作为信息单元，是比特的量子推广，可用一个两态量子系统来编码，如两种偏振态的光子(水平和垂直偏振)场中自旋$1/2$的粒子(自旋向上和向下)、两能级的原子或离子(基态和激发态)以及任何量子系统的空间模式等等。量子计算中信息的处理都遵循量子力学规律，形成了量子信息区别于经典信息的基本特性，如量子叠加性(量子并行计算的重要物理基础)量子相干性、量子纠缠和非局域性等。量子信息处理在提高运算速度、确保信息安全、增大信息容量和提高检测精度等方面具有突破现有经典信息系统极限的能力。
+
+建造一台实用的量子计算机关键在于怎样精确地控制可实现量子计算的物理体系的量子行为。法国物理学家S. Haroche和美国物理学家D. J. Wineland因为他们发展了控制和测量单量子体系开创性的实验方法而获得了2012年Nobel物理学奖。目前已提出的可实现量子计算的物理体系包括核磁共振、囚禁离子、腔电动力学、量子点、Si基中P核的Kane方案、金刚石N-空位缺陷、掺杂Fullerene和超导Josephson结等。各种固态实现方案具有易于集成和规模化，特别是能够借鉴现有的成熟微电子技术等优势，因此被视为很有潜力的实现量子计算的物理体系。许多人相信，造就现代数字电子计算机的固体物理学，可能最终给出量子计算机硬件。
