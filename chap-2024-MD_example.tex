@@ -1,118 +1,276 @@
+\newpage
+\noindent{\heiti 课后习题}
+
 %例题 1：双原子分子的 Lennard-Jones 势能与力计算
-1. 已知\textrm{Ar}<++>原子对的 Lennard-Jones 参数为ϵ=0.238 kcal/mol，σ=3.4 Å，计算两原子间距r=4.0 Å 时的相互势能及作用力。
-解题过程：
+{\heiti 1. 已知\ch{Ar}原子对的 \textrm{Lennard-Jones}势中参数分别为 $\varepsilon=0.238~\mathrm{kcal/mol}$，$\sigma=3.4~\mathrm{\AA}$，计算当两个\ch{Ar}原子的间距为$r=4.0~\mathrm{\AA}$ 时的相互作用势能及原子所受的作用力。}
 
-    Lennard-Jones 势能公式：U(r)=4ϵ[(rσ​)12−(rσ​)6]
-    代入参数：(rσ​)=4.03.4​=0.85(rσ​)12=0.8512≈0.142,(rσ​)6=0.856≈0.377U(r)=4×0.238×(0.142−0.377)≈−0.226 kcal/mol
-    相互作用力公式（沿径向，斥力为正）：F(r)=−drdU​=24ϵ[2(rσ​)13−(rσ​)7]r1​
-    代入参数：2(rσ​)13=2×0.8513≈2×0.121=0.242(rσ​)7=0.857≈0.319
+%解题过程：
+\noindent{\heiti 答案:}\\
+由式\eqref{eq:Potential_L-J}\textrm{Lennard-Jones}~势函数公式：
+\begin{displaymath}
+	U_{\mathrm{LJ}}(r)=4\varepsilon\bigg[\bigg(\dfrac{\sigma}{r}\bigg)^{12}−\bigg(\dfrac{\sigma}{r}\bigg)^6\bigg]
+\end{displaymath}
+    代入参数：
+    \begin{displaymath}
+	    \begin{aligned}
+		    \bigg(\dfrac{\sigma}{r}\bigg)=&\dfrac{3.4}{4.0}=0.85\\
+		    \bigg(\dfrac{\sigma}{r}\bigg)^{12}=&0.85^{12}\approx0.142\\
+		    \bigg(\dfrac{\sigma}{r}\bigg)^{6}=&0.85^{6}\approx0.377\\
+	    \end{aligned}
+    \end{displaymath}
+    \begin{displaymath}
+	 \therefore~U_{\mathrm{LJ}}(r)=4\times0.238\times(0.142−0.377)\approx−0.226~\mathrm{kcal/mol}
+    \end{displaymath}
+    类似地，原子间相互作用力公式\eqref{eq:Focrce_L-J}%（沿径向，斥力为正）
+：
+\begin{displaymath}
+	F_{\mathrm{LJ}}(r)=-\dfrac{\mathrm{d}U}{\mathrm{d}r}=\dfrac{24\varepsilon}{r}\bigg[2\bigg(\dfrac{\sigma}r\bigg)^{13}-\bigg(\dfrac{\sigma}r\bigg)^7\bigg]
+\end{displaymath}
+    代入参数：
+    \begin{displaymath}
+	    \begin{aligned}
+		   2\bigg(\dfrac{\sigma}{r}\bigg)^{13}=&2\times0.85^{13}\approx2\times0.121=0.242\\
+		    \bigg(\dfrac{\sigma}{r}\bigg)^{7}=&0.85^{7}\approx0.319\\
+	    \end{aligned}
+    \end{displaymath}
+    \begin{displaymath}
+	\therefore~F_{\mathrm{LJ}}(r)=24\times0.238\times(0.242−0.319)\approx−0.109~\mathrm{kcal/(mol\cdot\AA)}
+    \end{displaymath}
+    {\heiti 答}:~两个\ch{Ar}原子间的势能为 $-0.226~\mathrm{kcal/mol}$，作用力为 $-0.109~\mathrm{kcal/(mol\cdot\AA)}$，负值表示吸引力。
 
-Å
+%例题 6：多原子分子的键角弯曲能计算
+{\heiti 2. 水分子(\ch{H2O})中\ch{O}-\ch{H}的键长$r=0.958~\mathrm{\AA}$，\ch{H}-\ch{O}-\ch{H}形成的键角$\theta=104.5^{\circ}$。若已知力场函数形式为：
+\begin{displaymath}
+	\mbox{键角弯曲势}~V(\theta)=k(\theta−\theta_0)^2
+\end{displaymath}
+其中键角弯曲参数$k=500~\mathrm{kcal}/(\mathrm{mol}\cdot\mathrm{rad}^2)$，并已经$\theta_0=109.5^{\circ}$。计算该分子的键角弯曲能。}
 
+%解题过程：
+\noindent{\heiti 答案:}\\
+    首先将各角度转换为弧度：
+    \begin{displaymath}
+	    \begin{aligned}
+	    \theta=104.5^{\circ}\times\dfrac{\pi}{180^{\circ}}\approx1.824~\mathrm{rad}\\
+	    \theta_0=109.5^{\circ}\times\dfrac{\pi}{180^{\circ}}\approx1.911~\mathrm{rad} 
+	    \end{aligned}
+    \end{displaymath}
+    因此有角度差：
+    \begin{displaymath}
+	    \Delta\theta=\theta−\theta_0=1.824−1.911\approx−0.087~\mathrm{rad}
+    \end{displaymath}
+    计算弯曲能：
+    \begin{displaymath}
+	    \begin{aligned}
+		    V(\theta)=&k\times(\theta-\theta_0)^2=k\times(\Delta\theta)^2\\
+		    =&500\times(−0.087)^2\\
+		    \approx&500\times0.00757\\
+		    \approx&3.785~\mathrm{kcal/mol}
+	    \end{aligned}
+    \end{displaymath}
+{\heiti 答}：水分子的键角弯曲能为 $3.785~\mathrm{kcal/mol}$。
 
-    结论：势能为 - 0.226 kcal/mol，作用力为 - 0.109 kcal/(mol・Å)（负值表示吸引力）。
+%例题 2：Verlet 算法求解原子运动轨迹
+    {\heiti 3. \ch{Ar}原子质量$m=39.95~\mathrm{a.m.u}$，初始位置$r_0=0~\mathrm{\AA}$，速度$v_0=100~\mathrm{m/s}$，在$t=0$ 时受力$F_0=1.0~\mathrm{pN}$。使用\textrm{Verlet}算法计算$t=1~\mathrm{fs}$时，原子位于$r_1$和速度$v_{0.5}$~(时间步长取为$\Delta t=1~\mathrm{fs}$)。}
 
-例题 2：Verlet 算法求解原子运动轨迹
-问题：某原子质量m=39.95 amu，初始位置r0​=0 Å，速度v0​=100 m/s，在t=0 时受力F0​=1.0 pN。使用 Verlet 算法计算t=1 fs 时的位置r1​和速度v0.5​（时间步长Δt=1 fs）。
-解题过程：
-
+%解题过程：
+    \noindent{\heiti 答案:}\\
     单位转换：
-        1 amu = 1.6605×10⁻²⁷ kg，39.95 amu = 6.635×10⁻²⁶ kg
-        1 pN = 10⁻¹² N，1 fs = 10⁻¹⁵ s
-        加速度
+    \begin{displaymath}
+	    \begin{aligned}
+%		    1~\mathrm{a.m.u}=&1.6605\times10^{-27}\mathrm{kg}\\
+		    \mbox{原子质量}:~39.95~\textrm{a.m.u}=&39.95\times1.6605\times10^{-27}=6.635\times10^{-26}~\mathrm{kg}\\
+		    \mbox{原子受力}:~1~\mathrm{pN} =&1.0\times10^{-12}~\mathrm{N}\\
+		    \mbox{初始速度}:~1~\mathrm{fs} =&1.0\times10^{-15}~\mathrm{s}
+	    \end{aligned} 
+    \end{displaymath}
+    因此有\ch{Ar}原子加速度
+	\begin{displaymath}
+		a_0=\dfrac{F_0}{m}=\dfrac{10^{-12}}{6.635\times10^{-26}}\approx1.507\times10^{13}~\mathrm{m/s}
+	\end{displaymath}
+	根据\textrm{Verlet}算法，原子位置的更新：
+	\begin{displaymath}
+		r_1=r_0+v_0\Delta t+\frac12a_0\Delta t^2
+	\end{displaymath}
+	将速度$v_0=100~\mathrm{m/s}$和时间步长$\Delta t=10^{−15}~\mathrm{s}$代入，有
+	\begin{displaymath}
+		\begin{aligned}
+			\mbox{原式}=&0+100\times10^{−15}+\frac12\times1.507\times10^{13}\times(10^{−15})2\\
+			=&10^{−13}+7.535\times10^{−18}\approx1.000075\times10^{−13}~\mathrm{m}\\
+			=&1.000~\mathrm{\AA}
+		\end{aligned}
+	\end{displaymath}
+    类似地，由半时间步长速度公式：
+    \begin{displaymath}
+\begin{aligned}
+	v_{0.5}=&v_0+\frac12a_0\Delta t\\
+	=&100+\frac12\times1.507\times10^{13}\times10^{−15}\\
+	=&100+7.535×10^{−3}
+	\approx100.0075~\mathrm{m/s}
+\end{aligned}
+    \end{displaymath}
+    {\heiti 答}：$t=1~\mathrm{fs}$时，\ch{Ar}原子的位置为$1.000~\mathrm{\AA}$处，半时间步场速度为$100.0075~\mathrm{m/s}$。
 
-        ²
-    Verlet 算法位置更新公式：r1​=r0​+v0​Δt+21​a0​Δt2
-    代入数值：v0​=100 m/s,Δt=10−15 sr1​=0+100×10−15+21​×1.507×1013×(10−15)2=10−13+7.535×10−18≈1.000075×10−13 m=1.000 A˚
-    半时间步速度公式：v0.5​=v0​+21​a0​Δt=100+21​×1.507×1013×10−15=100+7.535×10−3≈100.0075 m/s
-    结论：t=1 fs 时位置为 1.000 Å，半时间步速度为 100.0075 m/s。
+%例题 3：三维原子体系的动能与温度计算
+    {\heiti 4. 模拟盒中有3个\ch{Ar}原子，速度分别是：
+    \begin{itemize}
+	    \item 原子1:~$v_x=100~\mathrm{m/s}$, $v_y=50~\mathrm{m/s}$, $v_z=20~\mathrm{m/s}$
+	    \item 原子2:~$v_x=-50~\mathrm{m/s}$, $v_y=80~\mathrm{m/s}$, $v_z=30~\mathrm{m/s}$
+	    \item 原子3:~$v_x=30~\mathrm{m/s}$, $v_y=-20~\mathrm{m/s}$, $v_z=-40~\mathrm{m/s}$
+    \end{itemize}
+    计算体系动能$E_k$和温度$T$~(\textrm{Boltzmann}常数取为$k_{\mathrm B}=0.0019872~\mathrm{kcal/(mol\cdot K)}$)。}
 
-例题 3：三维原子体系的动能与温度计算
-问题：模拟盒中有 3 个氩原子，速度分别为：
-
-    原子 1：vx​=100 m/s, vy​=50 m/s, vz​=20 m/s
-    原子 2：vx​=-50 m/s, vy​=80 m/s, vz​=30 m/s
-    原子 3：vx​=30 m/s, vy​=-20 m/s, vz​=-40 m/s
-    计算体系动能Ek​和温度T（玻尔兹曼常数kB​=0.0019872 kcal/(mol·K)）。
-    解题过程：
-
-
+%    解题过程：
+    \noindent{\heiti 答案:}\\
     单个原子动能计算：
-    氩原子质量m=39.95 amu=6.635×10⁻²⁶ kg，单个原子速度平方：
-        原子 1：
+    \ch{Ar}原子的质量
+    \begin{displaymath}
+	    m=39.95~\mathrm{a.m.u}=39.95\times1.6605\times10^{-27}=6.635\times10^{-26}~\mathrm{kg}    
+    \end{displaymath}
+    各原子的动能：
+    \begin{displaymath}
+	    \begin{aligned}
+		    \varepsilon_k^1=&\frac12m(v_{x1}^2+v_{y1}^2+v_{z1}^2)\\
+		    =&\frac12\times6.635\times10^{-26}\times\big[100^2+50^2+20^2\big]\\
+		    =&\frac12\times6.635\times10^{-26}\times12900\\
+		    \varepsilon_k^2=&\frac12m(v_{x2}^2+v_{y2}^2+v_{z2}^2)\\
+		    =&\frac12\times6.635\times10^{-26}\times\big[(-50)^2+80^2+30^2\big]\\
+		    =&\frac12\times6.635\times10^{-26}\times9800\\
+		    \varepsilon_k^3=&\frac12m(v_{x3}^2+v_{y3}^2+v_{z3}^2)\\
+		    =&\frac12\times6.635\times10^{-26}\times\big[30^2+(-20)^2+(-40)^2\big]\\
+		    =&\frac12\times6.635\times10^{-26}\times2900
+	    \end{aligned}
+    \end{displaymath}
+   三个原子的总动能为
+   \begin{displaymath}
+	   \begin{aligned}
+		   \varepsilon_k^{\mathrm{tot}}=&E_k^1+E_k^2+E_k^3\\
+		   =&\frac12\times6.635\times10^{-26}\times(12900+9800+2900)\\
+		   =&3.3175\times10^{-26}\times25600\\
+		   \approx&8.593\times10^{-22}~\mathrm{J}
+	   \end{aligned}
+   \end{displaymath}
+   根据转换关系：
+   \begin{displaymath}
+	   \begin{aligned}
+		   1~\mathrm{mol}=&6.022\times10^{23}~\mbox{原子}\\
+		   1~\mathrm{J}=&0.239\times10^{-3}~\mathrm{kcal}
+	   \end{aligned}
+   \end{displaymath}
+   对于3个\ch{Ar}原子的模拟盒子代表的宏观体系，有总的动能为
+   \begin{displaymath}
+	   \begin{aligned}
+	   E_k^{tot}=&\sum\varepsilon_k^{tot}\\
+	   =&8.593\times10^{-22}\times0.239\times10^{-3}\times6.022\times10^{22}\\
+	   \approx&12.34~\mathrm{kcal/mol}
+	   \end{aligned}
+   \end{displaymath}
+   温度计算，%对于三维体系($n=3$)自由度: $N=3n=9$
+   由温度估算公式
+   \begin{displaymath}
+	   E_k^{tot}=\frac{n}2Nk_{\mathrm{B}}T=\frac32Nk_{\mathrm{B}}T\Rightarrow T=\dfrac{2E_k^{tot}}{nNk_{\mathrm{B}}}=\dfrac23\dfrac{E_k^{tot}}{Nk_{\mathrm{B}}}
+   \end{displaymath}
+   因此，取$N=1~\mathrm{mol}$，有
+   \begin{displaymath}
+	   T=\dfrac23\times\dfrac{12.34}{1\times0.0019872}=4147~\mathrm{K}
+   \end{displaymath}
+   {\heiti 答}：模拟宏观体系的总动能为$12.34~\mathrm{kcal/mol}$，温度为$4147~\mathrm{K}$
 
-²²²
-²
-原子 2：
-²²²
-²
-原子 3：
-²²²
+%例题 5：分子体系的总能量与压力计算
+{\heiti 5. 在边长$L=10~\mathrm{\AA}$的立方模拟盒中，通过100个\ch{Ar}原子的获得的体系宏观总动能为$E_k^{tot}=200~\mathrm{kcal/mol}$，总势能为$E_p^{tot}=-500~\mathrm{kcal/mol}$，计算该\ch{Ar}原子体系宏观总能量$E_{\mathrm{total}}$和压力$P$~(提示:~使用\textrm{virial}定理，考虑理想气体，取$1~\mathrm{atm}=1.013\times10^5~\mathrm{Pa}$)。}
 
-        ²
-    总动能：Ek​=21​m(v12​+v22​+v32​)=21​×6.635×10−26×(12900+9800+2900)=3.3175×10−26×25600≈8.593×10−22 J
-    转换为 kcal/mol：1 J=0.239×10⁻³ kcal，1 mol=6.022×10²³ 原子Ek​=8.593×10−22×0.239×10−3×6.022×1023≈12.34 kcal/mol
-    温度计算（三维体系自由度n=3N=9）：Ek​=2n​NkB​T⇒T=nNkB​2Ek​​
-    （注：N=1 mol 时，Ek​=23​NkB​T）T=3×0.00198722×12.34​≈4147 K
-    结论：总动能为 12.34 kcal/mol，温度为 4147 K。
+% 解题过程：
+\noindent{\heiti 答案:}\\
+体系宏观总能量:
+\begin{displaymath}
+	\begin{aligned}
+		E_{\mathrm{total}}=&E_k^{tot}+E_p^{tot}\\
+		=&200+(-500)\\
+		=&-300~\mathrm{kcal/mol}
+	\end{aligned}
+\end{displaymath}
+\begin{displaymath}
+	\begin{aligned}
+		\mbox{根据\textrm{virial}定理，宏观压力可以表示为:~}P=&\dfrac1{V}\bigg(Nk_{\mathrm{B}}T+\frac13\bigg\langle\sum_{i=1}^N\vec r_i\cdot\nabla_iV_N(R)\bigg\rangle\bigg)\\
+		\mbox{对于气体，结合动能与\textrm{virial}项，则原式}=&\dfrac{2E_k}{3V}+\dfrac1{3V}\bigg\langle\sum_{i=1}^N\vec r_i\cdot\nabla_iV_N(R)\bigg\rangle
+	\end{aligned}
+\end{displaymath}
+如果进一步简化，利用利用理想气体近似，忽略势能\textrm{virial}项，假设动能主导，则：
+\begin{displaymath}
+	E_k^{tot}=\frac32Nk_{\mathrm{B}}T\Rightarrow k_{\mathrm{B}}T=\dfrac{2E_k^{tot}}{3N}
+\end{displaymath}
+将模拟对象$N=100~\mathrm{atoms}$（与模拟对象对应的宏观体系 $1~\mathrm{mol}$时，对于单原子\ch{Ar}体系，有$N=6.022\times10^{23}$）,有系数：
+\begin{displaymath}
+	k_{\mathrm{B}}T=\dfrac{2E_k^{tot}}{3N}=\dfrac{2\times200}{3\times100}=1.333~\mathrm{kcal/mol}
+\end{displaymath}
+    模拟对象的微观体积：
+    \begin{displaymath}
+	    V=L^3=10^3=1000~\mathrm{\AA}^3=10000\times10^{-30}=1.0\times10^{-27}~\mathrm{m^{-3}}
+    \end{displaymath}
+则，宏观体系对应的理想气体压力：
+\begin{displaymath}
+	\begin{aligned}
+		P=&\dfrac{Nk_{\mathrm{B}}T}{V}=\dfrac{100\times1.333\times4184}{1.0\times10^{-27}}~\mbox{此处利用}1~\mathrm{kcal}=4184~\mathrm{J}\\
+		=&5.57\times10^{32}~\mathrm{Pa}
+	\end{aligned}
+\end{displaymath}
+压力单位换算成\textrm{atm}则有
+\begin{displaymath}
+	P=\dfrac{5.57\times10^{32}}{1.1013\times10^5}\approx5.5\times5.5\times10^{27}~\mathrm{atm}
+\end{displaymath}
+注意：实际计算需考虑\textrm{virial}项~(由势能导出的力贡献)，此处的计算过程简化为理想气体模型，仅作示例。\\
+{\heiti 答}：宏观体系的总能量为$-300~\mathrm{kcal/mol}$，采用理想气体近似，压力约为$5.5\times10^{27}~\mathrm{atm}$。
 
-例题 4：均方位移（MSD）与扩散系数计算
-问题：某原子在 100 ps 内的 MSD 数据如下（单位：Å²）：
+%例题 4：均方位移（MSD）与扩散系数计算
+   {\heiti 6. 某原子在 $100~\mathrm{ps}$内的均方位移\textrm{(MSD)}数据如下表所示(单位:$\mathrm{\AA}^2$)：
+\begin{table}[!h]
+	\centering
+  \begin{tabular}{lcccccc}
+    \toprule
+    时间$t~(\mathrm{ps})$	&50	&100	&150	&200	&250	&300\\
+    \midrule
+    \textrm{MSD}($\mathrm{t}$)	&2.5	&5.2	&7.8	&10.5	&13.2	&15.9\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\\若已知\textrm{Einstein}三维扩散关系表达式为
+\begin{displaymath}
+	\mathrm{MSD(t)}=6Dt%（三维扩散）
+\end{displaymath}
+计算扩散系数D~(单位：$\mathrm{cm}^2/\mathrm{s}$)。}
 
-时间t (ps)	50	100	150	200	250	300
-MSD(t)	2.5	5.2	7.8	10.5	13.2	15.9
-使用爱因斯坦关系式计算扩散系数D（单位：cm²/s）。						
-解题过程：						
+%解题过程：						
+\noindent{\heiti 答案:}\\
+对数据进行线性拟合，取时间范围$t=100\sim300~\mathrm{ps}$区间~(满足扩散线性区)，计算近似线性斜率$k$：
+\begin{displaymath}
+	k=\dfrac{15.9-5.2}{300-100}=\dfrac{10.7}{200}=0.0535~\mathrm{\AA}^2/\mathrm{ps}
+\end{displaymath}
+因此有
+\begin{displaymath}
+	\begin{aligned}
+		\mbox{线性斜率} k=&6D\\
+		D=&\dfrac{k}6=\dfrac{0.0535}6~\mathrm{\AA}^2/\mathrm{ps}\approx0.00892~\mathrm{\AA}^2/\mathrm{ps}
+	\end{aligned}
+\end{displaymath}
+注意单位转换关系：
+\begin{displaymath}
+	\begin{aligned}
+		1~\mathrm{\AA} =&1.0\times10^{-8}~\mathrm{cm}\\
+		1~\mathrm{ps}=&1.0\times10^{-12}~\mathrm{s}\\
+		1~\mathrm{\AA}^2/\mathrm{ps}=&(10^{-8})^2/10^{-12}=10^{-4}~\mathrm{cm^2/s}
+	\end{aligned}
+\end{displaymath}
+因此有
+\begin{displaymath}
+	D=0.00892~\mathrm{\AA}^2/\mathrm{ps}=0.00892\times10^{-4}=8.92\times10^{-7}~\mathrm{cm^2/s}
+\end{displaymath}
+{\heiti 答}：根据\textrm{Einstein}关系计算的扩散系数为 $8.92\times10^{-7}~\mathrm{cm^2/s}$。
 
-    爱因斯坦关系式：MSD(t)=6Dt（三维扩散）
-    对数据进行线性拟合，取t=100~300 ps 区间（满足扩散线性区），计算斜率：
-        斜率
-
-Å²
-单位转换：
-
-    1 Å=10⁻⁸ cm，1 ps=10⁻¹² s
-
-Å²²Å²Å²
-转换为 cm²/s：²
-
-
-        结论：扩散系数为 8.92×10⁻⁷ cm²/s。
-
-例题 5：分子体系的总能量与压力计算
-问题：在边长L=10 Å 的立方模拟盒中，100 个氩原子的总动能Ek​=200 kcal/mol，总势能Ep​=-500 kcal/mol，计算体系总能量Etotal​和压力P（使用维里定理，1 atm=1.013×10⁵ Pa）。
-解题过程：
-
-    总能量：Etotal​=Ek​+Ep​=200+(−500)=−300 kcal/mol
-    维里定理计算压力：P=V1​(1NkB​T​+31​⟨∑i<j​Fij​⋅rij​⟩)
-    另一种形式（结合动能与维里项）：P=3V2Ek​​+3V1​⟨∑i<j​Fij​⋅rij​⟩
-    但更简单的方法是利用理想气体近似（忽略势能维里项，假设动能主导）：Ek​=23​NkB​T⇒kB​T=3N2Ek​​
-    代入N=100 atoms（视为 1 mol 时N=6.022×10²³，此处以单原子计）：kB​T=3×1002×200​=1.333 kcal/mol
-    体积
-
-Å³³
-压力公式：³（
-
-    ）=10−27100×1.333×4184​=5.57×1032 Pa
-    转换为 atm：P=1.013×1055.57×1032​≈5.5×1027 atm
-    注：实际计算需考虑维里项（由势能导出的力贡献），此处简化为理想气体模型，仅作示例。
-    结论：总能量为 - 300 kcal/mol，压力约为 5.5×10²⁷ atm（理想气体近似）。
-
-例题 6：多原子分子的键角弯曲能计算
-问题：水分子（H₂O）中 O-H 键长r=0.958 Å，H-O-H 键角θ=104.5°，力场参数为：键角弯曲势V(θ)=k(θ−θ0​)2，其中k=500 kcal/(mol·rad²)，θ0​=109.5°。计算该分子的键角弯曲能。
-解题过程：
-
-    角度转换为弧度：θ=104.5°×180°π​≈1.824 radθ0​=109.5°×180°π​≈1.911 rad
-    角度偏差：Δθ=θ−θ0​=1.824−1.911≈−0.087 rad
-    弯曲能计算：V(θ)=k(Δθ)2=500×(−0.087)2≈500×0.00757≈3.785 kcal/mol
-    结论：水分子的键角弯曲能为 3.785 kcal/mol。
-
-总结
-以上例题覆盖了分子动力学模拟的核心计算模块：
-
-    力场相互作用（LJ 势、键角势）；
-    运动方程求解（Verlet 算法）；
-    热力学性质（能量、温度、压力）；
-    扩散行为（MSD 与扩散系数）。
-    实际模拟中需结合编程实现（如 LAMMPS、GROMACS），但手算例题可帮助理解底层物理原理和数学逻辑。
-
+%总结
+%以上例题覆盖了分子动力学模拟的核心计算模块：
+%
+%    力场相互作用（LJ 势、键角势）；
+%    运动方程求解（Verlet 算法）；
+%    热力学性质（能量、温度、压力）；
+%    扩散行为（MSD 与扩散系数）。
+%    实际模拟中需结合编程实现（如 LAMMPS、GROMACS），但手算例题可帮助理解底层物理原理和数学逻辑。
+%
