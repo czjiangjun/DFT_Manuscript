@@ -338,6 +338,29 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 \caption{\fontsize{7.2pt}{4.2pt}\selectfont{典型的分子动力学计算流程示意.}}%
 \label{MD_Procedure}
 \end{figure}
+
+\begin{tikzpicture}[node distance = 2cm, auto]
+    % 定义节点
+    \node (init) [rectangle, draw, fill=white, text width=3cm, text centered, rounded corners] {Initialization};
+    \node (para) [below of=init, rectangle, draw, fill=white, text width=3.5cm, text centered, rounded corners] {$PBC, r_{cut}, r_{nei}, \Delta t$};
+    \node (inteq) [below of=para, rectangle, draw, fill=white, text width=5cm, text centered, rounded corners, minimum height=3cm] {Integration/Equilibration \\ Force calculations \\ solutions for $F = ma$ \\ $t \longrightarrow t + \Delta t$};
+    \node (data) [below of=inteq, rectangle, draw, fill=white, text width=3cm, text centered, rounded corners] {Data production};
+    \node (props) [below of=data, text width=4cm, text centered] {Static and dynamic properties};
+
+    % 绘制箭头
+    \draw [arrow] (init) -- (para);
+    \draw [arrow] (para) -- (inteq);
+    \draw [arrow] (inteq) -- (data);
+    \draw [arrow] (data) -- (props);
+
+    % 顶部输入
+    \node (topinput) [above of=init, text width=5cm, text centered] {Initial positions, Initial velocities, Structure};
+    \draw [arrow] (topinput) -- (init);
+
+    % 左侧循环箭头
+    \draw [arrow] (inteq.west) -- ++(-1,0) -- ++(0,2.5) -- (para.west);
+\end{tikzpicture}
+
 \subsection{初值预置}
 在本部分，将介绍在典型分子动力学模拟中最大限度控制和减少计算量的几种策略。应用这些策略可将分子动力学模拟过程的时间尺度控制为$O(N)$而不是$O(N^2)$。
 \subsubsection{势能截断}
