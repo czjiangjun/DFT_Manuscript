@@ -1,143 +1,40 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
-\PassOptionsToPackage{hyphens}{url}
-%
-\documentclass[
-]{article}
-\usepackage{amsmath,amssymb}
-\usepackage{lmodern}
-\usepackage{iftex}
-\ifPDFTeX
-  \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
-  \usepackage{unicode-math}
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
-\fi
-% Use upquote if available, for straight quotes in verbatim environments
-\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
-}{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
-\usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
-\hypersetup{
-  hidelinks,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
-\usepackage{longtable,booktabs,array}
-\usepackage{calc} % for calculating minipage widths
-% Correct order of tables after \paragraph or \subparagraph
-\usepackage{etoolbox}
-\makeatletter
-\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
-\makeatother
-% Allow footnotes in longtable head/foot
-\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
-\makesavenoteenv{longtable}
-\usepackage{graphicx}
-\makeatletter
-\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
-\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
-\makeatother
-% Scale images if necessary, so that they will not overflow the page
-% margins by default, and it is still possible to overwrite the defaults
-% using explicit options in \includegraphics[width, height, ...]{}
-\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
-% Set default figure placement to htbp
-\makeatletter
-\def\fps@figure{htbp}
-\makeatother
-\setlength{\emergencystretch}{3em} % prevent overfull lines
-\providecommand{\tightlist}{%
-  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
-\ifLuaTeX
-  \usepackage{selnolig}  % disable illegal ligatures
-\fi
+\chapter{分子动力学软件练习:~\rm{XMD}和\rm{LAMMPS}}
 
-\author{}
-\date{}
+在本章中，将根据分子动力学计算的典型算例，来加深理解前一章所学的内容是如何在实际运行中发挥作用。我们将学习两个主要的分子动力学模拟软件:~在前五个算例中使用\textrm{XMD}，后六个算例中使用\textrm{LAMMPS}。
 
-\begin{document}
+\textrm{XMD}最初是由\textrm{Jon Rifkin}开发的，可以免费下载\footnote{\textrm{XMD}:~\url{http://xmd.sourceforge.net/}}。它是一种极好的分子动力学教学软件，因为\textrm{XMD}可以在笔记本电脑上安装，能在\textrm{MS-DOS}环境下运行。它使用\textrm{GEAR-5}算法，可以对\textrm{Newton}方程组进行五阶导数的积分。如果所选势函数的版本正确，所有类型的势函数都能与\textrm{XMD}软件匹配:~对势，\textrm{EAM}势，\textrm{Tersoff}\ch{SiC}势(这个势嵌入在\textrm{XMD}中)，等等。
 
-\hypertarget{ux7b2c3ux7ae0}{%
-\section{\texorpdfstring{\emph{第3章}}{第3章}}\label{ux7b2c3ux7ae0}}
+\textrm{LAMMPS}主要由\textrm{Steve Plimpton}、\textrm{Paul Crozier}和\textrm{Aidan Thompson}开发，也可以免费下载\footnote{\textrm{LAMMPS}:~\url{http://lammps.sandia.gov/}}。它采用速度\textrm{Verlet}算法进行\textrm{Newton}运动方程的积分。所有类型的势都可以与\textrm{LAMMPS}整合在一起：对势、多体势（包括\textrm{EAM}、\textrm{Tersoff}和其他势）、反应力场势、混合势等等。\textrm{LAMMPS}更适合于研究和材料研发工作，因为它可以在基于\textrm{Linux}的并行模式下处理大型系统软件。
 
-\emph{}
+\section{铝的势函数曲线}\label{ux94ddux7684ux52bfux51fdux6570ux66f2ux7ebf} 
+强烈建议读者在运行任何与\textrm{XMD}软件相关的命令之前，应先简要阅读手册，然后再依次尝试书中所提供的算例，这样读者将会对这个\textrm{XMD}程序的运行方式将会有大致的了解。
+\begin{itemize}
+	\item \textrm{XMD}手册:~\url{http://xmd.sourceforge.net/doc/manual/xmd.html}
+\item \textrm{XMD}示例:~\url{http://xmd.sourceforge.net/examples.html}
+\end{itemize}
 
-\hypertarget{ux5206ux5b50ux52a8ux529bux5b66ux8f6fux4ef6ux7ec3ux4e60xmdux548clammps}{%
-\section{\texorpdfstring{\emph{分子动力学软件练习：XMD和LAMMPS}}{分子动力学软件练习：XMD和LAMMPS}}\label{ux5206ux5b50ux52a8ux529bux5b66ux8f6fux4ef6ux7ec3ux4e60xmdux548clammps}}
+在本算例中，首先计算金属铝在不同晶格参数下的内聚能，然后画出其在0~\textrm{K}处的势能曲线：
+\begin{itemize}
+	\item 计算程序:~\textrm{XMD}
+\item 体系:~体相铝
+\item 势:~\textrm{Voter and Chen}对\ch{NiAl}的\textrm{EAM}势~(\textrm{Voter and Chen}~\textrm{1987}年)
+\item 温度:~\textrm{0~K}
+\end{itemize}
+对于刚刚接触分子动力学的人来说，这是一个简单也是最常用的算例。注意到计算中使用的\textrm{Voter}和\textrm{Chen}的经验势(\textrm{EAM}势)是通过将包括内聚能、平衡晶格参数等的实验数据拟合构建的势函数，因此，毫无疑问，分子动力学模拟的计算值和实验值肯定吻合得非常好。
 
-在本章中，将根据分子动力学计算的典型算例，来加深理解前一章所学的内容是如何在实际运行中发挥作用。我们将学习两个主要的分子动力学模拟软件：在前五个算例中使用XMD，后六个算例中使用LAMMPS。
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6} 
+我们首先在执行目录中放置三个文件:~\textrm{XMD}程序可执行文件(或指定正确安装的\textrm{XMD}路径)、一个分子动力学执行控制文件和一个势函数文件。这个练习的输入文件是一个\textrm{shell}脚本，用来计算内聚能，并将晶格参数由$3.80~\mathrm{\AA}$自动更改$0.05~\mathrm{\AA}$到$4.30~\mathrm{\AA}$。
 
-XMD最初是由Jon
-Rifkin开发的，可以免费下载。\textsuperscript{*}它是一种极好的分子动力学教学软件，因为XMD可以在笔记本电脑上安装，能在MS-DOS环境下运行。它使用GEAR-5算法，可以对Newton方程组进行五阶导数的积分。如果所选势函数的版本正确，所有类型的势函数都能与XMD软件匹配：对势，EAM势，Tersoff
-SiC势（这个势嵌入在XMD中），等等。
+\subsubsection{执行控制文件} 
+下面是为这个算例准备的执行控制文件，其中一些行上有注释。用\#标志，用于对该命令的简要描述。所有命令行都是一目了然的，在\textrm{XMD}的参考手册中找到所有命令行的详细说明。注意，实际运行\textrm{XMD}软件读取该文件时，应该删除注释或将注释部分更改为带有\#的独立行，否则XMD软件读取执行控制文件时会报错错误。
 
-LAMMPS主要由Steve Plimpton、Paul Crozier和Aidan
-Thompson开发，也可以免费下载。\textsuperscript{†}它采用速度Verlet算法进行Newton运动方程的积分。所有类型的势都可以与LAMMPS整合在一起：对势、多体势（包括EAM、Tersoff和其他势）、反应力场势、混合势等等。LAMMPS更适合于研究和材料研发工作，因为它可以在基于Linux的并行模式下处理大型系统软件。
-
-\hypertarget{ux94ddux7684ux52bfux51fdux6570ux66f2ux7ebf}{%
-\section{3.1
-铝的势函数曲线}\label{ux94ddux7684ux52bfux51fdux6570ux66f2ux7ebf}}
-
-强烈建议读者在运行任何与XMD软件相关的命令之前，应先简要阅读手册，然后再依次尝试书中所提供的算例，这样读者将会对这个XMD程序的运行方式将会有大致的了解。
-
-XMD手册：http://xmd.sourceforge.net/doc/manual/xmd.html
-
-XMD示例：http://xmd.sourceforge.net/examples.html
-
-\textsuperscript{*} XMD. http://xmd.sourceforge.net/.
-
-\textsuperscript{†} LAMMPS.
-\href{http://lammps.sandia.gov/}{\underline{http://lammps.sandia.gov/}}.
-
-在本算例中，首先计算金属铝在不同晶格参数下的内聚能，然后画出其在0
-K处的势能曲线：
-
-• 计算程序：XMD
-
-• 体系：体相铝
-
-• 势：Voter and Chen对NiAl 的EAM势（Voter and Chen1987年）
-
-• 温度：0 K
-
-对于刚刚接触分子动力学的人来说，这是一个简单也是最常用的算例。注意到计算中使用的Voter和Chen的经验势(EAM势)是通过将包括内聚能、平衡晶格参数等的实验数据拟合构建的势函数，因此，毫无疑问，分子动力学模拟的计算值和实验值肯定吻合得非常好。
-
-\hypertarget{ux8f93ux5165ux6587ux4ef6}{%
-\subsection{\texorpdfstring{\emph{3.1.1
-输入文件}}{3.1.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6}}
-
-我们首先在执行目录中放置三个文件：XMD程序可执行文件（或指定正确安装的XMD路径）、一个分子动力学执行控制文件和一个势函数文件。这个练习的输入文件是一个shell脚本，用来计算内聚能，并将晶格参数由3.80
-Å自动更改0.05 Å到4.30 Å。
-
-\emph{3.1.1.1 执行控制文件}
-
-下面是为这个算例准备的执行控制文件，其中一些行上有注释。用\#标志，用于对该命令的简要描述。所有命令行都是一目了然的，在XMD的参考手册中找到所有命令行的详细说明。注意，实际运行XMD软件读取该文件时，应该删除注释或将注释部分更改为带有\#的独立行，否则XMD软件读取执行控制文件时会报错错误。
-
-\includegraphics[width=6.77431in,height=3.45625in]{media/image1.png}\includegraphics[width=5.84722in,height=5.81736in]{media/image2.png}
+%\includegraphics[width=6.77431in,height=3.45625in]{media/image1.png}\includegraphics[width=5.84722in,height=5.81736in]{media/image2.png}
 
 \emph{3.1.1.2 势函数文件}
 
 势函数文件NiAl\_EAMpotential.txt将用于以下运行：
 
-\includegraphics[width=4.71389in,height=1.87361in]{media/image3.png}
+%\includegraphics[width=4.71389in,height=1.87361in]{media/image3.png}
 
 正如2.2.2节介绍过的，势函数文件中有很多数值。
 
@@ -147,7 +44,7 @@ K处的势能曲线：
 
 现在，在DOS窗口中启动XMD软件运行分子动力学模拟：
 
-\includegraphics[width=4.71875in,height=4.61458in]{media/image4.png}
+%\includegraphics[width=4.71875in,height=4.61458in]{media/image4.png}
 
 \hypertarget{ux7ed3ux679c}{%
 \subsection{\texorpdfstring{\emph{3.1.3
@@ -156,7 +53,7 @@ K处的势能曲线：
 打开两个输出文件，Al-lattice.txt 和Al-PE.txt
 ，并将其中的整合成数据列表：
 
-\includegraphics[width=4.68194in,height=1.1375in]{media/image5.png}
+%\includegraphics[width=4.68194in,height=1.1375in]{media/image5.png}
 
 \emph{3.1.3.1 势能曲线}
 
@@ -167,7 +64,7 @@ e等人2002）非常吻合。
 
 下一步是计算体模量B，体模量的定义是
 
-\includegraphics[width=3.0625in,height=0.46736in]{media/image6.png}
+%\includegraphics[width=3.0625in,height=0.46736in]{media/image6.png}
 
 其中：
 
@@ -177,15 +74,15 @@ P是压力
 
 因此，体模量表示在给定压力下体积变化的程度，是表示材料强度的一种方法。对于一个FCC单元，每个单元的总能量为4E，体积为a\textsuperscript{3}，而压力由以下给出
 
-\includegraphics[width=6.39861in,height=4.75694in]{media/image7.png}
+%\includegraphics[width=6.39861in,height=4.75694in]{media/image7.png}
 
 图3.1势能是由四阶多项式拟合的铝晶格参数的函数。（垂直线表示平衡晶格参数。）
 
-\includegraphics[width=3.42361in,height=0.44375in]{media/image8.png}
+%\includegraphics[width=3.42361in,height=0.44375in]{media/image8.png}
 
 然后，式(3.1)可以改写为
 
-\includegraphics[width=3.42361in,height=0.51458in]{media/image9.png}
+%\includegraphics[width=3.42361in,height=0.51458in]{media/image9.png}
 
 其中a\textsubscript{0}是对应最小E的平衡晶格参数。
 
@@ -213,9 +110,9 @@ K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，�
 \subsection{\texorpdfstring{\emph{3.2.1
 运行文件}}{3.2.1 运行文件}}\label{ux8fd0ux884cux6587ux4ef6}}
 
-\includegraphics[width=6.94653in,height=1.84167in]{media/image10.png}
+%\includegraphics[width=6.94653in,height=1.84167in]{media/image10.png}
 
-\includegraphics[width=5.21319in,height=5.38542in]{media/image11.png}
+%\includegraphics[width=5.21319in,height=5.38542in]{media/image11.png}
 
 命令``itemp''将对给定温度下服从Maxwell-Boltzmann分布的所有粒子分配随机速度。根据2.5.1讨论的速度标度方案，将使体系的模拟温度保持在指定的数值。在体相固体中，应考虑到热膨胀，计算中需要考虑体系膨胀，直至外部压力为零。但是对于真空中的团簇模拟，则不需要。
 
@@ -227,7 +124,7 @@ K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，�
 Ni-cluster-e则显示了每20000个时间步长对应的势能。图3.2是能量与温度的曲线，表明体系的势函数能在\textasciitilde1500
 K时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度（1726K）。正如2.6.2讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
 
-\includegraphics[width=4.07292in,height=2.86458in]{media/image12.png}
+%\includegraphics[width=4.07292in,height=2.86458in]{media/image12.png}
 
 温度
 
@@ -239,7 +136,7 @@ K时突然增加，说明团簇在该温度下熔化。这一温度远低于记�
 有多种软件可用于支持可视化或以动画方式展示运行结果。这里首先使用一个非常简单的在线程序MDL
 ChimeSP6，它可以读取标准XYZ格式文件，并且可以免费下载。通过双击Ni-cluster.XYZ，打开一个MDL窗口，打开并显示/激活系统，如图3.3中的快照所示。
 
-\includegraphics[width=3.95833in,height=1.3875in]{media/image13.png}
+%\includegraphics[width=3.95833in,height=1.3875in]{media/image13.png}
 
 图3.3. 2112个原子组成的镍团簇的快照：（从左起）温度分别为100、1500和2000
 K。
@@ -276,11 +173,11 @@ K时完全融化而消失。
 首先制备了三种镍纳米粒子，并将温度逐渐提高到500、1000和1400
 K，以便观察烧结阶段，并通过2.5.1讨论的速度标度来观察温度升高。烧结的驱动力来自表面积的减少，这一过程涉及到原子通过表面、晶界和体积扩散到三方交界区域。因此，可以通过计算三方交界区增加的原子数目来便捷地测量烧结程度。
 
-\includegraphics[width=5.28125in,height=2.41736in]{media/image14.png}
+%\includegraphics[width=5.28125in,height=2.41736in]{media/image14.png}
 
-\includegraphics[width=5.47431in,height=8.54167in]{media/image15.png}
+%\includegraphics[width=5.47431in,height=8.54167in]{media/image15.png}
 
-\includegraphics[width=5.31736in,height=3.3125in]{media/image16.png}
+%\includegraphics[width=5.31736in,height=3.3125in]{media/image16.png}
 
 注意，在为XMD运行执行文件时，应该删除带有 \#
 following命令语法的所有注释。行首的\#注释不会引起任何问题。
@@ -295,7 +192,7 @@ K，进一步的烧结，为原子扩散提供了足够的热活化。当温度�
 K时，发生熔化，并且在表面张力的作用下，形状变成了球形。注意球体的非晶体性质（图3.4
 c）。
 
-\includegraphics[width=4.83333in,height=1.65139in]{media/image17.png}
+%\includegraphics[width=4.83333in,height=1.65139in]{media/image17.png}
 
 \begin{longtable}[]{@{}lll@{}}
 \toprule
@@ -314,7 +211,7 @@ c）。
   时间步长 = 0，(b) 时间步长= 10000，和(c) 时间步长 = 60000
 \end{enumerate}
 
-\includegraphics[width=4.375in,height=2.67917in]{media/image18.png}
+%\includegraphics[width=4.375in,height=2.67917in]{media/image18.png}
 
 时间步长
 
@@ -332,12 +229,12 @@ c）。
 每个Ar原子在随机运动，没有任何相互作用，除了第2.2.1节中讨论的通过van der
 Waals力作用下的弱Lennard-Jones（L-J）相互作用。用Maxwell-Boltzmann分布能很好地描述了理想气体的特性，原子速度s的概率由下式给出
 
-\includegraphics[width=4.51042in,height=0.61042in]{media/image19.png}
+%\includegraphics[width=4.51042in,height=0.61042in]{media/image19.png}
 
 注意，第一个等式是速度分布表达式，速度与速率有关（见2.4.2），如s
 =（v\textsuperscript{2}\textsubscript{x}+v\textsuperscript{2}\textsubscript{y}+v\textsuperscript{2}\textsubscript{z}）\textsuperscript{1/2}。它为气体的动力学理论提供了良好的基础，该理论解释了气体的许多基本性质，包括压力和扩散。在图3.6中，在4种不同的温度下，以实线绘制了Ar气体的上述功能。
 
-\includegraphics[width=4.9375in,height=3.17708in]{media/image20.png}
+%\includegraphics[width=4.9375in,height=3.17708in]{media/image20.png}
 
 速度(m/s)
 
@@ -356,7 +253,7 @@ Nam，H.-S。，私人通信，2010年。）
 
 第2.2.1节已经给出了Ar的L-J势，有两个参数，用原子间距离表示：
 
-\includegraphics[width=3.61458in,height=0.57847in]{media/image21.png}
+%\includegraphics[width=3.61458in,height=0.57847in]{media/image21.png}
 
 其中参数ε是势能曲线的最低能量（即势阱深度，1.654×10\textsuperscript{−21}J=
 0.010323 eV），参数σ是势能为0的原子间距离（3.405
@@ -370,13 +267,13 @@ Nam，H.-S。，私人通信，2010年。）
 在这个MD模拟中，生成了8000个氩原子，并在不同的温度（100、300、500和700
 K）下进行热平衡，观察它们的速度分布：
 
-\includegraphics[width=5.45833in,height=7.3125in]{media/image22.png}
+%\includegraphics[width=5.45833in,height=7.3125in]{media/image22.png}
 
-\includegraphics[width=5.40625in,height=4in]{media/image23.png}
+%\includegraphics[width=5.40625in,height=4in]{media/image23.png}
 
 时间步长被近似为τ× 0.01，其中，τ 被定义为
 
-\includegraphics[width=3.51736in,height=0.49097in]{media/image24.png}
+%\includegraphics[width=3.51736in,height=0.49097in]{media/image24.png}
 
 势函数的控制语句是``POTENTIAL PAIR type1 type2 ntable r\textsubscript{0}
 rcutoff公式表达式''，它分别表示势函数，对势数目，第一原子类型，第二原子类型，势函数表中list数、表中的起始半径、表中的结束截断半径以及相互作用势的公式表达式（式(3.5)）。
@@ -387,7 +284,7 @@ rcutoff公式表达式''，它分别表示势函数，对势数目，第一原�
 
 图3.6在四种不同温度下，根据原子速度比较了模拟结果和Maxwell-Boltzmann分布的Ar体理论。y轴的单位是s/m，因此曲线任意部分（表示速度在该范围内的概率）下的面积是无量纲的。结果表明，模拟结果与理论Maxwell-Boltzmann分布非常吻合。图3.7显示了一个Ar气体体系的快照，其中原子在热力学平衡下随机移动和碰撞（也可以用solidAr.xyz文件进行动画展示）。
 
-\includegraphics[width=3.05208in,height=3in]{media/image25.png}
+%\includegraphics[width=3.05208in,height=3in]{media/image25.png}
 
 图3.7原子在热力学平衡下运动和碰撞的氩气体体系的快照。（来自
 Nam，H.-S，私人通信，2010年。得到许可。）
@@ -414,11 +311,11 @@ Si（001）上的SiC沉积}\label{si001ux4e0aux7684sicux6c89ux79ef}}
 \subsection{\texorpdfstring{\emph{3.5.1
 输入文件}}{3.5.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-3}}
 
-\includegraphics[width=5.30208in,height=1.00347in]{media/image26.png}
+%\includegraphics[width=5.30208in,height=1.00347in]{media/image26.png}
 
-\includegraphics[width=5.86458in,height=8.60417in]{media/image27.png}
+%\includegraphics[width=5.86458in,height=8.60417in]{media/image27.png}
 
-\includegraphics[width=5.69792in,height=8.42708in]{media/image28.png}
+%\includegraphics[width=5.69792in,height=8.42708in]{media/image28.png}
 
 \hypertarget{ux7ed3ux679c-4}{%
 \subsection{\texorpdfstring{\emph{3.5.2
@@ -426,14 +323,14 @@ Si（001）上的SiC沉积}\label{si001ux4e0aux7684sicux6c89ux79ef}}
 
 屏幕上的标准输出如下所示：
 
-\includegraphics[width=5.50556in,height=3.19792in]{media/image29.png}
+%\includegraphics[width=5.50556in,height=3.19792in]{media/image29.png}
 
 结果表明，沉积了284个C原子和296个Si原子，其余原子（16个C原子和4个Si原子）被反弹并移除，这使得沉积的薄膜中硅含量略有增加。图3.8显示了在模拟时间步长
 =
 0、450000和900000时Si（001）上SiC沉积的三个快照。一个明确的结论是，在给定的条件下，硅（001）表面上的SiC形成非晶结构。保存的SiC\_depo\_on\_Si\_*.pdb文件（300个）在每次重复时都包含体系的原子坐标，当它们被一并读取时，可以使用AtomEye
 *之类的程序来可视化。
 
-\includegraphics[width=4.83333in,height=1.9625in]{media/image30.png}
+%\includegraphics[width=4.83333in,height=1.9625in]{media/image30.png}
 
 图3.8模拟时间步长为= 0 (a)、450000 (b)、和900000
 (c)时Si（001）上SiC沉积的三个快照。（来自Nam，H-S。私人通讯，2010年。得到许可。）
@@ -452,7 +349,7 @@ Au纳米线屈服机制}\label{auux7eb3ux7c73ux7ebfux5c48ux670dux673aux5236}}
 
 • 结构：沿{[}110{]}方向的线轴，具有四个\{111\}侧面（见图3.9）
 
-\includegraphics[width=4.30208in,height=3.55208in]{media/image31.png}
+%\includegraphics[width=4.30208in,height=3.55208in]{media/image31.png}
 
 图3.9 Au纳米线在拉伸载荷下的变形特性。
 
@@ -476,9 +373,9 @@ Au纳米线屈服机制}\label{auux7eb3ux7c73ux7ebfux5c48ux670dux673aux5236}}
 
 输入文件由三部分组成：Au纳米线的结构产生、300 K时的热平衡和拉伸载荷。
 
-\includegraphics[width=5.81806in,height=6.375in]{media/image32.png}
+%\includegraphics[width=5.81806in,height=6.375in]{media/image32.png}
 
-\includegraphics[width=5.41667in,height=1.77917in]{media/image33.png}
+%\includegraphics[width=5.41667in,height=1.77917in]{media/image33.png}
 
 \hypertarget{ux7ed3ux679c-5}{%
 \subsection{\texorpdfstring{\emph{3.6.2
@@ -550,17 +447,17 @@ Waals相互作用，以及水分子之间电荷相关的Coulomb相互作用。�
 
 \emph{3.7.1.1 位置文件（数据。C-H2O）}
 
-\includegraphics[width=6.00069in,height=7.19861in]{media/image34.png}
+%\includegraphics[width=6.00069in,height=7.19861in]{media/image34.png}
 
-\includegraphics[width=5.41667in,height=0.78681in]{media/image35.png}
+%\includegraphics[width=5.41667in,height=0.78681in]{media/image35.png}
 
 \emph{3.7.1.2 输入文件}
 
 输入文件由三部分组成：使用原子标记文件（data.C--H\textsubscript{2}O）进行体系标识，建立混合类型的原子间势，以及包括通过共轭梯度能量极小化进行结构弛豫的分子动力学模拟。
 
-\includegraphics[width=5.28611in,height=6.11458in]{media/image36.png}
+%\includegraphics[width=5.28611in,height=6.11458in]{media/image36.png}
 
-\includegraphics[width=5.3125in,height=3.35069in]{media/image37.png}
+%\includegraphics[width=5.3125in,height=3.35069in]{media/image37.png}
 
 \hypertarget{ux7ed3ux679c-6}{%
 \subsection{\texorpdfstring{\emph{3.7.2
@@ -576,9 +473,9 @@ der　Waals力决定，但是van der
 Waals力足以使GNR发生弯曲，因为在此弯曲曲率范围里，石墨烯有可能因弯曲而使能量继续减小（Lu等人2009）。GNR包裹液滴，使得本来具有高表面张力的液滴自由表面积的降低。如图3.10所示，GNR的势能将随着液滴自由表面积的减小而增加。当包裹体系超过0.6
 ns时，表面能的降低将与GNR的弯曲势能增加平衡，而GNR的势能不再变化。根据能量守恒条件，可以得到
 
-\includegraphics[width=4.10347in,height=0.66111in]{media/image38.png}
+%\includegraphics[width=4.10347in,height=0.66111in]{media/image38.png}
 
-\includegraphics[width=4in,height=2.79167in]{media/image39.png}
+%\includegraphics[width=4in,height=2.79167in]{media/image39.png}
 
 时间（nsec）
 
@@ -630,9 +527,9 @@ CH.old.airebo（自适应分子间反应经验键序）势（Stuart等.2000）�
 \subsection{\texorpdfstring{\emph{3.8.2
 输入文件}}{3.8.2 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-6}}
 
-\includegraphics[width=5.51042in,height=8.15625in]{media/image44.png}
+%\includegraphics[width=5.51042in,height=8.15625in]{media/image44.png}
 
-\includegraphics[width=5.41667in,height=5.65625in]{media/image45.png}
+%\includegraphics[width=5.41667in,height=5.65625in]{media/image45.png}
 
 注意，由于时间步长的单位是fs（飞秒），因此数值总是小于1，确保Tayler级数展开的有限差分积分算法有效。
 
@@ -649,7 +546,7 @@ CNT的xyz坐标可以从以下两个站点中的任何一个生成：
 生成的文件，经过编辑后适应LAMMPS的读取数据格式，从而产生readdata.CNT，具有10×10的手性，和沿CNT轴具有1280个原子的32个单元（直径：13.751
 Å，长度：78.566 Å）：
 
-\includegraphics[width=5.59375in,height=4.34375in]{media/image46.png}
+%\includegraphics[width=5.59375in,height=4.34375in]{media/image46.png}
 
 模拟体系尺度80.5×80.5×161.0 Å，而CNT位于x = 33.374506到47.125494 Å，y =
 33.374506到47.125494 Å，z = 41.217088到119.782912（参见readdata.CNT）。
@@ -661,7 +558,7 @@ CH.old.airebo}}{3.8.4 CH.old.airebo}}\label{ch.old.airebo}}
 选择CH.airebo势函数（Stuart等人2000）用于CNT的模拟，因为该势函数更适合于纯CNT模拟。势函数被重命名为
 CH.old.airebo，并保存在LAMMPS/Potentials目录中。注意，在LAMMPS提供的CH.airebo势中，它的rcmin\_CC参数是2.0，而不是L1.7。
 
-\includegraphics[width=5.37014in,height=1.85069in]{media/image47.png}
+%\includegraphics[width=5.37014in,height=1.85069in]{media/image47.png}
 
 \hypertarget{ux7ed3ux679c-7}{%
 \subsection{\texorpdfstring{\emph{3.8.5
@@ -672,17 +569,17 @@ CH.old.airebo，并保存在LAMMPS/Potentials目录中。注意，在LAMMPS提�
 
 stress\_tensile\_GPa.dat 文件有每100个时间步长的拉伸应力数据：
 
-\includegraphics[width=5.44306in,height=2.07292in]{media/image48.png}
+%\includegraphics[width=5.44306in,height=2.07292in]{media/image48.png}
 
 图3.12显示了压力与时间步长数的关系图，从图中可以看出CNT的最大的拉伸应力略高于105
 GPa。这个值与Eatemadi等人报告的实验检测的抗拉强度大约100
 GPa（Eatemadi等人2014）非常吻合。分子动力学模拟中观测到的CNT断裂后出现上下反弹，源自CNT内弹性势能的释放。因此，CNT具有高断裂强度，作为复合材料增强材料，这种高弹特性是非常重要的指标。
 
-\includegraphics[width=3.39236in,height=2.36806in]{media/image49.png}
+%\includegraphics[width=3.39236in,height=2.36806in]{media/image49.png}
 
 图3.11在（a）0；（b）20000；（c）40000时CNT在拉伸下的断裂。
 
-\includegraphics[width=3.51736in,height=2.47153in]{media/image50.png}
+%\includegraphics[width=3.51736in,height=2.47153in]{media/image50.png}
 
 时间步长数
 
@@ -711,11 +608,11 @@ GPa（Eatemadi等人2014）非常吻合。分子动力学模拟中观测到的CN
 \subsection{\texorpdfstring{\emph{3.9.2
 输入文件}}{3.9.2 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-7}}
 
-\includegraphics[width=5.23958in,height=0.91458in]{media/image51.png}
+%\includegraphics[width=5.23958in,height=0.91458in]{media/image51.png}
 
-\includegraphics[width=5.28611in,height=8.36458in]{media/image52.png}
+%\includegraphics[width=5.28611in,height=8.36458in]{media/image52.png}
 
-\includegraphics[width=5.26597in,height=7.17708in]{media/image53.png}
+%\includegraphics[width=5.26597in,height=7.17708in]{media/image53.png}
 
 表面裂纹的存在是脆性材料（如Si）的典型特征，在Si晶体表面，左上块和左下块之间因为相互作用而断开，以致产生裂纹。
 
@@ -725,7 +622,7 @@ GPa（Eatemadi等人2014）非常吻合。分子动力学模拟中观测到的CN
 
 图3.13显示了在时间步长数为0、15000和25000的快照。分子动力学模拟表明这是典型的裂纹扩展脆性断裂，除在裂纹的断裂表面外，没有出现任何显著的塑性形变。Si\_smallCrack\_stress\_GPa.dat文件具有每100个时间步长的拉伸应力数据：
 
-\includegraphics[width=5.31736in,height=2.625in]{media/image54.png}
+%\includegraphics[width=5.31736in,height=2.625in]{media/image54.png}
 
 图3.14以时间步长数为横轴作图，当裂纹萌生层较薄（厚度为10.86
 Å）时，最大拉伸应力略大于30
@@ -733,11 +630,11 @@ GPa。如果通过调整左上（2型）和左下（3型）区域的x方向Si的
 2006）计算的断裂强度（约30
 GPa）非常吻合。当裂纹萌生层很厚时（对应出现大裂纹情形），脆性断裂的假设则不再成立，体系在达到断裂强度后将会观察到一定的塑性形变特征。
 
-\includegraphics[width=4.52639in,height=1.86736in]{media/image55.png}
+%\includegraphics[width=4.52639in,height=1.86736in]{media/image55.png}
 
 图3.13在拉伸作用下具有小裂纹萌生块的Si棒：时间步长数为（a）0、（b）15000、（c）25000。请注意此处只显示了棒的一半。
 
-\includegraphics[width=4.48958in,height=2.50556in]{media/image56.png}
+%\includegraphics[width=4.48958in,height=2.50556in]{media/image56.png}
 
 应变
 
@@ -757,7 +654,7 @@ GPa）非常吻合。当裂纹萌生层很厚时（对应出现大裂纹情形�
 
 通过分子动力学研究界面结合对碳纳米管（CNT）纳米复合材料力学性能的影响。通过模拟弹性变形、滑移、塑性变形、裂纹变形等过程，让裂纹萌生并将其扩展到断裂。模拟后还将对CNT和Si-CNT界面的作用进行评估，以优化Si-CNT复合材料的结构设计。
 
-\includegraphics[width=4.27083in,height=2.89444in]{media/image57.png}
+%\includegraphics[width=4.27083in,height=2.89444in]{media/image57.png}
 
 时步
 
@@ -775,7 +672,7 @@ K温度下的应力-应变特性，并从Si与CNT结合的角度探讨其断裂�
 
 为了划分不同的相互的作用区域和施加条件，将Si基底阵列划分为5个区域：（a）固定的下区域、（b）扩展的上区域、（c）左-下和（d）左-上裂纹萌生区、（e）主Si包围区域。区域（c）--（e）被定义为活性区域，因为它是以动态运动响应延伸的部分。在y方向和z方向上都应用了与表面应变条件相对应的周期性边界条件。区域（c）和（d）之间萌生的裂纹，将阻断这些区域之间的相互作用。
 
-\includegraphics[width=2.83264in,height=4.3375in]{media/image58.png}
+%\includegraphics[width=2.83264in,height=4.3375in]{media/image58.png}
 
 图3.16 Si-CNT复合体系的起始结构。
 
@@ -801,7 +698,7 @@ K时，出现能量涨落。在所有的模拟过程中，时间步长都设为1
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.50}}@{}}
 \toprule
 \endhead
-\includegraphics[width=2.88819in,height=2.02569in]{media/image59.png} &
+%\includegraphics[width=2.88819in,height=2.02569in]{media/image59.png} &
 SiC\_1994. tersoff
 
 SiC\_Erhart-Albe.tersoff
@@ -824,17 +721,17 @@ CoAl. eam.alloy \\
 
 Si-CNT体系的载荷拉伸是通过保持一端（底部）固定，同时缓慢地将另一端以（0.25Å/ps）的速度向z方向移动实现的，如图3.16所示。考虑到分子动力学模拟时间尺度上的基本限制，该速度比实际的实验条件高了许多个数量级。只要单个时间步长的总能量改变小于10\textsuperscript{-5}\%，可以认为得到的应变系数满足准静态载荷的条件。当基底的一端固定，另一段控制位移时，要求速度梯度趋于零。
 
-\includegraphics[width=5.375in,height=3.75347in]{media/image60.png}
+%\includegraphics[width=5.375in,height=3.75347in]{media/image60.png}
 
-\includegraphics[width=5.44306in,height=8.54167in]{media/image61.png}
+%\includegraphics[width=5.44306in,height=8.54167in]{media/image61.png}
 
-\includegraphics[width=5.375in,height=3.85833in]{media/image62.png}
+%\includegraphics[width=5.375in,height=3.85833in]{media/image62.png}
 
 以下是一个单独的原子位置文件：``readdata.SiCNT.''这个文件可以生成如图3.16所示的结构。
 
-\includegraphics[width=5.41667in,height=3.60764in]{media/image63.png}
+%\includegraphics[width=5.41667in,height=3.60764in]{media/image63.png}
 
-\includegraphics[width=5.3125in,height=1.4125in]{media/image64.png}
+%\includegraphics[width=5.3125in,height=1.4125in]{media/image64.png}
 
 \hypertarget{ux8fd0ux884c-1}{%
 \subsection{\texorpdfstring{\emph{3.10.4
@@ -861,7 +758,7 @@ eV）中应变率分别为10.5\%、31.5\%和42\%的快照。模拟结果显示�
 采用Erhart/Albe-Tersoff势函数（Erhart和Albe
 2005）描述Si-C键界面处的情形，允许Si原子与CNT完全相互作用，可以模拟完全成键的情况。虽然模拟过程中保持了CNT结构的一般特征，但由于界面上存在强烈的相互作用，当体系充分松弛之后，CNT上会表现出很大的缺陷。
 
-\includegraphics[width=4.2875in,height=5.0625in]{media/image65.png}
+%\includegraphics[width=4.2875in,height=5.0625in]{media/image65.png}
 
 图3.18具有ε = 0.5
 eV张力下的Si-CNT复合体系在不同应变下的快照：（a）10.5\%、（b）31.5\%、（c）42\%。在具有最佳界面结合强度（键合强度
@@ -876,7 +773,7 @@ eV张力下的Si-CNT复合体系在不同应变下的快照：（a）10.5\%、�
 
 CNT在强化CNT上的拉长和载荷传递被视为其力学性能提高的主要机制。当成键达到最大时，则只有荷载转移是有效的，断裂恢复成脆性断裂模式。在最佳成键状态下，断裂前端在CNT周围发生转向，因为CNT的强力支撑，断裂将以塑性模式沿着Si基体扩展，导致体系的韧性进一步增强。
 
-\includegraphics[width=4.92708in,height=2.82292in]{media/image66.png}
+%\includegraphics[width=4.92708in,height=2.82292in]{media/image66.png}
 
 时步
 
@@ -913,18 +810,18 @@ Y，230 Zr，499 O原子（共755个原子）。
 下面的文件是为2000 K运行准备的ZrO\textsubscript{2}-
 Y\textsubscript{2}O\textsubscript{3}-MSD文件，例如：
 
-\includegraphics[width=5.625in,height=7.41667in]{media/image67.png}
+%\includegraphics[width=5.625in,height=7.41667in]{media/image67.png}
 
-\includegraphics[width=5.39028in,height=3.20903in]{media/image68.png}
+%\includegraphics[width=5.39028in,height=3.20903in]{media/image68.png}
 
 下面的文件是为ZrO\textsubscript{2}-Y\textsubscript{2}O\textsubscript{3}（6原子\%）体系的结构准备的ZrO\textsubscript{2}-Y\textsubscript{2}O\textsubscript{3}-MSD文件，如图3.20所示。
 
-\includegraphics[width=2.60139in,height=2.85417in]{media/image69.png}
+%\includegraphics[width=2.60139in,height=2.85417in]{media/image69.png}
 
 图3.20
 Z\textsubscript{r}O\textsubscript{2}--8Y\textsubscript{2}O\textsubscript{3}体系的切片结构，显示沿着{[}001{]}方向金属（Zr和Y）层和氧气层（大的灰色球：Zr，大的黑色球：Y，小的灰色球：O，大的虚线白球：氧空位）。6个Y原子和3个氧空位随机分布并显示在结构中。
 
-\includegraphics[width=5.51042in,height=4.76597in]{media/image70.png}
+%\includegraphics[width=5.51042in,height=4.76597in]{media/image70.png}
 
 \hypertarget{ux8fd0ux884c-2}{%
 \subsection{\texorpdfstring{\emph{3.11.3
@@ -941,7 +838,7 @@ Z\textsubscript{r}O\textsubscript{2}--8Y\textsubscript{2}O\textsubscript{3}体�
 dz*dz）。图3.21是在1000-2000K的不同温度下，收集MSD数据的最后500000个时间步长的MSD图。可以看到到在分子动力学计算中通常稳定的增大，扩散系数是根据每条曲线的线性拟合斜率计算得到的。通过绘制扩散系数与1/T的关系图，利用Arrhenius扩散方程计算出O迁移的势垒能量为0.56
 eV。
 
-\includegraphics[width=3.50347in,height=2.93611in]{media/image71.png}
+%\includegraphics[width=3.50347in,height=2.93611in]{media/image71.png}
 
 时间
 
@@ -972,7 +869,7 @@ Lee在KIST，韩国（Kim和Lee，2011年，私人通信。）在半导体的加
 
 将输入文件中的势定义为：
 
-\includegraphics[width=6.31944in,height=1.00972in]{media/image73.png}
+%\includegraphics[width=6.31944in,height=1.00972in]{media/image73.png}
 
 衬底:一层4×4×4Si（001），512个原子，底层固定
 
@@ -1050,4 +947,3 @@ Koumoutsakos.2004年。C60和碳纳米管在水中的疏水性水合作用。碳
 
 文件：温度依赖性\_表面张力\_水的表面张力。svg
 
-\end{document}
