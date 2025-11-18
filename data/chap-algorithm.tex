@@ -1,0 +1,382 @@
+\chapter{高通量第一原理计算数据挖掘}\label{chap:datamining} 
+%\section{高通量第一原理计算数据挖掘}\label{chap:datamining} 
+获取材料物性数据的成本，无论是通过实验手段还是计算模拟，代价都是比较高的，虽然高通量第一原理计算自动流程和数据库解决了材料物性数据的获取问题，但是并未给出现有材料数据基础上的物性优化的方案，因此利用数据挖掘技术，实现数据驱动的材料物性筛选、预测和提升的技术路线，有着特殊重要的意义。机器学习\textrm{(Machine Learning, ML)}技术可以从大量数据中获得有价值的信息，尤其是面对高维复杂数据时，机器学习技术是确定数据间关系的有力的工具。
+
+机器学习是自动完成数据分析并提取数据关系的一类方法的统称，获取的数据关系可用于预测未知数据或辅助不确定条件下的决策过程\cite{ML_2012}。传统定义界定的机器学习，是指无须借助解析程序，直接依靠数据来提升任务处理的性能\cite{IBMJRD3-211_1959}，自从1950年代统计学、计算科学与技术和神经科学的发展，机器学习的研究发展到了更广泛的人工智能\textrm{(Artificial Intelligence, AI)}领域。图\ref{AI-ML}表明了人工智能和机器学习的层次关系。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Hierarchical_description_AI_ML_DL.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{人工智能与机器学习和深度学习的层次关系示意图.引自文献\inlinecite{JPM2-032001_2019}}}}%
+\label{AI-ML}
+\end{figure}
+
+几十年来，机器学习的算法已经广泛应用于金融、导航控制、语言处理、游戏竞技、计算机可视化和生物信息学等领域。相反地，如果从非严格角度定义，任何计算机模拟人类智能的算法都可以划归为人工智能，并非一定要应用机器学习算法，也包括决策树、知识库、计算机逻辑等算法。近年来，机器学习领域的深度学习\textrm{(Deep Learning, DL)}异军突起，在很多领域都取得了很好的应用\cite{DL_2016}。深度学习是仿照生物神经网络\footnote{神经网络结构意味着输入输出之间允许有多个类似神经的网络层。}结构为主要代表的一种示类学习。
+
+\section{机器学习问题的种类}
+%\subsection{机器学习问题的种类}
+一般地，机器学习类问题可以表示为:~对于给定的集合$\mathbf{X}$，可以预测或近似得到未知函数$y=f(\mathbf{X})$\cite{ML-CI}。集合$\mathbf{X}$构成特征空间，集合中的每个元素$\mathbf{x}$称为特征向量(在材料类的机器学习中也称描述符)。根据机器学习得到的近似函数$\hat{y}=\hat{f}(\mathbf{X})$，模型有能力预测训练数据之外的输出值，机器学习的这种预测能力也称为模型的“泛化”\textrm{(generalization)}。由于机器学习的一般特征，对其的分类，很少有根据输入或输出来划分，主要根据学习的特征分为无监督学习\textrm{(unsupervised learning)}和监督学习\textrm{(supervised learning)}。
+
+无监督学习是描述性质的，就是所有数据只有特征向量没有标签，即$\mathbf{x}_{\mathrm{i}}\in\mathbf{X}$，但是这些数据呈现出聚群的结构，每个相似的类型或特征的会聚集在一起。如果没有标签的数据的组合$f(\mathbf{X})$是有限个，则称为聚类\textrm{(clustering)}，学习的是数据特征的分类;~反之，如果$f(\mathbf{X})\in[0,\infty)$，则称为密度估计\textrm{(density estimation)}，学习的是数据特征的边缘分布。另一种无监督学习是降维\textrm{(dimensionality reduction)}，是对数据实施压缩，用少量输入变量代表数据，特别是当$f(\mathbf{X})$是高维形式，降维后可以更清晰地了解复杂数数据的检测模式。
+
+与无监督学习相对反，监督学习是预测性质的，是通过学习指定数量的输入输出间的函数映射$(x_{\mathrm{i}},y_{\mathrm{i}})\in(\mathbf{X},f(\mathbf{X}))$(取$i=1,\cdots,N$，称为训练集\textrm{(training set)})，如果输出函数$y_{\mathrm{i}}$表示类别的有限集合，则称为分类\textrm{(classification)}问题，该模型可用来预测未知数据所属类型;~如果输出函数是实数，即$y_\mathrm{i}\in\mathbb{R}$，则称为回归\textrm{(regression)}问题，模型用来预测未知输入数据对应的值输出值。此外的机器学习问题还包括:~
+\begin{itemize}
+	\item 半监督学习，即大部分没有映射关系的数据和少量有映射关系的数据;
+	\item 多任务和迁移学习，即将从相关问题习得的知识应用到数据极少的对象，提升模型的学习能力
+	\item 强化学习，即没有输入输出，但会和环境不断交互，通过最大化环境的反馈，最终达到学习目标
+\end{itemize}
+
+机器学习的工作流程可以概括为\cite{Efficient_ML}:
+\begin{itemize}
+	\item 数据的收集和筛选:~从现有数据中产生并选择与问题解决有用和相关的数据子集
+	\item 数据预处理:~将数据以合适的形式表示出来，清洗缺失和不完整数据，将数据转换成统一的形式(如整型、字符串型等等)。必要时还须根据需要将数据按问题的格式重新表示
+	\item 应用机器学习算法训练数据:~将数据分为训练集、验证集和测试集三部分，训练集数据用于学习并得到模拟参数(主要针对监督学习)
+	\item 模型测试和优化:~用验证集数据评估模型的效果和性能，并用验证集数据优化模型;~一旦完成优化，用测试集数据评定模型的性能。如果学习不成功，选用改善的数据重复上述步骤或改变学习算法。
+	\item 应用:~将得到的有效模型对未知数据进行预测，只要有新的数据，模型还可以继续训练。
+\end{itemize}
+
+\section{机器学习算法简介}
+%\subsection{机器学习算法简介}
+根据文献\inlinecite{IEEE-TEC1-67_1997,NC8-1341_1996}的讨论，在机器学习中尚未有放之四海而皆准的方案，因此必须面向问题选择合适的机器学习算法。对于一个具体的问题，选择合适的机器学习算法至关重要，可选的算法很多，但每种学习方法有其侧重的问题和数据集。数据集可分为两类，有标签的和没有标签的。对于有标签的，任务就是通过监督学习算法，建立数据和标签的映射关系$\{\mathbf{x}^{(\mathrm{i})}\}\rightarrow\{y^{(\mathrm{i})}\}$;~而对于无标签数据，则是用无监督学习方法确定数据集的结构。
+
+对于海量数据，很可能存在非常多的特征向量，这称为“维度灾难”\textrm{(the curse of dimensionality)}。想象用某一机器学习算法处理一个$n\times n$的灰度像素的图片，则$n\times n$像素将成为$n^2$数组的特征向量，如果维度增加，特征向量数目将急剧增加。事实上，高维数据显然存在更低维度的结构。换句话说，通过降维而不损失原始数据的信息。在机器学习算法中，主成分分析(\textrm{principal component analysis, PCA})就是实现这一目标的主要方法\cite{OJS6-701_2016}。换言之，主成分分析相当于在高维空间中将坐标轴旋转到数据点集中的区域，并使数据沿轴向变化最大。确定新轴向的办法是找到$\mathbf{X}^T\mathbf{X}$的最大本征值对应的本征矢量(称为主成分)，其中$\mathbf{X}$是已知数据集构成的矩阵，一旦确定主成分后，所有数据点对主成分的投影即可计算出来，由此可以实现数据的压缩。
+
+对于无监督学习来说，除了主成分分析之外，数据集分类用得最多的算法是\textit{k}-\textrm{means}算法\cite{EJHPS4-2_2008}。\textit{k}-\textrm{means}算法通过直接计算数据点和聚类中心的欧氏距离\textrm{(Euclidean distance)}，将$n$个数据分类为$k$个子集($k<n$)。该算法的按如下思想执行:\\
+随机选定初始聚类中心的个数($k$)和位置($\mathbf{\mu}_0^{(\mathrm{j})}$,$1\leqslant j \leqslant k$)，然后完成如下两步迭代:~
+\begin{itemize}
+	\item 计算每个数据点与聚类中心的距离，标记为$y_t^{\mathrm{(i)}}~(t>0)$，将该点分到距离最小的聚类中心所属的类中
+		\begin{displaymath}
+			y_t^{(\mathrm{i})}=\textrm{argmin}_j\|\mathbf{x}^{(\mathrm{i})}-\mu_t^{(\mathrm{j})}\|_p
+		\end{displaymath}
+	\item 重新计算每个聚类的中心$(\{\mu_t^{(\mathrm{j})}\})$
+		\begin{displaymath}
+			\mu_{t+1}^{(\mathrm{j})}=\dfrac1{n_j}\sum_{i=1}^{n_j}\mathbf{x}^{(\mathrm{i})}\delta_{y_t^{(\mathrm{i})},\mathrm{j}}
+		\end{displaymath}
+		上述迭代中$p\in\mathbb{N}$表示空间的维度(当$p=2$即为是二维平面的欧氏距离)，$n_j$是归入聚类中心$\mu_t^{(\mathrm{j})}$的分类元素数目，$\delta_{n,m}$表示\textrm{delta}函数，$t$表示迭代次数
+\end{itemize}
+当标记不再发生变化时，迭代即告收敛。
+
+\textit{k}-\textrm{means}聚类算法的结果与初始聚类中心位置的选择密切关联，如果初始聚类中心选择得不同，结果差别会比较大。一般克服该问题的策略是通过多次初始聚类中心并执行该算法，最终选择最有代表性的聚类形式作为结果。
+
+层次聚类(\textrm{Hierarchical Clustering})算法也是一种常见的非监督学习方法，层次聚类通过一层一层的进行聚类，既可以由上向下把大的类别分割，叫作分裂法;~也可以由下向上对小的类别进行聚合，叫作聚合法。以聚合法为例说明其算法思想:\\
+一开始假设初始时将每个训练数据点$\mathbf{x}^{(\mathrm{i})}$作为一个类(或类簇)，因此原始类的大小等于训练数据点的数目$n$，衡量任意两个类(分别标记为\textrm{A}和\textrm{B})的偏差$d(\mathrm{A},\mathrm{B})$，其中偏差最小的两个类(可以认为最相似)合并一个新的类簇。反复执行该聚合过程，最终可以用一个类簇能囊括全部训练集。如果要将$n$个类聚合成$k$个类簇~($1<k<n$)~，显然需要在聚合中对聚合偏差设置截断，常见的聚合截断有三种:
+\begin{itemize}
+	\item 两类的最小偏差
+\begin{displaymath}
+	d_{\mathrm{SL}}(\mathrm{A},\mathrm{B})=\min\limits_{i\in\mathrm{A},j\in\mathrm{B}}d_{ij}
+\end{displaymath}
+这里的$d_ij$表示任意一对类的偏差
+	\item 两类的最大偏差
+\begin{displaymath}
+	d_{\mathrm{CL}}(\mathrm{A},\mathrm{B})=\max\limits_{i\in\mathrm{A},j\in\mathrm{B}}d_{ij}
+\end{displaymath}
+	\item 两类平均偏差
+\begin{displaymath}
+	d_{\mathrm{GA}}(\mathrm{A},\mathrm{B})=\dfrac1{|\mathrm{A}||\mathrm{B}|}\sum\limits_{i\in\mathrm{A}}\sum\limits_{j\in\mathrm{B}}d_{ij}
+\end{displaymath}
+\end{itemize}
+上述定义中的$d_{ij}$是可以通过人为指定的，对数值形式数据，最常见的设置为欧氏距离。分裂法与聚合法类似，只是初始时训练数据集属于一个类簇，然后逐层分裂形成特定的类簇。
+
+对监督学习来说，每个数据不仅有特征向量$\mathbf{x}_{\mathrm{i}}$，还会有相应的标注$y_{\mathrm{i}}$。如果标注量允许连续变化，最常选用的算法是线性回归\textrm{(Linear Regression)}。回归算法的基本思想是，对于满足正态分布的数据点，可有参数拟合的预测表达式
+\begin{equation}
+	\hat y^{(\mathrm{i})}=\theta^T\mathbf{x}^{(\mathrm{i})}
+	\label{eq:linear_eq}
+\end{equation}
+上标$T$表示矢量的转置，$\hat y^{(\mathrm{i})}$是预测的标注值，$\theta$是参数的矢量。为了求得$\theta$参数，定义误差的最小二乘函数
+\begin{equation}
+	J(\theta)=\sum_{i=1}^nL[\hat{y}^{(\mathrm{i})}(\mathbf{x}^{(\mathrm{i})},\theta),y^{(\mathrm{i})}]=\dfrac12\sum_{i=1}^n(\theta^T\mathbf{x}^{(\mathrm{i})}-y^{(\mathrm{i})})^2
+	\label{eq:linear_2}
+\end{equation}
+最小化该函数，可以得到最优化的参数$\theta$，由此可以得到线性回归机器学习的模型。不难看出，最优化参数$\theta$用矩阵表示可写作:~
+\begin{displaymath}
+	\theta=(\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{y}
+\end{displaymath}
+这里$\mathbf{X}$矩阵的每一列是由训练集输入数据$\mathbf{x}^{(\mathrm{i})}$，$\mathbf{y}$是对应的输出标注构成的矢量。
+
+一旦训练出机器学习的模型，模型的性能可以通过测试数据集检验。根据训练集数据的多寡，预测性能有两种可能
+\begin{itemize}
+	\item 训练集数据不够，未能完全反应模型特征，预测结果将会表现出明显的偏差
+	\item 训练集数据过多，模型可以很好地体现训练集特征，但是对训练集外的数据效果不好，也就是出现过拟合\textrm{(overfitting)}现象。
+\end{itemize}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{The_optimum_comlexity_vs_prediction.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{线性回归中测试集数据多寡引起的预测误差机器优化示意图.引自文献\inlinecite{Brunet_Thesis_2010}}}}%
+\label{ML_Fitting_Error}
+\end{figure}
+图\ref{ML_Fitting_Error}给出两种不同上述两种极端情况的预测误差示意，不难看出，误差与训练数据集包含的数据数量密切相关。实际应用中，常常引入标准化参数$\lambda$来反应训练集元素变化的影响，优化参数$\lambda$以降低训练集数据数量的影响。这种实际上是对线性回归的发展，常见的有岭回归\textrm{(Ridge Regression)}和套索回归\textrm{(LASSO Regression)}\footnote{\textrm{LASSO}是英文最小绝对收敛与选择算子\textrm{Least Absolute Shrinkage and Selection Operator}的缩写.}。引入$\lambda$作为正则化参数，得到函数
+\begin{equation}
+	J(\theta)=\dfrac12\sum_{i=1}^n(\theta^T\mathbf{x}^{(\mathrm{i})}-y^{(\mathrm{i})})^2+\lambda\|\theta\|_p
+	\label{eq:Ridge_LASSO}
+\end{equation}
+这里$p$表示数据度量形式。$p=1$时是\textrm{LASSO}回归，表示数据距离采用曼哈顿距离(也称为出租车距离)方式，计算两点间距离与实际选定的路径有关，在这样的约束下，函数最小化要求将会排除某些训练集数据特征;~$p=2$是岭回归，数据间距离按照欧氏距离计算，与实际路径无关，函数最小化时会排除训练集中特征贡献大的部分。因此无论是岭回归还是\textrm{LASSO}回归，含参数$\lambda$的正则项将通过压制或筛选训练数据集中的特征来调节其对误差函数的贡献。需要注意的是$\lambda$不能像$\theta$一样优化，一般是通过比较几个不同的值，选其中能最大化预测能力又不会引入太大偏差的一个值。
+
+监督学习中另一类称为分类算法，广泛应用于数据集的标注为离散标签场景。分类算法中比较流行的是逻辑回归\textrm{(logistic regression)}，可以类比为映射到区间[0,1]之间的线性回归:~比如对于给定数据点$\mathbf{x}^{\mathrm{i}}$，将其分入特定的“是”类($y^{\mathrm{(i)}}=1$)或“否”类($y^{\mathrm{(i)}}=0$)，因此预测函数可以表示为
+\begin{equation}
+	\hat y=\sigma(\theta^T\mathbf{x})=\dfrac1{1+\mathrm{e}^{-\theta^T\mathbf{x}}}
+	\label{eq:logstical_y}
+\end{equation}
+这里$\theta$仍是参数矢量，$\sigma$是逻辑函数(或\textrm{sigmoid}函数)。一般来说，如果数据点$\mathbf{x}^{(\mathrm{i})}$对应的计算标签值$\hat{y}^{(\mathrm{i})}\leqslant0.5$，就应该考虑标注为$y^{(\mathrm{i})}$，所以预测函数也可以视为条件概率:$\hat{y}=P(y=1|\mathbf{x},\theta)$。
+
+对于分类问题，误差函数可以定义为负的$\log$-型函数(也称为交互熵\textrm{cross-entropy})，同样要求参数$\theta$能够最小化该函数:
+\begin{equation}
+	J(\theta) = -\dfrac1n\sum_{i=1}^n[y^{(\mathrm{i})}\log(\hat{y}^{(\mathrm{i})})+(1-y^{(\mathrm{i})})\log(1-\hat{y}^{(\mathrm{i})})]
+	\label{eq:logstical_eq}
+\end{equation}
+这里$y^{(\mathrm{i})}$和$\hat{y}^{(\mathrm{i})}=\sigma(\theta^T\mathbf{x}^{(\mathrm{i})})$分别为实际和预测的二元标签值。和线性回归类似，上式\eqref{eq:logstical_eq}中也可以引入正则参数$\lambda$。逻辑分类也可用于处理超过两类的数据分类，这种情形下，需要训练有$n$个逻辑回归值的模型，每一类对应一个数值，每个数据分入概率值最高的类中。
+
+\textrm{Corsts}和\textrm{Vapnik}在逻辑回归的一系列改造基础上，提出了最通用的分类算法:~支持向量机\textrm{(Support Vector Machines, SVMs)}\cite{ML20-273_1995}。定义函数
+\begin{equation}
+	J(\theta)=C\sum_{i=1}^n[y^{(\mathrm{i})}\max(\theta^T\mathbf{x}^{(\mathrm{i})},0)+(1-y^{(\mathrm{i})})\max(-\theta^T\mathbf{x}^{(\mathrm{i})},0)]+\dfrac1n\sum_{i=1}^n\theta_i^2
+	\label{eq:SVM_cost}
+\end{equation}
+这里$C$是参数。式\eqref{eq:SVM_cost}可以理解为在约束条件$y^{(\mathrm{i})}(\theta^T\mathbf{x}^{(\mathrm{i})}+b)\leqslant1$下对全部训练数据点$(\mathbf{x}^{(\mathrm{i})},y^{(\mathrm{i})})$实现$\|\theta\|^2$，再由标签$y^{(\mathrm{i})}$值为$+1$或$-1$确定测试数据$i$是否属于某一特定的类。不难看出，式\eqref{eq:SVM_cost}是对$\|\theta\|^2$引入\textrm{Lagrangian}乘子并最小化得到的。
+
+\textrm{SVM}的最重要的特色是内核技巧\textrm{(kernel trick)}，将参数矢量$\theta$用训练集数据表示
+\begin{displaymath}
+	\theta=\sum_i\alpha_iy^{(\mathrm{i})}\mathbf{x}^{(\mathrm{i})}
+\end{displaymath}
+因此可以将分类规则写成数据点积的形式
+\begin{equation}
+	\theta^T\mathbf{x}+b=\sum_i\alpha_iy^{(\mathrm{i})}\mathbf{x}^{(\mathrm{i})}\cdot\mathbf{x}+b\leqslant0\rightarrow y=+1
+	\label{eq:SVM_cp}
+\end{equation}
+这里$b$和$\{\alpha_i\}$是待学习的参数，内核技巧利用映射关系$\phi(\mathbf{x}):~\mathtt{R}^n\rightarrow\mathtt{R}^m$将矢量变换成$\mathbf{x}^{(\mathrm{i})}\cdot\mathbf{x}$点积，实际上这是将数据点映射到更高维度的空间中。所有矢量点积映射的变换都可以类似处理，其中最常用的内核为多项式内核:
+\begin{displaymath}
+	K(\mathbf{x}^{(\mathrm{i})},\mathbf{x}^{(\mathrm{j})})=\phi(\mathbf{x}^{(\mathrm{i})})\cdot\phi(\mathbf{x}^{(\mathrm{j})})=(\mathbf{x}^{(\mathrm{i})}\cdot\mathbf{x}^{(\mathrm{j})}+1)^d,~d\in\mathtt{N}
+\end{displaymath}
+和\textrm{Gaussian}内核(也叫径向基函数(\textrm{radial basis function, RBF})内核)
+\begin{displaymath}
+	K(\mathbf{x}^{(\mathrm{i})},\mathbf{x}^{(\mathrm{j})})=\mathrm{e}^{\dfrac{-\|\mathbf{x}^{(\mathrm{i})},\mathbf{x}^{(\mathrm{j})}\|^2}{2\sigma^2}}
+\end{displaymath}
+这里$\sigma$是可调参数，\textrm{Gaussian}内核衡量数据点在高维空间里的相似度，常常用于模式匹配。
+%这里因为引入极大值函数$\max(z,0)$，可在数据空间将分类
+
+到目前为止讨论的分类算法都是基于判别模式\textrm{(discriminative model)}的，即对于数据点预测的标签是条件概率$p(y|\mathbf{x})$，还有一些分类算法是采用另一种思路来达到同样的目的，即基于生成模式\textrm{(generative model)}，就是将待定的条件概率$p(\mathbf{x}|y)$用后验\textrm{Bayes}公式表示:
+\begin{equation}
+	p(y|\mathbf{x})=\dfrac{p(\mathbf{x}|y)p(y)}{p(\mathbf{x})}=\dfrac{p(\mathbf{x}|y)p(y)}{\sum\limits_ip(\mathbf{x}|y=i)p(y=i)}
+	\label{eq:Bayes}
+\end{equation}
+这里$p(y)$表示先验概率，即没有附加任何先期知识和分析得到的概率。假设数据点的特征向量$\mathbf{x}^{(\mathrm{i})}$和标注$y^{(\mathrm{i})}$之间完全独立，可有\textrm{Na\"ive~Bayes}分类算法\cite{Naive-Bayes}，改写了式\eqref{eq:Bayes}的后验概率形式:
+\begin{equation}
+	p(y|\mathbf{x})=\dfrac{\prod\limits_{j=1}^np(x_j|y)p(y)}{p(\mathbf{x})}
+	\label{eq:Naive-Bayes}
+\end{equation}
+这里$x_j$表示特征向量$\mathbf{x}$的元素，这里主要讨论分子，因为分母先验概率$p(\mathbf{x})$是与$y$无关的常数且和是归一化的。训练分类前先列出训练数据点的全部先验概率$p(y)$和条件概率$p(x_j|y)$，然后用\textrm{Na\"ive~Bayes}算法计算，并选择所有$y$中最大的后验概率$p(y|\mathbf{x})$作为分类预测值。
+
+另一种同行的简单分类算法是\textit{k}-最近邻(\textit{k}-\textrm{nearest neighbors, kNN})算法，该算法利用数据点空间距离的类似性，不再训练，因此对于处理快速任务特别具有吸引力。简言之，如果$d$-维空间有训练集数据$\{\mathbf{x}^{(\mathrm{i})}\}$，\textrm{kNN}计算未知数据点与这些数据点之间的空间距离
+\begin{displaymath}
+	d(\mathbf{x},\mathbf{x}^{(\mathrm{i})})=\|\mathbf{x}-\mathbf{x}^{(\mathrm{i})}\|_p
+\end{displaymath}
+这里的$p$是维度参数。一旦得到$\mathbf{x}$到空间各点的距离，$\mathbf{x}$点归入与其有最近邻$k$值最大的类中，如果没有最大类，则随机归入最近邻点的最常使用的标注类中。显然，对连续的标签值求平均，就是基于\textrm{kNN}的回归。类似地$k$值的选取对于分类很敏感，不同的$k$值很可能得到完全不同的数据分类。
+
+也有些机器学习算法同时适合分类和回归，比如决策树\textrm{(Decision Trees)}就是这类通用并快捷的机器学习算法。因为决策树算法应用场景非常广，限于篇幅，这里只介绍两种最通用的两种决策树，分别是分类树\textrm{CART}算法\cite{ML_CART}和回归决策树\textrm{C4.5}算法\cite{ML_C4.5}，这两种算法都是基于数据空间的划分实现的，空间划分时可通过创建节点来实现对某种分裂算法的优化，决策树上的每个节点都包含一个定义该部分空间划分的问题，直到空间不可再分，每个不连通的子空间称为叶节点，叶节点包含了待分类或预测的数据点。
+
+\textrm{C4.5}对训练集\textrm{S}完成一系列的空间多重划分操作，划分的目标划分能使得测试集\textrm{B}信息收益$G(S,B)$与潜在信息$P(S,B)$比最大化，即
+\begin{displaymath}
+	\mathrm{argmax}_B\dfrac{G(S,B)}{P(S,B)}
+\end{displaymath}
+这里信息收益$G(S,B)$定义为
+\begin{displaymath}
+	G(S,B)=-\sum_{i=1}^kf_i\log(f_i)+\sum_{j=1}^l\dfrac{|S_j|}{|S|}\sum_{i=1}^kf_i^{(\mathrm{i})}\log(f_i^{(\mathrm{j})})
+\end{displaymath}
+其中$f_i$是测试集\textrm{S}中元素属于类$C_i$的相关频率，而$f_i^{(\mathrm{i})}$是与测试集合划分空间$S_j$对应的测试集合$B$的同相关频率。
+
+潜在信息的定义为
+\begin{displaymath}
+	P(S,B)=-\sum_{i=1}^l\dfrac{|S_i|}{|S|}\log\bigg(\dfrac{|S_i|}{|S|}\bigg)
+\end{displaymath}
+直到节点中只包含一类数据或者无法区分特征的数据，则停止空间的划分。
+
+相反\textrm{CART}是每次只执行二重划分的决策树方法，在这种分类策略下，其标准是确保\textrm{Gini}指数(不纯度系数)最小化。\textrm{Gini}指数的定义为
+\begin{displaymath}
+	I_G(S)=1-\sum_{j=1}^kf_j^2
+\end{displaymath}
+$S$表示训练集，$f_i$是训练集中第$j$类的相关频率。采用\textrm{CART}算法做回归学习，要注意有两个困难:
+\begin{itemize}
+	\item 节点预测的是实际数目而并非类
+	\item \textrm{CART}中的分裂算法的标准是使得重置估计\textrm{(resubstitution estimate)}最小，重置估计的定义为方差
+		\begin{displaymath}
+			R(S)=\dfrac1n\sum_{i=1}^n[y_i-\hat{y}_i]^2
+		\end{displaymath}
+		这里$y_i$是第$i$个数据的标签，而$\hat{y}_i$则是对应的估计值。
+\end{itemize}
+所以采用这种划分的结果，是每个分区的预测值都是该分区中的平均值。换句话说，对于回归学习，\textrm{CART}输出函数的是分段常数。
+
+回归决策树的一个主要问题是一旦开始训练，往往伴随过拟合。为了克服决策树的过拟合，一种办法是修剪决策树分叉，这样做会损失一定的精度，但是提高了回归的泛化能力;~更好的方法是采用随机森林\textrm{(Random Forsets)}，随机森林实际上一种系综平均方法，即训练大量的决策树然后再取统计平均值\cite{ML45-5_2001}。也就是说，在随机森林方法中，决策树将成为训练对象。对决策树的特征随机抽样训练时，一般采取自展抽样\textrm{(bootstrap sample)}方案。随机森林算法将一系列的非强化学习的功能组合起来，使其对未知数据有更好的预测能力。
+
+人工神经网络\textrm{(Artifical Neural Networks, ANNs)}是模仿人脑神经元结构处理信息的一类机器学习算法。神经网络的基本思想可以用图\ref{ML_ANN}表示，每个网络层由若干神经元组成，网络层内和相邻网络层内神经元间彼此联结构成完整的神经网络。神经网络可用于分类或回归，主要网络架构包括前馈神经网络\textrm{(feed-forward NNs)}、循环神经网络\textrm{(recurrent NNs)}和卷积神经网络\textrm{(convolutional NNs)}等，不同架构的主要区别在于神经元之间的联结方式以及神经元对数据处理方式不同。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{ANN_Algorithm.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{含有多个隐藏层的人工神经网络的基本示意图.}}%
+\label{ML_ANN}
+\end{figure}
+
+对于一个人工神经网络来说，输入层\textrm{(input layer)}用于接收来自训练集的描述符向量(\textrm{descriptor vector})\footnote{描述符向量可以理解为与特征向量等价的概念，因为不同的机器学习方法发展有先后，造成不同场合的部分术语、习惯有差别。}，经过隐藏层\textrm{(hidden layer)}中一系列的非线性操作(数据在各层间依次传输)，最后在输出层\textrm{(output layer)}输出。数据结果可以是分类，也可以是回归的值。
+
+根据神经网络的算法规则，第$k$层的第$i$个神经元输入$z_i^{(\mathrm{k})}$来自前一层的输出$y_j^{(\mathrm{k-1})}$
+\begin{displaymath}
+	z_i^{(\mathrm{k})}=\omega_{i0}^{(\mathrm{k})}+\sum_jy_j^{(\mathrm{k-1})}\omega_{ij}^{(\mathrm{k})}
+\end{displaymath}
+这里的$\omega_{ij}^{(\mathrm{k})}$是关联临近层的矩阵元，这里$\omega_{i0}^{(\mathrm{k})}$称为偏移量\textrm{(bias)}。数据在神经元处经过非线性变换(或称活化)，常见的函数形式有
+\begin{itemize}
+	\item \textrm{sigmoid}函数
+\begin{displaymath}
+	y_i^{(\mathrm{k})}=\dfrac1{1+\mathrm{e}^{-z_i^{(\mathrm{k})}}}
+\end{displaymath}
+\item 双曲正切\textrm{(hyperbolic tangent)}函数
+\begin{displaymath}
+	y_i^{(\mathrm{k})}=\dfrac{\mathrm{e}^{z_i^{(\mathrm{k})}}-\mathrm{e}^{-z_i^{(\mathrm{k})}}}{\mathrm{e}^{z_i^{(\mathrm{k})}}+\mathrm{e}^{-z_i^{(\mathrm{k})}}}
+\end{displaymath}
+\item \textrm{ReLU(rectifying linear function)}函数
+	\begin{displaymath}
+		y_i^{(\mathrm{k})}=\left\{
+			\begin{aligned}
+			& z_i^{(\mathrm{k})},~z_i^{(\mathrm{k})}>0\\
+& 0,~z_i^{(\mathrm{k})}\leqslant0 
+			\end{aligned}
+\right.
+	\end{displaymath}
+\end{itemize}
+不难看出，在神经网络中，因为前一层输出的矢量，经过当前层神经元的处理，就映射到了新的矢量空间，因此神经网络适合于处理分类问题，特别是进行复杂决策。
+
+神经网络用于回归问题，评估预测精度的方法就是计算方差。比如对于二元分类问题，每个神经元面向输入相应分类的分类概率，采用单值\textrm{sigmoid}函数计算输出值，这种预测精度和逻辑回归算法的精度相同，表示误差的交互熵也相同。两种方法的区别在于逻辑回归学习的参数(矢量$\theta$)变成层间矩阵($\omega_{ij}^{(\mathrm{k})}$)，预测的结果也将由更复杂的非线性函数计算得到的。对于多元分类，神经元面向输入数据，采用\textrm{softmax}函数\footnote{\textrm{softmax}函数又称归一化指数函数，是二元分类函数\textrm{sigmoid}在多元分类上的推广，目的是将多分类的结果以概率形式表示出来。}，因此用$\mathbf{y}^{(\mathrm{k}-1)}=[y_1^{(\mathrm{k}-1)},y_2^{(\mathrm{k}-1)},\cdots,y_n^{(\mathrm{k}-1)}]$表示的类$y_i$的概率为
+\begin{displaymath}
+	y_i^{(\mathrm{k})}=\dfrac{\mathrm{e}^{y_i^{(\mathrm{k}-1)}}}{\sum\limits_{j=1}^n\mathrm{e}^{y_i^{(\mathrm{k}-1)}}}
+\end{displaymath}
+待最小化的损失函数(即损失函数或称交互熵)为
+\begin{displaymath}
+	L(\{\omega^{(\mathrm{k})}\})=-\sum_{ijk}y_{ij}\log[\hat{y}_{ij}(\{\omega^{(\mathrm{k})}\})]
+\end{displaymath}
+此处$\{\omega^{(\mathrm{k})}\}$是待学习的一套神经网络权重矩阵，$y_{ij}$是第$j$层训练的第$i$个输出标签，$\hat{y}_{ij}$则是与$y_{ij}$的预测值。计算损失函数$L$的梯度，并通过梯度下降法获得损失函数极小值，即可确定优化的参数$\{\omega_{ij}^{(\mathrm{k})}\}$，这一过程称为反向传播\textrm{(back-propagation)}。
+
+一言以蔽之，机器学习的人工神经网络预测主要由如下流程实现:
+\begin{itemize}
+	\item 随机生成一套的初始权重矩阵$\{\omega_{ij}^{(\mathrm{k})}\}$;
+	\item 将训练集数据提交到神经网络计算，并得到输出结果;
+	\item 通过损失函数计算预测结果和训练集的偏差;
+	\item 由反向传播得到损失函数的权重;
+	\item 最小化损失函数得到优化的权重矩阵。
+\end{itemize}
+如果对训练集中全部样本数据都完成上述流程，则称为在线学习\textrm{online learning}，如果只是对一部分数据执行上述全部流程，则称为中等批量学习\textrm{(mid-batch learning)}或简称批量学习\textrm{(batch learning)}。
+
+对于神经网络的优化，除了反向传播-梯度下降，还有一种通用的优化策略是遗传算法\textrm{(genetic algorithm, GA)}，适用于求解缺乏好的数学特征的目标函数(例如没有明确导数的函数)的神经网络的权重。遗传算法是通过模拟\textrm{C.~Darwin}的“自然进化”(\textrm{nature evolution})思想，搜索并获得最优解的:~
+	\begin{itemize}
+		\item 优化问题可能潜在的解集构成一个种群(\textrm{population})，该种群由经过基因(\textrm{gene})编码的一定数目的个体(\textrm{individual})组成，每个个体是染色体(\textrm{chromosome})带有特征的实体;
+%		\item 优化问题可能潜在的解集构成一个种群，该种群由经过基因编码的一定数目的个体组成，每个个体是带有一定的优化特征
+%		\item 种群产生之后，借助于自然遗传学的遗传算子(\textrm{genetic operators})进行组合交叉(\textrm{crossover})和变异(\textrm{mutation})，产生新一代个体
+		\item 种群产生之后，借助于自然遗传学的遗传算子进行组合交叉(\textrm{crossover})和变异(\textrm{mutation})，产生新一代个体，如图\ref{Optimize_GA}所示;
+\begin{figure}[h!]
+\vspace*{-0.10in}
+\centering
+\includegraphics[height=1.5in]{Genetic_Algorithm_basic.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{遗传算法中通过交叉和变异获得新一代个体的示意图.}}%
+\label{Optimize_GA}
+\end{figure}
+		\item 按照适者生存和优胜劣汰的原理，在每一代，根据问题域中个体的适应度(\textrm{fitness})，选择(\textrm{selection})合适的个体，构成代表新的解集的种群;
+%		\item 按照适者生存和优胜劣汰的原理，在每一代，根据问题域中个体的适应度，选择合适的个体，构成代表新的解集的种群
+		\item 逐代演化(\textrm{generation evlution})后，获得优化结果(逼近优化目标)。
+%		\item 逐代演化后，产生出越来越好的近似解(优化目标)
+	\end{itemize}
+
+对于监督学习算法来说，通过对训练集样本数据计算损失函数(方差形式或交互熵形式)的最小化，得到相应的优化参数，训练过程即告结束。但是这种模型是否仅对训练数据有效，还需要通过另外的一些数据集来检验\footnote{模型对训练集的学习，优化的并非是全部参数，以神经网络为例，网络隐藏层的数目作为参数在优化过程中就始终保持不变，这一类参数称为超参数(\textrm{hyperpameter})。通过验证集检验的主要就是模型中未能优化的超参数的性能。}，这一过程称为验证，对应的数据集称为验证集。因此监督学习的数据集一般分为三类:~训练集、验证集和测试集，这些样本数据最好是具备相同的统计分布特征。为了优化学习模型，建议先对样本数据多次学习，最后才将模型应用到测试数据集上，对比预测数据和实际数据的偏差，可以评估模型的真实预测能力。图\ref{ML_Fitting_Error}给出了机器学习优化过程中数据与误差的平衡示意，不难想象，当数据非常有限时，如果再从训练样本中分出一部分留作测试数据集，难免捉襟见肘，影响训练模型的效果，必须另想对策。面向这样的应用场景，最常用的方案是$k$-重交叉验证\textrm{cross-validation}:~首先将训练集分成$k$个子集，选择$k-1$个子集训练模型，并用剩下的一个未训练的子集验证模型。将训练-验证过程执行$K$次，并将$K$次验证的平均损失函数来评估模型性能的平均表现。平均损失函数定义为:
+\begin{displaymath}
+	E_{\mathrm{cv}}^{K}=\dfrac1K\sum_{k=1}^K\sum_{i=1}^{n_k}L(\hat{y}_k^{(\mathrm{i})},y^{(\mathrm{i})})
+\end{displaymath}
+这里$L$是验证数据集的损失函数，$\hat{y}_k^{(\mathrm{i})}$是用训练子集(不含验证子集$k$)得到的模型，对采样数据$i$预测的标签值$\hat{y}_k^{(\mathrm{i})}$，训练子集的采样数据共有$n_k$。特别地，$K=n$，即训练集划分的子集与其元素个数相同，则称为差一交叉验证\textrm{(leave-one-out cross-validation)}。
+
+
+交叉验证也可用于评估训练模型中超参数的性能，超参数包括正则化参数$\lambda$、\textrm{SVM}的\textrm{Gaussian}内核参数$\sigma$等。还有一些参数隐藏得更深，比如二叉树(二元分类决策树)的修剪层次和构成随机森林的系综包括的特征向量等，这些参数也可以用通过交叉验证优化。优化参数就是选择有最小的预测误差时所对应的参数。
+
+对机器学习模型性能的评估手段有很多，以二元或多元分类为例，可以选用混同矩阵\textrm{(confusion matrices)}，所谓混同矩阵，就是评估模型预测与抽样吻合程度建立的矩阵，预测吻合度高的元素主要出现在矩阵对角元，预测吻合度低的都在矩阵非对角元。比如以矩阵的列方向为采用数据的标注，行方向是预测数据的标注，如图\ref{ML_CM_ROC}所示。除了用近似单位矩阵表示，也可以用真阳\textrm{(True Positive, TP)}、真阴\textrm{(True Negative, TN)}和假阳\textrm{(False Positive, FP)}假阴\textrm{(False Negative, FN)}填充矩阵。相应地，绘制模型接受行为特征\textrm{(receiver operating characteristic, ROC)}曲线时，也可以用比如“真阳率”\textrm{(TP rate)}~$\mathrm{TPR}=\dfrac{\mathrm{TP}}{\mathrm{TP}+\mathrm{FN}}$和“假阳率”\textrm{(FP rate)}~$\mathrm{FPR}=\dfrac{\mathrm{FP}}{\mathrm{FP}+\mathrm{TN}}$，不同阈值下的\textrm{ROC}曲线反应了模型的预测能力。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.2in]{ML_confusion_matrix.png}
+\hskip 5pt
+\includegraphics[height=1.2in]{ML_ROC.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{评估机器学习模型的混同矩阵和\textrm{ROC}示意，理想的混同矩阵是单元阵，\textrm{ROC}以下的面积越大，表示模型的性能越好.}}%
+\label{ML_CM_ROC}
+\end{figure}
+
+相应地，回归预测也有很多方案可以评估模型对数据的拟合精度。比如:
+\begin{itemize}
+	\item 平均绝对误差\textrm{(mean absolute error, MAE)}
+		\begin{displaymath}
+			\mathrm{MAE}=\dfrac1n\sum_i^n|y_i-\hat{y}_i|
+		\end{displaymath}
+	\item 归一化相对百分误差\textrm{(normalized mean absolute in percentage, MAPE)}
+		\begin{displaymath}
+			\mathrm{MAPE}=\dfrac{100\%}n\sum_i^n\dfrac{y_i-\hat{y}_i}{y_i}
+		\end{displaymath}
+	\item 误差的均方差\textrm{(mean squared error, MSE)}
+		\begin{displaymath}
+			\mathrm{MSE}=\dfrac1n\sum_i^n(y_i-\hat{y}_i)^2
+		\end{displaymath} 
+\end{itemize}
+从使用频率角度说，由分布参数$\theta$估计$\hat{\theta}^m$与\textrm{MSE}密切关联，即
+		\begin{displaymath}
+			\mathrm{MSE}=\mathtt{E}[(\hat{\theta}_m-\theta)^2]=\mathrm{Bias}(\hat{\theta}_m)^2-\mathrm{Var}(\theta)
+		\end{displaymath} 
+		一般更常用的是误差的均方根\textrm{(root of MSE, RMSE)}，此外还有用可决统计系数(也称决定系数，\textrm{coefficient of determination})$\mathrm{R}^2$的，可决统计系数的定义为$\mathrm{R}^2=1-\dfrac{\mathrm{SS}_{res}}{\mathrm{SS}_{tot}}$，这里$\mathrm{SS}_{res}=\sum\limits_i(y_i-\bar{y})^2$是总的方差求和，而$\mathrm{SS}_{res}=\sum\limits_i(y_i-\hat{y}_i)^2$是预测模型误差平方求和。
+
+
+\section{数据挖掘与第一原理材料研究}
+%\subsection{数据挖掘与第一原理材料研究}
+信息科学与生物学的交叉形成生物信息学极大地带动了信息学科与基础学科的融合，近年来，材料信息学\textrm{(Materials Informatics)}，即应用数据挖掘特别是机器学习技术推动材料科学研究的深入，经过十多年的发展已渐趋成熟\cite{MT8-38_2005}。材料信息学主要研究材料的内禀特征\textrm{(intrinsic features)}，包括结构、组成、对称性等与材料的性质之间内在的数据关联。通常材料科学研究的习惯思路是已知材料的特征$x_i$，则其影响的材料性质$y_i=f(x_i)$将会如何变化，确定\{\textit{材料}$\rightarrow$\textit{性质}\}的映射关系;~而对于新材料开发领域，往往有逆向式思维，为了获得具有某种性质的材料，则必须使其存在哪些内禀特征。事实上，只有以数据驱动的材料学研究模式，才是能同时回答上述问题的主要形式。
+
+材料科学中数据挖掘特别是机器学习研究的一般思路如图\ref{npjCM}所示，材料学研究的数据挖掘主要是监督学习，即材料物性的预测和材料的分类。对材料物性的预测，机器学习的目标是，应用包括回归在内的各种算法，对目标物性(标签)建立函数关系$f(\mathbf{x})$;~对于分类问题，则根据特定的物性目标，将符合要求的材料归入其中。例如，按照磁性和非磁性划分，和按照晶体所属结构分类就属于两种不同的分类方式，每种分类方式内部各部分之间不能存在交集。根据图\ref{npjCM}，在数据挖掘驱动的材料计算(主要是第一原理材料计算)的主要研究流程为:
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Materials_informations_workflow.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{材料科学研究中的数据挖掘方式的一般流程.引自文献\inlinecite{NPJCM3-54_2017}}}}%
+\label{npjCM}
+\end{figure}
+\begin{enumerate}
+	\item 问题的确定:~对于机器学习来说，最重要的就是确定待解决的问题的类型，究竟是分类、回归、优化、分布概率估计等中的哪一类。习惯上要根据\textrm{SMART}原则\footnote{\textrm{SMART}原则是流行在目标管理中的术语，即具体\textrm{(Specific)}、可量化\textrm{(Measurable)}、可达成\textrm{(Attainable)}、相关\textrm{(Relevant)}和时效要求\textrm{(Timely)}的英文缩写。}，平衡效率与精度，确定所选的机器学习算法。此外，很重要的是机器学习所需特征向量的选择，尤其需要慎重选择。
+	\item 材料数据的组织:~作为机器学习的基本对象，数据是最基本的。对于选定的问题，必须要有充足的数据。即使是最小化的数据集，也应该涵盖研究样本的全部特征(机器学习的输入)和目标物性(机器学习的输出)。需要说明的是，对于机器学习而言，数据可以是来自理论计算的，也可以是实验测量的。
+	\item 物性的表示:~选用哪些特征向量来表示材料的物性往往决定了机器学习的性能。习惯上，将用于描述材料物性的特征向量称为描述符\cite{PRL114-105503_2015}(或指纹)。
+	\item 机器学习算法和模型的选定、评估与优化:~根据研究问题的目标，选择合适的机器学习算法并对学习结果予以评估。特别要注意算法的精度-效率/性能和训练时长的平衡，同时也要考虑模型的复杂度/合理性。对模型的评估和优化主要针对超参数的选择，既要防止数据不足也要防止过拟合引起的偏差。
+\end{enumerate}
+机器学习的建模可以简单概述为
+\begin{displaymath}
+	\mbox{机器学习模型=研究对象+数据+表示+机器学习算法+优化}
+\end{displaymath}
+
+机器学习除了可作为直接预测材料性质或发现新材料的手段，在第一原理计算方面，更重要的作用是节省或替代获取\textrm{DFT}计算结果或数据所必需的高额成本。在此简要讨论应用机器学习方法来扩展和改进各类模拟计算的主要思路。在类似的计算物理和模拟研究领域，此类机器学习同样有着广泛的应用潜能。
+
+对于复杂电子体系，\textrm{Schr\"odinger}方程直接的迭代数值求解对计算资源和时间成本都比较高。在\textrm{DFT}框架下，使用机器学习加速求解\textrm{Kohn-Sham}方程，可以更高效地获得计算结果且不须牺牲精度，其实现的基本思路如图\ref{ML_QM}所示。通过使用机器学习方法来优化\textrm{DFT}计算里中使用的能量泛函，可以将机器学习方法很方便地与传统\textrm{DFT}计算结合起来使用\cite{PRB94-245129_2016,PRL108-253002_2012,JCP139-224104_2013,IJQC116-819_2016,JCP148-241705_2018}。机器学习优化的泛函并不限于传统\textrm{DFT}的\textrm{Kohn-Sham}方程的交换-相关部分，也可以用于无轨道类型\textrm{(free-orbital)}的能量密度泛函。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{ML_DFT-1.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{应用机器学习预测替代高成本量子化学计算的总体思路.引自文献\inlinecite{ML-in-MS_2016}}}}%
+\label{ML_QM}
+\end{figure}
+
+在第一原理计算中，另一种应用机器方法的思路是直接预测电子密度\cite{NC8-872_2017,CMS149-250_2018,arXiv1811006255_2018}，从而避免直接求解\textrm{Kohn-Sham}方程，本质上就是从\textrm{DFT}的\textrm{Hohenberg–Kohn}定理出发，但并非以寻找普适泛函为目标，而是通过机器学习获得材料的电子密度-势的映射关系，得到能量泛函后，对能量泛函求变分极小得到基态能量。图\ref{ML_DFT}给出了机器学习支持第一原理计算的三种不同形式。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{ML_DFT-2.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{应用机器学习支持\textrm{DFT}的三种主要形式.引自文献\inlinecite{NC8-872_2017}}}%
+\label{ML_DFT}
+\end{figure}
+
+对于第一原理计算来说，机器学习还可于直接解决更为复杂的量子多体问题\cite{CPC104-1_1997,Science355-602_2017,PRE98-033305_2018}，对于其\textrm{Schr\"odinger}方程\cite{PRA96-042113_2017}的类紧束缚模型可以通过机器学习方法得到\textrm{Hamiltonian}\cite{SR7-42669_2017}。
+
+此外，机器学习在计算材料，特别是在高于电子尺度的物理学研究中的应用，还包括配分函数的确定\cite{JCP149-044118_2018}、寻找相变和序参量\cite{PRB94-195105_2016,NP13-431_2017,PRB96-205146_2017,SR7-8823_2017,PRB97-115453_2018}以及获得模型的格林函数\cite{PRB90-155136_2014}等重要问题。机器学习这些领域的成功应用展示了数据挖掘技术在拓展材料科学研究前沿有着广阔的应用前景，可应用于多种尺度下材料学研究的各类系统和现象。
+
+
+材料研究领域应用机器学习方法是最近才兴起的，相关研究文章已是汗牛充栋，读者有兴趣，可以参阅文献\cite{Nature559-547_2018,NPJCM3-54_2017,COSSMS21-167_2016,JM3-519_2017,JMR31-977_2016,MRSB41-399_2016,Science361-360_2018,JCP148-241401_2018,MRSB43-683_2018}。%，本部分主要讨论机器学习在典型领域的应用。
+%\subsection{机器学习在第一原理材料研究中的应用}
+%\subsubsection{新材料发现及稳定性}
+%机器学习用于材料学研究的主要目标是通过数据驱动加速新的物质(主要是各类化合物)的发现。具体地说，通过机器学习，可以阐述材料的热力学稳定性，从而有效地预测化合物的形成能。\textrm{Curtarolo}和\textrm{Ceder}等是利用诸如\textrm{PCA}、线性回归等机器学习方法来预测晶体结构\cite{PRL91-135503_2003}、形成能\cite{MST16-296_2005}并优化高通量计算\cite{NM5-641_2006}的先驱，、\textrm{Hautier}等应用机器学习方法，由\textrm{ICSD}的实验数据确定新的三元化合物的主要元素组成，并用高通量计算模拟验证\cite{CM22-3762_2010}。\textrm{Saad}等用二元化合物为样本，介绍了机器学习的基本概念和监督学习与无监督学习降维技术\cite{SR5-13285_2015}。\textrm{Patra}等应用偏倚神经网络遗传算法\textrm{(neural-newwork-biased genetic algorithm, NBGA)}加速特定物性材料的设计\cite{ACSCS19-96_2017}，通过人工神经网络遗传算法的筛选优化，对模拟或实验样本数据按照类似生物进化的多代筛选，获得特定物性的提升。采用随机森林算法，预测\textrm{Heusler}合金时，仅以元素组分为特征向量(描述符)，得到很理想的结果，并且很快得到实验合成的验证\cite{CM28-7324_2016}。\textrm{Faber}等对\textrm{ICSD}数据库中大量化合物的形成能应用\textrm{kernel ridge}回归，发现平均误差在0.1\textrm{eV/atom}的钾冰晶石化合物(\ch{ABC2D6})结构约90种\cite{PRL117-135502_2016}。
+
+%\textrm{Okamoto}在材料科学的化学组分研究中，应用\textrm{Bayesian}方法，只在6\%的搜索空间中就找到了嵌入金属锂的石墨烯稳定化学物\cite{JPCA121-3299_2017}。
+
+%预测晶体结构及其稳定性
