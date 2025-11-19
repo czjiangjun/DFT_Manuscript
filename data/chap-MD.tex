@@ -85,7 +85,7 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 	\item \url{http://www.dfrl.ucl.ac.uk/Potentials/O/index.html}
 \end{itemize}
 在本节中，我们将详细介绍四种常见的势的类型：对势、\textrm{EAM}势、\textrm{Tersoff}势和离子势。为有机物、聚合物和生物有机系统（例如蛋白质）设计的势函数(由于历史的原因，这些领域习惯将势函数称为力场)不包括在内。%此外，在3.7和3.10节的算例中，会演示混合势方法，即如何在一个体系中应用不同类型的势函数。
-\subsection{对势}
+\subsection{对势}\label{MD-pair-FF}
 在$N$原子体系中，$N$是原子的数目，一个原子$i$同时与所有其他原子发生相互作用(这种作用可以通过考虑两个原子间、三个原子，扩展到$N$个原子间相互作用，以此类推):
 \begin{equation}
 	U=\sum_{i<j}^NU_2(\mathbf{r}_i,\mathbf{r}_j)+\sum_{i<j<k}^NU_3(\mathbf{r}_i,\mathbf{r}_j,\mathbf{r}_k)+\cdots
@@ -415,7 +415,7 @@ $U$是势函数。因此，如果势函数是原子间距离的函数，只要�
 要开始一个分子动力学模拟过程，必须准备几个初始输入参数。这些准备工作非常重要，如果参数选择得合适，能尽量减少量，获得可靠的模拟结果。
 \subsubsection{确定原子数(体系大小)}
 只要能正确的代表真实体系，要求主模拟区域的原子数目越少越好。一般为了得到可靠的数据，主模拟区域的原子选择在100个以上。
-\subsubsection{给定初始位置和速度}
+\subsubsection{给定初始位置和速度}\label{Inital-position_velocity}
 为了求解\textrm{Newton}运动方程，必须提供体系的初始位置和速度(初值条件)。原子的初始位置允许任意的，但通常是根据已知晶格位置来指定，这些起始位置的数据可从多个网站轻松获得，包括:
 \begin{itemize}
 	\item \url{http://cst-www.nrl.navy.mil/lattice/spcgrp/index.html}

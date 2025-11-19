@@ -28,101 +28,84 @@
 \subsubsection{执行控制文件} 
 下面是为这个算例准备的执行控制文件，其中一些行上有注释。用\#标志，用于对该命令的简要描述。所有命令行都是一目了然的，在\textrm{XMD}的参考手册中找到所有命令行的详细说明。注意，实际运行\textrm{XMD}软件读取该文件时，应该删除注释或将注释部分更改为带有\#的独立行，否则XMD软件读取执行控制文件时会报错错误。
 
-%\includegraphics[width=6.77431in,height=3.45625in]{media/image1.png}\includegraphics[width=5.84722in,height=5.81736in]{media/image2.png}
+\verbatiminput{Figures/XMD-Al_Input.txt}
 
-\emph{3.1.1.2 势函数文件}
+\subsubsection{势函数文件}
 
 势函数文件NiAl\_EAMpotential.txt将用于以下运行：
 
-%\includegraphics[width=4.71389in,height=1.87361in]{media/image3.png}
+\verbatiminput{Figures/XMD-Al_FF.txt}
 
-正如2.2.2节介绍过的，势函数文件中有很多数值。
+正如\ref{MD-pair-FF}介绍过的，势函数文件中有很多数值。
 
-\hypertarget{ux8fd0ux884c}{%
-\subsection{\texorpdfstring{\emph{3.1.2
-运行}}{3.1.2 运行}}\label{ux8fd0ux884c}}
+\subsubsection{运行}\label{XMD-1-run}
 
-现在，在DOS窗口中启动XMD软件运行分子动力学模拟：
+现在，在\textrm{DOS}窗口中启动XMD软件运行分子动力学模拟：
 
-%\includegraphics[width=4.71875in,height=4.61458in]{media/image4.png}
+\verbatiminput{Figures/XMD-Al_run-out.txt}
 
-\hypertarget{ux7ed3ux679c}{%
-\subsection{\texorpdfstring{\emph{3.1.3
-结果}}{3.1.3 结果}}\label{ux7ed3ux679c}}
+\subsubsection{结果}\label{XMD-1-result}
 
-打开两个输出文件，Al-lattice.txt 和Al-PE.txt
-，并将其中的整合成数据列表：
+打开两个输出文件，Al-lattice.txt 和Al-PE.txt，并将其中的整合成数据列表：
 
-%\includegraphics[width=4.68194in,height=1.1375in]{media/image5.png}
+\verbatiminput{Figures/XMD-Al_result.txt}
 
-\emph{3.1.3.1 势能曲线}
+\subsubsection{势能曲线}
 
-首先用Origin\textsuperscript{®} 或MS\textsuperscript{®}
-Excel绘出结果来获得平衡晶格常数、内聚能和体积模量。图3.1显示了E-a曲线，这是由四阶多项式拟合的铝晶格参数的函数。根据拟合曲线，我们得出a\textsubscript{0}=4.05Å，Ecoh
-=3.37 eV/atom，分别与实验结果4.05 Å和3.39 eV/atom（Gaudoin
-e等人2002）非常吻合。
+首先用\textrm{Origin}$^{\textregistered}$ 或\textrm{MS}$^{\textregistered}$
+\textrm{Excel}绘出结果来获得平衡晶格常数、内聚能和体积模量。图3.1显示了E-a曲线，这是由四阶多项式拟合的铝晶格参数的函数。根据拟合曲线，我们得出a\textsubscript{0}=4.05Å，Ecoh
+=3.37 eV/atom，分别与实验结果$4.05~\AA$和$3.39~\mathrm{eV/atom}$（Gaudoine等人2002）非常吻合。
 
-下一步是计算体模量B，体模量的定义是
+下一步是计算体模量$B$，体模量的定义是
+\begin{equation}
+	B=-V\left.\dfrac{\mathrm{d}P}{\mathrm{d}V}\right|_{a_0}
+	\label{eq:Body-Modulue}
+\end{equation}
 
-%\includegraphics[width=3.0625in,height=0.46736in]{media/image6.png}
+其中$V$是体积，$P$是压力。
+%\begin{itemize}
+%	\item $V$是体积
+%	\item $P$是压力
+%\end{itemize}
+因此，体模量表示在给定压力下体积变化的程度，是表示材料强度的一种方法。对于一个\textrm{FCC}单元，每个单元的总能量为$4E$，体积为$a^3$，而压力由以下给出
+\begin{equation}
+	P=-\dfrac{\mathrm{d}E}{\mathrm{d}V}=-\dfrac4{3a^2}\dfrac{\mathrm{d}E}{\mathrm{d}a}
+	\label{eq:Body-Module-Press}
+\end{equation}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-Al-Modulu.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{势能是由四阶多项式拟合的铝晶格参数的函数(垂直线表示平衡晶格参数).}}%
+\label{MD_5-atoms}
+\end{figure}
 
-其中：
+然后，式\eqref{eq:Body-Modulue}可以改写为
+\begin{equation}
+	B=V\dfrac{\partial^2E}{\partial V^2}=\dfrac4{9a_0}\left.\dfrac{\mathrm{d}^2E}{\mathrm{d}a^2}\right|_{a_0}
+	\label{eq:Body-Modulue-2}
+\end{equation}
+其中$a_0$是对应最小E的平衡晶格参数。
 
-V是体积
+从图\ref{MD_5-atoms}中的$E\text{-}a$拟合曲线中，可以得出其二阶导数（在$a_0$处势能曲线的曲率），将其代入到式\eqref{eq:Body-Module-2}中，得到的体模量为$79~\mathrm{GPa}$。该值与$76~\mathrm{GPa}$的实验值(\textrm{Gaudoin}等人2002)相比吻合得很好。用\textrm{Birch-Murnaghan}状态方程\textcolor{red}{(Murnaghan 1944)}可以用来拟合体模量，但上述多项式拟合法已经足够的精确并更加方便。以类似的方式在400,~600,~800~K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，以便对计算热膨胀系数实际运算。
 
-P是压力
-
-因此，体模量表示在给定压力下体积变化的程度，是表示材料强度的一种方法。对于一个FCC单元，每个单元的总能量为4E，体积为a\textsuperscript{3}，而压力由以下给出
-
-%\includegraphics[width=6.39861in,height=4.75694in]{media/image7.png}
-
-图3.1势能是由四阶多项式拟合的铝晶格参数的函数。（垂直线表示平衡晶格参数。）
-
-%\includegraphics[width=3.42361in,height=0.44375in]{media/image8.png}
-
-然后，式(3.1)可以改写为
-
-%\includegraphics[width=3.42361in,height=0.51458in]{media/image9.png}
-
-其中a\textsubscript{0}是对应最小E的平衡晶格参数。
-
-从图3.1中的E-a拟合曲线中，可以得出其二阶导数（在a\textsubscript{0}处势能曲线的曲率），将其代入到式(3.3)中，得到的体模量为79
-GPa。该值与76
-GPa的实验值（Gaudoin等人2002）相比吻合得很好。用Birch-Murnaghan状态方程（Murnaghan
-1944）可以用来拟合体模量，但上述多项式拟合法已经足够的精确并更加方便。以类似的方式在400、600、800
-K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，以便对计算热膨胀系数实际运算。
-
-\hypertarget{ux954dux56e2ux7c07ux7684ux7194ux878d}{%
-\section{3.2 镍团簇的熔融}\label{ux954dux56e2ux7c07ux7684ux7194ux878d}}
-
+\section{镍团簇的熔融}\label{ux954dux56e2ux7c07ux7684ux7194ux878d}
 在这个算例中，我们通过将温度提高到2000℃，来确定有2112个原子的镍团簇的熔点。镍的熔点是已知的，但镍团簇的熔点则与团簇的大小有关。
+\begin{itemize}
+	\item 计算程序:~\textrm{XMD}
+	\item 体系:~真空中的镍原子簇(2112个原子，直径3.5~纳米)，为了简单起见，忽略任何端面的排列
+	\item 势函数:~\textrm{Voter and Chen's NiAl\_EAM}势~\textrm{(Voter and Chen 1987)}
+	\item 温度:~以\textrm{100~K}的幅度，从100增加到\textrm{2000~K}
+\end{itemize}<++>
 
-• 计算程序：XMD
+\subsection{运行文件}\label{ux8fd0ux884cux6587ux4ef6}}
 
-•
-体系：真空中的镍原子簇（2112个原子，直径3.5纳米），为了简单起见，忽略任何端面的排列
+\verbatiminput{Figures/XMD-Ni_Input.txt}
 
-• 势函数：Voter and Chen's NiAl\_EAM势（Voter and Chen1987）
+命令``\textrm{itemp}''将对给定温度下服从\textrm{Maxwell-Boltzmann}分布的所有粒子分配随机速度。根据\ref{Inital-position_velocity}讨论的速度标度方案，将使体系的模拟温度保持在指定的数值。在体相固体中，应考虑到热膨胀，计算中需要考虑体系膨胀，直至外部压力为零。但是对于真空中的团簇模拟，则不需要。
 
-• 温度：以100K的幅度，从100 增加到2000 K
-
-\hypertarget{ux8fd0ux884cux6587ux4ef6}{%
-\subsection{\texorpdfstring{\emph{3.2.1
-运行文件}}{3.2.1 运行文件}}\label{ux8fd0ux884cux6587ux4ef6}}
-
-%\includegraphics[width=6.94653in,height=1.84167in]{media/image10.png}
-
-%\includegraphics[width=5.21319in,height=5.38542in]{media/image11.png}
-
-命令``itemp''将对给定温度下服从Maxwell-Boltzmann分布的所有粒子分配随机速度。根据2.5.1讨论的速度标度方案，将使体系的模拟温度保持在指定的数值。在体相固体中，应考虑到热膨胀，计算中需要考虑体系膨胀，直至外部压力为零。但是对于真空中的团簇模拟，则不需要。
-
-\hypertarget{ux7ed3ux679c-1}{%
-\subsection{\texorpdfstring{\emph{3.2.2
-结果}}{3.2.2 结果}}\label{ux7ed3ux679c-1}}
-
-输出文件Ni-cluster-T显示的是每20000个时间步长的温度，另一个输出文件
-Ni-cluster-e则显示了每20000个时间步长对应的势能。图3.2是能量与温度的曲线，表明体系的势函数能在\textasciitilde1500
-K时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度（1726K）。正如2.6.2讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
+\subsection{结果}\label{ux7ed3ux679c-1}
+输出文件\textrm{Ni-cluster-T}显示的是每20000个时间步长的温度，另一个输出文件\textrm{Ni-cluster-e}则显示了每20000个时间步长对应的势能。图\ref{}<++>是能量与温度的曲线，表明体系的势函数能在$\sim1500~\mathrm{K}$时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度(1726K)。正如2.6.2讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
 
 %\includegraphics[width=4.07292in,height=2.86458in]{media/image12.png}
 
@@ -131,7 +114,7 @@ K时突然增加，说明团簇在该温度下熔化。这一温度远低于记�
 图3.2
 2.112个原子组成的镍团簇的势能与温度之间的关系，显示了熔化的一级转变。
 
-\emph{3.2.2.1 利用MDLChimeSP6进行可视化}
+\subsubsection{3.2.2.1 利用MDLChimeSP6进行可视化}
 
 有多种软件可用于支持可视化或以动画方式展示运行结果。这里首先使用一个非常简单的在线程序MDL
 ChimeSP6，它可以读取标准XYZ格式文件，并且可以免费下载。通过双击Ni-cluster.XYZ，打开一个MDL窗口，打开并显示/激活系统，如图3.3中的快照所示。
@@ -381,7 +364,7 @@ Au纳米线屈服机制}\label{auux7eb3ux7c73ux7ebfux5c48ux670dux673aux5236}}
 \subsection{\texorpdfstring{\emph{3.6.2
 结果}}{3.6.2 结果}}\label{ux7ed3ux679c-5}}
 
-\emph{3.6.2.1 快照}
+\subsubsection{3.6.2.1 快照}
 
 图3.9显示了模拟过程中的三个快照，它们显示了在给定设置下的Au纳米线的变形特性。在图中，原子根据其配位数分类。初始结构的表面（图3.9a）主要由配位数为9的（111）平面组成。然而，在菱形线的四个边缘，原子与少于8个相邻原子的配位要少得多。
 
@@ -445,13 +428,13 @@ Waals相互作用，以及水分子之间电荷相关的Coulomb相互作用。�
 
 • 温度：300 K与温度重新定标法
 
-\emph{3.7.1.1 位置文件（数据。C-H2O）}
+\subsubsection{3.7.1.1 位置文件（数据。C-H2O）}
 
 %\includegraphics[width=6.00069in,height=7.19861in]{media/image34.png}
 
 %\includegraphics[width=5.41667in,height=0.78681in]{media/image35.png}
 
-\emph{3.7.1.2 输入文件}
+\subsubsection{3.7.1.2 输入文件}
 
 输入文件由三部分组成：使用原子标记文件（data.C--H\textsubscript{2}O）进行体系标识，建立混合类型的原子间势，以及包括通过共轭梯度能量极小化进行结构弛豫的分子动力学模拟。
 
