@@ -61,7 +61,7 @@ endif
 
 clean:
 	$(LATEXMK) -c $(PACKAGE).dtx $(THESIS)
-	-@$(RM) -rf data/.*.swp data/*.tex~
+	-@$(RM) -rf data/.*.swp data/*.tex~ Figures/*.txt~
 	-@$(RM) -rf *~ main-survey.* main-translation.* _markdown_thuthesis* thuthesis.markdown.* main.aux main.bbl main.blg main.fdb_latexmk main.fls main.log main.out main.toc main.xdv
 
 cleanall: clean
