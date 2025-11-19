@@ -53,8 +53,7 @@
 \subsubsection{势能曲线}
 
 首先用\textrm{Origin}$^{\textregistered}$ 或\textrm{MS}$^{\textregistered}$
-\textrm{Excel}绘出结果来获得平衡晶格常数、内聚能和体积模量。图3.1显示了E-a曲线，这是由四阶多项式拟合的铝晶格参数的函数。根据拟合曲线，我们得出a\textsubscript{0}=4.05Å，Ecoh
-=3.37 eV/atom，分别与实验结果$4.05~\AA$和$3.39~\mathrm{eV/atom}$（Gaudoine等人2002）非常吻合。
+\textrm{Excel}绘出结果来获得平衡晶格常数、内聚能和体积模量。图\ref{MD_5-atoms}显示了$E\text{-}a$曲线，这是由四阶多项式拟合的铝晶格参数的函数。根据拟合曲线，我们得出$a_0=4.05\AA$，$E_{\mathrm{coh}}=3.37~\mathrm{eV/atom}$，分别与实验结果$4.05~\AA$和$3.39~\mathrm{eV/atom}$（Gaudoine等人2002）非常吻合。
 
 下一步是计算体模量$B$，体模量的定义是
 \begin{equation}
@@ -87,25 +86,24 @@
 \end{equation}
 其中$a_0$是对应最小E的平衡晶格参数。
 
-从图\ref{MD_5-atoms}中的$E\text{-}a$拟合曲线中，可以得出其二阶导数（在$a_0$处势能曲线的曲率），将其代入到式\eqref{eq:Body-Module-2}中，得到的体模量为$79~\mathrm{GPa}$。该值与$76~\mathrm{GPa}$的实验值(\textrm{Gaudoin}等人2002)相比吻合得很好。用\textrm{Birch-Murnaghan}状态方程\textcolor{red}{(Murnaghan 1944)}可以用来拟合体模量，但上述多项式拟合法已经足够的精确并更加方便。以类似的方式在400,~600,~800~K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，以便对计算热膨胀系数实际运算。
+从图\ref{MD_5-atoms}中的$E\text{-}a$拟合曲线中，可以得出其二阶导数（在$a_0$处势能曲线的曲率），将其代入到式\eqref{eq:Body-Modulue-2}中，得到的体模量为$79~\mathrm{GPa}$。该值与$76~\mathrm{GPa}$的实验值(\textrm{Gaudoin}等人2002)相比吻合得很好。用\textrm{Birch-Murnaghan}状态方程\textcolor{red}{(Murnaghan 1944)}可以用来拟合体模量，但上述多项式拟合法已经足够的精确并更加方便。以类似的方式在400,~600,~800~K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，以便对计算热膨胀系数实际运算。
 
 \section{镍团簇的熔融}\label{ux954dux56e2ux7c07ux7684ux7194ux878d}
-在这个算例中，我们通过将温度提高到2000℃，来确定有2112个原子的镍团簇的熔点。镍的熔点是已知的，但镍团簇的熔点则与团簇的大小有关。
+在这个算例中，我们通过将温度提高到2000$^{\circ}\mathrm{C}$，来确定有2112个原子的镍团簇的熔点。镍的熔点是已知的，但镍团簇的熔点则与团簇的大小有关。
 \begin{itemize}
 	\item 计算程序:~\textrm{XMD}
 	\item 体系:~真空中的镍原子簇(2112个原子，直径3.5~纳米)，为了简单起见，忽略任何端面的排列
 	\item 势函数:~\textrm{Voter and Chen's NiAl\_EAM}势~\textrm{(Voter and Chen 1987)}
 	\item 温度:~以\textrm{100~K}的幅度，从100增加到\textrm{2000~K}
-\end{itemize}<++>
+\end{itemize}
 
-\subsection{运行文件}\label{ux8fd0ux884cux6587ux4ef6}}
-
-\verbatiminput{Figures/XMD-Ni_Input.txt}
+\subsection{运行文件}\label{ux8fd0ux884cux6587ux4ef6}
+\verbatiminput{Figures/XMD-Ni-Input.txt}
 
 命令``\textrm{itemp}''将对给定温度下服从\textrm{Maxwell-Boltzmann}分布的所有粒子分配随机速度。根据\ref{Inital-position_velocity}讨论的速度标度方案，将使体系的模拟温度保持在指定的数值。在体相固体中，应考虑到热膨胀，计算中需要考虑体系膨胀，直至外部压力为零。但是对于真空中的团簇模拟，则不需要。
 
 \subsection{结果}\label{ux7ed3ux679c-1}
-输出文件\textrm{Ni-cluster-T}显示的是每20000个时间步长的温度，另一个输出文件\textrm{Ni-cluster-e}则显示了每20000个时间步长对应的势能。图\ref{}<++>是能量与温度的曲线，表明体系的势函数能在$\sim1500~\mathrm{K}$时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度(1726K)。正如2.6.2讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
+输出文件\textrm{Ni-cluster-T}显示的是每20000个时间步长的温度，另一个输出文件\textrm{Ni-cluster-e}则显示了每20000个时间步长对应的势能。图是能量与温度的曲线，表明体系的势函数能在$\sim1500~\mathrm{K}$时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度(1726K)。正如2.6.2讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
 
 %\includegraphics[width=4.07292in,height=2.86458in]{media/image12.png}
 

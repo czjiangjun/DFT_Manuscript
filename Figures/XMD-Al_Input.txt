@@ -1,0 +1,59 @@
+# Al-PB-curve.xm 		# XMD ignores any line starting with #. XMD
+                      		# is not character-sensitive.
+echo on 			# display run progress on monitor
+read NiAl EAMpotential.txt  	# read given potential file
+eunit eV 			# set energy unit in eV
+echo Al - 2
+calc MassAl = 26.98   		# set atomic weight for Al
+
+calc NX = 8           		# set box numbers in x-direction
+calc NY = 8
+calc NZ = 8
+box NX NY NZ          		# make 512 cubic boxes (box size of 1x1x1)
+fill particle 4       		# fill each box with 4 Al atoms in FCC
+                      		# arrangement
+2 1/4 1/4 1/4        		# position type 2 atom (Al) at 1/4 1/4 1/4 of
+        			# a cubic box
+2 3/4 3/4 1/4
+2 1/4 3/4 3/4
+2 3/4 1/4 3/4
+
+fill go               		# fill all boxes with 4 Al atoms (total 2,048
+                      		# Al atoms)
+
+calc A0 = 3.80        		# set A0 = 3.80 Å
+calc AX0 = A0			# set AX0 = A0
+calc AY0 = A0
+calc AZ0 = A0
+calc DEL = 0.05 		# increase lattice size by 0.05 Å for every
+                      		# repeated run
+scale AX0 AY0 AZ0     		# make each box 3.80 × 3.80 × 3.80 Å
+
+select all            		# select all Al atoms (total 2,048 Al
+                      		# atoms)
+mass MassAl           		# assign atomic mass for Al atoms
+timestep 1.0e-15      		# set timestep
+
+repeat 11             		# repeat all commands until end for
+                      		# 11 times
+calc AX = AX0 + DEL   		# set the lattice for 1st run; 3.80 Å, 2nd
+                      		# run; 3.85 Å,..., 11th run; 4.30 Å
+calc AY = AY0 + DEL
+calc AZ = AZ0 + DEL
+scale AX/AX0 AY/AY0 AZ/AZ0  	# adjust each box size accordingly
+
+calc AX0 = AX         		# set AX0 = AX → AX0 + DEL for the next repeat
+calc AY0 = AY
+calc AZ0 = AZ
+
+cmd 500               		# solve Newton's equations of motion and
+                      		# equilibrate 500 timesteps
+write file +Al-lattice.txt AX  	# write AX accumulatively (+) into Al-lattice.
+                      		# txt
+write file +Al-PE.txt energy  	# write energy (potential) accumulatively (+)
+                      		# into Al-PE.txt
+write AX              		# display AX on monitor
+write energy          		# display energy (potential) on monitor
+end
+################################################################
+

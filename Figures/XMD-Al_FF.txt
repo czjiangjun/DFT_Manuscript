@@ -1,0 +1,12 @@
+#################################################################
+** Al EAM potential from Voter and Chen
+eunit eV
+* Set potential type to EAM
+potential set eam 1
+* Read in individual potential functions
+POTENTIAL PAIR 1 1 3000 1.000000E+00 5.554982E+00 
+0.000000E+06 .4847665E+016 .4467977E+016 .4090193E+01
+.....
+5.8953576E+015 .8970665E+015 .8987746E+015 .9004817E+01
+5.9021898E+01
+#################################################################

@@ -8,7 +8,7 @@ SPINE   = spine
 SOURCES = $(PACKAGE).ins $(PACKAGE).dtx
 CLSFILE = dtx-style.sty $(PACKAGE).cls
 
-LATEXMK = latexmk
+LATEXMK = latexmk -f
 SHELL  := /bin/bash
 
 # make deletion work on Windows

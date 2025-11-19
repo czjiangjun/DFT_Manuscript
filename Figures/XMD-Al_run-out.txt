@@ -1,0 +1,34 @@
+###############################################################################
+Start > Run > cmd > 		# open DOS
+Microsoft Windows [Version 6.1.7600]
+Copyright (c) 2009 Microsoft Corporation. All rights reserved.
+
+>xmd Al-PE-curve.xm 		# run Al-PE-curve.xm
+XMD(Version 2.5.32 Oct 25 2002)
+
+Not using pthread library.
+Not using asm("finit"); patch in thread routines
+# Al-PE-curve.xm
+echo on
+.....
+*** Number new particles 2048
+.....
+*** Current step is 500 	# current timestep number
+AX 3.8 				# set lattice parameter at 3.8 Å
+EPOT -1.197206702e+000 		# potential energy (eV/atom)
+.....
+AX 4.3
+EPOT -3.248231965e+000
+.....
+Elapsed Time: 0 min 49 sec 	# total run time
+DYNAMICS STATISTICS
+ Number of MD Steps: 5500 	# total MD steps = repeat 11 x cmd 500
+ Number of Neighbor Searches: 11	 # no. of neighbor list updates, N_F
+ Time spent on MD steps: 49(sec)
+ Time spent on Neighbor Search: 0(secs)
+
+ERROR STATISTICS
+ Number of Fatal Errors: 0
+ Number of Unknown Command Errors: 0
+ Number of Misc. Warnings: 0
+###############################################################################

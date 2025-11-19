@@ -1,0 +1,55 @@
+##########################################################################################
+# Ni-cluster2112.xm
+
+echo on
+read NiAl_EAMpotential.txt
+
+calc NX=40
+calc NY=40
+calc NZ=40
+dtime 0.5e-15
+
+calc Ni=1
+calc MassNi=58.6934
+calc MassNi=5.5238
+eunit ev
+
+box NX NY NZ
+# bsave 20000 Ni-cluster-b.txt 	     # save box size every 20000 timesteps,
+                                     # Need only for bulk
+# esave 20000 Ni-cluster-e.txt       # save potential energy every
+                                     # 20000 timesteps (1 repeat)
+
+# fill atoms into sphere of 5 unit radius centered at (20, 20, 20)
+fill boundary sphere 5.0 20.0 20.0 20.0
+fill particle 4                      # make Ni in fcc structure
+1 1/4 1/4 1/4                        # position type 1 atom (Ni)
+1 1/4 3/4 3/4
+1 3/4 1/4 3/4
+1 3/4 3/4 1/4
+fill go                             # make Ni cluster of 2112 atoms
+select near 8 point 20 20 20        # select 8 atoms near to the center
+fix on                              # fix the selected 8 atoms for
+                                    # stability of run
+
+select type 1
+mass MassNi
+scale A0
+
+# pressure clamp 1.80               # only for bulk, bulk modulus of
+                                    # Ni = 1.8 Mbar (180 GPa)
+
+calc temp=100
+
+repeat 20
+ select all
+ itemp temp                          # set initial T of 100K
+ clamp temp                          # set adiabatic simulation at 100 K
+ cmd 20000
+ calc temp=temp+100                  # increase T by 100K every repeat
+ write file +Ni-cluster-T.txt temp   # write T
+ write file +Ni-cluster-e.txt energy # write energy
+write xmol +Ni-cluster.xyz           # write atom coordinates accumulatively
+                                     # for display and animation
+end
+##########################################################################################
