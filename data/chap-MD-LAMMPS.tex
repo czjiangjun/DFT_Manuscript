@@ -300,17 +300,20 @@ rcutoff公式表达式''，它分别表示势函数，对势数目，第一原�
 
 • 材料：Au纳米线，由8000个原子组成，采用FCC结构
 
-• 结构：沿{[}110{]}方向的线轴，具有四个\{111\}侧面（见图3.9）
+• 结构：沿[110]方向的线轴，具有四个\{111\}侧面（见图\ref{LAMMPS-Au-twist}）
 
-%\includegraphics[width=4.30208in,height=3.55208in]{media/image31.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Au-twist.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{Au纳米线在拉伸载荷下的变形特性.（a）时间步长数=0，（b）时间步长数=150000，及（c）时间步长数=282000（来自New York Park。等，私人通信，2010年）}}%
+\label{LAMMPS-Au-twist}
+\end{figure}
 
-图3.9 Au纳米线在拉伸载荷下的变形特性。
-
-（a）时间步长数=
-0，（b）时间步长数=150000，及（c）时间步长数=282000。（来自纽约州帕克。等，私人通信，2010年。）
+%图3.9 。
 
 * AtomEye.
-\href{http://mt.seas.upenn.edu/Archive/Graphics/A/}{\underline{http://mt.seas.upenn.edu/Archive/Graphics/A/}}.
+\url{http://mt.seas.upenn.edu/Archive/Graphics/A/}{\underline{http://mt.seas.upenn.edu/Archive/Graphics/A/}}.
 
 • 尺寸：菱形截面4×2.9nm，长度23 nm
 
@@ -320,27 +323,20 @@ rcutoff公式表达式''，它分别表示势函数，对势数目，第一原�
 
 • 拉伸应力：通过以0.0001/皮秒的应变率来增加模拟单元z轴来应用
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-4}{%
-\subsection{\texorpdfstring{\emph{3.6.1
-输入文件}}{3.6.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-4}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-4}
 
 输入文件由三部分组成：Au纳米线的结构产生、300 K时的热平衡和拉伸载荷。
+\verbatiminput{Figures/LAMMPS-Au-Input.txt}
 
-%\includegraphics[width=5.81806in,height=6.375in]{media/image32.png}
+\subsection{结果}\label{ux7ed3ux679c-5}
 
-%\includegraphics[width=5.41667in,height=1.77917in]{media/image33.png}
+\subsubsection{快照}
 
-\hypertarget{ux7ed3ux679c-5}{%
-\subsection{\texorpdfstring{\emph{3.6.2
-结果}}{3.6.2 结果}}\label{ux7ed3ux679c-5}}
+图\ref{LAMMPS-Au-twist}显示了模拟过程中的三个快照，它们显示了在给定设置下的\textrm{Au}纳米线的变形特性。在图中，原子根据其配位数分类。初始结构的表面（图\ref{LAMMPS-Au-twist}a）主要由配位数为9的（111）平面组成。然而，在菱形线的四个边缘，原子与少于8个相邻原子的配位要少得多。
 
-\subsubsection{3.6.2.1 快照}
+随着长度应变增加约7\%时，变形结构（图\ref{LAMMPS-Au-twist}b）表现出各种变化，尤其是在表面上：
 
-图3.9显示了模拟过程中的三个快照，它们显示了在给定设置下的Au纳米线的变形特性。在图中，原子根据其配位数分类。初始结构的表面（图3.9a）主要由配位数为9的（111）平面组成。然而，在菱形线的四个边缘，原子与少于8个相邻原子的配位要少得多。
-
-随着长度应变增加约7\%时，变形结构（图3.9b）表现出各种变化，尤其是在表面上：
-
-• 在\textless112\textgreater/\{111\}中Schottky不全位错的成核及其传播。
+• 在$\langle112\rangle/\{111\}$中Schottky不全位错的成核及其传播。
 
 • 孪晶形成开始并通过变形区/体积传播。
 
@@ -348,48 +344,31 @@ rcutoff公式表达式''，它分别表示势函数，对势数目，第一原�
 
 • 晶格从\{111\}重新定向到\{100\}平面，这涉及广泛的滑移。
 
-•
-滑移发生在（111）的易滑动平面上，导致变形。此阶段只有最简单的滑移面是活跃的。
+• 滑移发生在（111）的易滑动平面上，导致变形。此阶段只有最简单的滑移面是活跃的。
 
 随着长度应变进一步增加约14\%，所有变形机制都活跃起来，产生下列变化：
 
-•
-变形后的结构（图3.9c）变成了各种元素的混合体：孪晶、堆叠层错、位错和Shockley不全位错。
+• 变形后的结构（图3.9c）变成了各种元素的混合体：孪晶、堆叠层错、位错和Shockley不全位错。
 
 表面原子主要在（100）平面上重新排列，但在菱形条的边缘和表面发现了一些原子的非晶体排列。
 
-\hypertarget{ux7ed3ux8bba}{%
-\subsection{\texorpdfstring{\emph{3.6.3
-结论}}{3.6.3 结论}}\label{ux7ed3ux8bba}}
-
-在实验上已观察到了Au（100）纳米薄膜自发转变为（111）纳米薄膜（Kondo and
-Takayanagi 1997, Kondo et al.
-1999）。本模拟研究表明，Au纳米线在张力作用下也可能发生（111）到（100）的转变，有实验工作（Ahn，J-P.and
-Seo，J.-H.，2010年，私人通信)表明，该转变过程与这一模拟研究的结果吻合得非常好。计算得到的屈服应力在2.2～2.6
+\subsection{结论}\label{ux7ed3ux8bba}
+在实验上已观察到了Au（100）纳米薄膜自发转变为（111）纳米薄膜\textcolor{red}{（Kondo and Takayanagi 1997, Kondo et al.  1999）}。本模拟研究表明，Au纳米线在张力作用下也可能发生（111）到（100）的转变，有实验工作\textcolor{red}{（Ahn，J-P.and Seo，J.-H.，2010年，私人通信)}表明，该转变过程与这一模拟研究的结果吻合得非常好。计算得到的屈服应力在2.2～2.6
 GPa范围内，远远高于普通Au（约0.12 GPa）。
 
 该模拟研究表明，计算材料科学是研究材料的一种重要的辅助工具。特别是当将分子动力学模拟与实验工作结合在一起时，不但有望加速研究进程，还能为最终实验结果的解释提供理论支持。
 
-\hypertarget{ux77f3ux58a8ux70efux7eb3ux7c73ux5e26ux5305ux88f9ux7684ux7eb3ux7c73ux6db2ux6ef4}{%
-\section{3.7
-石墨烯纳米带包裹的纳米液滴}\label{ux77f3ux58a8ux70efux7eb3ux7c73ux5e26ux5305ux88f9ux7684ux7eb3ux7c73ux6db2ux6ef4}}
+\section{石墨烯纳米带包裹的纳米液滴}\label{ux77f3ux58a8ux70efux7eb3ux7c73ux5e26ux5305ux88f9ux7684ux7eb3ux7c73ux6db2ux6ef4}
 
-由Kim等（2010年，私人通信）提供的算例，用分子动力学模拟石墨烯纳米带（graphene
-nanoribbon,
-GNR）与水的纳米液滴之间的相互作用，可以作为不同化学键的原子如何相互作用的典型算例。考虑三种化学相互作用：碳原子间的共价键、碳原子与水分子之间的van
-der
-Waals相互作用，以及水分子之间电荷相关的Coulomb相互作用。通过杂化原子间势函数，这个算例可展示纳米液滴如何触发平面GNR的折叠，以及如何在折叠过程中通过势势函数的变化计算得到水的表面张力。
+由\textcolor{red}{Kim等（2010年，私人通信）}提供的算例，用分子动力学模拟石墨烯纳米带（graphene nanoribbon, GNR）与水的纳米液滴之间的相互作用，可以作为不同化学键的原子如何相互作用的典型算例。考虑三种化学相互作用：碳原子间的共价键、碳原子与水分子之间的van der Waals相互作用，以及水分子之间电荷相关的Coulomb相互作用。通过杂化原子间势函数，这个算例可展示纳米液滴如何触发平面GNR的折叠，以及如何在折叠过程中通过势势函数的变化计算得到水的表面张力。
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-5}{%
-\subsection{\texorpdfstring{\emph{3.7.1
-输入文件}}{3.7.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-5}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-5}
 
 • 计算程序：LAMMPS-12 Sep10
 
 • 石墨烯纳米带：7200 C原子（蜂窝状晶格中25×7nm）
 
-• 纳米液滴：由3604个O原子和7208个H原子组成的水分子簇（composed =
-0.98g/cm\textsuperscript{3}）
+• 纳米液滴：由3604个O原子和7208个H原子组成的水分子簇（$\mathrm{composed} = 0.98~\mathrm{g/cm}^3$）
 
 • 结构：zigzag（弯曲方向）和armchair（与弯曲方向垂直）结构
 
@@ -398,33 +377,21 @@ Waals相互作用，以及水分子之间电荷相关的Coulomb相互作用。�
 
 • 温度：300 K与温度重新定标法
 
-\subsubsection{3.7.1.1 位置文件（数据。C-H2O）}
+\subsubsection{位置文件（数据。C-H2O）}
 
-%\includegraphics[width=6.00069in,height=7.19861in]{media/image34.png}
-
-%\includegraphics[width=5.41667in,height=0.78681in]{media/image35.png}
+\verbatiminput{Figures/LAMMPS-Graphene-Position.txt}
 
 \subsubsection{3.7.1.2 输入文件}
 
 输入文件由三部分组成：使用原子标记文件（data.C--H\textsubscript{2}O）进行体系标识，建立混合类型的原子间势，以及包括通过共轭梯度能量极小化进行结构弛豫的分子动力学模拟。
 
-%\includegraphics[width=5.28611in,height=6.11458in]{media/image36.png}
+\verbatiminput{Figures/LAMMPS-Graphene-Input.txt}
 
-%\includegraphics[width=5.3125in,height=3.35069in]{media/image37.png}
+\subsection{结果}\label{ux7ed3ux679c-6}
 
-\hypertarget{ux7ed3ux679c-6}{%
-\subsection{\texorpdfstring{\emph{3.7.2
-结果}}{3.7.2 结果}}\label{ux7ed3ux679c-6}}
+图\ref{LAMMPS-Graphene-roll}给出了GNR在与纳米液滴相互作用过程中的势能函数演化。还给出了四个不同顺势的原子构型。由于石墨烯具有疏水性，水分子倾向于避免浸润石墨烯结构，而与其他水分子结合形成一个球体，如图\ref{LAMMPS-Graphene-roll}所示。
 
-图3.10给出了GNR在与纳米液滴相互作用过程中的势能函数演化。还给出了四个不同顺势的原子构型。由于石墨烯具有疏水性，水分子倾向于避免浸润石墨烯结构，而与其他水分子结合形成一个球体，如图3.10所示。
-
-水的密度可以根据液滴的大小（直径6.0
-nm）和液滴中H\textsubscript{2}O分子的数量（3604
-H\textsubscript{2}O）来估计，约为0.98
-g/cm\textsuperscript{3}。完成结构弛豫，GNR逐渐弯曲，直到包裹住液滴。虽然GNR和水分子之间的相互作用主要由弱的van
-der　Waals力决定，但是van der
-Waals力足以使GNR发生弯曲，因为在此弯曲曲率范围里，石墨烯有可能因弯曲而使能量继续减小（Lu等人2009）。GNR包裹液滴，使得本来具有高表面张力的液滴自由表面积的降低。如图3.10所示，GNR的势能将随着液滴自由表面积的减小而增加。当包裹体系超过0.6
-ns时，表面能的降低将与GNR的弯曲势能增加平衡，而GNR的势能不再变化。根据能量守恒条件，可以得到
+水的密度可以根据液滴的大小（直径6.0 nm）和液滴中H\textsubscript{2}O分子的数量（3604 H\textsubscript{2}O）来估计，约为0.98 g/cm\textsuperscript{3}。完成结构弛豫，GNR逐渐弯曲，直到包裹住液滴。虽然GNR和水分子之间的相互作用主要由弱的van der　Waals力决定，但是van der Waals力足以使GNR发生弯曲，因为在此弯曲曲率范围里，石墨烯有可能因弯曲而使能量继续减小\textcolor{red}{（Lu等人2009）}。GNR包裹液滴，使得本来具有高表面张力的液滴自由表面积的降低。如图3.10所示，GNR的势能将随着液滴自由表面积的减小而增加。当包裹体系超过0.6 ns时，表面能的降低将与GNR的弯曲势能增加平衡，而GNR的势能不再变化。根据能量守恒条件，可以得到
 
 \begin{equation}
 	\gamma_{\mathrm{H_2O}}=\dfrac{\Delta E_{\mathrm{GNR}}^{\mathrm{tot}}}{S_W}
@@ -432,9 +399,16 @@ ns时，表面能的降低将与GNR的弯曲势能增加平衡，而GNR的势能
 \end{equation}
 %\includegraphics[width=4in,height=2.79167in]{media/image39.png}
 
-时间（nsec）
+%时间（nsec）
 
-图3.10由GNR自发包裹纳米液滴的过程。（来自Kim,S-P.等，私人通信，2010年。已获到许可。）
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Graphene-roll.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{由\textrm{GNR}自发包裹纳米液滴的过程（来自Kim,S-P.等，私人通信，2010年。已获到许可）.}}%
+\label{LAMMPS-Graphene-roll}
+\end{figure}
+%图3.10
 
 其中：
 
@@ -444,209 +418,170 @@ $\Delta E_{\mathrm{GNR}}^{\mathrm{tot}}$表示\textrm{GNR}的总势能的变化
 
 $S_W$是\textrm{GNR}覆盖的表面积
 
-根据图3.10的结果，可以计算出S\textsubscript{w}和E分别为51 eV和92
-nm\textsuperscript{2}。根据式(3.7)，计算出的水表面张力为88.64
-mN/m（或0.554 eV/nm\textsuperscript{2}），与实验值75 mN/m（Wikipedia
-2010）基本吻合。
+根据图\ref{LAMMPS-Graphene-roll}的结果，可以计算出S\textsubscript{w}和E分别为$51~\mathrm{eV}$和$92~\textrm{nm}^2$。根据式\eqref{H2O-surface-tension}，计算出的水表面张力为$88.64~\mathrm{mN/m}$（或$0.554~\mathrm{eV/nm}^2$），与实验值$75~\mathrm{mN/m}$\textcolor{red}{（Wikipedia 2010）}基本吻合。
 
-\hypertarget{ux7ed3ux8bba-1}{%
-\subsection{\texorpdfstring{\emph{3.7.3
-结论}}{3.7.3 结论}}\label{ux7ed3ux8bba-1}}
+\subsection{结论}\label{ux7ed3ux8bba-1}
 
 计算结果表明，分子动力学模拟是可以辅助实验研究的重要工具，特别是相比于实验技术，分子动力学模拟中的环境更易于控制，而且更精确；特别是近年来，随着计算能力的提升，势函数的精度不断发展和完善，分子动力学模拟已经可以应用到实际体系模拟中。特别是分子动力学模拟在石墨烯相关的研究中的应用，为石墨烯的理论发展提供一些新的见解。尽管分子动力学模拟在模拟时长和空间尺度上仍有局限，但分子动力学模拟在纳米科学和技术方面已经发挥越来越重要的作用。
 
-\hypertarget{ux78b3ux7eb3ux7c73ux7ba1ux5f20ux529b}{%
-\section{3.8 碳纳米管张力}\label{ux78b3ux7eb3ux7c73ux7ba1ux5f20ux529b}}
+\section{碳纳米管张力}\label{ux78b3ux7eb3ux7c73ux7ba1ux5f20ux529b}
 
-\hypertarget{ux7b80ux4ecb}{%
-\subsection{\texorpdfstring{\emph{3.8.1
-简介}}{3.8.1 简介}}\label{ux7b80ux4ecb}}
+\subsection{简介}\label{ux7b80ux4ecb}
 
-该算例是系列算例的第一部分，这些系列将分三步来进行纳米复合材料的计算研发。这里按照典型的分子动力学计算流程来操作，理解理论部分的内容如何应用到实际应用中。这里用Windows的教学版LAMMPS-2015演示。
+该算例是系列算例的第一部分，这些系列将分三步来进行纳米复合材料的计算研发。这里按照典型的分子动力学计算流程来操作，理解理论部分的内容如何应用到实际应用中。这里用\textrm{Windows}的教学版\textrm{LAMMPS-2015}演示。
 
-由于碳纳米管（Carbon nanotube,
-CNT）出色的磁学、电学和机械性能，在纳米电子器件到纳米复合材料等各种技术领域应用中具有广阔的前景。因为C-C
-sp\textsuperscript{2}
-键使CNT具有极高的强度系数，使得CNT特别适合作为高性能纳米复合材料的增强材料。这里采用分子动力学方法模拟CNT的拉伸特性。
+由于碳纳米管\textrm{(Carbon nanotube, CNT)}出色的磁学、电学和机械性能，在纳米电子器件到纳米复合材料等各种技术领域应用中具有广阔的前景。因为\ch{C-C}$sp^2$键使CNT具有极高的强度系数，使得CNT特别适合作为高性能纳米复合材料的增强材料。这里采用分子动力学方法模拟CNT的拉伸特性。
 
 • 计算程序：LAMMPS-2015（预装Windows版）。
 
 • 体系：armchair型的单壁CNT结构。
 
-• 势函数:\#
-CH.old.airebo（自适应分子间反应经验键序）势（Stuart等.2000）。
+• 势函数:\# CH.old.airebo（自适应分子间反应经验键序）势\textcolor{red}{（Stuart等.2000）}。
 
 • 目的：评估300 K温度下复合材料作为增强材料的应力-应变特性。
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-6}{%
-\subsection{\texorpdfstring{\emph{3.8.2
-输入文件}}{3.8.2 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-6}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-6}
 
-%\includegraphics[width=5.51042in,height=8.15625in]{media/image44.png}
-
-%\includegraphics[width=5.41667in,height=5.65625in]{media/image45.png}
+\verbatiminput{Figures/LAMMPS-CNT-Input.txt}
 
 注意，由于时间步长的单位是fs（飞秒），因此数值总是小于1，确保Tayler级数展开的有限差分积分算法有效。
 
-\hypertarget{readdata.cnt}{%
-\subsection{\texorpdfstring{\emph{3.8.3
-readdata.CNT}}{3.8.3 readdata.CNT}}\label{readdata.cnt}}
+\subsection{rm{readdata.CNT}}\label{readdata.cnt}
 
 CNT的xyz坐标可以从以下两个站点中的任何一个生成：
 
-• http://turin.nss.udel.edu/research/tubegenonline.html.
+• \url{http://turin.nss.udel.edu/research/tubegenonline.html.}
 
-• http://nanofun.kaist.ac. kr/cnt\_gen/cnt\_generator.html.
+• \url{http://nanofun.kaist.ac. kr/cnt\_gen/cnt\_generator.html.}
 
-生成的文件，经过编辑后适应LAMMPS的读取数据格式，从而产生readdata.CNT，具有10×10的手性，和沿CNT轴具有1280个原子的32个单元（直径：13.751
-Å，长度：78.566 Å）：
+生成的文件，经过编辑后适应LAMMPS的读取数据格式，从而产生readdata.CNT，具有$10\times10$的手性，和沿CNT轴具有1280个原子的32个单元（直径：13.751\AA，长度：78.566\AA）：
 
-%\includegraphics[width=5.59375in,height=4.34375in]{media/image46.png}
+\verbatiminput{Figures/LAMMPS-CNT-data.txt}
 
-模拟体系尺度80.5×80.5×161.0 Å，而CNT位于x = 33.374506到47.125494 Å，y =
-33.374506到47.125494 Å，z = 41.217088到119.782912（参见readdata.CNT）。
+模拟体系尺度$80.5\times80.5\times161.0 \AA$，而CNT位于$x = 33.374506$到$47.125494 \AA$，$y = 33.374506$到$47.125494 \AA$，$z = 41.217088$到$119.782912$（参见readdata.CNT）。
 
-\hypertarget{ch.old.airebo}{%
-\subsection{\texorpdfstring{\emph{3.8.4
-CH.old.airebo}}{3.8.4 CH.old.airebo}}\label{ch.old.airebo}}
+\subsection{\rm{CH.old.airebo}}\label{ch.old.airebo}
 
-选择CH.airebo势函数（Stuart等人2000）用于CNT的模拟，因为该势函数更适合于纯CNT模拟。势函数被重命名为
-CH.old.airebo，并保存在LAMMPS/Potentials目录中。注意，在LAMMPS提供的CH.airebo势中，它的rcmin\_CC参数是2.0，而不是L1.7。
+选择CH.airebo势函数\textcolor{red}{（Stuart等人2000）}用于CNT的模拟，因为该势函数更适合于纯CNT模拟。势函数被重命名为CH.old.airebo，并保存在LAMMPS/Potentials目录中。注意，在LAMMPS提供的CH.airebo势中，它的rcmin\_CC参数是2.0，而不是L1.7。
 
-%\includegraphics[width=5.37014in,height=1.85069in]{media/image47.png}
+\verbatiminput{Figures/LAMMPS-CNT-Potential.txt}
 
-\hypertarget{ux7ed3ux679c-7}{%
-\subsection{\texorpdfstring{\emph{3.8.5
-结果}}{3.8.5 结果}}\label{ux7ed3ux679c-7}}
+\subsection{结果}\label{ux7ed3ux679c-7}
 
-模拟完成后，在当前的计算目录内生成多个CNT\_tensile\_*文件。xyz文件在计算过程中记录了CNT的结构演化。图3.11显示了CNT\_tensile\_*.xyz
+模拟完成后，在当前的计算目录内生成多个CNT\_tensile\_*文件。xyz文件在计算过程中记录了CNT的结构演化。\textcolor{red}{图\ref{LAMMPS-CNT-stress_tensile}}显示了CNT\_tensile\_*.xyz
 中，分别在时间步长数0、20000和40000，在VESTA上显示的CNT结构。不难看出，CNT在大约32000的时间步长数时被拉伸并断裂。
 
 stress\_tensile\_GPa.dat 文件有每100个时间步长的拉伸应力数据：
 
-%\includegraphics[width=5.44306in,height=2.07292in]{media/image48.png}
+\verbatiminput{Figures/LAMMPS-CNT-stress.txt}
 
-图3.12显示了压力与时间步长数的关系图，从图中可以看出CNT的最大的拉伸应力略高于105
-GPa。这个值与Eatemadi等人报告的实验检测的抗拉强度大约100
-GPa（Eatemadi等人2014）非常吻合。分子动力学模拟中观测到的CNT断裂后出现上下反弹，源自CNT内弹性势能的释放。因此，CNT具有高断裂强度，作为复合材料增强材料，这种高弹特性是非常重要的指标。
+图\ref{}显示了压力与时间步长数的关系图，从图中可以看出CNT的最大的拉伸应力略高于105 GPa。这个值与Eatemadi等人报告的实验检测的抗拉强度大约100 GPa\textcolor{red}{（Eatemadi等人2014）}非常吻合。分子动力学模拟中观测到的CNT断裂后出现上下反弹，源自CNT内弹性势能的释放。因此，CNT具有高断裂强度，作为复合材料增强材料，这种高弹特性是非常重要的指标。
 
-%\includegraphics[width=3.39236in,height=2.36806in]{media/image49.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-CNT-stress_tensile.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{在（a）0；（b）20000；（c）40000时CNT在拉伸下的断裂.}}%
+\label{LAMMPS-CNT-stress_tensile}
+\end{figure}
 
-图3.11在（a）0；（b）20000；（c）40000时CNT在拉伸下的断裂。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-CNT-stress_curve.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{\textrm{CNT}在拉伸作用下的应力-应变曲线.}}%
+\label{LAMMPS-CNT-stress_curve}
+\end{figure}
 
-%\includegraphics[width=3.51736in,height=2.47153in]{media/image50.png}
+\section{硅拉伸}\label{ux7845ux62c9ux4f38}
+以下是纳米复合材料模拟系列算例的第二部分，用分子动力学模拟三维的块状硅。因为Si是典型的共价型材料，非常脆(通常韧性$K_{\mathrm{IC}} = \sim 1\mathrm{MPa}\cdot\mathrm{m}^{1/2}$)\textcolor{red}{[Petersen 1982]}。这里尝试与前面的\textrm{CNT}模拟结合，改善和提升Si的脆性。
 
-时间步长数
-
-图3.12 CNT在拉伸作用下的应力-应变曲线。
-
-\hypertarget{ux7845ux62c9ux4f38}{%
-\section{3.9 硅拉伸}\label{ux7845ux62c9ux4f38}}
-
-以下是纳米复合材料模拟系列算例的第二部分，用分子动力学模拟三维的块状硅。因为Si是典型的共价型材料，非常脆（通常韧性K\textsubscript{IC}
-=\textasciitilde1MPa）.m\textsuperscript{1/2}{[}Petersen
-1982{]}。这里尝试与前面的CNT模拟结合，改善和提升Si的脆性。
-
-\hypertarget{ux4ecbux7ecd}{%
-\subsection{\texorpdfstring{\emph{3.9.1
-介绍}}{3.9.1 介绍}}\label{ux4ecbux7ecd}}
+\subsection{介绍}\label{ux4ecbux7ecd}
 
 • 计算体系：拉伸下的有1661个原子的Si棒。
 
 • 势函数：SiC\_Erhart-Albe.tersoff.
 
-• 拉伸应变沿Si棒的y方向施加（对应晶体的{[}100{]}方向）。
+• 拉伸应变沿Si棒的y方向施加（对应晶体的[100]方向）。
 
 • 目的：研究300 K温度下复合材料的应力-应变特性。
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-7}{%
-\subsection{\texorpdfstring{\emph{3.9.2
-输入文件}}{3.9.2 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-7}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-7}
 
-%\includegraphics[width=5.23958in,height=0.91458in]{media/image51.png}
-
-%\includegraphics[width=5.28611in,height=8.36458in]{media/image52.png}
-
-%\includegraphics[width=5.26597in,height=7.17708in]{media/image53.png}
+\verbatiminput{Figures/LAMMPS-Si_Crack-Input.txt}
 
 表面裂纹的存在是脆性材料（如Si）的典型特征，在Si晶体表面，左上块和左下块之间因为相互作用而断开，以致产生裂纹。
 
-\hypertarget{ux7ed3ux679c-8}{%
-\subsection{\texorpdfstring{\emph{3.9.3
-结果}}{3.9.3 结果}}\label{ux7ed3ux679c-8}}
+\subsection{结果}\label{ux7ed3ux679c-8}
 
-图3.13显示了在时间步长数为0、15000和25000的快照。分子动力学模拟表明这是典型的裂纹扩展脆性断裂，除在裂纹的断裂表面外，没有出现任何显著的塑性形变。Si\_smallCrack\_stress\_GPa.dat文件具有每100个时间步长的拉伸应力数据：
+图\ref{LAMMPS-Si_Crack-time-snap}显示了在时间步长数为0、15000和25000的快照。分子动力学模拟表明这是典型的裂纹扩展脆性断裂，除在裂纹的断裂表面外，没有出现任何显著的塑性形变。Si\_smallCrack\_stress\_GPa.dat文件具有每100个时间步长的拉伸应力数据：
 
-%\includegraphics[width=5.31736in,height=2.625in]{media/image54.png}
+图\ref{LAMMPS-Si_Crack-Stress}以时间步长数为横轴作图，当裂纹萌生层较薄（厚度为10.86\AA）时，最大拉伸应力略大于30 GPa。如果通过调整左上（2型）和左下（3型）区域的x方向Si的厚度，将初始裂纹尺寸增加50\%和100\%，则应力-应变断裂强度范围在在20～30GPa内。注意到脆性固体的强度随裂纹尺寸平方根的增大而减小，可见分子动力学模拟值与DFT沿着[100]方向\textcolor{red}{（Lazar 2006）}计算的断裂强度（约30 GPa）非常吻合。当裂纹萌生层很厚时（对应出现大裂纹情形），脆性断裂的假设则不再成立，体系在达到断裂强度后将会观察到一定的塑性形变特征。
 
-图3.14以时间步长数为横轴作图，当裂纹萌生层较薄（厚度为10.86
-Å）时，最大拉伸应力略大于30
-GPa。如果通过调整左上（2型）和左下（3型）区域的x方向Si的厚度，将初始裂纹尺寸增加50\%和100\%，则应力-应变断裂强度范围在在20～30GPa内。注意到脆性固体的强度随裂纹尺寸平方根的增大而减小，可见分子动力学模拟值与DFT沿着{[}100{]}方向（Lazar
-2006）计算的断裂强度（约30
-GPa）非常吻合。当裂纹萌生层很厚时（对应出现大裂纹情形），脆性断裂的假设则不再成立，体系在达到断裂强度后将会观察到一定的塑性形变特征。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si_Crack-time-snap.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{在拉伸作用下具有小裂纹萌生块的Si棒：时间步长数为（a）0、（b）15000、（c）25000请注意此处只显示了棒的一半.}}%
+\label{LAMMPS-Si_Crack-time-snap}
+\end{figure}
 
-%\includegraphics[width=4.52639in,height=1.86736in]{media/image55.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si_Crack-Stress.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{不同初始裂纹尺寸\ch{Si} 棒的应力-应变曲线.}}%
+\label{LAMMPS-Si_Crack-Stress}
+\end{figure}
 
-图3.13在拉伸作用下具有小裂纹萌生块的Si棒：时间步长数为（a）0、（b）15000、（c）25000。请注意此处只显示了棒的一半。
+\section{拉伸下的\rm{Si-CNT}复合材料}\label{ux62c9ux4f38ux4e0bux7684si-cntux590dux5408ux6750ux6599}
 
-%\includegraphics[width=4.48958in,height=2.50556in]{media/image56.png}
-
-应变
-
-图3.14不同初始裂纹尺寸 Si 棒的应力-应变曲线。
-
-\hypertarget{ux62c9ux4f38ux4e0bux7684si-cntux590dux5408ux6750ux6599}{%
-\section{3.10
-拉伸下的Si-CNT复合材料}\label{ux62c9ux4f38ux4e0bux7684si-cntux590dux5408ux6750ux6599}}
-
-这是分子动力学模拟纳米复合材料的最后一部分。算例是关于CNT力学性能增强的分子动力学模拟（Kim等人2012）。对于CNT增强纳米复合材料的力学性能的提高主要有两个关键问题：(1)CNT与基体的界面结合；(2)CNT在基体中的均匀分散。本算例主要围绕第一个问题。
+这是分子动力学模拟纳米复合材料的最后一部分。算例是关于CNT力学性能增强的分子动力学模拟\textcolor{red}{（Kim等人2012）}。对于CNT增强纳米复合材料的力学性能的提高主要有两个关键问题：(1)CNT与基体的界面结合；(2)CNT在基体中的均匀分散。本算例主要围绕第一个问题。
 
 不同于普通纤维增强纳米复合材料，CNT增强纳米复合材料的实验研究非常困难。一方面各种研究报告的数据非常零散，更主要的困难在于基底材料与CNT之间难以均匀混合，也难以形成适当的结合界面，所以实验研究很难进展。分子动力学模拟方法不但为这个问题的解决提供了可能，还了提供诸如应力-应变特性等基本数据，这些数据对于研制特定用途的纳米复合材料是非常重要的。
 
-\hypertarget{ux4ecbux7ecd-1}{%
-\subsection{\texorpdfstring{\emph{3.10.1
-介绍}}{3.10.1 介绍}}\label{ux4ecbux7ecd-1}}
+\subsection{介绍}\label{ux4ecbux7ecd-1}
 
 通过分子动力学研究界面结合对碳纳米管（CNT）纳米复合材料力学性能的影响。通过模拟弹性变形、滑移、塑性变形、裂纹变形等过程，让裂纹萌生并将其扩展到断裂。模拟后还将对CNT和Si-CNT界面的作用进行评估，以优化Si-CNT复合材料的结构设计。
 
-%\includegraphics[width=4.27083in,height=2.89444in]{media/image57.png}
-
-时步
-
-图3.15 Si-CNT复合体系的设计概念。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si-CNT-tension-stress.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{Si-CNT复合体系的设计概念.}}%
+\label{LAMMPS-Si-CNT-tension-stress}
+\end{figure}
 
 • 研究对象(体系)：前面两部分的模拟对象Si-CNT组合。
 
-• 图3.15显示了Si-CNT复合材料的设计概念。
+• 图\ref{LAMMPS-Si-CNT-tension-stress}显示了Si-CNT复合材料的设计概念。
 
-• 目的：计算300
-K温度下的应力-应变特性，并从Si与CNT结合的角度探讨其断裂机理。
+• 目的：计算300 K温度下的应力-应变特性，并从Si与CNT结合的角度探讨其断裂机理。
 
-分子动力学模拟的模型如图3.16所示（共17081个原子），该模型由具有15961个原子的Si阵列（54.31×54.31×108.62
-Å）构成基底，由一个单壁CNT（直径：13.751Å，长度：68.589Å，1120个原子的28个六边形，手性为（10，10）的armchair型），作为基底的增强。这个算例就是想通过分子动力学模拟说明，选择如何将CNT用来提高典型的脆性基底Si的韧性。
+分子动力学模拟的模型如图3.16所示（共17081个原子），该模型由具有15961个原子的Si阵列（54.31×54.31×108.62 Å）构成基底，由一个单壁CNT（直径：13.751Å，长度：68.589Å，1120个原子的28个六边形，手性为（10，10）的armchair型），作为基底的增强。这个算例就是想通过分子动力学模拟说明，选择如何将CNT用来提高典型的脆性基底Si的韧性。
 
 为了划分不同的相互的作用区域和施加条件，将Si基底阵列划分为5个区域：（a）固定的下区域、（b）扩展的上区域、（c）左-下和（d）左-上裂纹萌生区、（e）主Si包围区域。区域（c）--（e）被定义为活性区域，因为它是以动态运动响应延伸的部分。在y方向和z方向上都应用了与表面应变条件相对应的周期性边界条件。区域（c）和（d）之间萌生的裂纹，将阻断这些区域之间的相互作用。
 
-%\includegraphics[width=2.83264in,height=4.3375in]{media/image58.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si-CNT-tension-Initial-structure.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{Si-CNT复合体系的起始结构.}}%
+\label{LAMMPS-Si-CNT-tension-Initial-structure}
+\end{figure}
 
-图3.16 Si-CNT复合体系的起始结构。
+%图3.16 。
 
-\hypertarget{ux52bfux51fdux6570}{%
-\subsection{\texorpdfstring{\emph{3.10.2
-势函数}}{3.10.2 势函数}}\label{ux52bfux51fdux6570}}
+\subsection{势函数}\label{ux52bfux51fdux6570}
+为了更适当地模拟符合体系，需要采用三个势函数来描述两种不同的材料及其界面，如图\ref{LAMMPS-Si-CNT-tension-Interface_action}所示。本算例使用的是一个混合势，这个混合势包含：在Si基体中用于Si-Si的SiC\_Erhart-Albe.tersoff势\textcolor{red}{（Erhart和Albe 2005）}，CNT中的用于C-C的CH.airebo（自适应分子间反应经验键顺序）势（Stuart等人2000）,用于Si-C界面的L-J 6-12势\textrm{（Jones 1924）}，这些势都已嵌入在LAMMPS程序中。其中Si-C之间的L-J势对计算模拟起到决定性作用。
 
-为了更适当地模拟符合体系，需要采用三个势函数来描述两种不同的材料及其界面，如图3.17所示。本算例使用的是一个混合势，这个混合势包含：在Si基体中用于Si-Si的
-SiC\_Erhart-Albe.tersoff势（Erhart和Albe
-2005），CNT中的用于C-C的CH.airebo（自适应分子间反应经验键顺序）势（Stuart等人2000）,用于Si-C界面的L-J
-6-12势（Jones
-1924），这些势都已嵌入在LAMMPS程序中。其中Si-C之间的L-J势对计算模拟起到决定性作用。
-
-\hypertarget{ux8f93ux5165ux6587ux4ef6-8}{%
-\subsection{\texorpdfstring{\emph{3.10.3
-输入文件}}{3.10.3 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-8}}
-
-本算例有两个输入文件：一个in.***文件和一个单独的原子位置文件。分子动力学模拟中通过Berendsen恒温方法，允许体系弛豫10,000步来建立初始平衡，允许体系在接近300
-K时，出现能量涨落。在所有的模拟过程中，时间步长都设为1fs。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si-CNT-tension-Interface_action.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{Si-CNT复合体系的起始结构.}}%
+\label{LAMMPS-Si-CNT-tension-Interface_action}
+\end{figure}
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 2\tabcolsep) * \real{0.50}}
@@ -672,57 +607,52 @@ CoAl. eam.alloy \\
 \bottomrule
 \end{longtable}
 
-图3.17本研究采用三个势来描述Si、CNT及其界面。请注意，这里仅显示界面附近的原子。
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-8}
 
-Si-CNT体系的载荷拉伸是通过保持一端（底部）固定，同时缓慢地将另一端以（0.25Å/ps）的速度向z方向移动实现的，如图3.16所示。考虑到分子动力学模拟时间尺度上的基本限制，该速度比实际的实验条件高了许多个数量级。只要单个时间步长的总能量改变小于10\textsuperscript{-5}\%，可以认为得到的应变系数满足准静态载荷的条件。当基底的一端固定，另一段控制位移时，要求速度梯度趋于零。
+本算例有两个输入文件：一个in.***文件和一个单独的原子位置文件。分子动力学模拟中通过Berendsen恒温方法，允许体系弛豫10,000步来建立初始平衡，允许体系在接近300 K时，出现能量涨落。在所有的模拟过程中，时间步长都设为1fs。
+图\ref{LAMMPS-Si-CNT-tension-Interface_action}本研究采用三个势来描述Si、CNT及其界面。请注意，这里仅显示界面附近的原子。
 
-%\includegraphics[width=5.375in,height=3.75347in]{media/image60.png}
+Si-CNT体系的载荷拉伸是通过保持一端（底部）固定，同时缓慢地将另一端以（0.25\AA/ps）的速度向z方向移动实现的，如图3.16所示。考虑到分子动力学模拟时间尺度上的基本限制，该速度比实际的实验条件高了许多个数量级。只要单个时间步长的总能量改变小于$10^{-5}$\%，可以认为得到的应变系数满足准静态载荷的条件。当基底的一端固定，另一段控制位移时，要求速度梯度趋于零。
 
-%\includegraphics[width=5.44306in,height=8.54167in]{media/image61.png}
-
-%\includegraphics[width=5.375in,height=3.85833in]{media/image62.png}
+\verbatiminput{Figures/LAMMPS-Si-CNT-tension-Input.txt}
 
 以下是一个单独的原子位置文件：``readdata.SiCNT.''这个文件可以生成如图3.16所示的结构。
 
-%\includegraphics[width=5.41667in,height=3.60764in]{media/image63.png}
+\verbatiminput{Figures/LAMMPS-Si-CNT-tension-data.txt}
 
-%\includegraphics[width=5.3125in,height=1.4125in]{media/image64.png}
+\subsection{运行}\label{ux8fd0ux884c-1}
 
-\hypertarget{ux8fd0ux884c-1}{%
-\subsection{\texorpdfstring{\emph{3.10.4
-运行}}{3.10.4 运行}}\label{ux8fd0ux884c-1}}
+如果在单机上运行本算例，此运行时长将超过5个小时。采用并行版本的LAMMPA，lmp\_mpi.exe 可以　加速计算。通过改变L-J势pair\_coeff的参数（例如，16 LJ/cut 0.50 1.2中的0.50 1.2），将会产生不同的界面结合强度。本算例中，我们选择参数$\epsilon$（势阱深度，内聚能）= 0.5，拟合参数$\sigma$（键距）= 1.2。
 
-如果在单机上运行本算例，此运行时长将超过5个小时。采用并行版本的LAMMPA，lmp\_mpi.exe
-可以　加速计算。通过改变L-J势pair\_coeff的参数（例如，16 LJ/cut 0.50
-1.2中的0.50
-1.2），将会产生不同的界面结合强度。本算例中，我们选择参数ε（势阱深度，内聚能）=
-0.5，拟合参数σ（键距）= 1.2。
+\subsection{结果}\label{ux7ed3ux679c-9}
 
-\hypertarget{ux7ed3ux679c-9}{%
-\subsection{\texorpdfstring{\emph{3.10.5
-结果}}{3.10.5 结果}}\label{ux7ed3ux679c-9}}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si-CNT-time_snap.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{具有$\varepsilon= 0.5 \mathrm{eV}$张力下的Si-CNT复合体系在不同应变下的快照：（a）10.5\%、（b）31.5\%、（c）42\%.}}%
+\label{LAMMPS-Si-CNT-time_snap}
+\end{figure}
 
-图3.18显示了Si-CNT复合体系在最优界面结合（ε = 0.5
-eV）中应变率分别为10.5\%、31.5\%和42\%的快照。模拟结果显示，优化后性能的提升：因为负载传递，由（100）产生的裂纹偏转更易转向（111）面，SNT断裂。与\{100\}面/{[}100{]}方向相比，Si中的\{111\}面/{[}112{]}方向已知是最脆的平面/方向，只有{[}100{]}方向的30\%。在符合体系断裂后，CNT抽出来，因此Si能保持其完整性。
+图\ref{LAMMPS-Si-CNT-time_snap}是Si-CNT复合体系在最优界面结合（$\varepsilon = 0.5 \mathrm{eV}$）中应变率分别为10.5\%、31.5\%和42\%的快照，模拟结果显示，优化后性能的提升：因为负载传递，由（100）产生的裂纹偏转更易转向（111）面，SNT断裂。与\{100\}面/[100]方向相比，Si中的\{111\}面/[112]方向已知是最脆的平面/方向，只有[100]方向的30\%。在符合体系断裂后，CNT抽出来，因此Si能保持其完整性。
 
-图3.19显示了具有不同界面结合强度的Si-CNT纳米复合材料的所有应力-应变曲线。这表明断裂强度和韧性（这里定义为曲线下的面积）增强
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-Si-CNT-stress.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{具有不同界面结合强度的Si-CNT纳米复合材料的所有应力-应变曲线.}}%
+\label{LAMMPS-Si-CNT-stress}
+\end{figure}
 
-考虑在C-Si的L-J势，界面强度的增加到ε
-=0.5。与图3.14相比，体系在断裂强度和韧性方面都有显著的提高。计算得到的杨氏模量和最大强度分别为480和58GPa。界面处的Si-C键合平均距离约为1.98Å，与SiC晶体的键合平均距离相对应。
+图\ref{LAMMPS-Si-CNT-stress}表明断裂强度和韧性（这里定义为曲线下的面积）增强
 
-采用Erhart/Albe-Tersoff势函数（Erhart和Albe
-2005）描述Si-C键界面处的情形，允许Si原子与CNT完全相互作用，可以模拟完全成键的情况。虽然模拟过程中保持了CNT结构的一般特征，但由于界面上存在强烈的相互作用，当体系充分松弛之后，CNT上会表现出很大的缺陷。
+考虑在C-Si的L-J势，界面强度的增加到$\varepsilon =0.5$。与\textcolor{red}{图\ref{}}相比，体系在断裂强度和韧性方面都有显著的提高。计算得到的杨氏模量和最大强度分别为480和58GPa。界面处的Si-C键合平均距离约为1.98Å，与SiC晶体的键合平均距离相对应。
 
-%\includegraphics[width=4.2875in,height=5.0625in]{media/image65.png}
+采用Erhart/Albe-Tersoff势函数\textcolor{red}{（Erhart和Albe 2005）}描述Si-C键界面处的情形，允许Si原子与CNT完全相互作用，可以模拟完全成键的情况。虽然模拟过程中保持了CNT结构的一般特征，但由于界面上存在强烈的相互作用，当体系充分松弛之后，CNT上会表现出很大的缺陷。
 
-图3.18具有ε = 0.5
-eV张力下的Si-CNT复合体系在不同应变下的快照：（a）10.5\%、（b）31.5\%、（c）42\%。在具有最佳界面结合强度（键合强度
-=
-0.5）的Si-CNT复合材料体系中都产生了优化：载荷传递、裂纹偏转、因（111）滑移而产生的塑性变形以及SNT的断开。
+在具有最佳界面结合强度（键合强度 = 0.5）的Si-CNT复合材料体系中都产生了优化：载荷传递、裂纹偏转、因（111）滑移而产生的塑性变形以及SNT的断开。
 
-\hypertarget{ux7ed3ux8bba-2}{%
-\subsection{\texorpdfstring{\emph{3.10.6
-结论}}{3.10.6 结论}}\label{ux7ed3ux8bba-2}}
+\subsection{结论}\label{ux7ed3ux8bba-2}
 
 具有混合势的分子动力学方法很好地描述了Si-CNT纳米复合材料中界面结合的影响。在Si基底与CNT界面处，随着键合强度的增加，材料的杨氏模量、最大强度、韧性等力学性能均稳步提高。
 
@@ -730,26 +660,21 @@ CNT在强化CNT上的拉长和载荷传递被视为其力学性能提高的主�
 
 %\includegraphics[width=4.92708in,height=2.82292in]{media/image66.png}
 
-时步
-
-图3.19具有不同界面结合强度的Si-CNT纳米复合材料的应力-应变曲线。
+%图3.19具有不同界面结合强度的Si-CNT纳米复合材料的应力-应变曲线。
 
 可见，只要CNT保持其结构的完整性，就能形成强的支撑界面，达到优化材料性能效果。这个算例也再次表明，分子动力学模拟是材料科学中重要的辅助工具。
 
-\hypertarget{zro2-y2o3-msd}{%
-\section{3.11 ZrO2-Y2O3-MSD}\label{zro2-y2o3-msd}}
+\section{$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$-MSD}\label{zro2-y2o3-msd}
 
-这个算例是由Kim和Kim（2015，私人通信）提供的。用于分子动力学计算过程中原子轨迹的MSD（均方位移）及其相关性质。
+这个算例是由\textcolor{red}{Kim和Kim（2015，私人通信）}提供的。用于分子动力学计算过程中原子轨迹的MSD（均方位移）及其相关性质。
 
-\hypertarget{ux4ecbux7ecd-2}{%
-\subsection{\texorpdfstring{\emph{3.11.1
-介绍}}{3.11.1 介绍}}\label{ux4ecbux7ecd-2}}
+\subsection{介绍}\label{ux4ecbux7ecd-2}
 
-计算对象：Y\textsubscript{2}O\textsubscript{3}稳定氧化锆（8 YSZ），26
-Y，230 Zr，499 O原子（共755个原子）。
+计算对象：$\mathrm{Y}_2\mathrm{O}_3$稳定氧化锆（8 YSZ），26
+	Y，230 Zr，499 \ch{O}原子（共755个原子）。
 
 •
-两个Y\textsubscript{2}O\textsubscript{3}形成一个氧空位，以维持体系中的电中性，这些氧空位为氧的扩散提供了更容易的途径。
+两个$\mathrm{Y}_2\mathrm{O}_3$形成一个氧空位，以维持体系中的电中性，这些氧空位为氧的扩散提供了更容易的途径。
 
 • 程序：LAMMPS/compute msd命令。
 
@@ -758,65 +683,52 @@ Y，230 Zr，499 O原子（共755个原子）。
 •
 目的：计算O原子的MSD，总位移的平方，即（dx\textsuperscript{*}dx+dy\textsuperscript{*}dz\textsuperscript{*}dz），所有O原子的总和以及平均值，扩散系数，氧空位迁移的势垒能。
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-9}{%
-\subsection{\texorpdfstring{\emph{3.11.2
-输入文件}}{3.11.2 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-9}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-9}
 
-下面的文件是为2000 K运行准备的ZrO\textsubscript{2}-
-Y\textsubscript{2}O\textsubscript{3}-MSD文件，例如：
+下面的文件是为2000 K运行准备的$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$-MSD文件，例如：
 
-%\includegraphics[width=5.625in,height=7.41667in]{media/image67.png}
+\verbatiminput{Figures/LAMMPS-ZrO2-Y2O3-Input.txt}
 
-%\includegraphics[width=5.39028in,height=3.20903in]{media/image68.png}
+下面的文件是为$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$（6原子\%）体系的结构准备的$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$-MSD文件，如图\ref{LAMMPS-ZrO2-Y2O3-structure}所示。
 
-下面的文件是为ZrO\textsubscript{2}-Y\textsubscript{2}O\textsubscript{3}（6原子\%）体系的结构准备的ZrO\textsubscript{2}-Y\textsubscript{2}O\textsubscript{3}-MSD文件，如图3.20所示。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-ZrO2-Y2O3-structure.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$-MSD体系的切片结构.沿着[001]方向金属（Zr和Y）层和氧气层（大的灰色球：Zr，大的黑色球：Y，小的灰色球：O，大的虚线白球：氧空位）。6个Y原子和3个氧空位随机分布并显示在结构中}}%
+\label{LAMMPS-ZrO2-Y2O3-structure}
+\end{figure}
 
-%\includegraphics[width=2.60139in,height=2.85417in]{media/image69.png}
+\verbatiminput{Figures/LAMMPS-ZrO2-Y2O3-data.txt}
 
-图3.20
-Z\textsubscript{r}O\textsubscript{2}--8Y\textsubscript{2}O\textsubscript{3}体系的切片结构，显示沿着{[}001{]}方向金属（Zr和Y）层和氧气层（大的灰色球：Zr，大的黑色球：Y，小的灰色球：O，大的虚线白球：氧空位）。6个Y原子和3个氧空位随机分布并显示在结构中。
-
-%\includegraphics[width=5.51042in,height=4.76597in]{media/image70.png}
-
-\hypertarget{ux8fd0ux884c-2}{%
-\subsection{\texorpdfstring{\emph{3.11.3
-运行}}{3.11.3 运行}}\label{ux8fd0ux884c-2}}
+\subsection{运行}\label{ux8fd0ux884c-2}
 
 该算例与任何一般的LAMMPS计算一样进行。只是整个时间步长数是750,000，这样连续地模拟方式要花费很长的时间。一般最好用至少有16个核心的MPI并行来完成。
 
-\hypertarget{ux7ed3ux679c-10}{%
-\subsection{\texorpdfstring{\emph{3.11.4
-结果}}{3.11.4 结果}}\label{ux7ed3ux679c-10}}
+\subsection{结果}\label{ux7ed3ux679c-10}
 
-在log.lammps文件里，可以收集第四MSD数据，即所有O原子的求和并求平均值的总的平方位移（dx*dx
-+ dy*dy +
-dz*dz）。图3.21是在1000-2000K的不同温度下，收集MSD数据的最后500000个时间步长的MSD图。可以看到到在分子动力学计算中通常稳定的增大，扩散系数是根据每条曲线的线性拟合斜率计算得到的。通过绘制扩散系数与1/T的关系图，利用Arrhenius扩散方程计算出O迁移的势垒能量为0.56
+在\textrm{log.lammps}文件里，可以收集第四MSD数据，即所有O原子的求和并求平均值的总的平方位移（$\mathrm{d}x\cdot\mathrm{d}x + \mathrm{d}y\cdot\mathrm{d}y + \mathrm{d}z\cdot\mathrm{d}z$）。图\ref{LAMMPS-ZrO2-Y2O3-MSD}是在1000-2000K的不同温度下，收集MSD数据的最后500000个时间步长的MSD图。可以看到到在分子动力学计算中通常稳定的增大，扩散系数是根据每条曲线的线性拟合斜率计算得到的。通过绘制扩散系数与1/T的关系图，利用Arrhenius扩散方程计算出O迁移的势垒能量为0.56
 eV。
 
-%\includegraphics[width=3.50347in,height=2.93611in]{media/image71.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/LAMMPS-ZrO2-Y2O3-MSD.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{在2000至1000\textrm{K}的不同温度下，用之前500000个时间步长的时间来绘制\textrm{MSD}图.}}%
+\label{LAMMPS-ZrO2-Y2O3-MSD}
+\end{figure}
 
-时间
+\section{作业}\label{ux4f5cux4e1a}
 
-图3.21在2000至1000
-K的不同温度下，用之前500000个时间步长的时间来绘制MSD图。
+3.1 参照第3.1节，通过XMD运算，得到了平衡晶格参数为5.43 Å的立方金刚石结构的势曲线，计算了其体积模量，并与实验值进行对比。
 
-\hypertarget{ux4f5cux4e1a}{%
-\section{作业}\label{ux4f5cux4e1a}}
+3.2 参照图3.2，如果我们在一系列MD运行中增加镍团簇的尺寸，熔点将增加，势能曲线将下降。解释其原因。
 
-3.1 参照第3.1节，通过XMD运算，得到了平衡晶格参数为5.43
-Å的立方金刚石结构的势曲线，计算了其体积模量，并与实验值进行对比。
+3.3 在MD运行中，我们总是注意到，如温度，动能和势能等瞬时量随迭代而波动。我们知道，这些波动会随着体系尺寸的增加而减小，波动为$\propto1/\sqrt{N}$，其中N是原子的数目。解释其原因。
 
-3.2
-参照图3.2，如果我们在一系列MD运行中增加镍团簇的尺寸，熔点将增加，势能曲线将下降。解释其原因。
+3.4 在MD运行中，选择最佳的时间步长是一个重要的问题。参考第3.1节，为XMD运行写下一个以时间步长大小为变量的输入文件，以便我们能够确定特定体系的最佳时间步长大小。
 
-3.3
-在MD运行中，我们总是注意到，如温度，动能和势能等瞬时量随迭代而波动。我们知道，这些波动会随着体系尺寸的增加而减小，波动为$\propto1/\sqrt{N}$，其中N是原子的数目。解释其原因。
-
-3.4
-在MD运行中，选择最佳的时间步长是一个重要的问题。参考第3.1节，为XMD运行写下一个以时间步长大小为变量的输入文件，以便我们能够确定特定体系的最佳时间步长大小。
-
-3.5 这项作业是由B.-H。提供的。Kim和K.-R.
-Lee在KIST，韩国（Kim和Lee，2011年，私人通信。）在半导体的加工中，硅氧化是重要的一步，我们将尝试一个非常初步的建模。为该过程建立一个平板模型，在以下条件下进行模拟，绘制沿z轴的氧原子数，并讨论那些重要的发现。
+3.5 这项作业是由B.-H。提供的。Kim和K.-R. \textcolor{red}{ Lee在KIST，韩国（Kim和Lee，2011年，私人通信。）}在半导体的加工中，硅氧化是重要的一步，我们将尝试一个非常初步的建模。为该过程建立一个平板模型，在以下条件下进行模拟，绘制沿z轴的氧原子数，并讨论那些重要的发现。
 
 程序：LAMMPS-5 Dec10或更新版
 
@@ -824,79 +736,53 @@ Lee在KIST，韩国（Kim和Lee，2011年，私人通信。）在半导体的加
 
 将输入文件中的势定义为：
 
-%\includegraphics[width=6.31944in,height=1.00972in]{media/image73.png}
+\verbatiminput{Figures/LAMMPS-ReaFF.txt}
 
 衬底:一层4×4×4Si（001），512个原子，底层固定
 
 在板上真空（5.43 Å×4晶格厚度）和PBC仅沿x轴和y轴方向
 
-模拟顺序：硅板在700 K弛豫5 ps，真空中随机产生200个自由氧原子，700
-K氧化30 ps
+模拟顺序：硅板在700 K弛豫5 ps，真空中随机产生200个自由氧原子，700 K氧化30 ps
 
 如果任何氧原子从顶部边界离开，忽略它们，用新的原子数将相应的数量标准化
 
-\hypertarget{ux53c2ux8003}{%
-\section{参考}\label{ux53c2ux8003}}
+\section{参考}\label{ux53c2ux8003}
 
-Brenner, D. W., O. A. Shenderova, J. A. Harrison, S. J. Stuart, B. Ni,
-和S. B. Sinnott.
-2002年。碳氢化合物的第二代反应性经验键序（REBO）势能表达式。J.Phys.：Condens.
-Matter 14:783-802。
+Brenner, D. W., O. A. Shenderova, J. A. Harrison, S. J. Stuart, B. Ni, 和S. B. Sinnott.  2002年。碳氢化合物的第二代反应性经验键序（REBO）势能表达式。J.Phys.：Condens.  Matter 14:783-802。
 
-Eatemadi，A.等人，2014年。碳纳米管:性质，合成，纯化和医疗应用。Nano.
-Res. Lett 9:393-406。
+Eatemadi，A.等人，2014年。碳纳米管:性质，合成，纯化和医疗应用。Nano.  Res. Lett 9:393-406。
 
-Erhart, P. and K. Albe.2005年。硅、碳和碳化硅原子模拟的解析势。Phys. Rev
-71:035211。
+Erhart, P. and K. Albe.2005年。硅、碳和碳化硅原子模拟的解析势。Phys. Rev 71:035211。
 
 Jones,J.E。1924年。Proc.R.Soc. London, Ser.A 106:463。
 
-Foiles, S. M., M. I. Baskes,和M. S. Daw.
-1986年。fcc金属Cu、Ag、Au、Ni、Pd、Pt及其合金的嵌入原子方法函数。Phys.启33:7983
---- 7991。Gaudoin, R., W. M. C.
-Foulkes,2002年。铝的内聚能和体积模量的从头计算。J.Phys.：Condens. Matter
-14：8787-8793。
+Foiles, S. M., M. I. Baskes,和M. S. Daw.  1986年。fcc金属Cu、Ag、Au、Ni、Pd、Pt及其合金的嵌入原子方法函数。Phys.启33:7983 --- 7991。
 
-Jorgensen, W. L., J. Chandrasekhar,和J. D.
-Madura.1983年。模拟液态水的简单势函数比较。J.Chem.Phys。79:926-935。
+Gaudoin, R., W. M. C.  Foulkes,2002年。铝的内聚能和体积模量的从头计算。J.Phys.：Condens. Matter 14：8787-8793。
 
-Kim, B.-H. et
-al.2012年。Si-CNT纳米复合材料中界面键合效应的分子动力学研究。J. Appl.
-Phys. Mater.112:044312。
+Jorgensen, W. L., J. Chandrasekhar,和J. D.  Madura.1983年。模拟液态水的简单势函数比较。J.Chem.Phys。79:926-935。
 
-Kim, J-Y，B-W. Lee, H.-S. Nam,和D. Kwon.
-2004年。无定形碳化硅薄膜结构与内应力的分子动力学分析。Sci.论坛。449-452:97-100。
+Kim, B.-H. et al.2012年。Si-CNT纳米复合材料中界面键合效应的分子动力学研究。J. Appl.  Phys. Mater.112:044312。
 
-Kondo, Y.和K. Takayanagi.。1997年。表面结构稳定的金纳米晶。Phys. Rev.
-Lett. 79:3455-3458。
+Kim, J-Y，B-W. Lee, H.-S. Nam,和D. Kwon.  2004年。无定形碳化硅薄膜结构与内应力的分子动力学分析。Sci.论坛。449-452:97-100。
 
-Kondo, Y., Q. Ru,和K.
-Takayanagi.1999年。金纳米膜的厚度诱导结构相变。Phys. Rev. Lett.
-82:751-754。
+Kondo, Y.和K. Takayanagi.。1997年。表面结构稳定的金纳米晶。Phys. Rev.  Lett. 79:3455-3458。
 
-Lazar, P.
-2006年。固体力学和弹性特性的从头模型。奥地利维也纳维也纳大学物理系博士论文。
+Kondo, Y., Q. Ru,和K.  Takayanagi.1999年。金纳米膜的厚度诱导结构相变。Phys. Rev. Lett.  82:751-754。
 
-Lu, Q., M. Arroyo,和R.
-Huang.2009年。单层石墨烯的弹性弯曲模量。J.Phys.D:Appl，Phys。42:102002-102007。
+Lazar, P.  2006年。固体力学和弹性特性的从头模型。奥地利维也纳维也纳大学物理系博士论文。
 
-Murnaghan, F. D.1944年成立。介质在极端压力下的可压缩性。Proc. Natl.
-Acad. Sci. USA 30:244--247.
+Lu, Q., M. Arroyo,和R.  Huang.2009年。单层石墨烯的弹性弯曲模量。J.Phys.D:Appl，Phys。42:102002-102007。
 
-Park, N. Y., H. S. Nam, P. R. Cha,和S. C.
-Lee.2015年。金纳米线变形特性的尺寸依赖性转变。纳米研究8（3）：941--947。
+Murnaghan, F. D.1944年成立。介质在极端压力下的可压缩性。Proc. Natl.  Acad. Sci. USA 30:244--247.
 
-Petersen, K. E.1982年。作为一种机械材料的硅。省：IEEE
-70:420--457。Stuart, S. J., A. B. Tutein和J. A.
-Harrison.2000年。具有分子间相互作用的水车分子的反应势。J.Chem.Phys。112:6472-6486。
+Park, N. Y., H. S. Nam, P. R. Cha,和S. C.  Lee.2015年。金纳米线变形特性的尺寸依赖性转变。纳米研究8（3）：941--947。
 
-Voter, A. F.和S. P.
-Chen.1987年。镍、铝和Ni\textsubscript{3}Al的精确原子间势。Mat. Res. Soc.
-Symp. Proc. 82:175 ---180。
+Petersen, K. E.1982年。作为一种机械材料的硅。省：IEEE 70:420--457。Stuart, S. J., A. B. Tutein和J. A.  Harrison.2000年。具有分子间相互作用的水车分子的反应势。J.Chem.Phys。112:6472-6486。
 
-Walther, J. H., R. L. Jaffe, E. M. Kotsalis, T. Werder, T. Halicioglu,
-和P.
-Koumoutsakos.2004年。C60和碳纳米管在水中的疏水性水合作用。碳。42:1185-1194。
+Voter, A. F.和S. P.  Chen.1987年。镍、铝和Ni\textsubscript{3}Al的精确原子间势。Mat. Res. Soc.  Symp. Proc. 82:175 ---180。
+
+Walther, J. H., R. L. Jaffe, E. M. Kotsalis, T. Werder, T. Halicioglu, 和P.  Koumoutsakos.2004年。C60和碳纳米管在水中的疏水性水合作用。碳。42:1185-1194。
 
 维基百科。2010年。水的表面张力。http://en.wikipedia.org/wiki/
 
