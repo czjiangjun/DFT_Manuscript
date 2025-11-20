@@ -53,7 +53,7 @@
 \subsubsection{势能曲线}
 
 首先用\textrm{Origin}$^{\textregistered}$ 或\textrm{MS}$^{\textregistered}$
-\textrm{Excel}绘出结果来获得平衡晶格常数、内聚能和体积模量。图\ref{MD_5-atoms}显示了$E\text{-}a$曲线，这是由四阶多项式拟合的铝晶格参数的函数。根据拟合曲线，我们得出$a_0=4.05\AA$，$E_{\mathrm{coh}}=3.37~\mathrm{eV/atom}$，分别与实验结果$4.05~\AA$和$3.39~\mathrm{eV/atom}$（Gaudoine等人2002）非常吻合。
+\textrm{Excel}绘出结果来获得平衡晶格常数、内聚能和体积模量。图\ref{XMD-Al-Modulu}显示了$E\text{-}a$曲线，这是由四阶多项式拟合的铝晶格参数的函数。根据拟合曲线，我们得出$a_0=4.05\AA$，$E_{\mathrm{coh}}=3.37~\mathrm{eV/atom}$，分别与实验结果$4.05~\AA$和$3.39~\mathrm{eV/atom}$（Gaudoine等人2002）非常吻合。
 
 下一步是计算体模量$B$，体模量的定义是
 \begin{equation}
@@ -76,7 +76,7 @@
 \vspace*{-0.1in}
 \includegraphics[height=1.8in]{Figures/XMD-Al-Modulu.png}
 \caption{\fontsize{7.2pt}{4.2pt}\selectfont{势能是由四阶多项式拟合的铝晶格参数的函数(垂直线表示平衡晶格参数).}}%
-\label{MD_5-atoms}
+\label{XMD-Al-Modulu}
 \end{figure}
 
 然后，式\eqref{eq:Body-Modulue}可以改写为
@@ -86,7 +86,7 @@
 \end{equation}
 其中$a_0$是对应最小E的平衡晶格参数。
 
-从图\ref{MD_5-atoms}中的$E\text{-}a$拟合曲线中，可以得出其二阶导数（在$a_0$处势能曲线的曲率），将其代入到式\eqref{eq:Body-Modulue-2}中，得到的体模量为$79~\mathrm{GPa}$。该值与$76~\mathrm{GPa}$的实验值(\textrm{Gaudoin}等人2002)相比吻合得很好。用\textrm{Birch-Murnaghan}状态方程\textcolor{red}{(Murnaghan 1944)}可以用来拟合体模量，但上述多项式拟合法已经足够的精确并更加方便。以类似的方式在400,~600,~800~K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，以便对计算热膨胀系数实际运算。
+从图\ref{XMD-Al-Modulu}中的$E\text{-}a$拟合曲线中，可以得出其二阶导数（在$a_0$处势能曲线的曲率），将其代入到式\eqref{eq:Body-Modulue-2}中，得到的体模量为$79~\mathrm{GPa}$。该值与$76~\mathrm{GPa}$的实验值(\textrm{Gaudoin}等人2002)相比吻合得很好。用\textrm{Birch-Murnaghan}状态方程\textcolor{red}{(Murnaghan 1944)}可以用来拟合体模量，但上述多项式拟合法已经足够的精确并更加方便。以类似的方式在400,~600,~800~K下进一步模拟，可以得到平衡晶格参数随温度变化的曲线，以便对计算热膨胀系数实际运算。
 
 \section{镍团簇的熔融}\label{ux954dux56e2ux7c07ux7684ux7194ux878d}
 在这个算例中，我们通过将温度提高到2000$^{\circ}\mathrm{C}$，来确定有2112个原子的镍团簇的熔点。镍的熔点是已知的，但镍团簇的熔点则与团簇的大小有关。
