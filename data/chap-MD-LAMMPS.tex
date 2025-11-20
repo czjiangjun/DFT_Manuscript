@@ -103,36 +103,39 @@
 命令``\textrm{itemp}''将对给定温度下服从\textrm{Maxwell-Boltzmann}分布的所有粒子分配随机速度。根据\ref{Inital-position_velocity}讨论的速度标度方案，将使体系的模拟温度保持在指定的数值。在体相固体中，应考虑到热膨胀，计算中需要考虑体系膨胀，直至外部压力为零。但是对于真空中的团簇模拟，则不需要。
 
 \subsection{结果}\label{ux7ed3ux679c-1}
-输出文件\textrm{Ni-cluster-T}显示的是每20000个时间步长的温度，另一个输出文件\textrm{Ni-cluster-e}则显示了每20000个时间步长对应的势能。图是能量与温度的曲线，表明体系的势函数能在$\sim1500~\mathrm{K}$时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度(1726K)。正如2.6.2讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
+输出文件\textrm{Ni-cluster-T}显示的是每20000个时间步长的温度，另一个输出文件\textrm{Ni-cluster-e}则显示了每20000个时间步长对应的势能。图是能量与温度的曲线，表明体系的势函数能在$\sim1500~\mathrm{K}$时突然增加，说明团簇在该温度下熔化。这一温度远低于记录的块状镍的熔化温度(1726K)。正如\ref{sec:MD-Etot}讨论所指出的，这种镍团簇的实际熔化温度比\textasciitilde1500K低20\%-30\%。这一模拟过程表明，由于团簇表面的粒子配位数偏低，纳米粒子可能有更低的熔化温度。
 
-%\includegraphics[width=4.07292in,height=2.86458in]{media/image12.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-Ni-E_T.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{112个原子组成的镍团簇的势能与温度之间的关系，显示了熔化的一级转变.}}%
+\label{XMD-Ni-E_T}
+\end{figure}
+%温度
 
-温度
-
-图3.2
-2.112个原子组成的镍团簇的势能与温度之间的关系，显示了熔化的一级转变。
-
-\subsubsection{3.2.2.1 利用MDLChimeSP6进行可视化}
+\subsubsection{利用MDLChimeSP6进行可视化}
 
 有多种软件可用于支持可视化或以动画方式展示运行结果。这里首先使用一个非常简单的在线程序MDL
 ChimeSP6，它可以读取标准XYZ格式文件，并且可以免费下载。通过双击Ni-cluster.XYZ，打开一个MDL窗口，打开并显示/激活系统，如图3.3中的快照所示。
 
-%\includegraphics[width=3.95833in,height=1.3875in]{media/image13.png}
 
-图3.3. 2112个原子组成的镍团簇的快照：（从左起）温度分别为100、1500和2000
-K。
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-Ni-cluster.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{112个原子组成的镍团簇的快照:~(左起)温度分别为$100\sim1500$和$2000\mathrm{K}$.}}%
+\label{XMD-Ni-cluster}
+\end{figure}
+%温度
 
-* MDL ChimeSP6. http://www.mdl.com/products/framework/chime/.
+* MDL ChimeSP6.\url{http://www.mdl.com/products/framework/chime/}.
 
-请注意，在1500
-K时，团簇的核心中仍保留着一些晶体特征的痕迹，这些痕迹在2000
-K时完全融化而消失。
+请注意，在1500~K时，团簇的核心中仍保留着一些晶体特征的痕迹，这些痕迹在2000~K时完全融化而消失。
 
 对于不同尺寸的镍团簇，进一步以相似的方式运行可以揭示其熔点随团簇尺寸的变化。通常情况下，熔化点随着团簇尺寸的减小而减小，因为团簇越小，具有较少键合的表面原子就越多，因此它们很容易因加热而失去结晶性质。
 
-\hypertarget{ux954dux7eb3ux7c73ux7c92ux5b50ux7684ux70e7ux7ed3}{%
-\section{3.3
-镍纳米粒子的烧结}\label{ux954dux7eb3ux7c73ux7c92ux5b50ux7684ux70e7ux7ed3}}
+\section{镍纳米粒子的烧结}\label{ux954dux7eb3ux7c73ux7c92ux5b50ux7684ux70e7ux7ed3}
 
 在本练习中，我们将模拟镍的三个纳米粒子的烧结现象：
 
@@ -147,62 +150,42 @@ K时完全融化而消失。
 
 • 将第二纳米粒子中心附近的三个原子固定住，使体系具有位置稳定性。
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-1}{%
-\subsection{\texorpdfstring{\emph{3.3.1
-输入文件}}{3.3.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-1}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-1}}
 
-首先制备了三种镍纳米粒子，并将温度逐渐提高到500、1000和1400
-K，以便观察烧结阶段，并通过2.5.1讨论的速度标度来观察温度升高。烧结的驱动力来自表面积的减少，这一过程涉及到原子通过表面、晶界和体积扩散到三方交界区域。因此，可以通过计算三方交界区增加的原子数目来便捷地测量烧结程度。
+首先制备了三种镍纳米粒子，并将温度逐渐提高到500、1000和1400 K，以便观察烧结阶段，并通过\ref{MD:Initial}讨论的速度标度来观察温度升高。烧结的驱动力来自表面积的减少，这一过程涉及到原子通过表面、晶界和体积扩散到三方交界区域。因此，可以通过计算三方交界区增加的原子数目来便捷地测量烧结程度。
 
-%\includegraphics[width=5.28125in,height=2.41736in]{media/image14.png}
-
-%\includegraphics[width=5.47431in,height=8.54167in]{media/image15.png}
-
-%\includegraphics[width=5.31736in,height=3.3125in]{media/image16.png}
+\verbatiminput{Figures/XMD-Ni_3cluster-Input.txt}
 
 注意，在为XMD运行执行文件时，应该删除带有 \#
 following命令语法的所有注释。行首的\#注释不会引起任何问题。
 
-\hypertarget{ux7ed3ux679c-2}{%
-\subsection{\texorpdfstring{\emph{3.3.2
-结果}}{3.3.2 结果}}\label{ux7ed3ux679c-2}}
+\subsection{结果}\label{ux7ed3ux679c-2}}
 
 图3.4显示了镍纳米粒子在三个时间步长的快照，在时间步长= 10000（500
 K）处观察到烧结颈完全形成。通过将温度提高到1000
 K，进一步的烧结，为原子扩散提供了足够的热活化。当温度增加到1400
-K时，发生熔化，并且在表面张力的作用下，形状变成了球形。注意球体的非晶体性质（图3.4
-c）。
+K时，发生熔化，并且在表面张力的作用下，形状变成了球形。注意球体的非晶体性质（图\ref{XMD-Ni_3cluster-time-snap} c）。
 
-%\includegraphics[width=4.83333in,height=1.65139in]{media/image17.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-Ni_3cluster-time-snap.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{三个时间步长($t=0,~t=10000,~t=60000$)处镍纳米颗粒的烧结快照.}}%
+\label{XMD-Ni_3cluster-time-snap}
+\end{figure}
 
-\begin{longtable}[]{@{}lll@{}}
-\toprule
-\endhead
-（a）时间步长 = 0 & （b）时间步长 = 10000 & （c）时间步长 = 60000 \\
-\bottomrule
-\end{longtable}
+图\ref{XMD-Ni_3cluster-time-temp}随着时间的推移，三颈部区域的原子数目增加。（实线表示温度。）
 
-三方交界
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-Ni_3cluster-time-temp.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{三个时间步长($t=0,~t=10000,~t=60000$)处镍纳米颗粒的烧结快照.}}%
+\label{XMD-Ni_3cluster-time-temp}
+\end{figure}
+图\ref{XMD-Ni_3cluster-time-temp}显示了随着时间步长数增加，温度的升高，三方交界区域的原子数目增加。镍原子在三方交界区的数量从436个增加到704个。由于纳米颗粒的面积大，其致密化主要在1000°C下就基本完成。三方交界区原子数进一步增加，对应于表面张力使粒子形状呈球形，和雨滴呈球形是一样的原理。
 
-图3.4在三个时间步长处镍纳米颗粒的烧结快照。
-
-\begin{enumerate}
-\def\labelenumi{\alph{enumi}.}
-\item
-  时间步长 = 0，(b) 时间步长= 10000，和(c) 时间步长 = 60000
-\end{enumerate}
-
-%\includegraphics[width=4.375in,height=2.67917in]{media/image18.png}
-
-时间步长
-
-图3.5随着时间的推移，三颈部区域的原子数目增加。（实线表示温度。）
-
-图3.5显示了随着时间步长数增加，温度的升高，三方交界区域的原子数目增加。镍原子在三方交界区的数量从436个增加到704个。由于纳米颗粒的面积大，其致密化主要在1000°C下就基本完成。三方交界区原子数进一步增加，对应于表面张力使粒子形状呈球形，和雨滴呈球形是一样的原理。
-
-\hypertarget{ux6c29ux6c14ux901fux5ea6ux5206ux5e03ux7684ux8ba1ux7b97ux673aux5b9eux9a8c}{%
-\section{3.4
-氩气速度分布的计算机实验}\label{ux6c29ux6c14ux901fux5ea6ux5206ux5e03ux7684ux8ba1ux7b97ux673aux5b9eux9a8c}}
+\section{氩气速度分布的计算机实验}\label{ux6c29ux6c14ux901fux5ea6ux5206ux5e03ux7684ux8ba1ux7b97ux673aux5b9eux9a8c}
 
 此练习由Nam（2010，私人通信公司）提供。很好的演示了计算机实验。氩是一种惰性气体，一组氩原子遵循简单的理想气体定律\emph{PV
 = nRT}。
