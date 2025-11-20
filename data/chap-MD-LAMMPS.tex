@@ -150,7 +150,7 @@ ChimeSP6，它可以读取标准XYZ格式文件，并且可以免费下载。通
 
 • 将第二纳米粒子中心附近的三个原子固定住，使体系具有位置稳定性。
 
-\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-1}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-1}
 
 首先制备了三种镍纳米粒子，并将温度逐渐提高到500、1000和1400 K，以便观察烧结阶段，并通过\ref{MD:Initial}讨论的速度标度来观察温度升高。烧结的驱动力来自表面积的减少，这一过程涉及到原子通过表面、晶界和体积扩散到三方交界区域。因此，可以通过计算三方交界区增加的原子数目来便捷地测量烧结程度。
 
@@ -159,7 +159,7 @@ ChimeSP6，它可以读取标准XYZ格式文件，并且可以免费下载。通
 注意，在为XMD运行执行文件时，应该删除带有 \#
 following命令语法的所有注释。行首的\#注释不会引起任何问题。
 
-\subsection{结果}\label{ux7ed3ux679c-2}}
+\subsection{结果}\label{ux7ed3ux679c-2}
 
 图3.4显示了镍纳米粒子在三个时间步长的快照，在时间步长= 10000（500
 K）处观察到烧结颈完全形成。通过将温度提高到1000
@@ -174,13 +174,11 @@ K时，发生熔化，并且在表面张力的作用下，形状变成了球形�
 \label{XMD-Ni_3cluster-time-snap}
 \end{figure}
 
-图\ref{XMD-Ni_3cluster-time-temp}随着时间的推移，三颈部区域的原子数目增加。（实线表示温度。）
-
 \begin{figure}[h!]
 \centering
 \vspace*{-0.1in}
 \includegraphics[height=1.8in]{Figures/XMD-Ni_3cluster-time-temp.png}
-\caption{\fontsize{7.2pt}{4.2pt}\selectfont{三个时间步长($t=0,~t=10000,~t=60000$)处镍纳米颗粒的烧结快照.}}%
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{随着时间的推移，三颈部区域的原子数目增加，实线表示温度.}}%
 \label{XMD-Ni_3cluster-time-temp}
 \end{figure}
 图\ref{XMD-Ni_3cluster-time-temp}显示了随着时间步长数增加，温度的升高，三方交界区域的原子数目增加。镍原子在三方交界区的数量从436个增加到704个。由于纳米颗粒的面积大，其致密化主要在1000°C下就基本完成。三方交界区原子数进一步增加，对应于表面张力使粒子形状呈球形，和雨滴呈球形是一样的原理。
@@ -197,15 +195,17 @@ Waals力作用下的弱Lennard-Jones（L-J）相互作用。用Maxwell-Boltzmann
 	f(s)=\sqrt{2\pi\bigg(\dfrac{m}{k_{\mathrm{B}T}}\bigg)^3}s^2\mathrm{exp}\bigg(-\dfrac{ms^2}{2k_{\mathrm{B}}T}\bigg)=C_1s^2\exp\big(-C_2s^2\big)
 	\label{eq:Ar-Maxwell-Boltzmann}
 \end{equation}
-注意，第一个等式是速度分布表达式，速度与速率有关（见2.4.2），如s
-=（v\textsuperscript{2}\textsubscript{x}+v\textsuperscript{2}\textsubscript{y}+v\textsuperscript{2}\textsubscript{z}）\textsuperscript{1/2}。它为气体的动力学理论提供了良好的基础，该理论解释了气体的许多基本性质，包括压力和扩散。在图3.6中，在4种不同的温度下，以实线绘制了Ar气体的上述功能。
+注意，第一个等式是速度分布表达式，速度与速率有关\textcolor{red}{（见2.4.2）}，如$s=\left(v_x^2+v_y^2+v_z^2\right)^{1/2}$。它为气体的动力学理论提供了良好的基础，该理论解释了气体的许多基本性质，包括压力和扩散。在图3.6中，在4种不同的温度下，以实线绘制了Ar气体的上述功能。
 
-%\includegraphics[width=4.9375in,height=3.17708in]{media/image20.png}
-
-速度(m/s)
-
-图3.6比较模拟结果（符号）和Maxwell-Boltzmann气体理论（线），显示了在四种不同温度下的概率密度和原子速度。（来自
-Nam，H.-S。，私人通信，2010年。）
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/Maxwell-Boltzmann-T.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{比较模拟结果（符号）和Maxwell-Boltzmann气体理论（线），显示了在四种不同温度下的概率密度和原子速度(来自Nam，H.-S。私人通信，2010年).}}%
+\label{Maxwell-Boltzmann-T}
+\end{figure}
+%速度(m/s)
+%图3.6，。）
 
 我们将利用经验L-J势，通过计算机模拟来验证这些理论结果：
 
@@ -217,28 +217,21 @@ Nam，H.-S。，私人通信，2010年。）
 
 • 温度：100-1000 K
 
-第2.2.1节已经给出了Ar的L-J势，有两个参数，用原子间距离表示：
+\textcolor{red}{第2.2.1节}已经给出了Ar的L-J势，有两个参数，用原子间距离表示：
 
 \begin{equation}
 	U_{\mathrm{L-J}}(r)=4\epsilon\left[ \left( \dfrac{\sigma}r \right)^{12}-\left( \dfrac{\sigma}r \right)^6 \right]
 	\label{eq:Ar-potential-L-J}
 \end{equation}
 
-其中参数ε是势能曲线的最低能量（即势阱深度，1.654×10\textsuperscript{−21}J=
-0.010323 eV），参数σ是势能为0的原子间距离（3.405
-Å），如图2.5所示。请注意，平衡距离，r\textsubscript{0}，是2
-\textsuperscript{1/6} σ = 3.822 Å。
+其中参数$\varepsilon$是势能曲线的最低能量（即势阱深度，$1.654×10^{−21}~\mathrm{J}= 0.010323~\mathrm{eV}$），参数$\sigma$是势能为0的原子间距离（$3.405~\AA$），a如\textcolor{red}{图2.5所示}。请注意，平衡距离，$r_0$，是$2^{1/6}\sigma = 3.822 \AA$
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-2}{%
-\subsection{\texorpdfstring{\emph{3.4.1
-输入文件}}{3.4.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-2}}
+\subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-2}
 
 在这个MD模拟中，生成了8000个氩原子，并在不同的温度（100、300、500和700
 K）下进行热平衡，观察它们的速度分布：
 
-%\includegraphics[width=5.45833in,height=7.3125in]{media/image22.png}
-
-%\includegraphics[width=5.40625in,height=4in]{media/image23.png}
+\verbatiminput{Figures/XMD-Ar-Input.txt}
 
 时间步长被近似为τ× 0.01，其中，τ 被定义为
 
@@ -249,22 +242,21 @@ K）下进行热平衡，观察它们的速度分布：
 势函数的控制语句是``POTENTIAL PAIR type1 type2 ntable r\textsubscript{0}
 rcutoff公式表达式''，它分别表示势函数，对势数目，第一原子类型，第二原子类型，势函数表中list数、表中的起始半径、表中的结束截断半径以及相互作用势的公式表达式（式(3.5)）。
 
-\hypertarget{ux7ed3ux679c-3}{%
-\subsection{\texorpdfstring{\emph{3.4.2
-结果}}{3.4.2 结果}}\label{ux7ed3ux679c-3}}
+\subsection{结果}\label{ux7ed3ux679c-3}
 
-图3.6在四种不同温度下，根据原子速度比较了模拟结果和Maxwell-Boltzmann分布的Ar体理论。y轴的单位是s/m，因此曲线任意部分（表示速度在该范围内的概率）下的面积是无量纲的。结果表明，模拟结果与理论Maxwell-Boltzmann分布非常吻合。图3.7显示了一个Ar气体体系的快照，其中原子在热力学平衡下随机移动和碰撞（也可以用solidAr.xyz文件进行动画展示）。
+图\ref{Maxwell-Boltzmann-T}在四种不同温度下，根据原子速度比较了模拟结果和\textrm{Maxwell-Boltzmann}分布的Ar体理论。y轴的单位是s/m，因此曲线任意部分（表示速度在该范围内的概率）下的面积是无量纲的。结果表明，模拟结果与理论\textrm{Maxwell-Boltzmann}分布非常吻合。图\ref{XMD-Ar-box}显示了一个\ch{Ar}气体体系的快照，其中原子在热力学平衡下随机移动和碰撞（也可以用solidAr.xyz文件进行动画展示）。
 
-%\includegraphics[width=3.05208in,height=3in]{media/image25.png}
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-Ar-box.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{原子在热力学平衡下运动和碰撞的氩气体体系的快照(来自Nam，H.-S。私人通信，2010年).}}%
+\label{XMD-Ar-box}
+\end{figure}
 
-图3.7原子在热力学平衡下运动和碰撞的氩气体体系的快照。（来自
-Nam，H.-S，私人通信，2010年。得到许可。）
+\section{\rm{Si~(001)}上的\rm{SiC}沉积}\label{si001ux4e0aux7684sicux6c89ux79ef}
 
-\hypertarget{si001ux4e0aux7684sicux6c89ux79ef}{%
-\section{3.5
-Si（001）上的SiC沉积}\label{si001ux4e0aux7684sicux6c89ux79ef}}
-
-此练习由Nam（2010，私人通信公司）提供，涉及薄膜沉积，这是许多领域（如PVD{[}物理气相沉积{]}和CVD{[}化学气相沉积{]}）普遍采用的技术。在这项工作中，我们将在Si（001）表面上沉积C和Si原子，并观察非晶碳化硅（a-SiC）薄膜的形成：
+此练习由Nam（2010，私人通信公司）提供，涉及薄膜沉积，这是许多领域(如\textrm{PVD}~[物理气相沉积]和\textrm{CVD}~[化学气相沉积])普遍采用的技术。在这项工作中，我们将在Si（001）表面上沉积C和Si原子，并观察非晶碳化硅（a-SiC）薄膜的形成：
 
 • 计算程序：XMD
 
@@ -278,39 +270,29 @@ Si（001）上的SiC沉积}\label{si001ux4e0aux7684sicux6c89ux79ef}}
 
 通过此练习，还能练习到XMD软件中涉及到的很多命令，这些命令可以根据实际系统需求，由用户自行定义。
 
-\hypertarget{ux8f93ux5165ux6587ux4ef6-3}{%
-\subsection{\texorpdfstring{\emph{3.5.1
-输入文件}}{3.5.1 输入文件}}\label{ux8f93ux5165ux6587ux4ef6-3}}
+\subsection{输入文件}
+\verbatiminput{Figures/XMD-SiC-Input.txt}
 
-%\includegraphics[width=5.30208in,height=1.00347in]{media/image26.png}
-
-%\includegraphics[width=5.86458in,height=8.60417in]{media/image27.png}
-
-%\includegraphics[width=5.69792in,height=8.42708in]{media/image28.png}
-
-\hypertarget{ux7ed3ux679c-4}{%
-\subsection{\texorpdfstring{\emph{3.5.2
-结果}}{3.5.2 结果}}\label{ux7ed3ux679c-4}}
+\subsection{结果}\label{ux7ed3ux679c-4}
 
 屏幕上的标准输出如下所示：
+\verbatiminput{Figures/XMD-SiC-result.txt}
 
-%\includegraphics[width=5.50556in,height=3.19792in]{media/image29.png}
-
-结果表明，沉积了284个C原子和296个Si原子，其余原子（16个C原子和4个Si原子）被反弹并移除，这使得沉积的薄膜中硅含量略有增加。图3.8显示了在模拟时间步长
-=
-0、450000和900000时Si（001）上SiC沉积的三个快照。一个明确的结论是，在给定的条件下，硅（001）表面上的SiC形成非晶结构。保存的SiC\_depo\_on\_Si\_*.pdb文件（300个）在每次重复时都包含体系的原子坐标，当它们被一并读取时，可以使用AtomEye
+结果表明，沉积了284个C原子和296个Si原子，其余原子（16个C原子和4个Si原子）被反弹并移除，这使得沉积的薄膜中硅含量略有增加。图\ref{XMD-SiC-time-snap}显示了在模拟时间步长 = 0、450000和900000时Si（001）上SiC沉积的三个快照。一个明确的结论是，在给定的条件下，硅（001）表面上的SiC形成非晶结构。保存的SiC\_depo\_on\_Si\_*.pdb文件（300个）在每次重复时都包含体系的原子坐标，当它们被一并读取时，可以使用AtomEye
 *之类的程序来可视化。
 
-%\includegraphics[width=4.83333in,height=1.9625in]{media/image30.png}
-
-图3.8模拟时间步长为= 0 (a)、450000 (b)、和900000
-(c)时Si（001）上SiC沉积的三个快照。（来自Nam，H-S。私人通讯，2010年。得到许可。）
+\begin{figure}[h!]
+\centering
+\vspace*{-0.1in}
+\includegraphics[height=1.8in]{Figures/XMD-SiC-time-snap.png}
+\caption{\fontsize{7.2pt}{4.2pt}\selectfont{模拟时间步长为= 0(a)450000 (b)和900000 (c)时\ch{Si}\textrm{(001)}上\ch{SiC}沉积的三个快照(来自Nam，H.-S。私人通信，2010年).}}%
+\label{XMD-SiC-time-snap}
+\end{figure}
+%图3.8。（来自Nam，H-S。私人通讯，2010年。得到许可。）
 
 对该体系的更深入的研究（Kim等人2004）发现，冷却后A-SiC薄膜的密度随衬底温度和入射能量的增加而增加。将此练习扩展到其他条件和体系也将是简单明了的（例如，SiC在SiC上，SiC在C上）。
 
-\hypertarget{auux7eb3ux7c73ux7ebfux5c48ux670dux673aux5236}{%
-\section{3.6
-Au纳米线屈服机制}\label{auux7eb3ux7c73ux7ebfux5c48ux670dux673aux5236}}
+\section{Au纳米线屈服机制}\label{auux7eb3ux7c73ux7ebfux5c48ux670dux673aux5236}
 
 该算例（Park，N-Y等，2010年，私人通信；Park等2015年）是一个很好的例子，用来证明分子动力学模拟研究如何与实际实验观察相对应。模拟的目的是阐明Au纳米线在拉伸变形下的屈服机制，特别是孪晶和滑移的结构以及从\{111\}到\{100\}平面的表面重新定向。
 
