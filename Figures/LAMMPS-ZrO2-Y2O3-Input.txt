@@ -1,0 +1,76 @@
+########################################
+### Basic setup ###
+variable                t equal 2000
+units                   metal
+dimension               3
+boundary                P P P
+atom_style              charge
+newton                  on
+
+### Structure ###
+read_data               ZrO2.data
+neighbor                3 bin
+comm_modify             vel yes
+
+### Potentials ###
+# Zr-O and O-O: A. Dwivedi, A. N. Cormack, Philos. Mag. A 1990, 61, 1.
+# Y-O: G. V. Lewis, C. R. A. Catlow, J. Phys. C 1985, 1149.
+kspace_style            ewald/dielsp 1e-4
+pair_style              buck/coul/long 10
+pair_coeff              * * 0.00 10.0 0 0
+pair_coeff              1 2 985.9499 0.3760 0.000000
+# A. Dwivedi, A. N. Cormack, Philos. Mag. A 1990, 61, 1.
+pair_coeff              2 2 22762.26 0.1490 27.8931
+# A. Dwivedi, A. N. Cormack, Philos. Mag. A 1990, 61, 1.
+pair_coeff              2 3 1345.212 0.3491 0.000000
+# G. V. Lewis, C. R. A. Catlow, J. Phys. C 1985, 1149.
+
+### Group ###
+group                   Zr 	type 1
+group                   O 	type 2
+group                   Y 	type 3
+
+### Minimization ###
+thermo                  100
+thermo_style            custom step time vol atoms temp ke pe lx press
+fix                     l all box/relax iso 0.0 vmax 0.001
+min_style               cg
+minimize                1e-25 1e-25 100000 100000
+unfix 1
+
+### NPT1 ###
+reset_timestep          0
+dump                    1 all xyz 1000 YSZ_xyz_NPT1_st
+dump                    2 all atom 1000 YSZ_atom_NPT1_$t
+thermo                  1000
+thermo_style            custom step dt time atoms temp ke pe vol press lx ly lz
+velocity                all create $t 78432 dist gaussian
+fix                     NPT all npt temp $t $t 10 iso 1.013 1.013 100 drag 0.2
+timestep                0.001
+run                     250000
+
+undump                  1
+undump                  2
+
+########################################
+### Mean square displacement ###
+reset_timestep          0
+compute                 msd O msd com yes
+fix                     vec all vector 1 c_msd[4]
+
+### NPT2 ###
+
+dump                    1 all xyz 1000 YSZ_xyz_NPT2_st
+dump                    2 all atom 1000 YSZ_atom_NPT2_st
+thermo                  1000
+thermo_style            custom step temp ke pe vol press lx c_msd[4]
+
+timestep 0.001
+run                     500000
+
+unfix                   	vec
+unfix                   NPT
+undump                  1
+undump                  2
+uncompute               	msd
+########################################

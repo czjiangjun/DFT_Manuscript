@@ -1,0 +1,61 @@
+########################################
+# Nanodroplet of water on the graphene nanoribbon #
+units metal
+boundary p p p
+atom_style full
+bond_style harmonic
+angle_style harmonic
+
+# Loading position and angle, bond information #
+read_data data.C-H2O
+
+# Interatomic potential for hybrid-type #
+angle_coeff 1 2.6018473 104.520000
+bond_coeff 1 10.84 0.957200
+pair_style hybrid airebo 2.5 0 1 lj/cout/coul/long/tip4p 2 3 1 1
+0.125 9 8
+pair_coeff 1 2 lj/cout/coul/long/tip4p 0.0032399 3.19
+pair_coeff 1 3 lj/cout/coul/long/tip4p 0.0070575 3.16435
+pair_coeff 2 2 lj/cout/coul/long/tip4p 0.0 0.0
+pair_coeff 2 3 lj/cout/coul/long/tip4p 0.0 0.0
+pair_coeff 3 3 lj/cout/coul/long/tip4p 0.0 0.0
+pair_coeff * * airebo CH.airebo C NULL NULL
+kspace_style pppm/tip4p 1.0e-4
+
+# Wedging part #
+region r_fix block INF 22.4 INF INF 9.0 11.0 units box
+
+# Grouping #
+group g_C type 1
+group g_O type 2
+group g_H type 3
+group g_W union g_O g_H
+group g_fix region r_fix
+group g_MD subtract all g_fix
+
+# Structure relaxation using energy minimization #
+minimize 1e-5 1e-6 10000 100000
+reset_timestep 0
+compute mype all pe/atom
+
+compute E_C g_C reduce sum c_mype
+compute E_W g_W reduce sum c_mype
+thermo 100
+thermo_style custom step temp pe c_E_C c_E_W
+# Saving a log.lammps file with timestep, T, potential energy for
+# Carbon #
+# and water #
+velocity g_MD create 300 790316 dist gaussian
+timestep 0.002        # 2 femto-second (10^-15 second)
+fix 1 all nve
+fix 2 g_fix setforce 0 0 0
+fix 3 g_MD temp/rescale 10 300.0 300.0 5.0 0.8
+
+dump mydump all cfg 5000 dump_*.cfg id type xs ys zs c_mype
+dump_modify mydump element C O H
+
+restart 10000 restart. C-H2O-*
+# Start MD calculation #
+run 500000
+# End #
+########################################

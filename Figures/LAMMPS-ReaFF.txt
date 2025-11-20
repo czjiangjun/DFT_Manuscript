@@ -1,0 +1,5 @@
+########################################
+# define the interatomic potential, ReaxFF
+pair_style              reax
+pair_coeff              * *ffield.reaxff 3 6       # 3; O, 6; Si
+########################################

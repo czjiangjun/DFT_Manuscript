@@ -1,0 +1,119 @@
+########################################
+# a-SiC deposition on Si(001) substrate #
+
+potential set Tersoff      # switch on Tersoff C-Si potential
+calc C=1
+calc Si=2
+
+calc MassC=12.01
+calc MassSi=28.0856
+calc A0 = 5.432
+calc DTIME=0.5e-15
+
+typename 1 C 2 Si
+eunit eV
+
+# simulation condition #
+calc Tdepo = 300
+calc Edepo = 1.0
+calc angledepo = 0.0
+
+# Simulation box & substrate dimension #
+calc Lx = 6*A0
+calc Ly = 6*A0
+calc Lz = 40*A0
+calc Lz_film = 5*A0
+calc Lz_fix = 1*A0
+
+# Set box and boundary conditions #
+box Lx Ly Lz
+surface off x y on z
+
+# Si(001) substrate (diamond unit cell) creation with 1440 Si atoms #
+# and 6A0 * 6A0 * 5A0 dimension #
+fill particle 8
+Si 0.125*A0 0.125*A0 0.125*A0
+Si 0.125*A0 0.625*A0 0.625*A0
+Si 0.625*A0 0.125*A0 0.625*A0
+Si 0.625*A0 0.625*A0 0.125*A0
+Si 0.375*A0 0.375*A0 0.375*A0
+Si 0.375*A0 0.875*A0 0.875*A0
+Si 0.875*A0 0.375*A0 0.875*A0
+Si 0.875*A0 0.875*A0 0.375*A0
+
+fill cell
+1.0*A0 0 0
+0 1.0*A0 0
+0 0 1.0*A0
+
+fill boundary box 0.0 0.0 0.0 Lx Ly Lz_film
+fill go
+
+write pdb si001_sub.pdb    # to check substrate configuration
+select all
+mass MassSi
+set add 1
+
+select box 0.0 0.0 0.0 Lx Ly Lz_fix
+fix on
+select box 0.0 0.0 Lz_fix Lx Ly Lz_film
+select set 1
+itemp sel Tdepo
+clamp sel Tdepo
+dtime 1.0e-15
+
+# Relaxation of substrate #
+cmd 1000
+
+# estimate deposition rate: r = 2 atoms/ps = 2*(A0*A0*A0)/(Lx*Ly) #
+# Angstrom/ps #
+calc Rdepo = 2*(A0*A0*A0/8)/(Lx*Ly) # Angstrom/ps
+
+# assign velocity of depositing atoms: v = sqrt(2*energy/mass) with #
+# unit conversion #
+calc vdepoC = sqrt(1*Edepo*1.602e-12/(MassC /6.022e23))
+calc vxc = vdepoC*sin(angledepo)
+calc vyc = 0
+calc vzc = -vdepoC*cos(angledepo)
+calc vdepoSi = sqrt(2*Edepo*1.602e-12/(MassSi/6.022e23))
+calc vxsi = vdepoSi*sin(angledepo)
+calc vysi = 0
+calc vzsi = -vdepoSi*cos(angledepo)
+
+# repeat depositing C and Si atoms #
+calc npico=0
+repeat 300
+# assign release point of depositing atoms #
+ calc xdepo = rand(Lx)
+ calc ydepo = rand(Ly)
+ calc zdepoC = Lz_film + 5.0*A0 + Rdepo*npico
+ posvel add 1
+ C xdepo ydepo zdepoC vxC vyC vzC
+ calc xdepo = rand(Lx)
+ calc ydepo = rand(Ly)
+ calc zdepoSi = Lz_film + 3.5*A0 + Rdepo*npico
+ posvel add 1
+ Si xdepo ydepo zdepoSi vxsi vysi vzsi
+
+ select type C
+ mass MassC
+ select type Si
+ mass MassSi
+
+ cmd 3000
+
+ # remove rebound atoms #
+ select box 0.0 0.0 0.0 zdepoC Lx Ly Lz
+ remove
+
+ write ekin
+ write energy
+ calc npico=npico+1
+ write pdb SiC_depo_on_Si_$(npico).pdb
+end
+
+# final relaxation of system at 300K
+select all
+cmd 1000
+write xmol +SiC_depo_on_Si.xyz
+########################################

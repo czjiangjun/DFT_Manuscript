@@ -1,0 +1,90 @@
+##################################################
+# Simulation of ideal gas(argon) #
+# Element name & system unit #
+Typename 1 Ar
+eunit eV
+# codition NVT
+
+# Set-up constants for argon(Ar)
+calc Ar=1		    # calculate {variable=mathematical expressions}
+calc MassAr = 39.948
+calc rminLJ = 1.122462048
+calc epsilonAr = 0.010232    # eV
+calc sigmaAr = 3.405         # Å
+calc reqAr = rminLJ*sigmaAr  # 2^1/6*sigma
+
+# Set-up for LJ potential #
+potential set pair 1
+calc epsilon = epsilonAr
+calc sigma = sigmaAr
+calc r0 = 0.1*sigmaAr
+calc rcutoff = 2.0*sigmaAr
+
+# Produce potential using formula for the Lennard-Jones potential
+potential pair 1 1 100 r0 rcutoff FORMULA
+4.0*epsilon*((sigmaAr/r)^12 - (sigmaAr/r)^6)
+
+# Set box dimension (1000 Angstrom = 0.1 micrometer), box, and periodic
+# boundary conditions
+calc Lx = 1000
+calc Ly = 1000
+calc Lz = 1000
+box Lx Ly Lz
+surface off x y z
+
+# generate unit cell with one Ar, make the cell dimension of 50 × 50 × 50, fill
+# the whole box (8,000 Ar atoms)
+fill particle 1 
+ Ar 10 10 10
+fill cell
+Lx/20 0 0
+0 Ly/20 0
+0 0 Lz/20
+fill boundary box 0.0 0.0 0.0 0.0 Lx Ly Lz
+fill go
+
+# Check initial atom configuration
+write pdb ArGas0.pdb
+
+# Set mass and timestep (approximated as 0.01*Tau, Tau=sigmaAr*sqrt(MassAr/
+# epsilonAr)=2.17e-12 s)
+select all
+mass MassAr
+dtime 20.0e-15
+calc npico = 50			# 50 dtime = 1 ps
+
+# Set temperature and perform preliminary relaxation (NVT ensemble)
+calc T0 = 100
+itemp T0 
+
+clamp T0
+cmd 100*npico
+
+# repeat simulation at increasing temperatures starting from T=100 K
+calc ipico=0
+calc Tsim = 100
+repeat 10                  # start outer loop
+# preliminary relaxation of surface
+ repeat 80                  # start first inner loop
+  cmd npico                  # solve Newton's equations of motion
+  write xmol +solidAr.xyz
+  calc ipico=ipico+1
+  write pdb ArGas_$(ipico)ps.pdb
+end                        # end first inner loop
+
+# MD
+repeat 20                  # start second inner loop
+ cmd npico                  # solve Newton's equations of motion
+ write file +E.dat energy
+ write file +T.dat temp
+ write file +P.dat stress
+ write file +V_$(Tsim)K.dat velocity
+ write xmol +solidAr.xyz
+ calc ipico=ipico+1
+ write pdb ArGas_$(ipico)ps.pdb
+ end                        # end second inner loop
+
+ calc Tsim=Tsim+100
+ clamp Tsim
+end                        # end outer loop
+##################################################

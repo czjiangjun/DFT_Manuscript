@@ -1,0 +1,19 @@
+##################################################
+.....
+*** NUMBER SELECTED 284
+*** Number selected 1736
+*** Current step is 901000
+*** NUMBER SELECTED 0
+WARNING: No atoms are selected
+*** NUMBER REMAINING 2020
+EKIN 3.336005e-002
+EPOT -4.64203352e+000
+
+# final relaxation of system to 300K
+select all
+*** NUMBER SELECTED 2020
+cmd 1000
+*** Current step is 902000
+write xmol +SiC_depo_on_Si.xyz
+.....
+##################################################

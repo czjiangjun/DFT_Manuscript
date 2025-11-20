@@ -1,0 +1,117 @@
+########################################
+# in.Si-CNT-tension.txt
+
+### Basic setup ###
+units                   metal
+boundary                f p p
+atom_style              atomic
+
+### Structure ###
+read_data               readdata.SiCNT
+
+region                  box block 0 54.31 0 54.31 -54.31 54.31 units box
+region                  1 block INF INF INF INF -47.52125 units box
+group                   lower region 1
+region                  2 block INF INF INF 47.52125 INF units box
+group                   upper region 2
+group                   boundary union lower upper
+group                   mobile subtract all boundary
+region                  leftupper block INF 16.293 INF INF INF 0 units box
+region                  leftlower block INF 16.293 INF INF 0 INF units box
+group                   leftupper region leftupper
+group                   leftlower region leftlower
+
+region                  void cylinder z 27.155 27.155 7.875 -36 36 units box
+group                   CNT region void
+# to delete_atoms in group void
+group                   Sicrack union leftupper leftlower
+group                   Siaround subtract mobile Sicrack
+
+set                     group Siaround type 1
+set                     group leftupper type 2
+set                     group leftlower type 3
+set                     group lower type 4
+set                     group upper type 5
+set                     group CNT type 6
+# to identify each group on VESTA, set 1 grey, 2 red, 3 blue, 4 green, 5 yellow
+
+### Potentials ###
+mass                    1 28
+mass                    2 28
+mass                    3 28
+mass                    4 28
+mass                    5 28
+mass                    6 12.01
+
+pair_style              hybrid airebo 2.5 1 0 tersoff lj/cut 5.5
+pair_coeff              1 6  lj/cut 0.50 1.2
+# Si-C(CNT) by lj, original value; 0.038 2.96
+pair_coeff              * * tersoff SiC_Erhart-Albe.tersoff Si Si Si Si Si Si
+
+# Si-Si by tersoff
+pair_coeff              * * airebo CH.airebo NULL NULL NULL NULL NULL C
+# C(CNT)-C(CNT) by airebo
+pair_coeff              2 * 5 6 none
+
+neighbor                1.0 bin
+neigh_modify            every 1 delay 5 check yes
+
+### Relaxation at 300 K ###
+compute                 new mobile temp
+velocity                mobile create 300 887723 temp new
+
+fix                     1 all nve
+fix                     2 mobile temp/berendsen 300 300 0.1
+# T for mobile region only, fixed upper & lower boundary
+
+fix                     3 lower setforce 0.0 0.0 0.0
+fix                     4 upper setforce 0.0 0.0 0.0 NULL
+
+compute                 1 mobile temp
+compute_modify          1 dynamic yes
+
+compute                 body_pe all pe/atom
+compute                 body_st all stress/atom NULL pair bond
+
+timestep                0.001
+thermo                  200
+thermo_style custom step temp c_1 pe pzz vol
+thermo_modify           lost ignore norm yes
+
+run                     10000
+write_restart           restart.10000
+
+unfix                   3
+unfix                   4
+
+### Applying tension ###
+reset_timestep          0
+fix                     3 boundary setforce 0.0 0.0 0.0
+
+# x-dimension fixed, y-direction extended
+
+velocity                upper set 0.0 0.0 0.25 units box
+velocity                mobile ramp vz 0.0 0.25 z -47.52125 47.52125 sum yes units box
+
+compute                 strCNT CNT reduce sum c_body_st[3]
+compute                 strSi mobile reduce sum c_body_st[3]
+compute                 strSiCNT all reduce sum c_body_st[3]
+
+variable                szzSi equal c_strSi/(20.09*count(mobile))*(10^-4)
+variable                szzCNT equal c_strCNT/(8.784*count(CNT))*(10^-4)
+variable                szz equal "v_szzSi + v_szzCNT"
+# variable szzAll equal c_strAl/(16.60*count(g_all))*(10^-4)
+# atomic volume = 20.09 (A^3) = 12.1 (cm3/mol) 
+# (10^-4) to convert GPa
+# compute for the 2nd tensor yy out of 6
+
+neigh_modify exclude type 2 3
+# to initiate crack, pairwise interactions are shut off
+
+dump                    1 all atom 5000 SiCNT_crack.dat
+dump                    2 all xyz 5000 SiCNT_*.xyz
+fix                     33 all ave/time 1 1000 1000 v_szz file stress_tensile_GPa.dat
+
+run                     160000
+write_restart           restart.160000
+########################################

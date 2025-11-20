@@ -1,0 +1,56 @@
+########################################
+# The header part, it typically contains a description of the file #
+LAMMPS readable position file (atom style: full)
+# Define number of atoms, types, bonds, and angles #
+		18012 atoms
+		7208 bonds
+		3604 angles
+
+		3 atom types
+		1 bond types
+		1 angle types
+
+# System size in Angstrom #
+	0.000 104.000 xlo xhi
+	0.000 214.000 ylo yhi
+	0.000 100.000 zlo zhi
+
+Masses
+		1 12.011
+		2 15.999
+		3 1.008
+
+Atoms
+# Position information; atom-ID molecule-ID atom-type q x y z #
+1 1 1 0.0 0.000000 1.212436 10.00000
+2 1 1 0.0 0.700000 0.000000 10.00000
+3 1 1 0.0 2.100000 0.000000 10.00000
+:
+:
+18010 2 2 -1.0484 48.250000 108.244845 71.250000
+18011 2 3 0.5242  47.657170 107.505832 71.250000
+18012 2 3 0.5242  47.657170 108.983867 71.250000
+
+Bonds
+# Position information; ID type atom1 atom2 #
+1 1 6401 6402
+2 1 6401 6403
+3 1 6404 6405
+:
+:
+7206 1 17207 17209
+7207 1 17210 17211
+7208 1 17210 17212
+
+Angles
+# Angle information; ID type atom1 atom2 atom3 #
+1 1 6402 6401 6403
+2 1 6405 6404 6406
+3 1 6408 6407 6409
+:
+:
+3602 1 17205 17204 17206
+3603 1 17208 17207 17209
+3604 1 17211 17210 17212
+# End #
+########################################

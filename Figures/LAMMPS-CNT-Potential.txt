@@ -1,0 +1,11 @@
+########################################
+# AIREBO Brenner/Brenner/Stuart potential
+# Cite as S. J. Stuart, A. B. Tutein, J. A. Harrison,
+# "A reactive potential for hydrocarbons with intermolecular
+# interactions",
+# J. Chem. Phys. 112 (2000) 6472-6486.
+2.0  	rmin_CC
+1.3  	rmin_CH
+1.1  	rmin_HH
+.....
+########################################

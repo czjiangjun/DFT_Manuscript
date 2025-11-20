@@ -1,0 +1,112 @@
+############################################################################
+# Ni-3clusters-500-1000-1400K
+
+echo on
+
+read NiAl_EAMpotential.txt
+
+calc NX=20
+calc NY=20
+calc NZ=20
+dtime 0.5e-15
+calc Ni=1
+calc MassNi=58.6934
+calc A0=3.5238
+eunit ev
+
+box NX NY NZ
+
+ESAVE 2000 Ni-3clusters.e
+
+fill boundary sphere 3.0 7.0 10.0 8.0.0    # make a first nanoparticle
+
+fill particle 4
+1 1/4 1/4 1/4
+1 1/4 3/4 3/4
+1 3/4 1/4 3/4
+1 3/4 3/4 1/4
+fill go
+
+fill boundary sphere 3.0 10.0 10.0 13.4   # make a second nanoparticle
+
+fill particle 4
+1 1/4 1/4 1/4
+1 1/4 3/4 3/4
+1 3/4 1/4 3/4
+1 3/4 3/4 1/4
+fill go
+
+fill ilist +Ni-3clusters.i
+
+fill boundary sphere 3.0 13.0 10.8.0     # make a third nanoparticle
+fill particle 4
+1 1/4 1/4 1/4
+1 1/4 3/4 3/4
+1 3/4 1/4 3/4
+1 3/4 3/4 1/4
+fill go
+scale A0
+write energy
+
+# select 3 atoms at the center of the second nanoparticle and fix them to
+# give stability to the system
+select near 3 point 10.0*A0 10.0*A0 13.4*A0
+fix on
+write sel ilist                          # write the selected atoms' IDs
+
+# select all atoms in a box at the triple-neck region and count them to
+# update their number
+select box 7.5*A0 5*A0 7*A0 12.5*A0 15*A0 13*A0
+write sel ilist +Ni-3clusters.i          # count atoms in triple-neck region
+write xmol Ni-3clusters-initial.xyz      # for snapshot
+write xmol +Ni-3clusters.xyz             # for animation
+
+repeat 5                                 # initial heat-up to 500 K
+ select type 1
+ mass MassNi
+ itemp sel 500
+ clamp sel 500
+ cmd 2000
+ write energy
+ write ekin
+ write temp
+ write xmol +Ni-3clusters.xyz             # for animation
+ write file +Ni-3clusters.t temp          # write temperature
+select box 7.5^A0 5^A0 7^A0 12.5^A0 15^A0 13^A0
+write sel ilist +Ni-3clusters-5.i        # count atoms in triple-neck region
+end
+write xmol Ni-3clusters-5.xyz            # for snapshot after 5 repeats
+
+repeat 10                                # second heat-up to 1000 K
+ select type 1
+ mass MassNi
+ itemp sel 1000
+ clamp sel 1000
+ cmd 2000
+ write energy
+
+ write ekin
+ write temp
+ write xmol +Ni-3clusters.xyz             # for animation
+ write file +Ni-3clusters.t temp          # write temperature
+select box 7.5*A0 5*A0 7*A0 12.5*A0 15*A0 13*A0
+write sel ilist +Ni-3clusters-15.i       # count atoms in triple-neck region
+end
+write xmol Ni-3clusters-15.xyz           # for snapshot after 5+10 repeats
+
+repeat 15                                # final heat-up to 1400 K
+ select type 1
+ mass MassNi
+ itemp sel 1400
+ clamp sel 1400
+ cmd 2000
+ write energy
+ write ekin
+ write temp
+ write xmol +Ni-3clusters.xyz             # for animation
+ write file +Ni-3clusters.t temp          # write temperature
+select box 7.5*A0 5*A0 7*A0 12.5*A0 15*A0 13*A0
+write sel ilist +Ni-3clusters-30.i        # count atoms in triple-neck region
+end
+write xmol Ni-3clusters-30.xyz            # for snapshot after 5+10+15 repeats
+##########################################################################
