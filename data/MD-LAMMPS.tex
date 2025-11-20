@@ -210,8 +210,10 @@ c）。
 每个Ar原子在随机运动，没有任何相互作用，除了第2.2.1节中讨论的通过van der
 Waals力作用下的弱Lennard-Jones（L-J）相互作用。用Maxwell-Boltzmann分布能很好地描述了理想气体的特性，原子速度s的概率由下式给出
 
-%\includegraphics[width=4.51042in,height=0.61042in]{media/image19.png}
-
+\begin{equation}
+	f(s)=\sqrt{2\pi\bigg(\dfrac{m}{k_{\mathrm{B}T}}\bigg)^3}s^2\mathrm{exp}\bigg(-\dfrac{ms^2}{2k_{\mathrm{B}}T}\bigg)=C_1s^2\exp\big(-C_2s^2\big)
+	\label{eq:Ar-Maxwell-Boltzmann}
+\end{equation}
 注意，第一个等式是速度分布表达式，速度与速率有关（见2.4.2），如s
 =（v\textsuperscript{2}\textsubscript{x}+v\textsuperscript{2}\textsubscript{y}+v\textsuperscript{2}\textsubscript{z}）\textsuperscript{1/2}。它为气体的动力学理论提供了良好的基础，该理论解释了气体的许多基本性质，包括压力和扩散。在图3.6中，在4种不同的温度下，以实线绘制了Ar气体的上述功能。
 
@@ -234,7 +236,10 @@ Nam，H.-S。，私人通信，2010年。）
 
 第2.2.1节已经给出了Ar的L-J势，有两个参数，用原子间距离表示：
 
-%\includegraphics[width=3.61458in,height=0.57847in]{media/image21.png}
+\begin{equation}
+	U_{\mathrm{L-J}}(r)=4\epsilon\left[ \left( \dfrac{\sigma}r \right)^{12}-\left( \dfrac{\sigma}r \right)^6 \right]
+	\label{eq:Ar-potential-L-J}
+\end{equation}
 
 其中参数ε是势能曲线的最低能量（即势阱深度，1.654×10\textsuperscript{−21}J=
 0.010323 eV），参数σ是势能为0的原子间距离（3.405
@@ -254,8 +259,10 @@ K）下进行热平衡，观察它们的速度分布：
 
 时间步长被近似为τ× 0.01，其中，τ 被定义为
 
-%\includegraphics[width=3.51736in,height=0.49097in]{media/image24.png}
-
+\begin{equation}
+	\tau=\sigma\sqrt{\dfrac{m}{\varepsilon}}=2.17\times10^{-12}s
+	\label{eq:Ar-Time-step}
+\end{equation}
 势函数的控制语句是``POTENTIAL PAIR type1 type2 ntable r\textsubscript{0}
 rcutoff公式表达式''，它分别表示势函数，对势数目，第一原子类型，第二原子类型，势函数表中list数、表中的起始半径、表中的结束截断半径以及相互作用势的公式表达式（式(3.5)）。
 
@@ -454,8 +461,10 @@ der　Waals力决定，但是van der
 Waals力足以使GNR发生弯曲，因为在此弯曲曲率范围里，石墨烯有可能因弯曲而使能量继续减小（Lu等人2009）。GNR包裹液滴，使得本来具有高表面张力的液滴自由表面积的降低。如图3.10所示，GNR的势能将随着液滴自由表面积的减小而增加。当包裹体系超过0.6
 ns时，表面能的降低将与GNR的弯曲势能增加平衡，而GNR的势能不再变化。根据能量守恒条件，可以得到
 
-%\includegraphics[width=4.10347in,height=0.66111in]{media/image38.png}
-
+\begin{equation}
+	\gamma_{\mathrm{H_2O}}=\dfrac{\Delta E_{\mathrm{GNR}}^{\mathrm{tot}}}{S_W}
+	\label{eq:H2O-surface-tension}
+\end{equation}
 %\includegraphics[width=4in,height=2.79167in]{media/image39.png}
 
 时间（nsec）
@@ -464,11 +473,11 @@ ns时，表面能的降低将与GNR的弯曲势能增加平衡，而GNR的势能
 
 其中：
 
-是H\textsubscript{2}O是液滴的表面张力
+$\gamma_{\mathrm{H_2)}}$是\ch{H2O}是液滴的表面张力
 
-表示GNR的总势能的变化
+$\Delta E_{\mathrm{GNR}}^{\mathrm{tot}}$表示\textrm{GNR}的总势能的变化
 
-是GNR覆盖的表面积
+$S_W$是\textrm{GNR}覆盖的表面积
 
 根据图3.10的结果，可以计算出S\textsubscript{w}和E分别为51 eV和92
 nm\textsuperscript{2}。根据式(3.7)，计算出的水表面张力为88.64
@@ -836,7 +845,7 @@ K的不同温度下，用之前500000个时间步长的时间来绘制MSD图。
 参照图3.2，如果我们在一系列MD运行中增加镍团簇的尺寸，熔点将增加，势能曲线将下降。解释其原因。
 
 3.3
-在MD运行中，我们总是注意到，如温度，动能和势能等瞬时量随迭代而波动。我们知道，这些波动会随着体系尺寸的增加而减小，波动为，其中N是原子的数目。解释其原因。
+在MD运行中，我们总是注意到，如温度，动能和势能等瞬时量随迭代而波动。我们知道，这些波动会随着体系尺寸的增加而减小，波动为$\propto1/\sqrt{N}$，其中N是原子的数目。解释其原因。
 
 3.4
 在MD运行中，选择最佳的时间步长是一个重要的问题。参考第3.1节，为XMD运行写下一个以时间步长大小为变量的输入文件，以便我们能够确定特定体系的最佳时间步长大小。
