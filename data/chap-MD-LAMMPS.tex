@@ -200,7 +200,7 @@ Waals力作用下的弱Lennard-Jones（L-J）相互作用。用Maxwell-Boltzmann
 	f(s)=\sqrt{2\pi\bigg(\dfrac{m}{k_{\mathrm{B}T}}\bigg)^3}s^2\mathrm{exp}\bigg(-\dfrac{ms^2}{2k_{\mathrm{B}}T}\bigg)=C_1s^2\exp\big(-C_2s^2\big)
 	\label{eq:Ar-Maxwell-Boltzmann}
 \end{equation}
-注意，第一个等式是速度分布表达式，速度与速率有关\textcolor{red}{（见2.4.2）}，如$s=\left(v_x^2+v_y^2+v_z^2\right)^{1/2}$。它为气体的动力学理论提供了良好的基础，该理论解释了气体的许多基本性质，包括压力和扩散。在图3.6中，在4种不同的温度下，以实线绘制了Ar气体的上述功能。
+注意，第一个等式是速度分布表达式，速度与速率有关(见\ref{MD-speed-Initial})，如$s=\left(v_x^2+v_y^2+v_z^2\right)^{1/2}$。它为气体的动力学理论提供了良好的基础，该理论解释了气体的许多基本性质，包括压力和扩散。在图3.6中，在4种不同的温度下，以实线绘制了Ar气体的上述功能。
 
 \begin{figure}[h!]
 \centering
@@ -223,14 +223,14 @@ Waals力作用下的弱Lennard-Jones（L-J）相互作用。用Maxwell-Boltzmann
 
 • 温度：100-1000 K
 
-\textcolor{red}{第2.2.1节}已经给出了Ar的L-J势，有两个参数，用原子间距离表示：
+第\ref{MD-pair-FF}节已经给出了Ar的L-J势，有两个参数，用原子间距离表示：
 
 \begin{equation}
 	U_{\mathrm{L-J}}(r)=4\epsilon\left[ \left( \dfrac{\sigma}r \right)^{12}-\left( \dfrac{\sigma}r \right)^6 \right]
 	\label{eq:Ar-potential-L-J}
 \end{equation}
 
-其中参数$\varepsilon$是势能曲线的最低能量（即势阱深度，$1.654×10^{−21}~\mathrm{J}= 0.010323~\mathrm{eV}$），参数$\sigma$是势能为0的原子间距离（$3.405~\AA$），a如\textcolor{red}{图2.5所示}。请注意，平衡距离，$r_0$，是$2^{1/6}\sigma = 3.822 \AA$
+其中参数$\varepsilon$是势能曲线的最低能量（即势阱深度，$1.654×10^{−21}~\mathrm{J}= 0.010323~\mathrm{eV}$），参数$\sigma$是势能为0的原子间距离（$3.405~\AA$），a如图\ref{Curve_L-J}所示。请注意，平衡距离，$r_0$，是$2^{1/6}\sigma = 3.822 \AA$
 
 \subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-2}
 
@@ -477,14 +477,14 @@ CNT的xyz坐标可以从以下两个站点中的任何一个生成：
 
 \subsection{结果}\label{ux7ed3ux679c-7}
 
-模拟完成后，在当前的计算目录内生成多个CNT\_tensile\_*文件。xyz文件在计算过程中记录了CNT的结构演化。\textcolor{red}{图\ref{LAMMPS-CNT-stress_tensile}}显示了CNT\_tensile\_*.xyz
+模拟完成后，在当前的计算目录内生成多个CNT\_tensile\_*文件。xyz文件在计算过程中记录了CNT的结构演化。图\ref{LAMMPS-CNT-stress_tensile}显示了CNT\_tensile\_*.xyz
 中，分别在时间步长数0、20000和40000，在VESTA上显示的CNT结构。不难看出，CNT在大约32000的时间步长数时被拉伸并断裂。
 
 stress\_tensile\_GPa.dat 文件有每100个时间步长的拉伸应力数据：
 
 {\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-CNT-stress.txt}}}
 
-图\ref{}显示了压力与时间步长数的关系图，从图中可以看出CNT的最大的拉伸应力略高于105 GPa。这个值与Eatemadi等人报告的实验检测的抗拉强度大约100 GPa\cite{NRL9-393_2014}非常吻合。分子动力学模拟中观测到的CNT断裂后出现上下反弹，源自CNT内弹性势能的释放。因此，CNT具有高断裂强度，作为复合材料增强材料，这种高弹特性是非常重要的指标。
+图\ref{LAMMPS-CNT-stress_tensile}显示了压力与时间步长数的关系图，从图中可以看出CNT的最大的拉伸应力略高于105 GPa。这个值与Eatemadi等人报告的实验检测的抗拉强度大约100 GPa\cite{NRL9-393_2014}非常吻合。分子动力学模拟中观测到的CNT断裂后出现上下反弹，源自CNT内弹性势能的释放。因此，CNT具有高断裂强度，作为复合材料增强材料，这种高弹特性是非常重要的指标。
 
 \begin{figure}[h!]
 \centering
@@ -588,7 +588,7 @@ stress\_tensile\_GPa.dat 文件有每100个时间步长的拉伸应力数据：
 %图3.16 。
 
 \subsection{势函数}\label{ux52bfux51fdux6570}
-为了更适当地模拟符合体系，需要采用三个势函数来描述两种不同的材料及其界面，如图\ref{LAMMPS-Si-CNT-tension-Interface_action}所示。本算例使用的是一个混合势，这个混合势包含：在Si基体中用于Si-Si的SiC\_Erhart-Albe.tersoff势\cite{PRB71-035211_2005}，CNT中的用于C-C的CH.airebo（自适应分子间反应经验键顺序）势（Stuart等人2000）,用于Si-C界面的L-J 6-12势\textrm{（Jones 1924）}，这些势都已嵌入在LAMMPS程序中。其中Si-C之间的L-J势对计算模拟起到决定性作用。
+为了更适当地模拟符合体系，需要采用三个势函数来描述两种不同的材料及其界面，如图\ref{LAMMPS-Si-CNT-tension-Interface_action}所示。本算例使用的是一个混合势，这个混合势包含：在Si基体中用于Si-Si的SiC\_Erhart-Albe.tersoff势\cite{PRB71-035211_2005}，CNT中的用于C-C的CH.airebo（自适应分子间反应经验键顺序）势\cite{JCP112-6472_2000},用于Si-C界面的L-J 6-12势\cite{PRS106-441_1924}，这些势都已嵌入在LAMMPS程序中。其中Si-C之间的L-J势对计算模拟起到决定性作用。
 
 \begin{figure}[h!]
 \centering
@@ -664,7 +664,7 @@ Si-CNT体系的载荷拉伸是通过保持一端（底部）固定，同时缓�
 
 图\ref{LAMMPS-Si-CNT-stress}表明断裂强度和韧性（这里定义为曲线下的面积）增强
 
-考虑在C-Si的L-J势，界面强度的增加到$\varepsilon =0.5$。与\textcolor{red}{图\ref{}}相比，体系在断裂强度和韧性方面都有显著的提高。计算得到的杨氏模量和最大强度分别为480和58GPa。界面处的Si-C键合平均距离约为1.98Å，与SiC晶体的键合平均距离相对应。
+考虑在C-Si的L-J势，界面强度的增加到$\varepsilon =0.5$。与图\ref{LAMMPS-Si_Crack-Stress}相比，体系在断裂强度和韧性方面都有显著的提高。计算得到的杨氏模量和最大强度分别为480和58GPa。界面处的Si-C键合平均距离约为1.98Å，与SiC晶体的键合平均距离相对应。
 
 采用Erhart/Albe-Tersoff势函数\cite{PRB71-035211_2005}描述Si-C键界面处的情形，允许Si原子与CNT完全相互作用，可以模拟完全成键的情况。虽然模拟过程中保持了CNT结构的一般特征，但由于界面上存在强烈的相互作用，当体系充分松弛之后，CNT上会表现出很大的缺陷。
 
