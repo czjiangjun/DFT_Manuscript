@@ -28,13 +28,13 @@
 \subsubsection{执行控制文件} 
 下面是为这个算例准备的执行控制文件，其中一些行上有注释。用\#标志，用于对该命令的简要描述。所有命令行都是一目了然的，在\textrm{XMD}的参考手册中找到所有命令行的详细说明。注意，实际运行\textrm{XMD}软件读取该文件时，应该删除注释或将注释部分更改为带有\#的独立行，否则XMD软件读取执行控制文件时会报错错误。
 
-\verbatiminput{Figures/XMD-Al_Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Al_Input.txt}}}
 
 \subsubsection{势函数文件}
 
 势函数文件NiAl\_EAMpotential.txt将用于以下运行：
 
-\verbatiminput{Figures/XMD-Al_FF.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Al_FF.txt}}}
 
 正如\ref{MD-pair-FF}介绍过的，势函数文件中有很多数值。
 
@@ -42,13 +42,13 @@
 
 现在，在\textrm{DOS}窗口中启动XMD软件运行分子动力学模拟：
 
-\verbatiminput{Figures/XMD-Al_run-out.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Al_run-out.txt}}}
 
 \subsubsection{结果}\label{XMD-1-result}
 
 打开两个输出文件，Al-lattice.txt 和Al-PE.txt，并将其中的整合成数据列表：
 
-\verbatiminput{Figures/XMD-Al_result.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Al_result.txt}}}
 
 \subsubsection{势能曲线}
 
@@ -99,7 +99,7 @@
 \end{itemize}
 
 \subsection{运行文件}\label{ux8fd0ux884cux6587ux4ef6}
-\verbatiminput{Figures/XMD-Ni-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Ni-Input.txt}}}
 
 命令``\textrm{itemp}''将对给定温度下服从\textrm{Maxwell-Boltzmann}分布的所有粒子分配随机速度。根据\ref{Inital-position_velocity}讨论的速度标度方案，将使体系的模拟温度保持在指定的数值。在体相固体中，应考虑到热膨胀，计算中需要考虑体系膨胀，直至外部压力为零。但是对于真空中的团簇模拟，则不需要。
 
@@ -157,7 +157,7 @@ ChimeSP6，它可以读取标准XYZ格式文件，并且可以免费下载。通
 
 首先制备了三种镍纳米粒子，并将温度逐渐提高到500、1000和1400 K，以便观察烧结阶段，并通过\ref{MD:Initial}讨论的速度标度来观察温度升高。烧结的驱动力来自表面积的减少，这一过程涉及到原子通过表面、晶界和体积扩散到三方交界区域。因此，可以通过计算三方交界区增加的原子数目来便捷地测量烧结程度。
 
-\verbatiminput{Figures/XMD-Ni_3cluster-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Ni_3cluster-Input.txt}}}
 
 注意，在为XMD运行执行文件时，应该删除带有 \#
 following命令语法的所有注释。行首的\#注释不会引起任何问题。
@@ -237,7 +237,7 @@ Waals力作用下的弱Lennard-Jones（L-J）相互作用。用Maxwell-Boltzmann
 在这个MD模拟中，生成了8000个氩原子，并在不同的温度（100、300、500和700
 K）下进行热平衡，观察它们的速度分布：
 
-\verbatiminput{Figures/XMD-Ar-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-Ar-Input.txt}}}
 
 时间步长被近似为τ× 0.01，其中，τ 被定义为
 
@@ -278,12 +278,12 @@ rcutoff公式表达式''，它分别表示势函数，对势数目，第一原�
 通过此练习，还能练习到XMD软件中涉及到的很多命令，这些命令可以根据实际系统需求，由用户自行定义。
 
 \subsection{输入文件}
-\verbatiminput{Figures/XMD-SiC-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-SiC-Input.txt}}}
 
 \subsection{结果}\label{ux7ed3ux679c-4}
 
 屏幕上的标准输出如下所示：
-\verbatiminput{Figures/XMD-SiC-result.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/XMD-SiC-result.txt}}}
 
 结果表明，沉积了284个C原子和296个Si原子，其余原子（16个C原子和4个Si原子）被反弹并移除，这使得沉积的薄膜中硅含量略有增加。图\ref{XMD-SiC-time-snap}显示了在模拟时间步长 = 0、450000和900000时Si（001）上SiC沉积的三个快照。一个明确的结论是，在给定的条件下，硅（001）表面上的SiC形成非晶结构。保存的SiC\_depo\_on\_Si\_*.pdb文件（300个）在每次重复时都包含体系的原子坐标，当它们被一并读取时，可以使用AtomEye
 *之类的程序来可视化。
@@ -335,7 +335,7 @@ rcutoff公式表达式''，它分别表示势函数，对势数目，第一原�
 \subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-4}
 
 输入文件由三部分组成：Au纳米线的结构产生、300 K时的热平衡和拉伸载荷。
-\verbatiminput{Figures/LAMMPS-Au-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-Au-Input.txt}}}
 
 \subsection{结果}\label{ux7ed3ux679c-5}
 
@@ -387,14 +387,13 @@ GPa范围内，远远高于普通Au（约0.12 GPa）。
 • 温度：300 K与温度重新定标法
 
 \subsubsection{位置文件（数据。C-H2O）}
-
-\verbatiminput{Figures/LAMMPS-Graphene-Position.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-Graphene-Position.txt}}}
 
 \subsubsection{3.7.1.2 输入文件}
 
 输入文件由三部分组成：使用原子标记文件（data.C--H\textsubscript{2}O）进行体系标识，建立混合类型的原子间势，以及包括通过共轭梯度能量极小化进行结构弛豫的分子动力学模拟。
 
-\verbatiminput{Figures/LAMMPS-Graphene-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-Graphene-Input.txt}}}
 
 \subsection{结果}\label{ux7ed3ux679c-6}
 
@@ -428,7 +427,7 @@ $\Delta E_{\mathrm{GNR}}^{\mathrm{tot}}$表示\textrm{GNR}的总势能的变化
 
 $S_W$是\textrm{GNR}覆盖的表面积
 
-根据图\ref{LAMMPS-Graphene-roll}的结果，可以计算出S\textsubscript{w}和E分别为$51~\mathrm{eV}$和$92~\textrm{nm}^2$。根据式\eqref{H2O-surface-tension}，计算出的水表面张力为$88.64~\mathrm{mN/m}$（或$0.554~\mathrm{eV/nm}^2$），与实验值$75~\mathrm{mN/m}$\textcolor{red}{（Wikipedia 2010）}基本吻合。
+根据图\ref{LAMMPS-Graphene-roll}的结果，可以计算出S\textsubscript{w}和E分别为$51~\mathrm{eV}$和$92~\textrm{nm}^2$。根据式\eqref{eq:H2O-surface-tension}，计算出的水表面张力为$88.64~\mathrm{mN/m}$（或$0.554~\mathrm{eV/nm}^2$），与实验值$75~\mathrm{mN/m}$\textcolor{red}{（Wikipedia 2010）}基本吻合。
 
 \subsection{结论}\label{ux7ed3ux8bba-1}
 
@@ -452,7 +451,7 @@ $S_W$是\textrm{GNR}覆盖的表面积
 
 \subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-6}
 
-\verbatiminput{Figures/LAMMPS-CNT-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-CNT-Input.txt}}}
 
 注意，由于时间步长的单位是fs（飞秒），因此数值总是小于1，确保Tayler级数展开的有限差分积分算法有效。
 
@@ -466,7 +465,7 @@ CNT的xyz坐标可以从以下两个站点中的任何一个生成：
 
 生成的文件，经过编辑后适应LAMMPS的读取数据格式，从而产生readdata.CNT，具有$10\times10$的手性，和沿CNT轴具有1280个原子的32个单元（直径：13.751\AA，长度：78.566\AA）：
 
-\verbatiminput{Figures/LAMMPS-CNT-data.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-CNT-data.txt}}}
 
 模拟体系尺度$80.5\times80.5\times161.0 \AA$，而CNT位于$x = 33.374506$到$47.125494 \AA$，$y = 33.374506$到$47.125494 \AA$，$z = 41.217088$到$119.782912$（参见readdata.CNT）。
 
@@ -474,7 +473,7 @@ CNT的xyz坐标可以从以下两个站点中的任何一个生成：
 
 选择CH.airebo势函数\textcolor{red}{（Stuart等人2000）}用于CNT的模拟，因为该势函数更适合于纯CNT模拟。势函数被重命名为CH.old.airebo，并保存在LAMMPS/Potentials目录中。注意，在LAMMPS提供的CH.airebo势中，它的rcmin\_CC参数是2.0，而不是L1.7。
 
-\verbatiminput{Figures/LAMMPS-CNT-Potential.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-CNT-Potential.txt}}}
 
 \subsection{结果}\label{ux7ed3ux679c-7}
 
@@ -483,7 +482,7 @@ CNT的xyz坐标可以从以下两个站点中的任何一个生成：
 
 stress\_tensile\_GPa.dat 文件有每100个时间步长的拉伸应力数据：
 
-\verbatiminput{Figures/LAMMPS-CNT-stress.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-CNT-stress.txt}}}
 
 图\ref{}显示了压力与时间步长数的关系图，从图中可以看出CNT的最大的拉伸应力略高于105 GPa。这个值与Eatemadi等人报告的实验检测的抗拉强度大约100 GPa\textcolor{red}{（Eatemadi等人2014）}非常吻合。分子动力学模拟中观测到的CNT断裂后出现上下反弹，源自CNT内弹性势能的释放。因此，CNT具有高断裂强度，作为复合材料增强材料，这种高弹特性是非常重要的指标。
 
@@ -520,7 +519,7 @@ stress\_tensile\_GPa.dat 文件有每100个时间步长的拉伸应力数据：
 
 \subsection{输入文件}\label{ux8f93ux5165ux6587ux4ef6-7}
 
-\verbatiminput{Figures/LAMMPS-Si_Crack-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-Si_Crack-Input.txt}}}
 
 表面裂纹的存在是脆性材料（如Si）的典型特征，在Si晶体表面，左上块和左下块之间因为相互作用而断开，以致产生裂纹。
 
@@ -631,11 +630,11 @@ CoAl. eam.alloy \\
 
 Si-CNT体系的载荷拉伸是通过保持一端（底部）固定，同时缓慢地将另一端以（0.25\AA/ps）的速度向z方向移动实现的，如图3.16所示。考虑到分子动力学模拟时间尺度上的基本限制，该速度比实际的实验条件高了许多个数量级。只要单个时间步长的总能量改变小于$10^{-5}$\%，可以认为得到的应变系数满足准静态载荷的条件。当基底的一端固定，另一段控制位移时，要求速度梯度趋于零。
 
-\verbatiminput{Figures/LAMMPS-Si-CNT-tension-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-Si-CNT-tension-Input.txt}}}
 
 以下是一个单独的原子位置文件：``readdata.SiCNT.''这个文件可以生成如图3.16所示的结构。
 
-\verbatiminput{Figures/LAMMPS-Si-CNT-tension-data.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-Si-CNT-tension-data.txt}}}
 
 \subsection{运行}\label{ux8fd0ux884c-1}
 
@@ -706,7 +705,7 @@ CNT在强化CNT上的拉长和载荷传递被视为其力学性能提高的主�
 
 下面的文件是为2000 K运行准备的$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$-MSD文件，例如：
 
-\verbatiminput{Figures/LAMMPS-ZrO2-Y2O3-Input.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-ZrO2-Y2O3-Input.txt}}}
 
 下面的文件是为$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$（6原子\%）体系的结构准备的$\mathrm{ZrO}_2-\mathrm{Y}_2\mathrm{O}_3$-MSD文件，如图\ref{LAMMPS-ZrO2-Y2O3-structure}所示。
 
@@ -719,7 +718,7 @@ CNT在强化CNT上的拉长和载荷传递被视为其力学性能提高的主�
 \label{LAMMPS-ZrO2-Y2O3-structure}
 \end{figure}
 
-\verbatiminput{Figures/LAMMPS-ZrO2-Y2O3-data.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-ZrO2-Y2O3-data.txt}}}
 
 \subsection{运行}\label{ux8fd0ux884c-2}
 
@@ -757,7 +756,7 @@ eV。
 
 将输入文件中的势定义为：
 
-\verbatiminput{Figures/LAMMPS-ReaFF.txt}
+{\fontsize{8.5pt}{7.2pt}\selectfont{\verbatiminput{Figures/LAMMPS-ReaFF.txt}}}
 
 衬底:一层4×4×4Si（001），512个原子，底层固定
 
