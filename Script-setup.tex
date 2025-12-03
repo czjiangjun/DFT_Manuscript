@@ -163,12 +163,12 @@
 
 % 参考文献使用 BibTeX + natbib 宏包
 % 顺序编码制
-\usepackage[sort]{natbib}
-\bibliographystyle{thuthesis-numeric}
-%\bibliographystyle{thuthesis-bib/thuthesis-author-year}
-%\bibliographystyle{thuthesis-bib/thuthesis-numeric}
-%\bibliographystyle{thuthesis-bib/thuthesis-bachelor}
+%\usepackage[sort]{natbib}
+%\bibliographystyle{thuthesis-numeric}				%格式文件 /usr/local/texlive/2025/texmf-dist/bibtex/bst/thuthesis/thuthesis-numeric.bst 
+
+\usepackage[numbers,sort&compress]{natbib}			% numbers 明确标注序号
 %\bibliographystyle{plain}
+\bibliographystyle{thuthesis-bib/thuthesis-numeric}		%格式文件 当前文件夹下
 %\bibliographystyle{/home/bcc-317/Documents/Reference/mybib}
 
 % 著者-出版年制
