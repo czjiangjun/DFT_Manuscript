@@ -1,14 +1,19 @@
 \chapter{\rm{VASP}软件的理论基础}
 \section{\rm{VASP}软件简介}
-\textrm{VASP}是维也纳大学的\textrm{George Kresse}团队开发和维护的一款基于第一原理的电子结构计算和分子动力学模拟软件包。在常用的微观尺度计算材料软件中，\textrm{VASP}是公认的执牛耳者。总体来说，\textrm{VASP}在同类软件中能脱颖而出，主要得益于其在以下方面的性能优势:
+%\textcolor{red}{回顾\textrm{VASP}软件的开发历史，不难看出，和很多科学计算软件类似，它也有一段曲折的过往。}
+%\textrm{VASP}软件诞生之前，当时在麻省理工学院\textrm{(Massachusetts Institute of Technology，MIT)}从事访问研究的\textrm{Mike Payne}开发了一套基于密度泛函和赝势理论的从头计算程序，\textrm{Mike Payne}回到英国剑桥大学后，将该程序完成成为\textrm{CASTEP(Cambridge Sequential Total Energy Package)}软件包。1989年7月，\textrm{J\"urgen Hafner}将在剑桥得到的\textrm{Mike Payne}组的代码带回维也纳，由此开启\textrm{VASP}软件的``初始''代码开发历程；1991年9月，在\textrm{CASTEP-1989}年旧版本基础上，正式开启\textrm{VASP}代码的编写工作，此时\textrm{CASTEP}代码也在作进一步开发；1992年10月起，代码中开始引入超软赝势\textrm{(Ultra-Soft Pseudo-Potential, USPP)}；1995年2月，软件正式定名\textrm{VASP}(一度命名为\textrm{VAMP})；1996年9月，自\textrm{VASP}-4.1版起，用\textrm{Fortran~90}语言改写全部代码，并于1997年1月前后完成\textrm{MPI}并行版本的开发，有必要指出的是。此时\textrm{VASP}团队的并行版代码中，并行通信实现的核心实现同样源自\textrm{CASTEP}，由此引发两个团队间龃龉，1998年7月前后，\textrm{VASP}团队不得不彻底改写并行的通信实现，完全替代\textrm{CASTEP}的实现方案\footnote{正因此，\textrm{VASP}组坚称，\textrm{J. Hafner}带回的代码虽与\textrm{CASTEP}同源，但彼时\textrm{CASTEP}名份未定，因此属于两者各属不同的分枝；后来\textrm{VASP}坚决发展\textrm{PAW}方法，与\textrm{CASTEP}划清界限，皆源于此。科学软件发展史上类似事件层出不穷，在此不作专门介绍和评论。}1999年12月，\textrm{VASP}推出应用引入投影子缀假波\textrm{(Projector Augmented  Wave, PAW)}方法的全新版\textrm{VASP}，从此与\textrm{CASTEP}彻底分道扬镳。2004年起，\textrm{VASP}陆续推出基于\textrm{PAW}的稳定版本\textrm{5.X}，2015年前后，\textrm{VASP}实现了对GPU的支持，并经历了从\textrm{CUDA-C}到\textrm{OpenACC}的技术演进，从2015年底的\textrm{VASP-5.4.1}开始，通过\textrm{CUDA-C}编程，支持\textrm{VASP}的\textrm{GPU}计算；2021年推出\textrm{VASP-6.2.0}，主推\textrm{OpenACC}端口，极大提升了软件的速度与代码可维护性，正式开启支持\textrm{GPU}计算的\textrm{VASP}稳定版本发布。截止到目前最新版本的\textrm{VASP-6.5.0}已经实现了\textrm{(Bethe-Salpeter Equation, BSE)}等更多功能的\textrm{GPU}加速。需要说明的是，当前的\textrm{VASP}仅支持\textrm{NVIDIA}的\textrm{GPU}，\textrm{AMD}与\textrm{Intel}的\textrm{GPU}支持计划仍在开发中。
+\textrm{VASP}是维也纳大学的\textrm{George Kresse}团队开发和维护的一款基于密度泛函理论\textrm{(Density Functional Theory, DFT)}的电子结构计算与分子动力学模拟软件包。在常用的微观尺度计算材料软件中，\textrm{VASP}是公认的执牛耳者。%总体来说，
+\textrm{VASP}在同类软件中能脱颖而出，得益于其在计算过程中精度和效率上的兼顾，主要包括以下特色:
 \begin{itemize}
-	\item \textrm{VASP}采用\textrm{PAW~(Projector Augmented-Wave)}方法，平衡了赝势方法和全电子计算优点，兼顾了计算的精度和效率。
+	\item \textrm{VASP}采用的\textrm{PAW~(Projector Augmented-Wave)}方法，平衡了赝势方法和全电子计算优点。
 		\item \textrm{VASP}在实空间优化投影函数\textrm{(Projector)}，将主要的计算过程变换到实空间完成，节省了矩阵迭代的内存开销。%，保证了计算精度和效率
 		\item \textrm{VASP}通过引入多样的优化算法，提高了矩阵对角化和电荷密度搜索的效率。
 		\item 在\textrm{VASP}的并行计算中，有效均衡了各节点处理\textrm{FFT}变换负载和通信，提升了软件的并行效率。
 \end{itemize}
-\textrm{VASP}软件诞生之前，当时在麻省理工学院\textrm{(Massachusetts Institute of Technology，MIT)}做访问研究工作的\textrm{Mike Payne}开发了一套基于密度泛函理论和赝势的从头计算程序，\textrm{Mike Payne}回到英国剑桥大学后，将该程序完成成为\textrm{CASTEP(Cambridge Sequential Total Energy Package)}软件包。1989年7月，\textrm{J\"urgen Hafner}将在剑桥得到的\textrm{Mike Payne}组的代码带回维也纳，由此开启\textrm{VASP}软件的``初始''代码开发历程；1991年9月，在\textrm{CASTEP-1989}年旧版本基础上，正式开启\textrm{VASP}代码的编写工作，此时\textrm{CASTEP}代码也在作进一步开发；1992年10月起，代码中开始引入超软赝势\textrm{(Ultra-Soft Pseudo-Potential, USPP)}；1995年2月，软件正式定名\textrm{VASP}(一度命名为\textrm{VAMP})；1996年9月，自\textrm{VASP}-4.1版起，用\textrm{Fortran~90}语言改写全部代码，并于1997年1月前后完成\textrm{MPI}并行版本的开发，有必要指出的是。此时\textrm{VASP}团队的并行版代码中，并行通信实现的核心实现同样源自\textrm{CASTEP}，由此引发两个团队间龃龉，1998年7月前后，\textrm{VASP}团队不得不彻底改写并行的通信实现，完全替代\textrm{CASTEP}的实现方案\footnote{正因此，\textrm{VASP}组坚称，\textrm{J. Hafner}带回的代码虽与\textrm{CASTEP}同源，但彼时\textrm{CASTEP}名份未定，因此属于两者各属不同的分枝；后来\textrm{VASP}坚决发展\textrm{PAW}方法，与\textrm{CASTEP}划清界限，皆源于此。科学软件发展史上类似事件层出不穷，在此不作专门介绍和评论。}1999年12月，\textrm{VASP}推出应用引入投影子缀假波\textrm{(Projector Augmented  Wave, PAW)}方法的全新版\textrm{VASP}，从此与\textrm{CASTEP}彻底分道扬镳。2004年起，\textrm{VASP}陆续推出基于\textrm{PAW}的稳定版本\textrm{5.X}，2015年前后，\textrm{VASP}实现了对GPU的支持，并经历了从\textrm{CUDA-C}到\textrm{OpenACC}的技术演进，从2015年底的\textrm{VASP-5.4.1}开始，通过\textrm{CUDA-C}编程，支持\textrm{VASP}的\textrm{GPU}计算；2021年推出\textrm{VASP-6.2.0}，主推\textrm{OpenACC}端口，极大提升了软件的速度与代码可维护性，正式开启支持\textrm{GPU}计算的\textrm{VASP}稳定版本发布。截止到目前最新版本的\textrm{VASP-6.5.0}已经实现了\textrm{(Bethe-Salpeter Equation, BSE)}等更多功能的\textrm{GPU}加速。需要说明的是，当前的\textrm{VASP}仅支持\textrm{NVIDIA}的\textrm{GPU}，\textrm{AMD}与\textrm{Intel}的\textrm{GPU}支持计划仍在开发中。
-以下对\textrm{VASP}软件所涉及的密度泛函和第一原理分子动力学相关的基础理论作扼要介绍，以便于读者整体了解\textrm{VASP}的软件框架和底层逻辑。
+
+近年来，在\textrm{NVDIA}公司的直接支持下，\textrm{VASP}软件的\textrm{GPU}版本计算性能也有了极大的提升。
+
+为便于读者整体了解\textrm{VASP}的软件框架和底层逻辑，以下对该软件所涉及的密度泛函和第一原理分子动力学相关的基础理论作扼要介绍，
 
 \section{\rm{VASP}软件的基础理论}
 \subsection{密度泛函{理论}基础} \label{chap:dft}
@@ -34,12 +39,12 @@
 {作为}基态的%单})
 %粒})
 {电}子密度%之间的具体对应关系并不清楚，特别是体系的动能与基态单粒子的对应关系对于精确计算体系基态总能量有比较重要的影响})
-{的泛函的显式表达}。Kohn和\linebreak Sham\upcite{PR140-A1133_1965}%采用了与相互作用体系有相同单粒子密度的无相互作用体系的动能近似来近似计算相互作用体系的动在在能，把剩余部分都放在交换-相关能项中予以考虑。本质上，这个方法把单粒子波函数又引入了密度泛函理论，但是基本解决了动能计算的问题。在他们的工作基础上，各种近似的交换-相关能泛函形式\upcite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}被提出来并})
+{的泛函的显式表达}。Kohn和Sham\upcite{PR140-A1133_1965}%采用了与相互作用体系有相同单粒子密度的无相互作用体系的动能近似来近似计算相互作用体系的动在在能，把剩余部分都放在交换-相关能项中予以考虑。本质上，这个方法把单粒子波函数又引入了密度泛函理论，但是基本解决了动能计算的问题。在他们的工作基础上，各种近似的交换-相关能泛函形式\upcite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}被提出来并})
 {提出近似的处理方法，使密度泛函理论可用于实际体系的量子力学计算。后来人们提出过多种能量密度泛函的近似表达式，其中有一部分已被}广泛应用于%计算各类})
 原子、分子和固体体系{的计算中\upcite{CJP58-1200_1980,PRB45-13244_1992,PRA38-3098_1988,PRB33-8822_1986,PRB37-785_1988}}。
 
 \subsubsection{Hohenberg-Kohn定理}
-Hohenberg-Kohn定理\upcite{PR136-B864_1964}包含两部分{内容}。第一部分指出，多%粒})
+Hohenberg-Kohn定理\upcite{PR136-B864_1964}在内容上可分为两部分。第一部分指出，多%粒})
 {电}子体系的外势由其%基态性质与
 基态%单})
 %粒})
@@ -130,7 +135,7 @@ $的泛函%形式})
 
 到目前为止，$F_{\mathrm{HK}}$的%具体})
 {精确表达形}
-式还没有得到，%一般都采用近似的方法})
+式还是未知的，%一般都采用近似的方法})
 {只能作近似处理}。Thosmas-Fermi%理论})
 {模型}%实际上就是一个对$F_{\mathrm{HK}}$近似的理论，但是由于动能泛函的误差很})
 {可以看作是对$F_{\mathrm{HK}}[\rho]$泛函采取粗略近似的密度泛函理论。由于误差太}大，Thomas-Fermi%理论})
