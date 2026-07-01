@@ -1,7 +1,9 @@
 \chapter{\rm{VASP}的输入文件与控制参数}
-\textrm{VASP}的计算输入文件主要包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。
+\textrm{VASP}的计算输入文件主要包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。这四个文件分别是计算对象的结构文件，计算控制参数文件，$\vec k$空间布点和积分方案文件和用于计算的元素的\textrm{PAW}方法所涉及的原子数据。这四个文件中，\textrm{POTCAR}的数据是\textrm{VASP}软件包自带的。其余三个文件，则按一定的规则输入并用于计算。
 \section{\rm{POSCAR}文件与晶胞参数}
+\textrm{POSCAR}文件保存的是计算对象的结构文件，包括晶胞几何结构和元胞中原子(或离子)的位置，在分子动力学计算中，还有每个原子的初始速度信息。
 \subsection{\rm{POSCAR}文件的内容}
+\textrm{POSCAR}文件的格式基本是固定的。第一行字符串，描述的是计算对象的名称；第二行对应的是晶胞的晶胞参数$a$、$b$、$c$；第三到第五行以矩阵形式给定晶胞参数$a$、$b$、$c$的矢量方向(等价于确定晶胞参数的$\alpha$、$\beta$和$\gamma$)。第六行给定计算体系各原子的原子数，此处的原子顺序将于\textrm{POTCAR}中原子顺利一致。此下将给出晶胞中各原子，在对应晶胞中的坐标位置。
 \subsection{晶体与晶胞参数}
 \section{\rm{INCAR}文件}
 \subsection{\rm{INCAR}文件的主要内容}
