@@ -3,7 +3,21 @@
 \section{\rm{POSCAR}文件与晶胞参数}
 \textrm{POSCAR}文件保存的是计算对象的结构文件，包括晶胞几何结构和元胞中原子(或离子)的位置，在分子动力学计算中，还有每个原子的初始速度信息。
 \subsection{\rm{POSCAR}文件的内容}
-\textrm{POSCAR}文件的格式基本是固定的。第一行字符串，描述的是计算对象的名称；第二行对应的是晶胞的晶胞参数$a$、$b$、$c$；第三到第五行以矩阵形式给定晶胞参数$a$、$b$、$c$的矢量方向(等价于确定晶胞参数的$\alpha$、$\beta$和$\gamma$)。第六行给定计算体系各原子的原子数，此处的原子顺序将于\textrm{POTCAR}中原子顺利一致。此下将给出晶胞中各原子，在对应晶胞中的坐标位置。
+\textrm{POSCAR}文件的格式基本是固定的。第一行字符串，描述的是计算对象的名称；第二行对应的是晶胞参数的通用标度系数(如果这个行的值是负值，则表示晶胞体积)；后续三行(第三到第五行)以矩阵形式给定晶胞参数$a$、$b$、$c$的矢量方向(等价于确定晶胞参数的$\alpha$、$\beta$和$\gamma$)。第六行给定计算体系各原子的原子数，此处的原子顺序将于\textrm{POTCAR}中原子顺利一致。如果是分子动力学或结构计算时，第七行必须是特征字符串\textrm{Selective dynamic}(至少也要是保持首字符\textrm{S}或\textrm{s})。\textrm{VASP}程序读到该关键字符串时，可以要求每个原子沿晶胞三个轴向是否需要移动。接下来一行(如果设定\textrm{Selective dynamic}时是第八行，否则是第七行)，将给出晶胞中各原子坐标的格式，许可的特征字符串是\textrm{Caresian}(对应笛卡尔坐标)或\textrm{Dirct}(分数坐标)。类似地，\textrm{VASP}只依据字符串首字母确定坐标特征，\textrm{C}，\textrm{c}或\textrm{K}或\textrm{k}是笛卡尔坐标，\textrm{D}，\textrm{d}表示分数坐标。接下来各行是对应原子在晶胞中的坐标位置。在分数坐标系下，每个原子的位置可以表示为
+\begin{equation}
+	\vec R=x_1\vec a_1+x_2\vec a_2+x_3\vec a_3
+	\label{eq:diract-mode}
+\end{equation}
+其中$a_{1\cdots 3}$是晶胞的三个基矢，$x_{1\cdots 3}$即各行依次给出的数值。而笛卡尔坐标系下，每个原子的位置则须乘上第二行的通用标度系数
+\begin{equation}
+	\vec R=s
+	\begin{parse}
+		\begin{aligned}
+			x_1\\x_2\\x_3
+		\end{aligned}
+	\end{parse}
+	\label{eq:Cartensian-mode}
+\end{equation}
 \subsection{晶体与晶胞参数}
 \section{\rm{INCAR}文件}
 \subsection{\rm{INCAR}文件的主要内容}
