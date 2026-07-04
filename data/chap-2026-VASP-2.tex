@@ -11,16 +11,30 @@
 其中$a_{1\cdots 3}$是晶胞的三个基矢，$x_{1\cdots 3}$即各行依次给出的数值。而笛卡尔坐标系下，每个原子的位置则须乘上第二行的通用标度系数
 \begin{equation}
 	\vec R=s
-	\begin{parse}
+	\begin{pmatrix}
 		\begin{aligned}
 			x_1\\x_2\\x_3
 		\end{aligned}
-	\end{parse}
+	\end{pmatrix}
 	\label{eq:Cartensian-mode}
 \end{equation}
-\subsection{晶体与晶胞参数}
+注意，各原子的排列顺序和数目必须与第六行的原子顺序与对应的数目保持一致。而一旦第七行是\textrm{Selective dynamic}时，每一行除了原子坐标值外，还可以通过额外的三个字符\textrm{T}或\textrm{F}标记原子在三个方向的运动或固定。
+%\subsection{晶体与晶胞参数}
+\centering
+\vspace{-0.15in}
+%------------------------------------直-接-插-入-文-件--------------------------------------------------------------------------------------
+%\textcolor{red}{\textbf{直接插入文件}}:
+\fontsize{4.2pt}{3.2pt}\selectfont{
+\verbatiminput{Figures/POSCAR} %为保险:~选用文件名绝对路径
+}
+
 \section{\rm{INCAR}文件}
+\textrm{INCAR}是\textrm{VASP}计算过程中最主要的控制文件，它所允许包含的参数有数十个。对\textrm{VASP}用户来说，\textrm{INCAR}中参数的设计与选择，是提交\textrm{VASP}计算的主要任务。
+%\textrm{POSCAR}、\textrm{KPOINTS}和\textrm{POTCAR}都属于极易处理的输入控制文件，
 \subsection{\rm{INCAR}文件的主要内容}
+\textrm{INCAR}的参数虽然繁多，但幸运的是，\textrm{VASP}为\textrm{INCAR}的所有控制参数都设定了可缺省的默认值。因此对于初学者来说，\textrm{INCAR}参数可以是一个空文件(但这个文件必须存在！)，同样可以完成一个\textrm{VASP}计算。但是要想完成一个精准的\textrm{VASP}计算，\textrm{INCAR}中的参数往往不能仅依赖默认的缺省值。
+
+\textrm{INCAR}的主要参数列于表
 \subsection{\rm{VASP}的主要计算控制参数}
 \section{\rm{KPOINRS}文件}
 \subsection{\rm{KPOINTS}文件的内容}
