@@ -1,4 +1,22 @@
-\chapter{\rm{VASP}的输入文件与控制参数}
+\chapter{\rm{VASP}的基本使用:~输入文件与控制参数}
+%\section{\rm{VASP}软件的开发简史}
+\textrm{VASP}是维也纳大学的\textrm{George Kresse}团队开发和维护的一款基于第一原理的电子结构计算和分子动力学模拟软件包。
+在常用的微观尺度计算材料软件中，\textrm{VASP}是公认的执牛耳者。
+总体来说，\textrm{VASP}在同类软件中能脱颖而出，主要得益于其在以下方面的性能优势:
+\begin{itemize}
+	\item \textrm{VASP}采用\textrm{PAW~(Projector Augmented-Wave)}方法，平衡了赝势方法和全电子计算优点，兼顾了计算的精度和效率。
+		\item \textrm{VASP}在实空间优化投影函数\textrm{(Projector)}，将主要的计算过程变换到实空间完成，节省了矩阵迭代的内存开销。%，保证了计算精度和效率
+		\item \textrm{VASP}通过引入多样的优化算法，提高了矩阵对角化和电荷密度搜索的效率。
+		\item 在\textrm{VASP}的并行计算中，有效均衡了各节点处理\textrm{FFT}变换负载和通信，提升了软件的并行效率。近年来，在\textrm{NVIDA}的支持下,\textrm{VASP}的\textrm{GPU}版，计算效率又有了很大的提升。
+\end{itemize}
+和很多科学计算软件的发展过程类似，\textrm{VASP}软件也经历若干版权纷争的曲折，最后以独立的商业软件形式面世。
+\textrm{VASP}软件诞生之前，大约在1980年中后期，当时在麻省理工学院\textrm{(Massachusetts Institute of Technology，MIT)}做访问研究工作的\textrm{Mike Payne}开发了一套基于密度泛函理论和赝势的从头计算程序，\textrm{Mike Payne}回到英国剑桥大学后，将该程序完成成为\textrm{CASTEP(Cambridge Sequential Total Energy Package)}软件包。
+1989年7月，\textrm{J\"urgen Hafner}将在剑桥得到的\textrm{Mike Payne}组的代码带回维也纳，由此开启\textrm{VASP}软件的``初始''代码开发历程；1991年9月，在\textrm{CASTEP-1989}年旧版本基础上，正式开启\textrm{VASP}代码的编写工作，此时\textrm{CASTEP}代码也在作进一步开发；1992年10月起，代码中开始引入超软赝势\textrm{(Ultra-Soft Pseudo-Potential, USPP)}；1995年2月，软件正式定名\textrm{VASP}(一度曾命名为\textrm{VAMP})；1996年9月，自\textrm{VASP}-4.1版起，用\textrm{Fortran~90}语言改写全部代码，并于1997年1月前后完成\textrm{MPI}并行版本的{开发，有必要指出的是。此时\textrm{VASP}团队的并行版代码中，并行通信实现的核心实现同样源自\textrm{CASTEP}，由此引发两个团队间龃龉。
+1998年7月前后，\textrm{VASP}团队不得不彻底改写并行的通信实现，完全替代\textrm{CASTEP}的实现方案\footnote{正因此，\textrm{VASP}组坚称，\textrm{J. Hafner}带回的代码虽与\textrm{CASTEP}同源，但彼时\textrm{CASTEP}名份未定，因此属于两者各属不同的分枝；后来\textrm{VASP}坚决发展\textrm{PAW}方法，与\textrm{CASTEP}划清界限，皆源于此。科学软件发展史上类似事件层出不穷，在此不作专门介绍和评论。}
+1999年12月，\textrm{VASP}推出应用引入投影子缀假波\textrm{(Projector Augmented  Wave, PAW)}方法的全新版\textrm{VASP}，从此与\textrm{CASTEP}彻底分道扬镳。
+2004年起，\textrm{VASP}陆续推出基于\textrm{PAW}的稳定版本\textrm{5.X}，2015年前后，\textrm{VASP}实现了对GPU的支持，并经历了从\textrm{CUDA-C}到\textrm{OpenACC}的技术演进，从2015年底的\textrm{VASP-5.4.1}开始，通过\textrm{CUDA-C}编程，支持\textrm{VASP}的\textrm{GPU}计算；2021年推出\textrm{VASP-6.2.0}，主推\textrm{OpenACC}端口，极大提升了软件的速度与代码可维护性，正式开启支持\textrm{GPU}计算的\textrm{VASP}稳定版本发布。
+截止到目前，最新版本的\textrm{VASP-6.5.0}已经实现了\textrm{(Bethe-Salpeter Equation, BSE)}等更多功能的\textrm{GPU}加速。需要说明的是，当前的\textrm{VASP}仅支持\textrm{NVIDIA}的\textrm{GPU}，\textrm{AMD}与\textrm{Intel}的\textrm{GPU}支持计划仍在开发中。
+
 \textrm{VASP}的计算输入文件主要包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。这四个文件分别是计算对象的结构文件，计算控制参数文件，$\vec k$空间布点和积分方案文件和用于计算的元素的\textrm{PAW}方法所涉及的原子数据。这四个文件中，\textrm{POTCAR}的数据是\textrm{VASP}软件包自带的。其余三个文件，则按一定的规则输入并用于计算。
 \section{\rm{POSCAR}文件与晶胞参数}
 \textrm{POSCAR}文件保存的是计算对象的结构文件，包括晶胞几何结构和元胞中原子(或离子)的位置，在分子动力学计算中，还有每个原子的初始速度信息。
