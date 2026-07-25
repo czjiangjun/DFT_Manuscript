@@ -783,15 +783,439 @@ $H_{\lambda}^{\prime}$、$\psi_{\lambda}^{\prime}$和$E_{\lambda}^{\prime}$表�
 {精度并}没有很明显的%改进})
 {提高}。
 \section{固体能带理论}
-\subsection{\rm{Blochl}定理}
-\subsection{能带与$\vec k$空间}
-\section{从赝势到\rm{PAW}方法}
-\subsection{赝势方法}
-\subsection{\rm{APW}方法与\rm{PAW}方法}
-\subsection{\rm{VASP}中的{\rm{PAW}}方法}
-\section{一些专题}
-\subsection{$k$空间积分与总能量}
-\subsection{第一原理分子动力学与\rm{Car-Parrinello}方案}
-\subsection{电子相关的解决方案:~\rm{DFT}+$U$和\rm{GW}近似}
-\subsection{自旋-轨道耦合}
-\subsection{电子的激发态和线性响应}
+%\subsection{\rm{Blochl}定理}
+%\subsection{能带与$\vec k$空间}
+%\section{从赝势到\rm{PAW}方法}
+%\subsection{赝势方法}
+%\subsection{\rm{APW}方法与\rm{PAW}方法}
+%\subsection{\rm{VASP}中的{\rm{PAW}}方法}
+%\section{一些专题}
+%\subsection{$k$空间积分与总能量}
+%\subsection{第一原理分子动力学与\rm{Car-Parrinello}方案}
+%\subsection{电子相关的解决方案:~\rm{DFT}+$U$和\rm{GW}近似}
+%\subsection{自旋-轨道耦合}
+%\subsection{电子的激发态和线性响应}
+固体能带理论是凝聚态物理中最成功的理论之一，是固体电子理论的支柱。上世纪二十年代末和三十年代初，量子力学的运动规律确立后，在应用量子力学研究金属电导理论的过程中发展起来了固体能带理论，最初的成就在于定性的阐述了晶体中电子运动的普遍性特点。固体的很多性质，如振动光谱、磁有序、电导率、光学介电函数等，原则上都可以由固体能带理论阐述和解释。上世纪五十年代以后，特别是六十年代，由于研究固体的实验工作的重大发展，提供了大量的实验数据；随着大型高速计算机的应用，使得能带理论的研究从定性的普遍规律性发展到对具体的材料复杂的能带结构计算。
+
+固体能带理论是一个近似理论，它的主要任务是确定固体的电子能级，也就是能带。在固体中存在着大量的电子，它们的运动是相互关联的，每个电子的运动都与其他电子的运动相关，对于这种多电子体系严格求解是不可能的。能带理论是单电子近似理论，就是把每个电子的运动看成是独立的在一个由其他电子和原子核构成的等效势场中的运动。在大多数情况下，人们最关心的是价电子，在原子构成分子或者固体的过程中，价电子的的运动状态往往发生很大的变化。而内层电子的的变化则比较小，因此可以将原子核与内层电子近似看成是一个离子实，这样价电子的等效势场，包括离子实的势场，其他价电子的平均势场以及考虑电子波函数的反对称性而引入的交换作用。单电子近似最早用于研究多电子原子，又称Hatree-Fock自洽场方法。
+
+能带理论的出发点是固体中的电子不再束缚于个别的原子，而是在整个固体范围内运动，称为“共有化电子”。在讨论共有化电子的运动状态的时候，假定原子实处于平衡位置，而把原子实偏离平衡位置的影响看成微扰。对于理想晶体，原子排列成晶格，晶格具有平移周期性，因此势能函数也应具有平移周期性。晶体中的单电子在一个具有晶格周期性的等效势场中运动，其波动方程是：
+\begin{equation}\label{eq:solid-1}
+  \biggl[-\dfrac{\hbar^2}{2m}\nabla^2+V(\vec r)\biggr]\psi=E\psi
+\end{equation}
+其中势能$V(\vec r)$满足：
+\begin{equation}\label{eq:solid-2}
+  V(\vec r)=V(\vec r+\vec R_n)
+\end{equation}
+$\vec R_n$为任意格矢。
+
+\section{平移周期性和倒格矢}
+理想晶体中的原子(离子实)的排列具有平移对称性，%即晶体的周期性规则的重复结构，可以看作是一个或者一组原子(或离子实)以某一特定的方式在空间中作周期性平移的结果。
+这是理想晶体和普通分子的最大区别。晶体中被平移的重复单元，称为基元(basis)，不同的晶体有着不同的基元；晶体中重复单元的平移方式，一般以抽象的空间点阵表示，称为晶格(crystal lattice)。基元以相同的方式排列在晶格的结点上。理想晶体是基元和晶格的统称。
+
+
+晶格通常用Bravais格子的形式表示。Bravais格子是矢量
+\begin{equation}
+  \vec R_n=n_1\vec{\mathbf a}_1+n_2\vec{\mathbf a}_2+n_3\vec{\mathbf a}_3
+  \label{eq:def-Bravais}
+\end{equation}
+全部端点的集合，其中$n_1,n_2,n_2$为整数，$\vec{\mathbf a}_1,\vec{\mathbf a}_2,\vec{\mathbf a}_3$为三个不共面的矢量，称Bravais格子的基矢(primitive vector)，$\vec R_n$称为Bravais格子的格矢(Bravais lattice vector, BLV)，其端点称为格点(lattice site)。所有格点的环境相同，在几何上是完全等价的。Bravais格子是一个无穷延伸的完全理想点阵，反映了晶体中原子(或离子实)的周期性排列。%，是对具有平移对称性的实际晶体合理的理想抽象。
+
+
+晶体中体积最小的周期性重复单元称为原胞(primitive cell)。%将原胞平移所有Bravais格子可能的格矢$\vec R_n$，将精确的占据理想晶体的所有空间，既不会有遗漏，也不会有重复。
+习惯上将原胞取为以基矢为棱边的平行六面体，体积为：
+\begin{equation}
+  \Omega_0=\vec{\mathbf a}_1\cdot(\vec{\mathbf a}_2\times\vec{\mathbf a}_3)
+  \label{eq:vol_pri_lattice}
+\end{equation}
+基矢的取法并不唯一。%，因此原胞有多种取法，但是任意选取的原胞并不一定具有Bravais格子的全部点群对称性。
+为保证原胞具有Bravais格子的全部点群对称性，通常选用Wigner-Seitz(WS)原胞。以晶格中某一格点为中心，作其与最近邻格点连线的垂直平分面，所有这些平面围成的以该格点为中心的最小体积称为属于该点的WS原胞。实际上WS原胞是Bravais的对称化原胞。
+
+%体积V内$\vec R_n$的格点，对于$\vec r$处的格点密度的贡献为$\delta(\vec r-\vec R_n)$，于是
+%\begin{equation}
+%  \rho(\vec r)=\sum_{\vec R_n\in V}\delta(\vec r-\vec R_n)
+%\end{equation}
+%其中$\vec R_n$为Bravais格子的格矢。
+
+%对于忽略表面效应的理想晶体，Bravais格子满足平移对称性要求
+%\begin{equation}
+%  \rho(\vec r+\vec R_n)=\rho(\vec r)
+%  \label{eq:solid-3}
+%\end{equation}
+%对所有属于BLV的$\vec R_n$成立。即$\rho(\vec r)$为周期函数，平移Bravais格子的任意格矢保持不变。除了$\rho(\vec r)$之外，晶体的其他一些性质，如质量密度，电子云密度，离子实产生的势场等也都是周期函数。一般可以写成：
+Bravais格子中的周期函数一般可以写成：
+\begin{equation}
+  F(\vec r+\vec R_n)=F(\vec r)
+  \label{eq:solid-4}
+\end{equation}
+%对于所属的BLV的$\vec R_n$成立。将$F(\vec r)$展开成为Fourier级数
+%\begin{equation}
+%  F(\vec r)=\sum_g A(\vec g)e^{i\vec g\cdot\vec r}
+%  \label{eq:solid-5}
+%\end{equation}
+%其中系数
+%\begin{equation}
+%  A(\vec g)=\dfrac1{\Omega}\int_{\Omega}F(\vec r)e^{-i\vec g\cdot\vec r}d\vec r=\dfrac{1}{\Omega}\int_{\Omega}F(\vec r+\vec R_n)e^{-i\vec g\cdot\vec r}d\vec r
+%  \label{eq:solid-6}
+%\end{equation}
+%令$\vec r'=\vec r+\vec R_n$，则式\eqref{eq:solid-5}化为：
+%\begin{equation}
+%  A(\vec g)=\dfrac{1}{\Omega}\int_{\Omega}F(\vec r')e^{-i\vec g\cdot\vec r'}d\vec r'\cdot e^{i\vec g\cdot\vec R_n}=A(\vec g)e^{i\vec g\cdot\vec R_n}
+%  \label{eq:solid-7}
+%\end{equation}
+%即
+%\begin{equation}
+%  A(\vec g)[1-e^{i\vec g\cdot\vec R_n}]=0
+%  \label{eq:solid-8}
+%\end{equation}
+%对所有的$\vec g$，如果$A(\vec g)=0$，则$F(\vec r)\equiv0$，因此要求$e^{i\vec g\cdot\vec R_n}=1$。
+
+对Bravais格子中所有的格矢$\vec R_n$，满足
+\begin{equation}
+  e^{i\vec G_h\cdot\vec R_n}=1
+  \label{eq:def_recip_1}
+\end{equation}
+即
+\begin{equation}
+  \vec G_h\cdot\vec R_n=2\pi m, \quad m\mbox{为整数}
+  \label{eq:def_recip_2}
+\end{equation}
+的全部$\vec G_h$端点，构成该Bravais格子(即正格子(direct lattice))的倒格子(reciprocal lattice)。%将$\vec R_n=n_1\vec{\mathbf a}_1+n_2\vec{\mathbf a}_2+n_3\vec{\mathbf a}_3$代入上式，有
+%\begin{equation}
+%  n_1\vec G_h\cdot\vec{\mathbf a}_1+n_2\vec G_h\cdot\vec{\mathbf a}_2+n_3\vec G_h\cdot\vec{\mathbf a}_3=2\pi m
+%  \label{eq:solid-9}
+%\end{equation}
+%对任意整数$n_1$、$n_2$和$n_3$都成立，因此要求
+%\begin{equation}
+%  \vec G_h\cdot\vec{\mathbf a}_1=2\pi h_1,\quad\vec G_h\cdot\vec{\mathbf a}_2=2\pi h_2,\quad\vec G_h\cdot\vec r_3=2\pi h_3,\quad h_1,h_2,h_3\mbox{为整数}
+%  \label{eq:solid-10}
+%\end{equation}
+因此倒格矢可以写成
+\begin{equation}
+  \vec G_h=h_1\vec{\mathbf b}_1+h_2\vec{\mathbf b}_2+h_3\vec{\mathbf b}_3,\quad h_1,h_2,h_3\mbox{为整数。}
+   \label{eq:solid-11}
+\end{equation}
+且满足
+\begin{equation}
+   \vec{\mathbf b}_i\cdot\vec{\mathbf a}_j=2\pi\delta_{ij}
+  \label{eq:solid-12}
+\end{equation}
+%因为$\vec{\mathbf a}_1,\vec{\mathbf a}_2,\vec{\mathbf a}_3$不在同一平面内，条件所确定的
+倒格矢$\vec G_h$垂直于Miller指数为($h_1,h_2,h_3$)的晶面系， 晶面间距为$d=\dfrac{2\pi}{|\vec G_h|}$。倒空间(reciprocal space)的基矢$\vec{\mathbf b}_1,\vec{\mathbf b}_2,\vec{\mathbf b}_3$可以表示为：
+\begin{equation} \label{eq:solid-13}
+\left\{ \begin{aligned}
+  \vec{\mathbf b}_1&=2\pi \dfrac{\vec{\mathbf a}_2\times\vec{\mathbf a}_3}{\vec{\mathbf a}_1\cdot(\vec{\mathbf a}_2\times\vec{\mathbf a}_3)} \\
+  \vec{\mathbf b}_2&=2\pi \dfrac{\vec{\mathbf a}_3\times\vec{\mathbf a}_1}{\vec{\mathbf a}_1\cdot(\vec{\mathbf a}_2\times\vec{\mathbf a}_3)} \\
+  \vec{\mathbf b}_3&=2\pi \dfrac{\vec{\mathbf a}_1\times\vec{\mathbf a}_2}{\vec{\mathbf a}_1\cdot(\vec{\mathbf a}_2\times\vec{\mathbf a}_3)} \\
+\end{aligned} \right.
+\end{equation}
+倒格矢是倒空间中的Bravais格子。%可以证明，
+倒格子的原胞体积$\Omega^{\ast}$与正格子的原胞体积成反比。即
+\begin{equation}
+  \Omega^{\ast}=\vec{\mathbf b}_1\cdot(\vec{\mathbf b}_2\times\vec{\mathbf b}_3)=\dfrac{(2\pi)^3}{\Omega_0}
+  \label{eq:solid-14}
+\end{equation}
+类似地，倒格子空间中的WS原胞称为第一Brillouin区(first Brillouin zone)。同一晶格的正格子和倒格子有相同的点群对称性，由于WS原胞具有Bravais的全部点群对称性，所以第一Brillouin区也具有晶格点群的全部对称性。
+
+
+%与Bravais格子有相同平移对称性的物理量的Fourier展开中，只存在与格矢为倒格矢的分量，其他分量的系数为零。即
+%满足\eqref{eq:solid-4}的函数$F(\vec r)$的Fourier展开式为
+%\begin{equation}
+%  \begin{split}
+%  F(\vec r)&=\sum_{\vec G_h}A(\vec G_h)e^{i\vec G_h\cdot\vec r},\\
+%  \mbox{其中}\hspace{1\ccwd} A(\vec G_h)&=\dfrac1{\Omega_0}\int_{\Omega_0}F(\vec r)e^{-i\vec G_h\cdot\vec r}d\vec r
+%  \label{eq:solid-15}
+%  \end{split}
+%\end{equation}
+
+
+%根据正格子与倒格子的关系，可以证明；
+
+\section{Bloch定理}
+\subsection{Bloch定理及其证明}
+{\bf bloch定理:}\hspace{1\ccwd}{\it 对于具有周期性的势场，单电子的Schr\"odinger方程为}
+\begin{equation}
+  \psi(\vec r+\vec R_n)=e^{i\vec k\cdot\vec R_n}\psi(\vec r)
+  \label{eq:bloch}
+\end{equation}
+{\it其中$\vec k$为一矢量}。式\eqref{eq:bloch}表明当平移晶格矢量$\vec R_n$时，波函数只增加了相位因子$e^{i\vec k\cdot\vec R_n}$。式\eqref{eq:bloch}就是Bloch定理\cite{ZP52-555_1928}。根据Bloch定理，波函数可以写成
+\begin{equation}
+  \psi(\vec r)=e^{i\vec k\cdot\vec r}u(\vec r)
+  \label{eq:blochpw}
+\end{equation}
+其中$u(\vec r)$具有与晶格同样的周期性，即$u(\vec r+\vec R_n)=u(\vec r)$。
+%\begin{equation}
+%  u(\vec r+\vec R_n)=u(\vec r)
+%  \label{eq:solid-16}
+%\end{equation}
+式\eqref{eq:blochpw}称为Bloch波函数，它是平面波与周期函数的乘积。Bloch定理的简单证明如下：
+
+
+周期性势场反映了晶体的平移对称性，即晶格平移任意格矢$\vec R_n$后势场是不会改变的。引入平移算符$\hat T_{\vec R_n}$，其中$\vec R_n$是Bravais格子的任一格矢，定义为$\hat T_{\vec R_n}$作用于任意函数$f(\vec r)$上，使得矢量$\vec r$平移$\vec R_n$，即
+\begin{equation}
+  \hat T_{\vec R_n}f(\vec r)=f(\vec r+\vec R_n)
+  \label{eq:solid-17}
+\end{equation}
+
+
+在晶体中单电子运动的Hamiltonian\,$\hat H=-\dfrac{\hbar^2}{2m}\nabla^2+V(\vec r)$
+%\begin{equation}
+%  \hat H=-\dfrac{\hbar^2}{2m}\nabla^2+V(\vec r)
+%  \label{eq:solid-18}
+%\end{equation}
+具有晶格周期性，而
+\begin{equation}
+  \begin{split}
+  \hat T_{\vec R_n}\hat Hf(\vec r)&=\biggl[-\dfrac{\hbar^2}{2m}\nabla_{\vec r +\vec R_n}^2+V(\vec r+\vec R_n)\biggr]f(\vec r+\vec R_n)\\
+  &=\biggl[-\dfrac{\hbar^2}{2m}\nabla_{\vec r}^2+V(\vec r)\biggr]f(\vec r+\vec R_n)\\
+  &=\hat H\hat T_{\vec R_n}f(\vec r)
+  \end{split}
+  \label{eq:solid-19}
+\end{equation}
+%因为其中$\nabla_{\vec r+\vec R_n}$只是相应的对$\partial/\partial x$，$\partial/\partial y$，$\partial/\partial z$中的变量$x$，$y$，$z$改变一个常数，不会影响微分算符(即微分算符与平移操作无关)。可见晶体Hamiltonian式\eqref{eq:solid-18}具有平移周期性$\hat H(\vec r)=\hat H(\vec r+\vec R_n)$，而且
+因此$\hat T_{\vec R_n}$与$\hat H$是对易的，即$\hat T_{\vec R_n}\hat H=\hat H\hat T_{\vec R_n}$。
+%\begin{equation}
+%  \hat T_{\vec R_n}\hat H=\hat H\hat T_{\vec R_n}
+%  \label{eq:solid-20}
+%\end{equation}
+%根据量子力学一般原理，两个对易算符具有相同的本征函数。因此，
+可以选择$\hat H$的本征态，使它同时为各平移算符$\hat T_{\vec R_n}$的本征态。即有
+\begin{equation} \label{eq:solid-21}
+\left\{ \begin{aligned}
+  \hat H\psi(\vec r)&=E\psi(\vec r) \\
+  \hat T_{\vec R_n}\psi(\vec r)&=\lambda_{\vec R_n}\psi(\vec r) \\
+\end{aligned} \right.
+\end{equation}
+$\lambda_{\vec R_n}$是对应的平移算符的本征值。根据平移算符的定义\eqref{eq:solid-17}，
+\begin{equation}
+  \psi(\vec r+\vec R_n)=\lambda_{\vec R_n}\psi(\vec r)
+  \label{eq:solid-22}
+\end{equation}
+%为了确定本征值$\lambda_{\vec R_n}$的值，
+由波函数的归一化条件得，%$\int_{\Omega_0}|\psi(\vec r)|^2d\vec r=\int_{\Omega_0}|\psi(\vec r+\vec R_n)|^2d\vec r=1$
+%\begin{equation}
+%  \int_{\Omega_0}|\psi(\vec r)|^2d\vec r=\int_{\Omega_0}|\psi(\vec r+\vec R_n)|^2d\vec r=1
+%  \label{eq:solid-23}
+%\end{equation}
+$|\lambda_{\vec R_n}|^2=1$。
+%\begin{equation}
+%  |\lambda_{\vec r}|^2=1
+%  \label{eq:solid-24}
+%\end{equation}
+于是$\lambda_{\vec R_n}$可以写成$\lambda_{\vec R_n}=e^{i\beta\vec R_n}$
+%\begin{equation}
+%  \lambda_{\vec R_n}=e^{i\beta\vec R_n}
+%  \label{eq:solid-25}
+%\end{equation}
+的形式，即$\psi(\vec r+\vec R_n)$和$\psi(\vec r)$仅差了一个相位因子。
+
+
+此外，考虑到任意两次相继的平移$\vec R_n$和$\vec r_m$，相当于一次平移$\vec R_n+\vec r_m$之和，即满足：
+\begin{equation}
+  \begin{aligned}
+   \hat T_{\vec R_n}\hat T_{\vec r_m}\psi&=\hat T_{\vec R_n}\lambda_{\vec r_m}\psi=\lambda_{\vec r_m}\lambda_{\vec R_n}\psi \\
+   \hat T_{\vec R_n}\hat T_{\vec r_m}\psi&=\hat T_{\vec R_n+\vec r_m}\psi=\lambda_{\vec R_n+\vec r_m}\psi
+  \end{aligned}
+  \label{eq:solid-26}
+\end{equation}
+因此平移算符的本征值$\lambda_{\vec R_n}$必须满足关系$\lambda_{\vec R_n+\vec r_m}=\lambda_{\vec r_m}\lambda_{\vec R_n}$。
+%\begin{equation}
+%  \lambda_{\vec R_n+\vec r_m}=\lambda_{\vec r_m}\lambda_{\vec R_n}
+%  \label{eq:solid-27}
+%\end{equation}
+%将式\eqref{eq:solid-25}代入，两边取对数，有
+%\begin{equation}
+%  \beta_{\vec R_n+\vec r_m}=\beta_{\vec R_n}+\beta_{\vec r_m}
+%  \label{eq:solid-28}
+%\end{equation}
+%式\eqref{eq:solid-28}仅当$\beta$与$\vec R_n$之间呈线性关系才能满足，即$\beta_{\vec R_n}=\vec k\cdot\vec R_n$，
+有$\lambda_{\vec R_n}=e^{i\vec k\cdot\vec R_n}$。
+%\begin{equation}
+%  \lambda_{\vec R_n}=e^{i\vec k\cdot\vec R_n}
+%  \label{eq:solid-29}
+%\end{equation}
+$\vec k$称为简约波矢。
+
+
+只要$\hat H$具有平移对称性，对于任意Bravais格子的格矢$\vec R_n$，其本征函数满足
+\begin{equation}
+  \hat T_{\vec R_n}\psi(\vec r)=\psi(\vec r+\vec R_n)=\lambda_{\vec R_n}\psi(\vec r)＝e^{i\vec k\cdot\vec R_n}\psi(\vec r)
+  \label{eq:solid-30}
+\end{equation}
+这就是Bloch定理。
+
+
+\subsection{简约波矢$\vec k$的取值和物理意义}
+为了确定波矢$\vec k$的值，必须引入边界条件。选择周期性边条件(也称Born-Von Karman条件)。
+\begin{equation}
+  \left\{
+  \begin{aligned}
+     \psi(\vec r+N_1\vec{\mathbf a}_1)&=\psi(\vec r)\\
+     \psi(\vec r+N_2\vec{\mathbf a}_2)&=\psi(\vec r)\\
+     \psi(\vec r+N_3\vec{\mathbf a}_3)&=\psi(\vec r)\\
+   \end{aligned}\right.
+  \label{eq:solid-31}
+\end{equation}
+其中$\vec{\mathbf a}_i(i=1,2,3)$是Bravais格子的三个基矢，$N_1$、$N_2$、$N_3$分别是沿着基矢$\vec{\mathbf a}_1$、$\vec{\mathbf a}_2$、$\vec{\mathbf a}_3$方向的原胞数，$N=N_1N_2N_3$是晶体中的原胞总数。因此$\vec k$(相应的本征值$\lambda_{\vec R_n}$)的取值将受到限制。根据Bloch定理，%将式\eqref{eq:bloch}代入\eqref{eq:solid-31}得
+\begin{equation}
+  \psi(\vec r+N_i\vec{\mathbf a}_i)=e^{iN_i\vec k\cdot\vec{\mathbf a}_i}\psi(\vec r),\quad i=1,2,3
+  \label{eq:solid-32}
+\end{equation}
+这就要求$e^{iN_i\vec k\cdot\vec{\mathbf a}_i}=1$，
+%\begin{equation}
+%  e^{iN_i\vec k\cdot\vec{\mathbf a}_i}=1,\quad i=1,2,3
+%  \label{eq:solid-33}
+%\end{equation}
+%或者等价地
+%\begin{equation}
+%  N_i\vec k\cdot\vec{\mathbf a}_i=2\pi l_i,\quad l_i\mbox{为整数},\quad i=1,2,3
+%  \label{eq:solid-34}
+%\end{equation}
+将波矢$\vec k$用相应的倒格子的基矢$\vec{\mathbf b}_i(i=1,2,3)$表示，%即
+%\begin{equation}
+%  \vec k=k_1\vec{\mathbf b}_1+k_2\vec{\mathbf b}_2+k_3\vec{\mathbf b}_3
+%  \label{eq:solid-35}
+%\end{equation}
+%代入式\eqref{eq:solid-34}，并
+利用正交关系式\eqref{eq:solid-12}$\vec{\mathbf a}_i\cdot\vec{\mathbf b}_j=2\pi\delta_{ij}$，%有
+%\begin{equation}
+%  \vec k=\dfrac{l_1}{N_1}\vec{\mathbf b}_1+\dfrac{l_2}{N_2}\vec{\mathbf b}_2+\dfrac{l_3}{N_3}\vec{\mathbf b}_3
+%  \label{eq:solid-36}
+%\end{equation}
+许可的简约波矢$\vec k$可以看成是倒格子空间中以$\dfrac{\vec{\mathbf b}_i}{N_i}(i=1,2,3)$为基矢的Bravais格子的格矢。
+
+
+每个许可的$\vec k$值由上述Bravais格子的格点表示，在$\vec k$空间内所占的体积
+\begin{equation}
+  \Delta\vec k=\dfrac{\vec{\mathbf b}_1}{N_1}\cdot\biggl(\dfrac{\vec{\mathbf b}_2}{N_2}\times\dfrac{\vec{\mathbf b}_3}{N_3}\biggr)=\dfrac1N\vec{\mathbf b}_1\cdot(\vec{\mathbf b}_2\times\vec{\mathbf b}_3)
+  \label{eq:solid-37}
+\end{equation}
+由于$\vec{\mathbf b}_1\cdot(\vec{\mathbf b}_2\times\vec{\mathbf b}_3)$是倒格子原胞的体积，因此倒格子空间原胞许可的$\vec k$的数目等于实空间中晶体的总的原胞数目。
+
+
+倒格子原胞体积为$\dfrac{(2\pi)^3}{\Omega_0}$，%式\eqref{eq:solid-14}，
+$\Omega_0$是正格子的原胞体积，$N\Omega_0=V$，因此$\vec k$空间中许可态的态密度
+\begin{equation}
+  \dfrac1{\Delta\vec k}=\dfrac V{8\pi^3}
+  \label{eq:solid-38}
+\end{equation}
+对于用平面波描述的自由电子，$\hbar\vec k$是电子的动量\cite{Yanshousheng}。但是对于Bloch电子，简约波矢$\vec k$并不比例于电子的动量。动量算符$p=-i\hbar\nabla$作用于Bloch波函数%(式\eqref{eq:blochpw})上，
+\begin{equation}
+  \begin{split}
+  -i\hbar\nabla\psi_{\vec k}&=-i\hbar\nabla(e^{i\vec k\cdot\vec r}u_{\vec k}(\vec r))\\
+  &=\hbar\vec k\psi_{\vec k}-i\hbar e^{i\vec k\cdot\vec r}\nabla u_{\vec k}(\vec r)
+  \end{split}
+  \label{eq:solid-39}
+\end{equation}
+并不能写成一个简单的常数乘以$\psi_{\vec k}$，因此$\psi_{\vec k}$也不是动量算符的本征函数。
+
+
+简约波矢$\vec k$是对应于平移操作本征值的量子数，它的物理意义是表示原胞之间电子波函数位相的变化。不同$\vec k$值表明原胞间的位相是不同的。但是需要指出的是，如果$\vec k$改变一个倒格子矢量
+\begin{displaymath}
+  \vec G_n=n_1\vec{\mathbf b}_1+n_2\vec{\mathbf b}_2+n_3\vec{\mathbf b}_3,\quad(n_1,n_2,n_3\mbox{为整数})
+\end{displaymath}
+完全不会影响本征值$\lambda_{\vec R_n}$。因此，为了使$\vec k$能与平移算符的本征值$\lambda_{\vec R_n}$一一对应，必须要把$\vec k$的取值限制在一定的范围之内，使得它既能概括所有不同的本征值$\lambda_{\vec R_n}$的取值，同时又没有任意两个$\vec k$相差一个倒格矢$\vec G_n$。最方便的办法是将$\vec k$限制在$\vec k$空间的WS原胞中。
+
+\section{近自由电子近似和紧束缚近似}
+近自由电子近似和紧束缚近似是能带理论中的两个最基本的理论模型。近自由电子近似是在自由电子气模型的基础上引入弱的周期性势场，使得电子的运动发生变化，将弱的周期性势场视为微扰，从而引入能带和能隙的概念。近自由电子近似对于有较多{\it s}\,电子和{\it p}\,电子的金属，是很好的近似。紧束缚近似从原子有序排列形成晶体过程出发，考察近邻原子的波函数叠加而引起束缚于特定原子的单电子态的运动变化，可以得到电子的原子能级与晶体能带的相互联系。其物理图像和结果更适用于过渡金属的{\it d}\,电子和{\it f}\,电子以及固体中的其他内层电子。
+
+\subsection{周期场的近自由电子近似}
+近自由电子近似假定周期性变化的势场起伏比较小，将势场的平均值$\bar V$代替$V(\vec r)$作为零级近似，将周期性起伏$[V(\vec r)-\bar
+V]$作为微扰处理。以一维周期体系为例，根据微扰理论，得到一级修正的波函数为：
+\begin{equation}
+  \begin{aligned}
+    \psi_k&=\psi_k^0+\psi_k^{(1)} \\
+    &=\dfrac1{\sqrt L}e^{ikx}+\sum_n\dfrac{V_n}{\dfrac{\hbar^2}{2m}\left[k^2-\left(k+\dfrac na2\pi\right)^2\right]}\cdot\dfrac1{\sqrt V}e^{i(k+2\pi\frac na)x} \\
+    &=\dfrac1{\sqrt L}e^{ikx}\biggl\{1+\sum_n\dfrac{V_n}{\dfrac{\hbar^2}{2m}\left[k^2-\left(k+\dfrac na2\pi\right)^2\right]}e^{i2\pi\frac nax}\biggr\}
+  \end{aligned}
+  \label{eq:solid-40}
+\end{equation}
+式中$L=Na$为一维晶格长度，$N$为原胞数目，$a$为晶格常数(原子间距)。在$x$改变为$a$的整数倍的时候，求和项不变，说明括号内为一周期函数，符合Bolch函数的形式，可以写成一个自由粒子的波函数乘上具有晶格周期性的函数。
+
+
+二级能量微扰写成
+\begin{equation}
+  E_k^{(2)}=\sum_n\dfrac{|V_n|^2}{\dfrac{\hbar^2}{2m}\left[k^2-\left(k+\dfrac na2\pi\right)^2\right]}
+  \label{eq:solid-41}
+\end{equation}
+注意到当
+\begin{equation}
+  k^2=\left(k+\dfrac na2\pi\right)^2
+  \label{eq:solid-42}
+\end{equation}
+即当$k$是$\dfrac{\pi}a$的整数倍($k=-\dfrac{n\pi}a,n\mbox{为任意整数}$)时微扰理论失败，此时必须采用简并态微扰理论，
+\begin{equation}
+  E_{\pm}=\dfrac{\hbar^2k^2}{2m}\pm|V_n|
+  \label{eq:solid-43}
+\end{equation}
+这样，周期性的起伏势场使得自由电子在波矢$k=\dfrac12G_n=\dfrac{\pi}an$处断开，能量突变为$2|V_n|$。这种断开使得准连续的电子能谱出现能隙(energy gap)。在能隙范围内没有许可的电子态，电子能级分裂成为一系列的能带。
+
+
+一维体系的情形很容易推广到二维和三维情形。如果从$\vec k$空间中的原点出发，沿特定方向考察$E(\vec k)$的变化，在近自由电子近似情形下，$E(\vec k)$将像自由电子一样，比例于$k^2$呈抛物线形式变化。在跨越Brillouin区边界或者Bragg平面是一倒格矢$\vec G_h$的垂直平分面，能量跃迁的大小约为$2|V_{\vec G_h}|$的量级。$V_{\vec G_h}$是近自由电子近似Fourier展开中与$\vec G_h$联系的项的系数。
+
+\subsection{紧束缚近似}
+紧束缚近似的出发点是，电子在一个原子附近时，将主要受到该原子场的作用，将其他原子场的作用看作微扰作用，据此可以得到电子的原子能级与晶体中能带之间的相互联系。
+
+
+如果完全不考虑原子间相互影响，在某格点$\vec r_m=m_1\vec{\mathbf a}_1+m_2\vec{\mathbf a}_2+m_3\vec{\mathbf a}_3$
+%\begin{displaymath}
+%  \vec r_m=m_1\vec{\mathbf a}_1+m_2\vec{\mathbf a}_2+m_3\vec{\mathbf a}_3
+%\end{displaymath}
+附近的电子将以原子束缚态$\varphi_i(\vec r-\vec R_m)$的形式环绕$\vec R_m$点运动，(这里假定简单晶格，每个原胞含有一个原子)，$\varphi_i$表示孤立原子波动方程的本征态
+\begin{equation}
+  \left[-\dfrac{\hbar^2}{2m}\nabla^2+V(\vec r-\vec r_m)\right]\varphi_i(\vec r-\vec r_m)=\varepsilon_i\varphi_i(\vec r-\vec r_m)
+  \label{eq:solid-44}
+\end{equation}
+$V(\vec r-\vec r_m)$是$\vec R_m$格点的原子势场，$\varepsilon_i$为某个原子能级。晶体中的电子波动方程为
+\begin{equation}
+   \left[-\dfrac{\hbar^2}{2m}\nabla^2+U(\vec r)\right]\psi_i(\vec r)=E\psi_i(\vec r)
+  \label{eq:solid-45}
+\end{equation}
+$U(\vec r)$为周期性势场，它是各格点原子势场之和。在紧束缚近似中将式\eqref{eq:solid-44}看成零级近似，将$U(\vec r)-V(\vec r-\vec R_m)$看成微扰。环绕不同的格点，将有$N$个类似的波函数，它们具有相同的能量$\varepsilon_i$，即$N$重简并态。这实际上是把原子间相互影响看作微扰的简并微扰方法，微扰后的状态是$N$个简并态的线性组合，即用原子轨道$\varphi_i(\vec r-\vec R_m)$的线性组合来构造晶体中电子共有化运动的轨道$\psi(\vec r)$，因而也称为原子轨道线性组组合法(Linear Combination of Atomic Orbitals, LCAO)。因此有
+\begin{equation}
+  \psi(\vec r)=\sum_ma_m\varphi_i(\vec r-\vec R_m)
+  \label{eq:solid-46}
+\end{equation}
+%将式\eqref{eq:solid-46}代入晶体中电子的波动方程\eqref{eq:solid-45}，利用式\eqref{eq:solid-44}得到：
+%\begin{equation}
+%  \sum_ma_m[\varepsilon_i+U(\vec r)-V(\vec r-\vec r_m)]\varphi_i(\vec r-\vec r_m)=E\sum_ma_m\varphi_i(\vec r-\vec r_m)
+%  \label{eq:solid-47}
+%\end{equation}
+当原子间距比原子轨道半径大时，不同格点的$\varphi_i$的重叠很小，将近似认为
+\begin{displaymath}
+  \int\varphi_i^{\ast}(\vec r-\vec R_m)\varphi_i(\vec r-\vec R_n)d\vec r=\delta_{nm}
+\end{displaymath}
+
+根据紧束缚近似，可以看出原子能级和能带的对应关系可以分为下列几种情形：
+
+1. 对于最简单的情况，一个原子能级$\varepsilon_i$对应一个能带，原子的各个不同能级，在固体中将产生一系列相应的能带。愈低的能带愈窄，愈高的能带愈宽。这是由于能量最低的能带对应于最内层的电子，它们的电子轨道“半径”很小，在不同原子间很少相互重叠，因此能带很窄。能量较高的外层电子轨道，在不同的原子间将有较大的重叠，从而形成较宽的带。只有在简单情况下，原子能级与能带间有简单的对应关系。
+
+2. 对复杂的情形，原子能级与能带间并不存在简单的一一对应关系。在形成晶体过程中，不同原子态之间可能相互混合。通常可以用能带宽度反映混合的程度。对内层电子，能带宽度较小，能级与能带间有简单的一一对应关系；外层电子能带较宽，能带与能带间对应关系变得复杂，可以认为主要由几个能级相近的原子态相互组合形成能带，略去其它较多原子态的影响。
+
+3. 对于复式晶格，每个原胞内有若干个原子，可以认为原胞中各原子之间先形成分子轨道，能带与分子轨道之间有相互对应的关系。
+
+在紧束缚近似中，能带中的电子波函数可以写成原子波函数的Bloch和：
+\begin{displaymath}
+  \psi_{\vec k}^i=\dfrac1{\sqrt N}\sum_ne^{i\vec k\cdot\vec R_n}\varphi_i(\vec r-\vec R_n)
+\end{displaymath}
+对于任何能带，Bloch函数都可以写成类似的形式：
+\begin{equation}
+  \psi_{n\vec k}=\dfrac1{\sqrt N}\sum_ne^{i\vec k\cdot\vec R_n}W_n(\vec r-\vec R_n)
+  \label{eq:solid-48}
+\end{equation}
+其中$V_n(\vec r-\vec R_n)$称为Wannier函数。
+\begin{displaymath}
+  W_n(\vec r-\vec R_n)=\dfrac1{\sqrt N}\sum_{\vec k}e^{-i\vec k\cdot\vec R_n}\psi_{n\vec k}
+\end{displaymath}
+也就是说，一个能带的Wannier函数是由同一能带的Bloch函数所定义的。Wannier函数之间完全正交，%容易证明
+%\begin{displaymath}
+%  \int W_n^{\ast}(\vec r-\vec R_n)W_n(\vec r-\vec R_{m'})d\vec r=\delta_{mm'}
+%\end{displaymath}
+因此，Bloch函数的集合与Wannier函数的集合是两组完备的正交函数集，它们之间由幺正矩阵相联系。
+
+
+在紧束缚近似中，如果近似忽略原子波函数的交叠，近似的有
+\begin{displaymath}
+  \int \varphi_i^{\ast}(\vec r-\vec R_n)\varphi_i(\vec r-\vec R_m)d\vec r=\delta_{nm}
+\end{displaymath}
+在这种情况下，Wannier函数就是各个格点上孤立原子的波函数。如果某些能带与紧束缚近似模型相差很远，这时Wannier函数是很少保留孤立原子波函数的信息，但它仍然比较定域化。在讨论那些电子空间局域性起重要作用问题时，Wannier函数将是比较好的工具。
