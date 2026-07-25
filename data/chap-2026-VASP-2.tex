@@ -1,23 +1,11 @@
 \chapter{\rm{VASP}的基本使用:~输入文件与控制参数}
-%\section{\rm{VASP}软件的开发简史}
-\textrm{VASP}是维也纳大学的\textrm{George Kresse}团队开发和维护的一款基于第一原理的电子结构计算和分子动力学模拟软件包。
-在常用的微观尺度计算材料软件中，\textrm{VASP}是公认的执牛耳者。
-总体来说，\textrm{VASP}在同类软件中能脱颖而出，主要得益于其在以下方面的性能优势:
-\begin{itemize}
-	\item \textrm{VASP}采用\textrm{PAW~(Projector Augmented-Wave)}方法，平衡了赝势方法和全电子计算优点，兼顾了计算的精度和效率。
-		\item \textrm{VASP}在实空间优化投影函数\textrm{(Projector)}，将主要的计算过程变换到实空间完成，节省了矩阵迭代的内存开销。%，保证了计算精度和效率
-		\item \textrm{VASP}通过引入多样的优化算法，提高了矩阵对角化和电荷密度搜索的效率。
-		\item 在\textrm{VASP}的并行计算中，有效均衡了各节点处理\textrm{FFT}变换负载和通信，提升了软件的并行效率。近年来，在\textrm{NVIDA}的支持下,\textrm{VASP}的\textrm{GPU}版，计算效率又有了很大的提升。
-\end{itemize}
-和很多科学计算软件的发展过程类似，\textrm{VASP}软件也经历若干版权纷争的曲折，最后以独立的商业软件形式面世。
-\textrm{VASP}软件诞生之前，大约在1980年中后期，当时在麻省理工学院\textrm{(Massachusetts Institute of Technology，MIT)}做访问研究工作的\textrm{Mike Payne}开发了一套基于密度泛函理论和赝势的从头计算程序，\textrm{Mike Payne}回到英国剑桥大学后，将该程序完成成为\textrm{CASTEP(Cambridge Sequential Total Energy Package)}软件包。
-1989年7月，\textrm{J\"urgen Hafner}将在剑桥得到的\textrm{Mike Payne}组的代码带回维也纳，由此开启\textrm{VASP}软件的``初始''代码开发历程；1991年9月，在\textrm{CASTEP-1989}年旧版本基础上，正式开启\textrm{VASP}代码的编写工作，此时\textrm{CASTEP}代码也在作进一步开发；1992年10月起，代码中开始引入超软赝势\textrm{(Ultra-Soft Pseudo-Potential, USPP)}；1995年2月，软件正式定名\textrm{VASP}(一度曾命名为\textrm{VAMP})；1996年9月，自\textrm{VASP}-4.1版起，用\textrm{Fortran~90}语言改写全部代码，并于1997年1月前后完成\textrm{MPI}并行版本的{开发，有必要指出的是。此时\textrm{VASP}团队的并行版代码中，并行通信实现的核心实现同样源自\textrm{CASTEP}，由此引发两个团队间龃龉。
-1998年7月前后，\textrm{VASP}团队不得不彻底改写并行的通信实现，完全替代\textrm{CASTEP}的实现方案\footnote{正因此，\textrm{VASP}组坚称，\textrm{J. Hafner}带回的代码虽与\textrm{CASTEP}同源，但彼时\textrm{CASTEP}名份未定，因此属于两者各属不同的分枝；后来\textrm{VASP}坚决发展\textrm{PAW}方法，与\textrm{CASTEP}划清界限，皆源于此。科学软件发展史上类似事件层出不穷，在此不作专门介绍和评论。}
-1999年12月，\textrm{VASP}推出应用引入投影子缀假波\textrm{(Projector Augmented  Wave, PAW)}方法的全新版\textrm{VASP}，从此与\textrm{CASTEP}彻底分道扬镳。
-2004年起，\textrm{VASP}陆续推出基于\textrm{PAW}的稳定版本\textrm{5.X}，2015年前后，\textrm{VASP}实现了对GPU的支持，并经历了从\textrm{CUDA-C}到\textrm{OpenACC}的技术演进，从2015年底的\textrm{VASP-5.4.1}开始，通过\textrm{CUDA-C}编程，支持\textrm{VASP}的\textrm{GPU}计算；2021年推出\textrm{VASP-6.2.0}，主推\textrm{OpenACC}端口，极大提升了软件的速度与代码可维护性，正式开启支持\textrm{GPU}计算的\textrm{VASP}稳定版本发布。
-截止到目前，最新版本的\textrm{VASP-6.5.0}已经实现了\textrm{(Bethe-Salpeter Equation, BSE)}等更多功能的\textrm{GPU}加速。需要说明的是，当前的\textrm{VASP}仅支持\textrm{NVIDIA}的\textrm{GPU}，\textrm{AMD}与\textrm{Intel}的\textrm{GPU}支持计划仍在开发中。
+用户使用\textrm{VASP}，通常需要准备四个输入文件，%\textrm{VASP}的计算输入文件主要
+包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。
+这四个文件分别是计算对象的结构文件，计算控制参数文件，$\vec k$空间布点和积分方案文件和用于计算的元素的\textrm{PAW}方法所涉及的原子数据。
+这四个文件中，\textrm{POTCAR}的数据是\textrm{VASP}软件包自带的。其余三个文件，则需要用户按一定的规则输入或构建。这四个文件必须放置在同一工作目录下，且文件名必须全部大写、无扩展名，文件内容必须是纯文本格式。%这四个文件各自承担着不同的职责——INCAR是“控制中心”，POSCAR是“结构蓝图”，描述原子体系的几何构型；POTCAR是“能量密码本”，包含各元素的赝势信息；KPOINTS是“采样方案”，定义布里渊区中k点的取样方式。
+四个文件的内容共同决定了计算的精度、效率和最终结果的可靠性。
 
-\textrm{VASP}的计算输入文件主要包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。这四个文件分别是计算对象的结构文件，计算控制参数文件，$\vec k$空间布点和积分方案文件和用于计算的元素的\textrm{PAW}方法所涉及的原子数据。这四个文件中，\textrm{POTCAR}的数据是\textrm{VASP}软件包自带的。其余三个文件，则按一定的规则输入并用于计算。
+
 \section{\rm{POSCAR}文件与晶胞参数}
 \textrm{POSCAR}文件保存的是计算对象的结构文件，包括晶胞几何结构和元胞中原子(或离子)的位置，在分子动力学计算中，还有每个原子的初始速度信息。
 \subsection{\rm{POSCAR}文件的内容}
@@ -38,56 +26,80 @@
 \end{equation}
 注意，各原子的排列顺序和数目必须与第六行的原子顺序与对应的数目保持一致。而一旦第七行是\textrm{Selective dynamic}时，每一行除了原子坐标值外，还可以通过额外的三个字符\textrm{T}或\textrm{F}标记原子在三个方向的运动或固定。
 %\subsection{晶体与晶胞参数}
-\centering
-\vspace{-0.15in}
+%\centering
+%\vspace{-0.15in}
 %------------------------------------直-接-插-入-文-件--------------------------------------------------------------------------------------
 %\textcolor{red}{\textbf{直接插入文件}}:
-\fontsize{4.2pt}{3.2pt}\selectfont{
-\verbatiminput{Figures/POSCAR} %为保险:~选用文件名绝对路径
-}
+%\fontsize{4.2pt}{3.2pt}\selectfont{
+%\verbatiminput{Figures/POSCAR} %为保险:~选用文件名绝对路径
+%}
 
 \section{\rm{INCAR}文件}
-\textrm{INCAR}是\textrm{VASP}计算过程中最主要的控制文件，它所允许包含的参数有数十个。对\textrm{VASP}用户来说，\textrm{INCAR}中参数的设计与选择，是提交\textrm{VASP}计算的主要任务。
+\textrm{INCAR}是\textrm{VASP}计算过程中最核心的控制文件，它决定了计算的内容和如何算；\textrm{INCAR}文件中通过一系列``标签\textrm{(tag)} = 值\textrm{(value)}''的键值模式来实现计算参数的控制。
+\textrm{INCAR}文件允许包含的参数有数十个，它们决定了计算的任务类型(如结构优化、静态计算、分子动力学等)、电子结构求解算法、收敛标准、输出控制等方方面面。
+\textrm{INCAR}的参数虽然繁多，但幸运的是，\textrm{VASP}为\textrm{INCAR}的所有控制参数都设定了可缺省的默认值。因此对于初学者来说，\textrm{INCAR}即使是一个空文件(但这个文件必须存在！)，同样可以完成一个\textrm{VASP}计算。但是因为\textrm{INCAR}涉及大量参数，这种轻率的做法往往是\textrm{VASP}计算中最常见的错误来源。事实上，用户要想完成一个精准的\textrm{VASP}计算，\textrm{INCAR}中的参数往往不能仅依赖默认的缺省值。
+%VASP为每个标签都提供了合理的默认值，因此用户不需要在\textrm{INCAR}中指定所有参数——用户可以不指定任一参数，全部采用默认值。
+对\textrm{VASP}用户来说，学习并掌握\textrm{INCAR}中参数的设计与选择，是精通\textrm{VASP}计算的主要任务之一。
+
 %\textrm{POSCAR}、\textrm{KPOINTS}和\textrm{POTCAR}都属于极易处理的输入控制文件，
 \subsection{\rm{INCAR}文件的主要内容}
-\textrm{INCAR}的参数虽然繁多，但幸运的是，\textrm{VASP}为\textrm{INCAR}的所有控制参数都设定了可缺省的默认值。因此对于初学者来说，\textrm{INCAR}参数可以是一个空文件(但这个文件必须存在！)，同样可以完成一个\textrm{VASP}计算。但是要想完成一个精准的\textrm{VASP}计算，\textrm{INCAR}中的参数往往不能仅依赖默认的缺省值。
+\textrm{INCAR}是一个标签(控制参数)格式的自由\textrm{ASCII}文本文件，其基本语法规则如下
+\begin{itemize}
+	\item 基本格式:~每行通常为一个``\textrm{tag} = \textrm{value}''的语句\\
+		例如:~\textrm{ENCUT = 520}，注意，\textrm{tag}名对大小写敏感，建议严格按照\textrm{VASP}手册规定书写
+	\item 多参数同行:~多个参数放在同一行时，彼此用分号\textrm{(;)}间隔\\
+		例如:~\textrm{ISMEAR = -5 ; SIGMA = 0.05}
+	\item 续行:~可以使用反斜杠\textrm{$\textbackslash$}进行多行续写
+	\item 注释:~注释部分必须使用 \# 或! 引领
+	\item 空行:~\textrm{INCAR}文件中可以存在空行，通常在读入时会被忽略
+\end{itemize}
 
 \textrm{INCAR}的主要参数列于表
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
+        \toprule
+	\textrm{NGX, NGY, NGZ} &轨道波函数\textrm{FFT}用的网格布点(粗网格)\\
+	\textrm{NGXF, NGYF, NGZF} &电荷密度\textrm{FFT}用的网格布点(密网格)\\
+	\textrm{NBANDS} &计算的能带数目\\
+%	\textrm{NBLK} &\textrm{blocking for some BLAS callls}\\
+        \midrule
+	\textrm{SYSTEM} &计算对象的名称字符串，仅用于标识计算体系，不影响计算结果\\
+%	\textrm{NWRITE} &指定更详细的输出内容到\textrm{OUTCAR}\\
+	\textrm{ISTART} &指定初始波函数来源:~0-从头计算; 1-从\textrm{WAVECAR}文件读取; 2-计算体积-能量曲线时使用\\
+	\textrm{ICHARG} &指定电荷密度来源:~1-从\textrm{CHARGCAR}文件读取; 2-由原子电荷密度叠加生成\\
+	\textrm{ISPIN} &是否打开自旋极化:~1-不打开; 2-打开\\
+	\textrm{MAGMON} & 指定每个原子上的初始磁矩\\
+	\textrm{INIWAV} & 针对\textrm{ISTART = 0}时，初猜波函数的生成方案:~0-简易方案; 1-轨道电子占据数采用随机数\\
+	\midrule
+	\textrm{ENCUT} &计算中的能量截断(用\textrm{eV}单位)\\
+	\textrm{PREC} &计算精度控制:~\textrm{high/medium/low/normal/accurate}\\
+	\textrm{NELM, NELMIN, NELMDL}:~ &指定电子迭代的步数控制参数\\
+	\textrm{EDIFF}:~ &指定电子迭代的收敛标准\\
+	\textrm{EDIFFG}:~ &指定离子运动的收敛标准\\
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{INCAR}常用参数的简要描述}
+\label{Tab:INCAR-Tag-0}
+\end{table}
 \subsection{\rm{VASP}的主要计算控制参数}
-\section{\rm{KPOINRS}文件}
-\subsection{\rm{KPOINTS}文件的内容}
-\subsection{\rm{VASP}中的$\vec k$空间积分}
-\section{\rm{POTCAR}文件}
-\subsection{\rm{POTCAR}文件的内容}
-\subsection{\rm{POTCAR}文件与\rm{PAW}方法}
 
 
-# VASP四大输入文件详解：INCAR、POSCAR、POTCAR与KPOINTS
+%# VASP四大输入文件详解：INCAR、POSCAR、POTCAR与KPOINTS
+%
+%## 引言
 
-## 引言
+%VASP（Vienna Ab initio Simulation Package，维也纳第一性原理模拟软件包）是一个基于Fortran编写的从头计算软件包，主要用于密度泛函理论（DFT）计算，以处理材料的电子结构问题。它采用平面波基组和赝势方法，适用于模拟固体、表面、分子和纳米结构的电子、结构和动力学性质。VASP的主要功能涵盖电子结构计算、离子弛豫（结构优化）、分子动力学模拟、能带结构分析以及杂化泛函、GW方法和机器学习力场等高级功能。经过数十年的发展，VASP已成为材料科学、凝聚态物理和计算化学领域的标准工具之一。
+%要成功运行一次VASP计算，通常需要准备四个核心输入文件：**INCAR**、**POSCAR**、**POTCAR**和**KPOINTS**。
+%本文将全面、深入地逐一解析这四大输入文件，从文件格式、关键参数到实际应用技巧，力求为读者提供一份系统而详尽的参考指南。
 
-VASP（Vienna Ab initio Simulation Package，维也纳第一性原理模拟软件包）是一个基于Fortran编写的从头计算软件包，主要用于密度泛函理论（DFT）计算，以处理材料的电子结构问题。它采用平面波基组和赝势方法，适用于模拟固体、表面、分子和纳米结构的电子、结构和动力学性质。VASP的主要功能涵盖电子结构计算、离子弛豫（结构优化）、分子动力学模拟、能带结构分析以及杂化泛函、GW方法和机器学习力场等高级功能。经过数十年的发展，VASP已成为材料科学、凝聚态物理和计算化学领域的标准工具之一。
+%## 一、INCAR文件：VASP计算的“控制中心”
+%
+%### 1.1 INCAR文件概述
+%
+%
+%### 1.2 INCAR文件格式
 
-要成功运行一次VASP计算，通常需要准备四个核心输入文件：**INCAR**、**POSCAR**、**POTCAR**和**KPOINTS**。这四个文件缺一不可，必须放置在同一工作目录下，且文件名必须全部大写、无扩展名，文件内容必须是纯文本格式。这四个文件各自承担着不同的职责——INCAR是“控制中心”，决定计算“做什么”和“如何做”；POSCAR是“结构蓝图”，描述原子体系的几何构型；POTCAR是“能量密码本”，包含各元素的赝势信息；KPOINTS是“采样方案”，定义布里渊区中k点的取样方式。四个文件协同工作，共同决定了计算的精度、效率和最终结果的可靠性。
-
-本文将全面、深入地逐一解析这四大输入文件，从文件格式、关键参数到实际应用技巧，力求为读者提供一份系统而详尽的参考指南。
-
-## 一、INCAR文件：VASP计算的“控制中心”
-
-### 1.1 INCAR文件概述
-
-INCAR是VASP最核心的输入文件，它通过一系列“标签=值”（tag = value）的键值对来控制计算的全部参数。INCAR决定了计算的任务类型（如结构优化、静态计算、分子动力学等）、电子结构求解算法、收敛标准、输出控制等方方面面。VASP为每个标签都提供了合理的默认值，因此用户不需要在INCAR中指定所有参数——未指定的参数将使用默认值。然而，正因为INCAR涉及大量参数，它也是VASP计算中最常见的错误来源。
-
-### 1.2 INCAR文件格式
-
-INCAR是一个标签格式的自由ASCII文本文件，其基本语法规则如下：
-
-- **基本格式**：每行通常为一个“标签 = 值”的语句，例如 `ENCUT = 520`。
-- **多参数同行**：可以用分号（`;`）分隔多个参数放在同一行，例如 `ISMEAR = -5 ; SIGMA = 0.05`。
-- **续行**：可以使用反斜杠（`\`）进行长行续写。
-- **注释**：使用井号（`#`）或感叹号（`!`）添加注释。
-- **空行**：通常被忽略，但制表符可能引起问题。
-- **大小写**：标签名对大小写敏感，必须严格按照VASP手册规定书写。拼写错误（如将`SYSTEM`写成`RYSTEM`）可能导致计算结果异常。
 
 ### 1.3 INCAR关键参数详解
 
@@ -95,7 +107,7 @@ INCAR中的参数数量众多，以下按功能类别对最常用和最重要的
 
 #### （一）系统描述与初始化参数
 
-**SYSTEM**：系统名称或描述字符串，仅用于在输出文件中标识计算体系，不影响计算结果。例如：`SYSTEM = Si bulk relaxation`。
+**SYSTEM**：。例如：`SYSTEM = Si bulk relaxation`。
 
 **ISTART**：控制是否从已有的WAVECAR文件读取波函数信息。
 - `0`：从头开始计算（默认，用于新任务）。
@@ -208,6 +220,12 @@ LCHARG = .TRUE.
 4. **收敛标准过于宽松**：可能导致未收敛的结果被误认为收敛。
 5. **ISIF选择不当**：例如在表面计算中错误地使用ISIF=3导致晶胞在真空层方向也被优化。
 
+\section{\rm{KPOINRS}文件}
+\subsection{\rm{KPOINTS}文件的内容}
+\subsection{\rm{VASP}中的$\vec k$空间积分}
+\section{\rm{POTCAR}文件}
+\subsection{\rm{POTCAR}文件的内容}
+\subsection{\rm{POTCAR}文件与\rm{PAW}方法}
 ## 二、POSCAR文件：原子结构的“骨架”
 
 ### 2.1 POSCAR文件概述
