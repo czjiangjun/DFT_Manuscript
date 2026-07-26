@@ -72,7 +72,7 @@
 	\textrm{MAGMON} & 指定每个原子上的初始磁矩\\
 	\textrm{INIWAV} & 针对\textrm{ISTART = 0}时，初猜波函数的生成方案:~0-简易方案; 1-轨道电子占据数采用随机数\\
 	\midrule
-	\textrm{ENCUT} &计算中的能量截断(用\textrm{eV}单位)\\
+	\textrm{ENCUT} &计算中的能量截断(单位:~\textrm{eV})\\
 	\textrm{PREC} &计算精度控制:~\textrm{high/medium/low/normal/accurate}\\
 	\textrm{NELM, NELMIN, NELMDL}:~ &指定电子迭代的步数控制参数\\
 	\textrm{EDIFF}:~ &指定电子迭代的收敛标准\\
@@ -80,6 +80,40 @@
 	\midrule
 	\textrm{NSW} & 指定离子运动的总步数控制参数\\
 %	\textrm{NBLOCK/KBLOCK} &\textrm{inner block; outer block}\\
+%	\textrm{SYMPREC} &指定对称性精度控制参数\\
+	\textrm{LCORR} &受力计算中加入\textrm{Harris}校正\\
+	\textrm{POTIM} &指定离子运动模拟中的时间步长(单位:~\textrm{fs})\\
+	\textrm{TEBEG, TEEND} &指定原子运动模拟的温度\\
+	\textrm{SMASS} &恒温\textrm{Nose}方法的质量参数(单位:~\textrm{am})\\
+%	\textrm{NPACO, APACO} &对相关函数\\
+	\midrule
+	\textrm{POMASS} &用原子单位表示的离子质量\\
+	\textrm{ZVAL} &离子电荷\\
+	\textrm{RWIGS} &原子的\textrm{Wigner-Sietz}元胞半径\\
+	\textrm{NELECT} &体系的总电荷数\\
+	\textrm{NUPDOWN} &将体系的自旋磁矩指定为固定值\\
+	\textrm{EMIN, EMAX} &指定态密度文件\textrm{DOSCAR}的能量上下限\\
+	\textrm{ISMEAR} &指定$\vec k$空间和\textrm{Fermi}面积分方案:~0-\textrm{Gaussian}积分; >0-\textrm{MP}方案; -4-四面体积分方案; -5-\textrm{Bl\"ochl}改进的四面体积分方案\\
+	\textrm{SIGMA} &指定\textrm{Fermi}面积分采用的展宽系数(单位ie:~\textrm{eV}):~-4-四面体积分方法; -1-\textrm{Fermi}分布函数; 0-\textrm{Gaussian}分布函数\\
+	\midrule
+	\textrm{ALGO} &指定电子步矩阵对角化算法:~\textrm{Normal(Davidson)-Fast-Very\_fast(RMM-DIIS)}\\
+	\textrm{IALGO} &指定离子步收敛算法:~8表示共轭梯度\textrm{(Conjugate Gradient, CG)}法，48表示\textrm{RMM-DIIS}\\
+%	\textrm{RPOT} &指定实空间的非局域投影的网格点数目\\
+	\textrm{GGA} &指定交换-相关泛函形式:~可选的如\textrm{PE},\textrm{AM},\textrm{91}等\\
+	\textrm{VOSKOWN} &指定\textrm{VWN(Vosko-Wilk-Nusair)}泛函的插值方案\\
+	\textrm{DIPOL} &为偶极计算指定元胞中心位置\\
+	\textrm{AMIX, BMIX} &电子步迭代时，指定电荷密度混合参数\\
+%	\textrm{WEIMIN, EBREAK, DEPER} &指定特定的控制参数\\
+%	\textrm{TIME} &指定特定的控制参数\\
+	\midrule
+	\textrm{LWAVE,LCHARG,LVTOT,LVHAR} &指定输出对应数据到文件\textrm{WAVECAR/CHGCAR/LOCPOT}\\
+	\textrm{LELF} &指定输出对应数据到文件\textrm{ELFCAR}\\
+	\textrm{LORBIT} &指定输出对应数据到文件\textrm{PROOUT}\\
+	\midrule
+	\textrm{NPAR} &指定并行计算中，将能带按指定参数分配\\
+%	\textrm{LSCALAPACK} &关闭并行计算的\textrm{scaLAPACK}\\
+	\textrm{LSCALU} &关闭矩阵对角化的\textrm{LU}分解\\
+%	\textrm{LASYNC} &指定并行计算中的重叠通信\\
         \bottomrule
     \end{tabular*}
     \caption{\textrm{INCAR}常用参数的简要描述}
