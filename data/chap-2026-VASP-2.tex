@@ -120,45 +120,39 @@
 \label{Tab:INCAR-Tag-0}
 \end{table}
 \subsection{\rm{VASP}的主要计算控制参数}
-
-
 %# VASP四大输入文件详解：INCAR、POSCAR、POTCAR与KPOINTS
 %
 %## 引言
-
 %VASP（Vienna Ab initio Simulation Package，维也纳第一性原理模拟软件包）是一个基于Fortran编写的从头计算软件包，主要用于密度泛函理论（DFT）计算，以处理材料的电子结构问题。它采用平面波基组和赝势方法，适用于模拟固体、表面、分子和纳米结构的电子、结构和动力学性质。VASP的主要功能涵盖电子结构计算、离子弛豫（结构优化）、分子动力学模拟、能带结构分析以及杂化泛函、GW方法和机器学习力场等高级功能。经过数十年的发展，VASP已成为材料科学、凝聚态物理和计算化学领域的标准工具之一。
 %要成功运行一次VASP计算，通常需要准备四个核心输入文件：**INCAR**、**POSCAR**、**POTCAR**和**KPOINTS**。
 %本文将全面、深入地逐一解析这四大输入文件，从文件格式、关键参数到实际应用技巧，力求为读者提供一份系统而详尽的参考指南。
-
 %## 一、INCAR文件：VASP计算的“控制中心”
-%
 %### 1.1 INCAR文件概述
-%
-%
 %### 1.2 INCAR文件格式
+%### 1.3 INCAR关键参数详解
+%
+\textrm{INCAR}中的参数众多，按功能类别，对最常用和最重要的参数进行必要的解析和说明。
 
+\subsubsection{系统描述与初始化参数}
+\textrm{SYSTEM}:~例如:~\textrm{SYSTEM = Si bulk relaxation}。
 
-### 1.3 INCAR关键参数详解
+\textrm{ISTART}:~控制是否从已存在的\textrm{WAVECAR}文件中读取波函数数据。
+\begin{itemize}
+	\item 0:~从头开始计算(默认值，一般用于新任务)
+	\item 1:~从\textrm{WAVECAR}中读取数据，用于续算，方便加速收敛
+	\item 2:~在计算体积-能量(状态方程)相关曲线时使用
+	\item 3:~在重启分子动力学计算时使用，需同时存在\textrm{WAVECAR}和\textrm{CHGCAR}文件
+\end{itemize}
 
-INCAR中的参数数量众多，以下按功能类别对最常用和最重要的参数进行详细解析。
+\textrm{ICHARG}:~控制电荷密度初始化的方式
+\begin{itemize}
+	\item 0:~由\textrm{WAVECAR}计算电荷密度~(若存在\textrm{WAVECAR})
+	\item 1:~从\textrm{CHGCAR}文件读取电荷密度
+	\item 2:~由程序通过初猜产生(默认值，一般用于新计算)
+	\item 11/12/13:~用于非自洽计算(如\textrm{DOS}和能带计算)
+\end{itemize}
 
-#### （一）系统描述与初始化参数
-
-**SYSTEM**：。例如：`SYSTEM = Si bulk relaxation`。
-
-**ISTART**：控制是否从已有的WAVECAR文件读取波函数信息。
-- `0`：从头开始计算（默认，用于新任务）。
-- `1`：从WAVECAR读取轨道，用于续算以加速收敛。
-- `2`：在计算体积-能量相关曲线时使用。
-- `3`：在重启分子动力学计算时使用，同时需要WAVECAR和CHGCAR文件。
-
-**ICHARG**：控制电荷密度初始化的方式。
-- `0`：由WAVECAR计算电荷密度（若有WAVECAR）。
-- `1`：从CHGCAR文件读取电荷密度。
-- `2`：由程序通过初猜产生（默认，用于新计算）。
-- `11/12/13`：用于非自洽计算（如DOS和能带计算）。
-
-#### （二）电子结构计算参数
+\subsubsection{电子结构计算参数}
 
 **ENCUT**：平面波截断能量（单位eV），定义平面波基组展开的能量上限。这是影响计算精度和效率的关键参数之一：
 - 通常应至少等于POTCAR文件中ENMAX标签的值。
