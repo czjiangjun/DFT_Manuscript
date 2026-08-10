@@ -153,74 +153,88 @@
 \end{itemize}
 
 \subsubsection{电子结构计算参数}
+\textrm{ENCUT}:~平面波截断能量(单位:~\textrm{eV})，定义平面波基组展开的能量截断上限。\textrm{ENCUT}是影响计算精度和效率的重要参数。
+\begin{itemize}
+	\item \textrm{POTCAR}中\textrm{ENMAX}的值，是确定\textrm{ENCUT}下限的重要参考
+	\item \textrm{ENCUT}的值不宜过低，否则会导致计算结果不准确
+	\item \textrm{ENCUT}也不宜过高，否则会过度消耗计算资源，增加计算成本
+	\item 一般建议\textrm{ENCUT}的值设置为赝势\textrm{ENMAX}的1.0到1.3倍
+\end{itemize}
 
-**ENCUT**：平面波截断能量（单位eV），定义平面波基组展开的能量上限。这是影响计算精度和效率的关键参数之一：
-- 通常应至少等于POTCAR文件中ENMAX标签的值。
-- 过低的ENCUT会导致计算结果不准确。
-- 过高的ENCUT会显著增加计算成本。
-- 一般建议设置为赝势推荐值的1.0到1.3倍。
+\textrm{ALGO}:~确定电子步能量最小化算法。
+\begin{itemize}
+	\item \textrm{Normal}:~标准的\textrm{Davidson}块迭代对角化算法，较为稳定可靠(属于默认值)
+	\item \textrm{Fast}:~速度更快，但可能不够稳定
+	\item \textrm{All}:~使用完全共轭梯度算法\textrm{(Conjugate Gradient, CG)}
+\end{itemize}
 
-**ALGO**：电子最小化算法。
-- `Normal`：标准的Davidson块迭代算法（默认，稳定可靠）。
-- `Fast`：速度更快但可能不够稳定。
-- `All`：使用全波段共轭梯度算法。
+\textrm{NELM}:~指定电子自洽迭代的步数上限。默认值为60，\textcolor{red}{若计算未能在该步数内收敛，可适当增大}
 
-**NELM**：电子自洽迭代的最大步数。默认值为60，若计算未能在该步数内收敛，可适当增大。
+\textrm{EDIFF}:~电子自洽迭代的收敛标准。当两次迭代之间的总能量变化小于\textrm{EDIFF}，电子迭代收敛。默认值通常为\textrm{1E-4($10^{-4}$)}或$10^{-5}$，对于高精度计算，建议设为$10^{-6}$或更小
 
-**EDIFF**：电子自洽迭代的收敛标准。当两次迭代之间的总能量变化小于EDIFF时，电子迭代收敛。默认值通常为1E-4或1E-5，对于高精度计算可设为1E-6或更小。
+\textrm{ISMEAR}与\textrm{SIGMA}:~确定刻画导体\textrm{Fermi}电子占据数的展宽方案和展宽大小
+\begin{itemize}
+	\item \textrm{ISMEAR = -5}:~四面体\textrm{(Tetrahedron)}方案。%适用于DOS计算和绝缘体/半导体的精确总能计算，不适用于金属的结构弛豫）。
+	\item \textrm{ISMEAR = 0}:~\textrm{Gaussian}展宽方案
+	\item \textrm{ISMEAR = -1}:~\textrm{Fermi}展宽方案
+	\item \textrm{ISMEAR = 1}:~\textrm{Methfessel-Paxton}方案，展宽逼近取到一阶%（适用于金属）。
+	\item \textrm{SIGMA}~展宽宽度参数，通常设置在\textrm{0.01$\sim$0.2 eV}之间
+\end{itemize}
 
-**ISMEAR**与**SIGMA**：决定电子占据数的展宽方法和展宽宽度。
-- `ISMEAR = -5`：四面体方法（适用于DOS计算和绝缘体/半导体的精确总能计算，不适用于金属的结构弛豫）。
-- `ISMEAR = 0`：高斯展宽。
-- `ISMEAR = -1`：费米展宽。
-- `ISMEAR = 1`：Methfessel-Paxton一阶展宽（适用于金属）。
-- SIGMA控制展宽宽度，通常设置在0.01~0.2 eV之间。
+\subsubsection{离子弛豫与结构优化参数}
+\textrm{IBRION}:~离子运动或弛豫算法
+\begin{itemize}
+	\item \textrm{-1}:~静态计算
+	\item \textrm{0}:~分子动力学模拟
+	\item \textrm{1}:~%\textrm{RMM-DIIS}
+		算法\textrm{quasi-Newton}方案
+	\item 共轭梯度算法:~\textcolor{red}{通常较稳定，结构优化优先推荐}
+\end{itemize}
 
-#### （三）离子弛豫与结构优化参数
+\textrm{ISIF}:~结构优化过程中许可变化的自由度控制参数。\textcolor{red}{\textrm{ISIF}是结构优化中最关键的参数之一}
+\begin{itemize}
+	\item 0:~不计算应力张量
+	\item 1:~仅计算应力，不允许晶胞体积和形状发生变化
+	\item 2:~仅允许离子位置发生变化，不改变晶胞体积和形状
+	\item 3:~允许离子位置、晶胞形状和体积同时发生变化~(完全弛豫)
+	\item 4:~固定晶胞体积，但允许改变晶胞形状和离子位置发生变化
+	\item 7:~仅允许晶胞的体积发生变化
+\end{itemize}
 
-**IBRION**：离子运动/弛豫算法。
-- `-1`：不移动离子（仅做静态计算或分子动力学）。
-- `0`：分子动力学模拟。
-- `1`：RMM-DIIS算法（准牛顿法）。
-- `2`：共轭梯度算法（通常较稳定，推荐用于结构优化）。
+\textrm{NSW}:~计算过程中控制离子步数上限的参数。\textcolor{red}{当离子步数达到\textrm{NSW}时，计算停止。对于结构优化来说，离子弛豫通常设置为100或200。当NSW=0时，表示完成单点能(静态计算)计算}
 
-**ISIF**：控制结构优化过程中哪些自由度被允许变化。这是结构优化中最关键的参数之一：
-- `0`：不计算应力张量。
-- `1`：仅计算应力，不改变晶胞体积和形状。
-- `2`：仅优化离子位置，不改变晶胞体积和形状。
-- `3`：同时优化离子位置、晶胞形状和体积（全弛豫）。
-- `4`：固定体积，但允许改变晶胞形状和离子位置。
-- `7`：仅改变体积。
+\textrm{EDIFFG}:~设定离子弛豫收敛标准的参数
+\begin{itemize}
+	\item 若\textrm{EDIFFG>0}:~表示该值为能量收敛的阈值
+	\item 若\textrm{EDIFFG<0}:~表示该值为最大原子受力收敛的阈值
+\end{itemize}
+通常建议\textrm{EDIFFG}采用负值(如\textrm{EDIFFG = -0.02}表示所有原子受力小于\textrm{0.02 eV/\AA}时收敛)，一般来说，力收敛比能量收敛标准更为严格。若\textrm{EDIFFG}未显式设置，其默认值一般取为$10\times\mathrm{EDIFF}$。
 
-**NSW**：最大离子步数。当离子步数达到NSW时，计算停止。对于结构优化，通常设置为较大的值（如100或200）。当NSW=0时，表示仅做单点能（静态）计算。
+\textrm{POTIM}:~分子动力学计算中的离子步的初始时间步长，默认值通常取为0.5
 
-**EDIFFG**：离子弛豫的收敛标准。
-- 若为正值：表示能量变化的收敛阈值。
-- 若为负值：表示最大原子受力的收敛阈值。
-- 通常建议使用负值（如`EDIFFG = -0.02`表示所有原子受力小于0.02 eV/Å时收敛），这比能量收敛标准更为严格和可靠。
-- 若未显式设置，默认值为`10 × EDIFF`。
+\subsubsection{计算精度控制与输出参数}
+\textrm{PREC}:~全局计算精度，可选值为\textrm{Low, Medium, Normal, Accurate, High}
+\begin{itemize}
+	\item 参数\textrm{PREC}值的选择，将会影响到\textrm{ENCUT}，\textrm{FFT}网格等多个相关参数的默认值
+	\item 一般计算中，\textrm{Normal}或\textrm{Accurate}是最常见的选取值
+\end{itemize}
 
-**POTIM**：离子步的初始步长（时间步长），默认值通常为0.5。
+\textrm{LREAL}:~控制是否实空间计算投影函数的参数
+\begin{itemize}
+	\item \textrm{.FALSE.}:~仅在倒空间计算投影函数\textcolor{(对较小体系效率更高)}
+	\item \textrm{.TRUE.}:~允许在实空间计算投影函数
+	\item \textrm{Auto}:~由计算程序自动选择确定
+\end{itemize}
 
-#### （四）精度控制与输出参数
+\textrm{LORBIT}:~控制投影态密度\textrm{projected DOS}的输出参数
+\begin{itemize}
+	\item 10:~结果输出到\textrm{PROCAR}文件
+	\item 11:~结果输出到\textrm{DOSCAR}和\textrm{PROCAR}
+\end{itemize}<++>
 
-**PREC**：全局计算精度。
-- `Low`、`Medium`、`Normal`、`Accurate`、`High`。
-- PREC影响ENCUT、FFT网格等多项参数的默认值。
-- 对于一般计算，`Normal`或`Accurate`是常用选择。
+\textrm{LWAVE}:~控制输出\textrm{WAVECAR}文件。\textcolor{red}{对于较大体系，建议设为\textrm{.FALSE.}以节省存储空间}
 
-**LREAL**：是否在实空间计算投影算符。
-- `.FALSE.`：在倒空间计算（对较小体系效率更高）。
-- `.TRUE.`：在实空间计算。
-- `Auto`：让程序自动选择。
-
-**LORBIT**：控制投影态密度（projected DOS）的输出。
-- `10`：输出到PROCAR文件。
-- `11`：输出到DOSCAR和PROCAR。
-
-**LWAVE**：是否输出WAVECAR文件。对于大体系，建议设为`.FALSE.`以节省存储空间。
-
-**LCHARG**：是否输出CHGCAR电荷密度文件。
+\textrm{LCHARG}:~控制输出\textrm{CHGCAR}电荷密度文件参数
 
 ### 1.4 INCAR文件的典型模板
 
