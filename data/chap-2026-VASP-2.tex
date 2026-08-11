@@ -230,44 +230,104 @@
 \begin{itemize}
 	\item 10:~结果输出到\textrm{PROCAR}文件
 	\item 11:~结果输出到\textrm{DOSCAR}和\textrm{PROCAR}
-\end{itemize}<++>
+\end{itemize}
 
 \textrm{LWAVE}:~控制输出\textrm{WAVECAR}文件。\textcolor{red}{对于较大体系，建议设为\textrm{.FALSE.}以节省存储空间}
 
 \textrm{LCHARG}:~控制输出\textrm{CHGCAR}电荷密度文件参数
 
-### 1.4 INCAR文件的典型模板
+\subsection{INCAR}文件的参数值
+完整的\textrm{INCAR}中的各参数，包括没有设置采用默认值的，都会在\textrm{OUTCAR}中给出。以下是一个典型的结构优化的全部\textrm{INCAR}参数(\textcolor{red}{以体相铜为例}):
+%\fontsize{4.2pt}{3.2pt}\selectfont{
+%\verbatiminput{Figures/POSCAR} %为保险:~选用文件名绝对路径
+%}
+%```
+%SYSTEM = Cu bulk optimization
+%PREC = Normal
+%ENCUT = 520
+%EDIFF = 1E-6
+%EDIFFG = -0.02
+%IBRION = 2
+%ISIF = 3
+%NSW = 100
+%ISMEAR = 1
+%SIGMA = 0.2
+%LREAL = Auto
+%LORBIT = 11
+%LWAVE = .FALSE.
+%LCHARG = .TRUE.
+%```
+\textrm{INCAR}中的常见错误
+\begin{enumerate}
+	\item 参数拼写错误:~如将\textrm{SYSTEM}误写为\textrm{RYSTEM}，将会导致计算结果出现异常
+	\item 参数冲突:~同时开启或指定互不兼容的任务类型~(如分子动力学计算与结构优化的参数混用)
+	\item 能量截断过低:~计算使用的基组过小，可能导致结果不可靠
+	\item 收敛标准过于低:~导致未收敛的结果被误认为已经达到收敛
+	\item \textrm{ISIF}参数选择不当:~例如，在表面计算中，使用\textrm{ISIF=3}，结果导致晶胞在真空层方向也因弛豫而被优化
+\end{enumerate}
 
-以下是一个典型的结构优化INCAR模板（以体相铜为例）：
+\section{\rm{KPOINRS}文件}% ## 四、KPOINTS文件：布里渊区采样的“方案”
+\subsection{$\vec k$空间布点与积分}
+\textrm{KPOINTS}是\textrm{VASP}中定义$\vec k$点(\textrm{Brillouin zone}空间的布点)和采样方案的文件。在周期体系的电子结构计算中，需要对第一\textrm{Brillouin zone}的布点进行积分，而$\vec k$点采样就是在倒空间中对该积分进行数值离散化的方案。$\vec k$点网格的布点密度直接决定了计算的精度和计算量——一般地说，网格越密，计算结果越精确，但计算成本也越高。因此，理性地选择$\vec k$点网格是平衡精度与效率的重要手段之一。
+\subsection{\rm{KPOINTS}文件格式}
+\textrm{KPOINTS}文件是\textrm{VASP}的输入文件中格式最固定的一个，最常见的格式是五行模板:
+\begin{itemzie}
+ \item 第1行:~注释，可以是任意字符串(但不能为空)，一般是$\vec k$空间布点的相关描述
+ \item 第2行:~整数，0表示$\vec k$空间网格点将是通过自动生成
+ \item 第3行:~$\vec k$空间网格分布类型\\
+	 \textrm{G}或\textrm{Gamma}:~表示以$\Gamma$点为中心的$\vec k$点网格生成方案\\
+	 \textrm{M}或\texrm{Monkhorst}:~表示$\vec k$空间网格将采用\textrm{Monkhorst-Pack}生成方案。
+%两者的区别在于：Monkhorst-Pack网格在三个方向平移了1/(2N)个单位，而Gamma中心网格是Monkhorst-Pack网格的特殊情况（平移量为0）。对于六角晶格等体系，强烈推荐使用Gamma中心网格。
 
-```
-SYSTEM = Cu bulk optimization
-PREC = Normal
-ENCUT = 520
-EDIFF = 1E-6
-EDIFFG = -0.02
-IBRION = 2
-ISIF = 3
-NSW = 100
-ISMEAR = 1
-SIGMA = 0.2
-LREAL = Auto
-LORBIT = 11
-LWAVE = .FALSE.
-LCHARG = .TRUE.
-```
+ \item 第4行:~三个整数，分别表示在倒格矢$\mathbf{b}_1$、$\mathbf{b}_2$、$\mathbf{b}_3$三个方向上的$\vec k$点数目\\
+	 例如~4 4 4~表示在每个方向取4个$\vec k$点，共64个k点。
 
-### 1.5 INCAR常见错误与避坑指南
+ \item 第5行:~三个实数，表示网格原点的偏离量\textrm{(shift)}，通常设为~0 0 0。\textcolor{red}{\textrm{Monkhorst-Pack}网格布点的中心相当于$\Gamma$布点偏移了0.5 0.5 0.5}
+\end{itemzie}
 
-1. **参数拼写错误**：如将`SYSTEM`误写为`RYSTEM`会导致计算结果异常。
-2. **参数冲突**：同时开启互不兼容的任务类型（如分子动力学与结构优化参数混用）。
-3. **截断能过低**：导致基组不完备，计算结果不可靠。
-4. **收敛标准过于宽松**：可能导致未收敛的结果被误认为收敛。
-5. **ISIF选择不当**：例如在表面计算中错误地使用ISIF=3导致晶胞在真空层方向也被优化。
+\textcolor{red}{$\vec k$空间网格布点示例}
+Automatic generation
+0
+Gamma
+4 4 4
+0 0 0
+\subsection{\rm{KPOINTS}的网格点测试选取}
+\begin{itemize}
+	\item 收敛性测试\\
+		\textcolor{red}{最科学的方法是对目标体系进行k点收敛性测试。逐渐增加k点密度，观察总能量等关键物理量是否收敛，从而确定所需的最小k点数目}
+	\item 经验规则\\
+%- 对于块体材料，每个晶格矢量长度（Å）乘以该方向上的k点数目，通常在30~40之间。
+%- 例如，晶格常数为6 Å的体系，k点可取3×3×3（6×3=18偏少）或5×5×5（6×5=30合适）。
+%- 对于绝缘体，可以用较少的k点；对于金属，由于费米面附近需要更精细的采样，需要更多的k点。
 
-\section{\rm{KPOINRS}文件}
-\subsection{\rm{KPOINTS}文件的内容}
-\subsection{\rm{VASP}中的$\vec k$空间积分}
+	\item 使用\textrm{VASPKIT}
+		\textrm{VASPKIT}工具可以自动生成\textrm{KPOINTS}文件\\
+%		用户指定倒空间中k点间距（通常为0.04 Å⁻¹用于常规计算，0.03或0.02 Å⁻¹用于高精度计算），程序自动生成合适的k点网格。
+
+%	\item INCAR自动生成（替代KPOINTS）**
+%可以在INCAR中设置`KSPACING`和`KGAMMA`来让VASP自动确定k点网格。这种方法在VASP官网中也被推荐。
+%- `KSPACING`：决定k点在倒空间的密度。
+%- `KGAMMA`：决定是否强制包含Gamma点。
+\end{itemize}
+
+\subsection{一些特殊情况的\rm{KPOINTS}设置}
+真空和表面体系\\
+对于包含真空层的表面或二维材料计算，真空层方向的k点应取1。%例如表面计算常用`4 4 1`。
+
+能带计算\\
+能带结构计算需要使用沿高对称点方向的路径，即\textrm{Line-mode}%，而非均匀网格。
+
+分子/原子体系\\
+对于孤立的分子或原子，或使用较大的晶胞，通常只需要$\Gamma$点~$(1\times1\times1)$。
+
+%\textrm{\rm{KPOINTS}的}
+%1. **第2行误写为字母**：很多人会将第二行的数字`0`误写为字母`o`。
+%2. **真空层方向取了多个k点**：在包含真空层的方向上取k点不仅没有物理意义，还浪费计算资源。
+%3. **k点过密或过疏**：过密浪费机时，过疏导致结果不准确。
+%4. **未做收敛性测试**：任何正式计算前都应做k点收敛性测试。
+%
+%\subsection{\rm{KPOINTS}文件的内容}
+%\subsection{\rm{VASP}中的$\vec k$空间积分}
 \section{\rm{POTCAR}文件}
 \subsection{\rm{POTCAR}文件的内容}
 \subsection{\rm{POTCAR}文件与\rm{PAW}方法}
@@ -450,72 +510,6 @@ grep -in "enmax" POTCAR
 3. **保持一致性**：同一计算中所有元素的赝势应来自同一族（如同为PAW_PBE），不可混用不同版本。
 4. **做收敛性测试**：对于不熟悉的体系，建议测试不同赝势对计算结果的影响。
 
-## 四、KPOINTS文件：布里渊区采样的“方案”
-
-### 4.1 KPOINTS文件概述
-
-KPOINTS是VASP中定义k点（布里渊区采样点）的文件。在DFT计算中，需要对第一布里渊区进行积分，而k点采样就是在倒空间中对该积分进行数值离散化的方法。k点网格的密度直接决定了计算的精度和计算量——网格越密，计算结果越精确，但计算成本也越高。因此，选择合适的k点网格是平衡精度与效率的关键。
-
-### 4.2 KPOINTS文件格式
-
-KPOINTS文件最常见的格式是“五行式”：
-
-**第1行**：注释行，任意字符串（但不能为空）。
-
-**第2行**：整数，`0`表示自动生成k点网格。
-
-**第3行**：网格类型
-- `G`或`Gamma`：以Gamma点为中心的网格。
-- `M`或`Monkhorst`：Monkhorst-Pack网格。
-
-两者的区别在于：Monkhorst-Pack网格在三个方向平移了1/(2N)个单位，而Gamma中心网格是Monkhorst-Pack网格的特殊情况（平移量为0）。对于六角晶格等体系，强烈推荐使用Gamma中心网格。
-
-**第4行**：三个整数，分别表示在倒格矢a*、b*、c*三个方向上的k点数目。例如`4 4 4`表示在每个方向取4个k点，共64个k点。
-
-**第5行**：三个实数，表示网格的偏移量（shift），通常设为`0 0 0`。Gamma中心网格相当于Monkhorst-Pack网格偏移了0.5 0.5 0.5。
-
-**示例（Gamma中心，4×4×4网格）** ：
-```
-Automatic generation
-0
-Gamma
-4 4 4
-0 0 0
-```
-
-### 4.3 KPOINTS的选取方法
-
-**方法1：收敛性测试**
-最科学的方法是对目标体系进行k点收敛性测试。逐渐增加k点密度，观察总能量等关键物理量是否收敛，从而确定所需的最小k点数目。
-
-**方法2：经验规则**
-- 对于块体材料，每个晶格矢量长度（Å）乘以该方向上的k点数目，通常在30~40之间。
-- 例如，晶格常数为6 Å的体系，k点可取3×3×3（6×3=18偏少）或5×5×5（6×5=30合适）。
-- 对于绝缘体，可以用较少的k点；对于金属，由于费米面附近需要更精细的采样，需要更多的k点。
-
-**方法3：使用VASPKIT**
-VASPKIT工具可以自动生成KPOINTS文件。用户指定倒空间中k点间距（通常为0.04 Å⁻¹用于常规计算，0.03或0.02 Å⁻¹用于高精度计算），程序自动生成合适的k点网格。
-
-**方法4：INCAR自动生成（替代KPOINTS）**
-可以在INCAR中设置`KSPACING`和`KGAMMA`来让VASP自动确定k点网格。这种方法在VASP官网中也被推荐。
-- `KSPACING`：决定k点在倒空间的密度。
-- `KGAMMA`：决定是否强制包含Gamma点。
-
-### 4.4 特殊情况的KPOINTS设置
-
-**真空层体系**：对于包含真空层的表面或二维材料计算，真空层方向的k点应取1。例如表面计算常用`4 4 1`。
-
-**能带计算**：能带结构计算需要使用Line-mode，沿高对称点路径取样，而非均匀网格。
-
-**分子/原子计算**：对于孤立的分子或原子（使用较大的晶胞），通常只需要Gamma点（1×1×1）即可。
-
-### 4.5 KPOINTS常见错误
-
-1. **第2行误写为字母**：很多人会将第二行的数字`0`误写为字母`o`。
-2. **真空层方向取了多个k点**：在包含真空层的方向上取k点不仅没有物理意义，还浪费计算资源。
-3. **k点过密或过疏**：过密浪费机时，过疏导致结果不准确。
-4. **未做收敛性测试**：任何正式计算前都应做k点收敛性测试。
-
 ## 五、四个输入文件的协同与关联
 
 四个输入文件虽然在功能上各司其职，但彼此之间存在紧密的关联：
@@ -553,7 +547,6 @@ ISIF决定哪些宏观自由度（晶胞体积、形状）可以变化，而选�
 3. **善用CONTCAR**：结构优化结束后，将CONTCAR重命名为POSCAR进行后续的静态计算或性质计算。
 4. **检查OUTCAR**：计算完成后，仔细检查OUTCAR文件，确认计算是否正常收敛，是否存在警告或错误信息。
 5. **保持文件整洁**：不同计算任务使用不同的工作目录，避免文件混乱。
-
 ## 七、总结
 
 VASP的四个输入文件——INCAR、POSCAR、POTCAR和KPOINTS——共同构成了第一性原理计算的基础框架。INCAR作为“控制中心”，通过丰富的参数标签决定了计算“做什么”和“如何做”；POSCAR作为“结构蓝图”，精确描述了原子体系的几何构型；POTCAR作为“能量密码本”，提供了各元素的赝势信息；KPOINTS作为“采样方案”，定义了布里渊区的取样方式。四个文件缺一不可，协同工作，共同决定了VASP计算的精度、效率和可靠性。
