@@ -1,0 +1,14 @@
+k-points along high symmetry lines
+21 ! 21 intersections
+Line-mode
+cart
+0    0    0   ! gamma
+1    0    0   ! X
+1    0    0   ! X
+1    0.5  0   ! W
+1    0.5  0   ! W
+0.5  0.5  0.5 ! L
+0.5  0.5  0.5 ! L
+0    0    0   ! gamma
+0    0    0   ! gamma
+1    1    0   ! K
