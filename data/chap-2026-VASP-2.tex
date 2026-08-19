@@ -9,6 +9,9 @@
 \section{\rm{POSCAR}文件与晶胞参数}
 \textrm{POSCAR}文件保存的是计算对象的结构文件，包括晶胞几何结构和元胞中原子(或离子)的位置，在分子动力学计算中，还有每个原子的初始速度信息。
 \subsection{\rm{POSCAR}文件的内容}
+{\fontsize{9.2pt}{7.2pt}\selectfont{
+\verbatiminput{Figures/POSCAR.txt} %为保险:~选用文件名绝对路径
+}}
 \textrm{POSCAR}文件的格式基本是固定的。第一行字符串，描述的是计算对象的名称；第二行对应的是晶胞参数的通用标度系数(如果这个行的值是负值，则表示晶胞体积)；后续三行(第三到第五行)以矩阵形式给定晶胞参数$a$、$b$、$c$的矢量方向(等价于确定晶胞参数的$\alpha$、$\beta$和$\gamma$)。第六行给定计算体系各原子的原子数，此处的原子顺序将于\textrm{POTCAR}中原子顺利一致。如果是分子动力学或结构计算时，第七行必须是特征字符串\textrm{Selective dynamic}(至少也要是保持首字符\textrm{S}或\textrm{s})。\textrm{VASP}程序读到该关键字符串时，可以要求每个原子沿晶胞三个轴向是否需要移动。接下来一行(如果设定\textrm{Selective dynamic}时是第八行，否则是第七行)，将给出晶胞中各原子坐标的格式，许可的特征字符串是\textrm{Caresian}(对应笛卡尔坐标)或\textrm{Dirct}(分数坐标)。类似地，\textrm{VASP}只依据字符串首字母确定坐标特征，\textrm{C}，\textrm{c}或\textrm{K}或\textrm{k}是笛卡尔坐标，\textrm{D}，\textrm{d}表示分数坐标。接下来各行是对应原子在晶胞中的坐标位置。在分数坐标系下，每个原子的位置可以表示为
 \begin{equation}
 	\vec R=x_1\vec a_1+x_2\vec a_2+x_3\vec a_3
@@ -55,22 +58,23 @@
 \end{itemize}
 
 \textrm{INCAR}的主要参数列于表
-\begin{table}[h!]
-    \centering
-    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
+\begin{longtable}[c]{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}l|}
+%\begin{table}[h!]
+%    \centering
+%    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}l|}
         \toprule
 	\textrm{NGX, NGY, NGZ} &轨道波函数\textrm{FFT}用的网格布点(粗网格)\\
 	\textrm{NGXF, NGYF, NGZF} &电荷密度\textrm{FFT}用的网格布点(密网格)\\
 	\textrm{NBANDS} &计算的能带数目\\
 %	\textrm{NBLK} &\textrm{blocking for some BLAS callls}\\
         \midrule
-	\textrm{SYSTEM} &计算对象的名称字符串，仅用于标识计算体系，不影响计算结果\\
+	\textrm{SYSTEM} &\makecell[tl]{计算对象的名称字符串，仅用于标识计算体系，\\不影响计算结果}\\
 %	\textrm{NWRITE} &指定更详细的输出内容到\textrm{OUTCAR}\\
-	\textrm{ISTART} &指定初始波函数来源:~0-从头计算; 1-从\textrm{WAVECAR}文件读取; 2-计算体积-能量曲线时使用\\
-	\textrm{ICHARG} &指定电荷密度来源:~1-从\textrm{CHARGCAR}文件读取; 2-由原子电荷密度叠加生成\\
+	\textrm{ISTART} &\makecell[tl]{指定初始波函数来源:~0-从头计算; 1-从\textrm{WAVECAR}\\文件读取; 2-计算体积-能量曲线时使用}\\
+	\textrm{ICHARG} &\makecell[tl]{指定电荷密度来源:~1-从\textrm{CHARGCAR}文件读取; \\2-由原子电荷密度叠加生成}\\
 	\textrm{ISPIN} &是否打开自旋极化:~1-不打开; 2-打开\\
 	\textrm{MAGMON} & 指定每个原子上的初始磁矩\\
-	\textrm{INIWAV} & 针对\textrm{ISTART = 0}时，初猜波函数的生成方案:~0-简易方案; 1-轨道电子占据数采用随机数\\
+	\textrm{INIWAV} &\makecell[tl]{针对\textrm{ISTART = 0}时，初猜波函数的生成方案:\\0-简易方案; 1-轨道电子占据数采用随机数}\\
 	\midrule
 	\textrm{ENCUT} &计算中的能量截断(单位:~\textrm{eV})\\
 	\textrm{PREC} &计算精度控制:~\textrm{high/medium/low/normal/accurate}\\
@@ -93,11 +97,11 @@
 	\textrm{NELECT} &体系的总电荷数\\
 	\textrm{NUPDOWN} &将体系的自旋磁矩指定为固定值\\
 	\textrm{EMIN, EMAX} &指定态密度文件\textrm{DOSCAR}的能量上下限\\
-	\textrm{ISMEAR} &指定$\vec k$空间和\textrm{Fermi}面积分方案:~0-\textrm{Gaussian}积分; >0-\textrm{MP}方案; -4-四面体积分方案; -5-\textrm{Bl\"ochl}改进的四面体积分方案\\
-	\textrm{SIGMA} &指定\textrm{Fermi}面积分采用的展宽系数(单位ie:~\textrm{eV}):~-4-四面体积分方法; -1-\textrm{Fermi}分布函数; 0-\textrm{Gaussian}分布函数\\
+	\textrm{ISMEAR} &\makecell[tl]{指定$\vec k$空间和\textrm{Fermi}面积分方案:~0-\textrm{Gaussian}积分; \\>0-\textrm{MP}方案; -4-四面体积分方案; \\-5-\textrm{Bl\"ochl}改进的四面体积分方案}\\
+	\textrm{SIGMA} &\makecell[tl]{指定\textrm{Fermi}面积分采用的展宽系数(单位ie:~\textrm{eV}):\\-4-四面体积分方法; -1-\textrm{Fermi}分布函数; \\0-\textrm{Gaussian}分布函数}\\
 	\midrule
-	\textrm{ALGO} &指定电子步矩阵对角化算法:~\textrm{Normal(Davidson)-Fast-Very\_fast(RMM-DIIS)}\\
-	\textrm{IALGO} &指定离子步收敛算法:~8表示共轭梯度\textrm{(Conjugate Gradient, CG)}法，48表示\textrm{RMM-DIIS}\\
+	\textrm{ALGO} &\makecell[tl]{指定电子步矩阵对角化算法:\\\textrm{Normal(Davidson)-Fast-Very\_fast(RMM-DIIS)}}\\
+	\textrm{IALGO} &\makecell[tl]{指定离子步收敛算法:~8表示共轭梯度\\\textrm{(Conjugate Gradient, CG)}法，\\48表示\textrm{RMM-DIIS}}\\
 %	\textrm{RPOT} &指定实空间的非局域投影的网格点数目\\
 	\textrm{GGA} &指定交换-相关泛函形式:~可选的如\textrm{PE},\textrm{AM},\textrm{91}等\\
 	\textrm{VOSKOWN} &指定\textrm{VWN(Vosko-Wilk-Nusair)}泛函的插值方案\\
@@ -115,10 +119,11 @@
 	\textrm{LSCALU} &关闭矩阵对角化的\textrm{LU}分解\\
 %	\textrm{LASYNC} &指定并行计算中的重叠通信\\
         \bottomrule
-    \end{tabular*}
+%    \end{tabular*}
     \caption{\textrm{INCAR}常用参数的简要描述}
 \label{Tab:INCAR-Tag-0}
-\end{table}
+%\end{table}
+\end{longtable}
 \subsection{\rm{VASP}的主要计算控制参数}
 %# VASP四大输入文件详解：INCAR、POSCAR、POTCAR与KPOINTS
 %
@@ -221,7 +226,7 @@
 
 \textrm{LREAL}:~控制是否实空间计算投影函数的参数
 \begin{itemize}
-	\item \textrm{.FALSE.}:~仅在倒空间计算投影函数\textcolor{(对较小体系效率更高)}
+	\item \textrm{.FALSE.}:~仅在倒空间计算投影函数\textcolor{red}{(对较小体系效率更高)}
 	\item \textrm{.TRUE.}:~允许在实空间计算投影函数
 	\item \textrm{Auto}:~由计算程序自动选择确定
 \end{itemize}
@@ -238,9 +243,10 @@
 
 \subsection{INCAR}文件的参数值
 完整的\textrm{INCAR}中的各参数，包括没有设置采用默认值的，都会在\textrm{OUTCAR}中给出。以下是一个典型的结构优化的全部\textrm{INCAR}参数(\textcolor{red}{以体相铜为例}):
-%\fontsize{4.2pt}{3.2pt}\selectfont{
-%\verbatiminput{Figures/POSCAR} %为保险:~选用文件名绝对路径
-%}
+%\textcolor{red}{\textbf{直接插入文件}}:
+{\fontsize{8.2pt}{3.2pt}\selectfont{
+\verbatiminput{Figures/OUTCAR-INPUT.txt} %为保险:~选用文件名绝对路径
+}}
 %```
 %SYSTEM = Cu bulk optimization
 %PREC = Normal
@@ -271,26 +277,29 @@
 \textrm{KPOINTS}是\textrm{VASP}中定义$\vec k$点(\textrm{Brillouin zone}空间的布点)和采样方案的文件。在周期体系的电子结构计算中，需要对第一\textrm{Brillouin zone}的布点进行积分，而$\vec k$点采样就是在倒空间中对该积分进行数值离散化的方案。$\vec k$点网格的布点密度直接决定了计算的精度和计算量——一般地说，网格越密，计算结果越精确，但计算成本也越高。因此，理性地选择$\vec k$点网格是平衡精度与效率的重要手段之一。
 \subsection{\rm{KPOINTS}文件格式}
 \textrm{KPOINTS}文件是\textrm{VASP}的输入文件中格式最固定的一个，最常见的格式是五行模板:
-\begin{itemzie}
+\begin{itemize}
  \item 第1行:~注释，可以是任意字符串(但不能为空)，一般是$\vec k$空间布点的相关描述
  \item 第2行:~整数，0表示$\vec k$空间网格点将是通过自动生成
  \item 第3行:~$\vec k$空间网格分布类型\\
 	 \textrm{G}或\textrm{Gamma}:~表示以$\Gamma$点为中心的$\vec k$点网格生成方案\\
-	 \textrm{M}或\texrm{Monkhorst}:~表示$\vec k$空间网格将采用\textrm{Monkhorst-Pack}生成方案。
+	 \textrm{M}或\textrm{Monkhorst}:~表示$\vec k$空间网格将采用\textrm{Monkhorst-Pack}生成方案。
 %两者的区别在于：Monkhorst-Pack网格在三个方向平移了1/(2N)个单位，而Gamma中心网格是Monkhorst-Pack网格的特殊情况（平移量为0）。对于六角晶格等体系，强烈推荐使用Gamma中心网格。
 
  \item 第4行:~三个整数，分别表示在倒格矢$\mathbf{b}_1$、$\mathbf{b}_2$、$\mathbf{b}_3$三个方向上的$\vec k$点数目\\
 	 例如~4 4 4~表示在每个方向取4个$\vec k$点，共64个k点。
 
  \item 第5行:~三个实数，表示网格原点的偏离量\textrm{(shift)}，通常设为~0 0 0。\textcolor{red}{\textrm{Monkhorst-Pack}网格布点的中心相当于$\Gamma$布点偏移了0.5 0.5 0.5}
-\end{itemzie}
+\end{itemize}
 
 \textcolor{red}{$\vec k$空间网格布点示例}
-Automatic generation
-0
-Gamma
-4 4 4
-0 0 0
+{\fontsize{9.2pt}{7.2pt}\selectfont{
+\verbatiminput{Figures/KPOINTS.txt} %为保险:~选用文件名绝对路径
+}}
+%Automatic generation
+%0
+%Gamma
+%4 4 4
+%0 0 0
 \subsection{\rm{KPOINTS}的网格点测试选取}
 \begin{itemize}
 	\item 收敛性测试\\
@@ -316,7 +325,10 @@ Gamma
 
 能带计算\\
 能带结构计算需要使用沿高对称点方向的路径，即\textrm{Line-mode}%，而非均匀网格。
-
+\textcolor{red}{\textbf{直接插入文件}}:
+{\fontsize{9.2pt}{7.2pt}\selectfont{
+\verbatiminput{Figures/KPOINTS-Line.txt} %为保险:~选用文件名绝对路径
+}}
 分子/原子体系\\
 对于孤立的分子或原子，或使用较大的晶胞，通常只需要$\Gamma$点~$(1\times1\times1)$。
 
@@ -449,15 +461,22 @@ Gamma
 \subsection{\rm{VASP}原子数据集的结构}
 \textcolor{red}{在发布的\textrm{VASP}软件中，原子数据集文件通常存放在`~/vasp/potentials`目录下，包含以下几个子目录:}
 
-| 目录 | 产生方法 | 交换关联泛函 |
-|------|---------|-------------|
-| `pot` | PP（主要是USPP） | LDA |
-| `pot_GGA` | PP（主要是USPP） | GGA |
-| `potpaw` | PAW | LDA |
-| `potpaw_GGA` | PAW | GGA（PW91） |
-| `potpaw_PBE` | PAW | GGA（PBE） |
-
-
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
+        \toprule
+目录 & 赝波函数和赝势生成方案 & 交换-相关泛函\\
+\midrule
+\textrm{pot} & \textrm{PP} (\textrm{USPP}为主) & \textrm{LDA}\\
+\textrm{pot\_GGA} & \textrm{PP} (\textrm{USPP}为主) & \textrm{GGA}\\
+\textrm{potpaw} & \textrm{PAW} & \textrm{LDA}\\
+\textrm{potpaw\_GGA} & \textrm{PAW} & \textrm{GGA(PW91)}\\
+\textrm{potpaw\_PBE} & \textrm{PAW} & \textrm{GGA(PBE)}\\
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{POTCAR}的类型组织。}
+\label{Tab:POTCAR-Tag-0}
+\end{table}
 
 在每个元素的目录下，常常还会将原子数据集进一步划分。以元素\textrm{Ga}为例，共有
 \begin{itemize}
@@ -472,17 +491,17 @@ Gamma
 \subsection{计算用\rm{POTCAR}文件的生成}
 计算用的\textrm{POTCAR}文件，注意将所需各元素的原子数据集文件，按\textrm{POSCAR}中原子的顺序，依次合并。以\ch{GaAs}为例，如果\textrm{POSCAR}中是\textrm{Ga As}，则\textrm{POTCAR}中的原子数据集也必须是\textrm{Ga}在前、\textrm{As}在后。
 
-1. 进入赝势目录（如`potpaw_PBE`），找到Ga和As的赝势文件。
-2. 解压并复制到工作目录：
-   ```bash
-   zcat POTCAR.Z > Ga
-   zcat POTCAR.Z > As
-   ```
+%1. 进入赝势目录（如`potpaw_PBE`），找到Ga和As的赝势文件。
+%2. 解压并复制到工作目录：
+%   ```bash
+ %  zcat POTCAR.Z > Ga
+ %  zcat POTCAR.Z > As
+ %  ```
 
-3. 按顺序合并：
-   ```bash
-   cat Ga As > POTCAR
-   ```
+%3. 按顺序合并：
+%   ```bash
+%   cat Ga As > POTCAR
+%   ```
 同一计算中，所有元素的赝势建议来自同一类型(如同为\textrm{PAW\_PBE})，不宜混用不同类型的原子数据。
 
 %**关键提醒**：POTCAR中元素的排列顺序必须与POSCAR中元素的排列顺序完全一致。例如，
