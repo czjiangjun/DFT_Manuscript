@@ -1,26 +1,27 @@
-# VASP编译完全指南：编译器、数学库、MPI库与GPU编译详解
+\section{\rm{VASP}的编译}%完全指南：编译器、数学库、MPI库与GPU编译详解
+\textrm{VASP}%（Vienna Ab initio Simulation Package）作为第一性原理计算领域最核心的软件之一，其
+的编译过程是用户有必要了解的技术细节。%必须面对的技术挑战。
+因为其在\textrm{Linux}系统下编译安装，%与许多一键安装的普通软件不同，
+\textrm{VASP}的编译，主要需要了解的是编译器版本、数学库、\textrm{MPI}并行库以及可选的\textrm{GPU}加速支持。%任何一个环节的疏漏都可能导致编译失败或运行时性能低下。
 
-## 引言
+\textrm{VASP}的编译较为复杂，根源在于其对底层计算资源的深度依赖。\textrm{VASP}的计算涉及大规模的矩阵运算、快速傅里叶变换\textrm{(Fast Fourier Transformation, FFT)}、并行通信等，计算任务的效率高度依赖于编译器优化、数学库的算法实现以及并行通信库的性能。因此，理解\textrm{VASP}编译的每一个环节，不仅是成功安装\textrm{VASP}的前提，也是后续计算能够高效运行的基础。
 
-VASP（Vienna Ab initio Simulation Package）作为第一性原理计算领域最核心的软件之一，其编译过程是每一位使用者必须面对的技术挑战。与许多一键安装的普通软件不同，VASP的编译需要精心配置编译器、数学库、MPI并行库以及可选的GPU加速支持，任何一个环节的疏漏都可能导致编译失败或运行时性能低下。
+%本文将从零开始，
+这一部分将系统介绍\textrm{VASP}编译的完整流程，涵盖编译器选择、重要数学库(包括\textrm{BLAS}、\textrm{LAPACK}、\textrm{ScaLAPACK}、\textrm{FFTW})的安装与配置、\textrm{MPI}库的选型与设置\textrm{GPU}加速编译(\textrm{OpenACC}与\textrm{CUDA})。重点安装文件\textrm{makefile.include}的必要说明，以及常见问题的诊断与解决。%无论你是初次接触VASP的新手，还是希望优化现有编译配置的老手，本文都将提供详实的参考。
 
-VASP的编译之所以复杂，根源在于它对底层计算资源的深度依赖。VASP的核心计算涉及大规模矩阵运算、快速傅里叶变换（FFT）、并行通信等，这些计算任务的效率高度依赖于编译器优化、数学库的算法实现以及并行通信库的性能。因此，理解VASP编译的每一个环节，不仅是成功安装VASP的前提，更是确保后续计算能够高效运行的基础。
+\subsection{\rm{VASP}编译的系统要求}
+%在开始编译之前，首先需要确认系统是否满足VASP的基本要求。根据VASP官方文档，
+%编译\textrm{VASP}需要的组件有
 
-本文将从零开始，全面、系统地介绍VASP编译的完整流程，涵盖编译器选择、关键数学库（BLAS、LAPACK、ScaLAPACK、FFTW）的安装与配置、MPI库的选型与设置、GPU加速编译（OpenACC与CUDA）、makefile.include的详细解读，以及常见问题的诊断与解决。无论你是初次接触VASP的新手，还是希望优化现有编译配置的老手，本文都将提供详实的参考。
+%### 1.1 编译器要求
 
-
-## 一、VASP编译的系统要求
-
-在开始编译之前，首先需要确认系统是否满足VASP的基本要求。根据VASP官方文档，编译VASP需要以下组件：
-
-### 1.1 编译器要求
-
-VASP主要用Fortran编写（需要至少F2008标准的编译器），同时也包含C和C++代码。官方推荐的编译器套件包括：
-
-- **Intel oneAPI**（含ifort/ifx编译器）
-- **NVIDIA HPC-SDK**（含nvfortran编译器）——**特别地，对于GPU版本的OpenACC编译，必须使用NVIDIA HPC-SDK（版本≥21.2）**
-- **GCC/GFortran**（版本≥7.X，但仅从VASP 6.2.0开始支持）
-- **AMD AOCC**（AMD优化编译器，适用于AMD EPYC处理器）
+\textrm{VASP}主要用\textrm{Fortran}语言编写(需要\textrm{F2008}及以上标准的编译器)，同时也包含少量的\textrm{C}和\textrm{C++}代码。官方推荐的编译器套件包括：
+\begin{itemize}
+	\item - **Intel oneAPI**（含ifort/ifx编译器）
+	\item NVIDIA HPC-SDK**（含nvfortran编译器）——**特别地，对于GPU版本的OpenACC编译，必须使用NVIDIA HPC-SDK（版本≥21.2）**
+	\item GCC/GFortran**（版本≥7.X，但仅从VASP 6.2.0开始支持）
+	\item AMD AOCC**（AMD优化编译器，适用于AMD EPYC处理器）
+\end{itemize}<++>
 
 ### 1.2 必需数值库
 
