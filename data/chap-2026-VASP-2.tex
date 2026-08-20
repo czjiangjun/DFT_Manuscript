@@ -341,8 +341,61 @@
 %\subsection{\rm{KPOINTS}文件的内容}
 %\subsection{\rm{VASP}中的$\vec k$空间积分}
 \section{\rm{POTCAR}文件}
+习惯上，\textrm{POTCAR}被成为\textrm{VASP}计算的``赝势文件''，但严格地说，\textrm{POTCAR}不仅仅是包含了计算体系中各元素的赝势数据，还包含了原子的波函数、电荷密度和投影函数等\textrm{PAW}方法所必须的各类基础数据，所以称其为``原子数据集文件''可能更准确。而且\textrm{VASP}的相关代码都是开源的，但唯有\textrm{POTCAR}的生成方案至今没有公开，\textrm{VASP}提供的较为完整的\textrm{POTCAR}数据，是\textrm{VASP}计算结果可靠的重要前提。
 \subsection{\rm{POTCAR}文件的内容}
+\textrm{POTCAR}文件的主要包含以下几部分
+\begin{itemize}
+	\item \textrm{POTCAR}数据生成的控制参数
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+\verbatiminput{Figures/POTCAR-1-parameter.txt} %为保险:~选用文件名绝对路径
+}}
+参数部分的结束，是以``PSCTR-controll parameters''为结束标记，这些参数主要是原子构型信息、超软赝势\textrm{(USPP)}\textrm{PAW}方法产生原子赝势所需的截断半经等各类参数。
+\item 原子赝势局域部分在倒空间的表示
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+}}
+原子赝势的局域部分以``local part''为起始标记，紧随其后的是$\vec k$空间截断值；随后为$V_{\mathrm{loc}}(G)$的1000个数值点；标记``gradient corrections used for XC''提示交换-相关泛函，代表5表示该原子势中的交换-相关部分采用\textrm{PBE}泛函形式。
+ \item 原子赝电荷密度的局域部分在倒空间的表示
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-3-charge_G.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=199-204]{Figures/POTCAR-3-charge_G.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=399-402]{Figures/POTCAR-3-charge_G.txt} %为保险:~选用文件名绝对路径
+}}
+原子电子密度的局域部分以``core charge-density (partial)''为真实电荷密度的起始标记，紧随其后为$n_{\mathrm{loc}}^{\mathrm{core}}(G)$的1000个数值点；标记``atomic pseudo charge-density''为赝电荷密度的起始，随后是$\tilde n_{\mathrm{loc}}^{\mathrm{core}}(G)$的1000个数值点。
+\item 投影子函数在倒空间和实空间的表示
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-8]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=24-30]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=44-50]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
+}}
+投影子函数$\tilde p_l$与原子波函数相关，因此也依赖角动量和赝波函数的能量。与势函数的空间布点数(1000)不同，投影子函数在$\vec k$空间和实空间的布点数近为100，因此$\vec k$空间的阶段值列在第一行。随后以``Non local Part''表示径向波函数的电荷密度差，是电荷密度差
+\item 基于\textrm{PAW}的镜像波函数网格布点
+\item 原子全电子势函数
+\item 原子芯电荷密度
+\item 原子动能密度
+\item 原子的赝芯电荷密度
+\item 原子的赝势
+\item 原子的赝波函数和全电子波函数
+\end{itemize}
+\
 \subsection{\rm{POTCAR}文件与\rm{PAW}方法}
+%赝势方法的核心思想是将原子的内层电子（芯电子）与原子核合并为一个有效的“离子实”，用一个平滑的势函数来代替真实的原子势，从而大幅减少计算所需的平面波数量。POTCAR文件告诉VASP计算体系中包含哪些元素以及使用哪种赝势来描述这些元素。
 %## 二、POSCAR文件：原子结构的“骨架”
 %
 %### 2.1 POSCAR文件概述
@@ -438,7 +491,6 @@
 %## 三、POTCAR文件：赝势的“能量密码本”
 
 %### 3.1 POTCAR文件概述
-习惯上，\textrm{POTCAR}被成为\textrm{VASP}计算的``赝势文件''，但严格地说，\textrm{POTCAR}不仅仅是包含了计算体系中各元素的赝势数据，还包含了原子的波函数、电荷密度和投影函数等\textrm{PAW}方法所必须的各类基础数据，所以称其为``原子数据集文件''可能更准确。而且\textrm{VASP}的相关代码都是开源的，但唯有\textrm{POTCAR}的生成方案至今没有公开，\textrm{VASP}提供的较为完整的\textrm{POTCAR}数据，是\textrm{VASP}计算结果可靠的重要前提。%赝势方法的核心思想是将原子的内层电子（芯电子）与原子核合并为一个有效的“离子实”，用一个平滑的势函数来代替真实的原子势，从而大幅减少计算所需的平面波数量。POTCAR文件告诉VASP计算体系中包含哪些元素以及使用哪种赝势来描述这些元素。
 %VASP本身带有较为完善的赝势库，
 用户能够做的，是选择适合自己计算体系的原子数据集类型，将相应的原子数据文件组合成最终计算所需要的\textrm{POTCAR}文件。
 
