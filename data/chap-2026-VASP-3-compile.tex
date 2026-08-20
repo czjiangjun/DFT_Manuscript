@@ -14,7 +14,6 @@
 %编译\textrm{VASP}需要的组件有
 
 %### 1.1 编译器要求
-
 \textrm{VASP}主要用\textrm{Fortran}语言编写(需要\textrm{F2008}及以上标准的编译器)，同时也包含少量的\textrm{C}和\textrm{C++}代码。官方推荐的编译器套件包括：
 \begin{itemize}
 	\item \textrm{Intel oneAPI}~(含\textrm{ifort/ifx}编译器)
@@ -23,22 +22,28 @@
 	\item \textrm{AMD AOCC}~(\textrm{AMD}优化编译器，适用于\textrm{AMD EPYC}处理器)
 \end{itemize}
 
-### 1.2 必需数值库
+%### 1.2 必需数值库
+\textrm{VASP}编译主要依赖的关键数学函数库：
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
+        \toprule
+ 库名称  &功能  &备注\\ 
+\midrule
+\textrm{BLAS} &基础线性代数运算 &矩阵乘法、向量运算等\\
+\textrm{LAPACK} &高级线性代数运算 &特征值求解、矩阵分解等\\
+\textrm{ScaLAPACK} &并行线性代数运算 &分布式内存并行版本\\
+\textrm{FFTW} &快速\textrm{Fourier}变换 &处理平面波基组的核心库\\
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{\textrm{VASP}编译最依赖的数学库\footnote{如果使用\textrm{Intel oneAPI}套件，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}已包含在重要数学库\textrm{(Math Kernel Library, MKL)}中，无需单独安装。}}}
+\label{Tab:Compile-Tag-0}
+\end{table}
 
-VASP的正常运行离不开以下四个核心数值库：
+%**特别说明**：如果使用Intel oneAPI套件，BLAS、LAPACK和ScaLAPACK已包含在MKL（Math Kernel Library）中，无需单独安装。如果使用NVIDIA HPC-SDK，BLAS、LAPACK和ScaLAPACK同样随SDK一同提供，唯一需要自行安装的数值库是FFTW。
 
-| 库名称 | 功能 | 备注 |
-|--------|------|------|
-| **BLAS** | 基础线性代数运算 | 矩阵乘法、向量运算等 |
-| **LAPACK** | 高级线性代数运算 | 特征值求解、矩阵分解等 |
-| **ScaLAPACK** | 并行线性代数运算 | 分布式内存并行版本 |
-| **FFTW** | 快速傅里叶变换 | 处理平面波基组的核心库 |
-
-**特别说明**：如果使用Intel oneAPI套件，BLAS、LAPACK和ScaLAPACK已包含在MKL（Math Kernel Library）中，无需单独安装。如果使用NVIDIA HPC-SDK，BLAS、LAPACK和ScaLAPACK同样随SDK一同提供，唯一需要自行安装的数值库是FFTW。
-
-### 1.3 MPI库要求
-
-VASP支持分布式内存并行计算，需要MPI（Message Passing Interface）实现。官方推荐的MPI库包括：
+\subsection{\rm{MPI}库编译要求}
+\textrm{VASP}支持分布式内存并行计算，需要\textrm{Message Passing Interface (MPI)}实现。官方推荐的MPI库包括：
 
 - **Intel oneAPI MPI**（与Intel编译器配套）
 - **OpenMPI**（开源实现，适用性最广）
