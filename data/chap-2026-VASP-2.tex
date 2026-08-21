@@ -343,13 +343,13 @@
 \section{\rm{POTCAR}文件}
 习惯上，\textrm{POTCAR}被成为\textrm{VASP}计算的``赝势文件''，但严格地说，\textrm{POTCAR}不仅仅是包含了计算体系中各元素的赝势数据，还包含了原子的波函数、电荷密度和投影函数等\textrm{PAW}方法所必须的各类基础数据，所以称其为``原子数据集文件''可能更准确。而且\textrm{VASP}的相关代码都是开源的，但唯有\textrm{POTCAR}的生成方案至今没有公开，\textrm{VASP}提供的较为完整的\textrm{POTCAR}数据，是\textrm{VASP}计算结果可靠的重要前提。
 \subsection{\rm{POTCAR}文件的内容}
-\textrm{POTCAR}文件的主要包含以下几部分
+以下结合铜\textrm{(Cu)}原子的\textrm{POTCAR}为示例，说明\textrm{POTCAR}文件的主要组成。\textrm{POTCAR}文件主要包含以下若干部分：
 \begin{itemize}
 	\item \textrm{POTCAR}数据生成的控制参数
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 \verbatiminput{Figures/POTCAR-1-parameter.txt} %为保险:~选用文件名绝对路径
 }}
-参数部分的结束，是以``PSCTR-controll parameters''为结束标记，这些参数主要是原子构型信息、超软赝势\textrm{(USPP)}\textrm{PAW}方法产生原子赝势所需的截断半经等各类参数。
+字符串``PSCTR-controll parameters''为控制参数结束的标记。这些参数主要是原子名称、价电子构型、超软赝势\textrm{(USPP)}\textrm{PAW}方法产生原子赝势所需的截断半经等各类参数，以及原子态电子的动能误差信息。熟悉赝势和\textrm{PAW}方法的读者不难猜出，这些参数应该是用于生成\textrm{POTCAR}原子数据的程序\textrm{PSCTR}(\textrm{VASP}未公开的代码)所需的各类控制参数。
 \item 原子赝势局域部分在倒空间的表示
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
@@ -358,7 +358,7 @@ $\cdots\cdots$
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
 }}
-原子赝势的局域部分以``local part''为起始标记，紧随其后的是$\vec k$空间截断值；随后为$V_{\mathrm{loc}}(G)$的1000个数值点；标记``gradient corrections used for XC''提示交换-相关泛函，代表5表示该原子势中的交换-相关部分采用\textrm{PBE}泛函形式。
+以字符串``local part''为起始标记，开始\textrm{USPP}和\textrm{PAW}都会涉及到的原子赝势(局域部分)。紧随其后的是倒空间中取$\vec G$的截断值；随后为$V_{\mathrm{loc}}$的1000个数值点，即对应将$\vec G$值均分1000份后，$V_{\mathrm{loc}}(G)$的各数值点。此后的字符串``gradient corrections used for XC''提示交换-相关泛函，其随后的数值5表示该处原子势中的交换-相关部分采用\textrm{PBE}泛函形式。
  \item 原子赝电荷密度的局域部分在倒空间的表示
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-5]{Figures/POTCAR-3-charge_G.txt} %为保险:~选用文件名绝对路径
@@ -371,7 +371,7 @@ $\cdots\cdots$
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=399-402]{Figures/POTCAR-3-charge_G.txt} %为保险:~选用文件名绝对路径
 }}
-原子电子密度的局域部分以``core charge-density (partial)''为真实电荷密度的起始标记，紧随其后为$n_{\mathrm{loc}}^{\mathrm{core}}(G)$的1000个数值点；标记``atomic pseudo charge-density''为赝电荷密度的起始，随后是$\tilde n_{\mathrm{loc}}^{\mathrm{core}}(G)$的1000个数值点。
+原子价电子密度的局域部分以字符串``core charge-density (partial)''为起始标记，紧随其后为$n_{\mathrm{loc}}^{\mathrm{core}}(G)$的1000个数值点；以字符串``atomic pseudo charge-density''为赝电荷密度的起始标记，随后是$\tilde n_{\mathrm{loc}}^{\mathrm{core}}(G)$的1000个数值点。
 \item 投影子函数在倒空间和实空间的表示
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-8]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
@@ -384,70 +384,85 @@ $\cdots\cdots$
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=44-50]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
 }}
-投影子函数$\tilde p_l$与原子波函数相关，因此也依赖角动量和赝波函数的能量。与势函数的空间布点数(1000)不同，投影子函数在$\vec k$空间和实空间的布点数仅为100，因此$\vec k$空间的阶段值列在第一行。随后以``Non local Part''标记非局域部分的投影子函数相关的贡献。紧随第一行三个参数分别为角动量$l$及其数目和径向半径，下一行为原子超软赝势和\textrm{PAW}方法所涉及的非局域部分贡献的$D^{\mathrm{ion}}$项(共四个)。随后即为角动量$l$的投影子函数分别在倒空间和正空间的表示。
+熟悉赝势理论的读者都知道，投影子函数$\tilde p_l$与原子波函数相关，其构造依赖角动量$l$和赝波函数的能量。与势函数的$\vec G$空间布点数(1000)不同，投影子函数在$\vec k$空间和实空间的布点数都为100。因在倒空间的截断值列于第一行，并跟随字符``\textrm{T}''标注。其下字符串``Non local Part''标记非局域部分的投影子函数相关的贡献，紧随标记行的三个参数分别为投影子函数的轨道角动量$l$、轨道数目和实空间径向截断半径。再下一行则是原子超软赝势或\textrm{PAW}方法所涉及的非局域部分贡献的$D^{\mathrm{ion}}$项(共四个)，这几个数据的获得，恰恰是\textrm{USPP}或\textrm{PAW}方法的有价值部分。随后即为分别用字符串``Reciprocal Space Part''和``Real Space Part''标记的轨道角动量$l$的投影子函数在倒空间和正空间的数值。具体到\textrm{Cu}元素，依次为$l=2, 0, 1$的各两组投影子函数。
 \item 基于\textrm{PAW}方法的参数
 {\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-8]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
+	\lstinputlisting[linerange=1-8]{Figures/POTCAR-5-PAW-grid.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
 {\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=24-30]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
+	\lstinputlisting[linerange=10-15]{Figures/POTCAR-5-PAW-grid.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
 {\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=44-50]{Figures/POTCAR-4-projector.txt} %为保险:~选用文件名绝对路径
+	\lstinputlisting[linerange=20-24]{Figures/POTCAR-5-PAW-grid.txt} %为保险:~选用文件名绝对路径
 }}
+$\cdots\cdots$
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=79-86]{Figures/POTCAR-5-PAW-grid.txt} %为保险:~选用文件名绝对路径
+}}
+\textrm{PAW}方法的参数以字符串``\textrm{PAW radial sets}''起始作标记。紧随标记字符串后是指定的径向(按对数布点)的布点数和``截断半径''(真实采用的``截断半径''会比该数值略大)；紧随后一行字符串则是用作指定后续实数型数据的格式，可能是突出\textrm{PAW}方法所用的数据格式特征。再次行的字符串``\textrm{augmentation charges (non sperical)}''起始标记的是赝势中的补偿电荷。字符串``\textrm{uccopancies in atom}''起始标记的是原子价电子轨道的占据情况，有必要指出的是，这里占据电子是平均分配到每个轨道的，因此此处的电子数会存在分数占据。字符串``\textrm{grid}''起始标记的是径向对数布点的各点数值。在\textrm{Cu}的实例中，指定``截断半径''对应第313点(倒数第七点)。
 \item 原子全电子势函数
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-5-aepotential.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=63-65]{Figures/POTCAR-5-aepotential.txt} %为保险:~选用文件名绝对路径
 }}
+自此以下数据与标注的关系都较为清晰明确，主要是\textrm{PAW}方法的原子数据。原子的全电子势函数以字符串``aepotential''起始标记。
 \item 原子芯电荷密度
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-6-core.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=63-65]{Figures/POTCAR-6-core.txt} %为保险:~选用文件名绝对路径
 }}
+类似地，字符串``\textrm{core charge-density}''起始标记的芯电荷密度。  
 \item 原子动能密度
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-7-kinetic.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=63-65]{Figures/POTCAR-7-kinetic.txt} %为保险:~选用文件名绝对路径
 }}
-\item 原子的赝芯电荷密度
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
-}}
-$\cdots\cdots$
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
-}}
+字符串``\textrm{kinetic energy-density}''起始标记的芯电荷密度。  
 \item 原子的赝势
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-8-pspotential.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=63-65]{Figures/POTCAR-8-pspotential.txt} %为保险:~选用文件名绝对路径
 }}
-\item 原子的赝波函数和全电子波函数
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-5]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+字符串``pspotential''起始标记原子的赝势。  
+\item 原子的赝芯电荷密度
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-8-core-ps.txt} %为保险:~选用文件名绝对路径
 }}
 $\cdots\cdots$
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=199-204]{Figures/POTCAR-2-local_G.txt} %为保险:~选用文件名绝对路径
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=63-65]{Figures/POTCAR-8-core-ps.txt} %为保险:~选用文件名绝对路径
 }}
+字符串``\textrm{core charge-density (pseudized)}''起始标记原子的赝势。
+\item 原子的价电子的赝波函数和全电子波函数
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/POTCAR-9-wave-6.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=63-68]{Figures/POTCAR-9-wave-6.txt} %为保险:~选用文件名绝对路径
+}}
+$\cdots\cdots$
+{\fontsize{7.2pt}{5.2pt}\selectfont{
+	\lstinputlisting[linerange=128-131]{Figures/POTCAR-9-wave-6.txt} %为保险:~选用文件名绝对路径
+}}
+不同角动量$l$的价电子波函数与投影函数的排序严格对应。很显然，字符串``\textrm{pseudo wavefunction}''起始标记原子的赝波函数；字符串``\textrm{ae wavefunction}''起始标记原子的全电子波函数。具体到\textrm{Cu}元素，原子波函数依次为$l=2, 0, 1$的各两组轨道函数。
 \end{itemize}
-\
-\subsection{\rm{POTCAR}文件与\rm{PAW}方法}
+\textrm{POTCAR}的最后，原子数据集以字符串``End of Dataset''标注结束。
+%\subsection{\rm{POTCAR}文件与\rm{PAW}方法}
 %赝势方法的核心思想是将原子的内层电子（芯电子）与原子核合并为一个有效的“离子实”，用一个平滑的势函数来代替真实的原子势，从而大幅减少计算所需的平面波数量。POTCAR文件告诉VASP计算体系中包含哪些元素以及使用哪种赝势来描述这些元素。
 %## 二、POSCAR文件：原子结构的“骨架”
 %
@@ -544,8 +559,7 @@ $\cdots\cdots$
 %## 三、POTCAR文件：赝势的“能量密码本”
 
 %### 3.1 POTCAR文件概述
-%VASP本身带有较为完善的赝势库，
-用户能够做的，是选择适合自己计算体系的原子数据集类型，将相应的原子数据文件组合成最终计算所需要的\textrm{POTCAR}文件。
+对用户来说，\textrm{VASP}提供了较为完善的赝势库，用户所需要做的，是选择适合自己计算体系的原子数据集类型，将相应的原子数据文件组合成最终计算所需要的\textrm{POTCAR}文件。
 
 %### 3.2 赝势的分类
 %
@@ -557,14 +571,12 @@ $\cdots\cdots$
 %
 %VASP官方强烈推荐使用PAW赝势。原因有二：一是PAW的径向截断半径（芯半径）比USPP更小，因此更精确；二是PAW方法能重构芯区域带有节点的真实价电子波函数。USPP可以看作是早期计算能力受限时的一种妥协方案，如今已很少使用。
 
-习惯上，\textrm{VASP}提供的原子数据集，按交换-相关泛函为\textrm{LDA}型和\textrm{GGA}型。
 %- **LDA（Local Density Approximation，局域密度近似）** 。
 %- **GGA（Generalized Gradient Approximation，广义梯度近似）** ，其下
-\textrm{GGA}型又细分为\textrm{PW91}和\textrm{PBE}型等。
 %目前最常用的是**PAW + PBE**组合。
 
 \subsection{\rm{VASP}原子数据集的结构}
-\textcolor{red}{在发布的\textrm{VASP}软件中，原子数据集文件通常存放在`~/vasp/potentials`目录下，包含以下几个子目录:}
+\textcolor{red}{在发布的\textrm{VASP}软件中，原子数据集文件通常存放在`$\sim$/vasp/potentials`目录下，}习惯上，这些原子数据集，按交换-相关泛函的不同，划分为\textrm{LDA}型和\textrm{GGA}型，\textrm{GGA}型又可再细分为\textrm{PW91}和\textrm{PBE}型等。因此原子数据集的目录，主要包含以下几个子目录:
 
 \begin{table}[h!]
     \centering
@@ -572,11 +584,11 @@ $\cdots\cdots$
         \toprule
 目录 & 赝波函数和赝势生成方案 & 交换-相关泛函\\
 \midrule
-\textrm{pot} & \textrm{PP} (\textrm{USPP}为主) & \textrm{LDA}\\
-\textrm{pot\_GGA} & \textrm{PP} (\textrm{USPP}为主) & \textrm{GGA}\\
+\textrm{pot} & \textrm{PP}~(\textrm{USPP}为主) & \textrm{LDA}\\
+\textrm{pot\_GGA} & \textrm{PP}~(\textrm{USPP}为主) & \textrm{GGA}\\
 \textrm{potpaw} & \textrm{PAW} & \textrm{LDA}\\
-\textrm{potpaw\_GGA} & \textrm{PAW} & \textrm{GGA(PW91)}\\
-\textrm{potpaw\_PBE} & \textrm{PAW} & \textrm{GGA(PBE)}\\
+\textrm{potpaw\_GGA} & \textrm{PAW} & \textrm{GGA~(PW91)}\\
+\textrm{potpaw\_PBE} & \textrm{PAW} & \textrm{GGA~(PBE)}\\
         \bottomrule
     \end{tabular*}
     \caption{\textrm{POTCAR}的类型组织。}
