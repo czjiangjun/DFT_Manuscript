@@ -1,29 +1,31 @@
 \section{\rm{VASP}的编译}%完全指南：编译器、数学库、MPI库与GPU编译详解
-\textrm{VASP}%（Vienna Ab initio Simulation Package）作为第一性原理计算领域最核心的软件之一，其
-的编译过程是用户有必要了解的技术细节。%必须面对的技术挑战。
-因为其在\textrm{Linux}系统下编译安装，%与许多一键安装的普通软件不同，
-\textrm{VASP}的编译，主要需要了解的是编译器版本、数学库、\textrm{MPI}并行库以及可选的\textrm{GPU}加速支持。%任何一个环节的疏漏都可能导致编译失败或运行时性能低下。
+因为\textrm{VASP}是在\textrm{Linux}系统下运行的，
+%（Vienna Ab initio Simulation Package）作为第一性原理计算领域最核心的软件之一，其
+独立用户有必要了解其编译安装的技术细节。%必须面对的技术挑战。
+%编译安装。与许多一键安装的普通软件不同，
+一般地讲，科学计算软件的编译，主要需要了解的无非是编译器版本、数学库、\textrm{MPI}并行库以及可选的\textrm{GPU}加速支持等，%任何一个环节的疏漏都可能导致编译失败或运行时性能低下。
+\textrm{VASP}的编译也不例外。
 
-\textrm{VASP}的编译较为复杂，根源在于其对底层计算资源的深度依赖。\textrm{VASP}的计算涉及大规模的矩阵运算、快速傅里叶变换\textrm{(Fast Fourier Transformation, FFT)}、并行通信等，计算任务的效率高度依赖于编译器优化、数学库的算法实现以及并行通信库的性能。因此，理解\textrm{VASP}编译的每一个环节，不仅是成功安装\textrm{VASP}的前提，也是后续计算能够高效运行的基础。
+\textrm{VASP}的计算涉及大规模的矩阵运算、快速傅里叶变换\textrm{(Fast Fourier Transformation, FFT)}、并行通信等，计算任务的效率高度依赖于编译器优化、数学库的算法实现以及并行通信库的性能。因此，\textrm{VASP}的编译根源于其对底层计算资源的深度依赖。理解\textrm{VASP}编译的每一个环节，不仅是成功安装\textrm{VASP}的前提，也是后续计算能够高效运行的基础。
 
 %本文将从零开始，
-这一部分将系统介绍\textrm{VASP}编译的完整流程，涵盖编译器选择、重要数学库(包括\textrm{BLAS}、\textrm{LAPACK}、\textrm{ScaLAPACK}、\textrm{FFTW})的安装与配置、\textrm{MPI}库的选型与设置\textrm{GPU}加速编译(\textrm{OpenACC}与\textrm{CUDA})。重点安装文件\textrm{makefile.include}的必要说明，以及常见问题的诊断与解决。%无论你是初次接触VASP的新手，还是希望优化现有编译配置的老手，本文都将提供详实的参考。
+这里介绍\textrm{VASP}编译的完整流程，涵盖编译器选择、重要数学库(包括\textrm{BLAS}、\textrm{LAPACK}、\textrm{ScaLAPACK}、\textrm{FFTW})的安装与配置、\textrm{MPI}库的选型与设置\textrm{GPU}加速编译(\textrm{OpenACC}与\textrm{CUDA})。重点安装文件\textrm{makefile.include}的必要说明，以及常见问题的诊断与解决。%无论你是初次接触VASP的新手，还是希望优化现有编译配置的老手，本文都将提供详实的参考。
 
 \subsection{\rm{VASP}编译的系统要求}
 %在开始编译之前，首先需要确认系统是否满足VASP的基本要求。根据VASP官方文档，
 %编译\textrm{VASP}需要的组件有
-
 %### 1.1 编译器要求
+
 \textrm{VASP}主要用\textrm{Fortran}语言编写(需要\textrm{F2008}及以上标准的编译器)，同时也包含少量的\textrm{C}和\textrm{C++}代码。官方推荐的编译器套件包括：
 \begin{itemize}
-	\item \textrm{Intel oneAPI}~(含\textrm{ifort/ifx}编译器)
-	\item \textrm{NVIDIA HPC-SDK}~(含\textrm{nvfortran}编译器)\footnote{特别地，对于\textrm{GPU}版本的\textrm{OpenACC}编译，必须使用\textrm{NVIDIA HPC-SDK}(版本≥21.2)
-	\item \textrm{GCC/GFortran}~(版本要求$≥7.X$，但仅从\textrm{VASP 6.2.0}开始支持)
-	\item \textrm{AMD AOCC}~(\textrm{AMD}优化编译器，适用于\textrm{AMD EPYC}处理器)
+	\item \textrm{Intel oneAPI}~(含\textrm{ifort}编译器)
+	\item \textrm{NVIDIA HPC-SDK}~(含\textrm{nvfortran}编译器)\footnote{特别地，对于\textrm{GPU}版本的\textrm{OpenACC}编译，建议使用\textrm{NVIDIA HPC-SDK}(版本≥21.2)}
+	\item \textrm{GCC/GFortran}~(版本要求$≥\mathrm{7.X}$，从\textrm{VASP~6.2.0}开始支持)
+        \item \textrm{AMD AOCC}~(\textrm{AMD}优化编译器，适用于\textrm{AMD EPYC}处理器)
 \end{itemize}
 
 %### 1.2 必需数值库
-\textrm{VASP}编译主要依赖的关键数学函数库：
+\textrm{VASP}编译主要依赖的重要数学函数库、及其功能见下表。%关键数学库(\textrm{Math Kernel Library, MKL})是\textrm{intel}的}：
 \begin{table}[h!]
     \centering
     \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
@@ -43,20 +45,23 @@
 %**特别说明**：如果使用Intel oneAPI套件，BLAS、LAPACK和ScaLAPACK已包含在MKL（Math Kernel Library）中，无需单独安装。如果使用NVIDIA HPC-SDK，BLAS、LAPACK和ScaLAPACK同样随SDK一同提供，唯一需要自行安装的数值库是FFTW。
 
 \subsection{\rm{MPI}库编译要求}
-\textrm{VASP}支持分布式内存并行计算，需要\textrm{Message Passing Interface (MPI)}实现。官方推荐的MPI库包括：
+\textrm{VASP}支持分布式内存并行计算，需要\textrm{Message Passing Interface (MPI)}实现。推荐的\textrm{MPI}库包括:
+\begin{itemize}
+	\item \textrm{Intel oneAPI MPI}(与\textrm{Intel}编译器配套)
+	\item \textrm{OpenMPI}(最通用的开源\textrm{MPI}库，适用性较广)
+	\item \textrm{NVIDIA HPC-SDK}自带的\textrm{OpenMPI}(面向\textrm{CUDA-aware}，可支持\textrm{GPU}间通信)
+\end{itemize}
 
-- **Intel oneAPI MPI**（与Intel编译器配套）
-- **OpenMPI**（开源实现，适用性最广）
-- **NVIDIA HPC-SDK自带的OpenMPI**（CUDA-aware，支持GPU间通信）
-
-### 1.4 可选依赖库
-
-除上述必需组件外，VASP还支持若干可选功能，需要额外链接相应库：
-
-- **HDF5**：支持读写HDF5格式文件（如vaspout.h5），**强烈推荐启用**，是py4vasp等后处理工具的前提
-- **NCCL**（NVIDIA Collective Communications Library）：用于GPU多卡通信，**强烈推荐**用于多GPU性能优化
-- **Wannier90**：用于Wannier函数计算
-- **DFTD4**：用于DFT-D4色散校正
+%### 1.4 可选依赖库
+\subsection{可选的依赖库}
+除去前述必要的组件外，\textrm{VASP}还支持若干可选功能，这些功能需要额外的库支持。但因为这些功能用得较少，这里只对这些库作简单介绍。
+\begin{itemize}
+	\item \textrm{HDF5}:~用于支持读写\textrm{HDF5}格式文件(如\textrm{vaspout.h5})%，**强烈推荐启用**，是py4vasp等后处理工具的前提
+	\item \textrm{NCCL~(NVIDIA Collective Communications Library)}:~用于支持\textrm{GPU}多卡通信，%**强烈推荐**
+		用于多\textrm{GPU}性能优化
+	\item \textrm{Wannier90}:~用于\textrm{Wannier}函数计算
+	\item \textrm{DFTD4}：用于\textrm{DFT-D4}色散校正
+\end{itemize}
 
 
 ## 二、编译器详解
