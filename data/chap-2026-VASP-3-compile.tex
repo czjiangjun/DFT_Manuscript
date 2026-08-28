@@ -184,7 +184,7 @@
 \textrm{MKL\_LIBS} &指定重要数学库的存储路径\\
 \textrm{BLAS/BLACS} &涉及向量运算、矩阵乘法的基本线性代数运算库 (\textrm{BLAVS}支持并行计算)\\
 \textrm{LAPACK/SCALAPACK} &涉及矩阵对角化和本征值求解的线性代数运算库(\textrm{SCALPACK}支持并行计算)\\
-\textrm{OBJECTS}  &面向\textrm{FFTW}所需要的各类数学库\\
+\textrm{OBJECTS}  &支持\textrm{FFTW}所需要的各类数学库的目标文件和库函数\\
 \textrm{INCS} &\textrm{FFTW}库中必要的头文件目录\\
 \textrm{OBJECTS} &用于代码优化的选项\\
 \textrm{LLIBS} &指定了所需要的全部库函数
@@ -219,37 +219,51 @@
 \end{enumerate}
 
 \subsection{常见\rm{makefile.include}配置}
-
-**示例1：Intel oneAPI + MKL（纯CPU）** 
-
-```makefile
-CPP_OPTIONS = -DHOST=\"LinuxIFC\" -DMPI -DMPI_BLOCK=8000 -Duse_collective -DscaLAPACK -DCACHE_SIZE=4000 -Davoidalloc -Dvasp6
-CPP         = mpiifort -E -DMPI -C -P $(CPP_OPTIONS) $< >$*.F90
-FC          = mpiifort -I$(MKLROOT)/include
-FCL         = mpiifort -L$(MKLROOT)/lib
-FREE        = -free -names lowercase
-FFLAGS      = -assume byterecl -O2 -fp-model precise
-OFLAG       = -O3 -xHOST
-OBJECTS     = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
-LLIBS       = -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
-```
-
-**示例2：NVIDIA HPC-SDK + OpenACC（GPU）** 
-
-```makefile
-CPP_OPTIONS = -DHOST=\"LinuxNV\" -DMPI -DMPI_BLOCK=8000 -Duse_collective -DscaLAPACK -DCACHE_SIZE=4000 -Davoidalloc -Dvasp6 -D_OPENMP -D_OPENACC -DUSENCCL -DUSENCCLP2P
-CPP         = nvfortran -Mpreprocess -Mfree -Mextend -E $(CPP_OPTIONS) $*$(FUFFIX) > $*$(SUFFIX)
-FC          = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.0 -mp
-FCL         = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.0 -mp -c++libs
-FREE        = -Mfree
-FFLAGS      = -Mbackslash -Mlarge_arrays
-OFLAG       = -fast
-OBJECTS     = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
-LLIBS       = -cudalib=cublas,cusolver,cufft,nccl -cuda
-QD          = $(NVROOT)/compilers/extras/qd
-```
-
-%## 二、编译器详解
+%
+%**示例1：Intel oneAPI + MKL（纯CPU）** 
+\begin{itemize}
+\item 纯\textrm{CPU}架构:~\textrm{Intel oneAPI + MKL}
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-56]{Figures/makefile.include.linux_intel_omp} %为保险:~选用文件名绝对路径
+}}
+	\item \textrm{GPU}架构:~\textrm{NVIDIA HPC-SDK + OpenAmpi}
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-80]{Figures/makefile.include.linux_nv_omp} %为保险:~选用文件名绝对路径
+}}
+\item 纯开源编译:~\textrm{Linux}默认开源编译环境
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-48]{Figures/makefile.include.linux_gfortran} %为保险:~选用文件名绝对路径
+}}
+\end{itemize}
+%
+%```makefile
+%CPP_OPTIONS = -DHOST=\"LinuxIFC\" -DMPI -DMPI_BLOCK=8000 -Duse_collective -DscaLAPACK -DCACHE_SIZE=4000 -Davoidalloc -Dvasp6
+%CPP         = mpiifort -E -DMPI -C -P $(CPP_OPTIONS) $< >$*.F90
+%FC          = mpiifort -I$(MKLROOT)/include
+%FCL         = mpiifort -L$(MKLROOT)/lib
+%FREE        = -free -names lowercase
+%FFLAGS      = -assume byterecl -O2 -fp-model precise
+%OFLAG       = -O3 -xHOST
+%OBJECTS     = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
+%LLIBS       = -lmkl_scalapack_lp64 -lmkl_blacs_intelmpi_lp64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core
+%```
+%
+%**示例2：NVIDIA HPC-SDK + OpenACC（GPU）** 
+%
+%```makefile
+%CPP_OPTIONS = -DHOST=\"LinuxNV\" -DMPI -DMPI_BLOCK=8000 -Duse_collective -DscaLAPACK -DCACHE_SIZE=4000 -Davoidalloc -Dvasp6 -D_OPENMP -D_OPENACC -DUSENCCL -DUSENCCLP2P
+%CPP         = nvfortran -Mpreprocess -Mfree -Mextend -E $(CPP_OPTIONS) $*$(FUFFIX) > $*$(SUFFIX)
+%FC          = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.0 -mp
+%FCL         = mpif90 -acc -gpu=cc60,cc70,cc80,cuda11.0 -mp -c++libs
+%FREE        = -Mfree
+%FFLAGS      = -Mbackslash -Mlarge_arrays
+%OFLAG       = -fast
+%OBJECTS     = fftmpiw.o fftmpi_map.o fftw3d.o fft3dlib.o
+%LLIBS       = -cudalib=cublas,cusolver,cufft,nccl -cuda
+%QD          = $(NVROOT)/compilers/extras/qd
+%```
+%
+%%## 二、编译器详解
 %
 %编译器是VASP编译中最核心的决策。不同的编译器在优化能力、兼容性和对特定硬件（Intel/AMD/NVIDIA）的支持上各有优劣。以下逐一详解各主流编译器的特点与配置方法。
 %
