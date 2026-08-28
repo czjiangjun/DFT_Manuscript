@@ -38,7 +38,7 @@
 \textrm{FFTW} &快速\textrm{Fourier}变换 &处理平面波基组的核心库\\
         \bottomrule
     \end{tabular*}
-    \caption{\textrm{\textrm{VASP}编译最依赖的数学库\footnote{如果使用\textrm{Intel oneAPI}套件，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}已包含在重要数学库\textrm{(Math Kernel Library, MKL)}中，无需单独安装。}}}
+    \caption{\textrm{VASP}编译最依赖的数学库。备注如果使用\textrm{Intel oneAPI}套件，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}已包含在重要数学库\textrm{(Math Kernel Library, MKL)}中，无需单独安装。}
 \label{Tab:Compile-Tag-0}
 \end{table}
 
@@ -104,7 +104,7 @@
     \centering
     \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
         \toprule
-选项 &功能
+选项 &功能\\
 \midrule
 \textrm{-DMPI} &采用\textrm{MPI}并行\\
 \textrm{-DMPI\_BLOCK=N} &指定\textrm{MPI}通信块大小\\
@@ -115,7 +115,7 @@
 \textrm{-Dvasp6} &\textrm{VASP 6.x}~版本标识\\
 \textrm{-DVASP\_HDF5} & 使用可选的\textrm{HDF5}库支持\\
 \textrm{-D\_OPENACC} & 指定\textrm{GPU}版本的\textrm{OpenACC}\\
-\textrm{-DUSENCCL} & 支持多\textrm{GPU}通信的\textrm{NCCL}
+\textrm{-DUSENCCL} & 支持多\textrm{GPU}通信的\textrm{NCCL}\\
         \bottomrule
     \end{tabular*}
     \caption{主要预编译选项说明}
@@ -142,15 +142,15 @@
     \centering
     \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
         \toprule
-选项 &功能
+选项 &功能\\
 \midrule
 \textrm{CPP} &预处理命令\\
 \textrm{FC} &指定\textrm{Fortran}代码编译器\\
 \textrm{FCL} &用于\textrm{Fortran}代码链接指令\\
 \textrm{FREE}  &格式自由的源代码编译选项\\
-\textrm{FFLAGS} &指定的通用编译选项
+\textrm{FFLAGS} &指定的通用编译选项\\
 \textrm{OFLAG} &用于代码优化的选项\\
-\textrm{DEBUG} &用于代码调试的选项
+\textrm{DEBUG} &用于代码调试的选项\\
         \bottomrule
     \end{tabular*}
     \caption{主要编译器和编译选项的说明}
@@ -179,15 +179,15 @@
     \centering
     \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
         \toprule
-选项 &功能
+选项 &功能\\
 \midrule
 \textrm{MKL\_LIBS} &指定重要数学库的存储路径\\
-\textrm{BLAS/BLACS} &涉及向量运算、矩阵乘法的基本线性代数运算库 (\textrm{BLAVS}支持并行计算)\\
-\textrm{LAPACK/SCALAPACK} &涉及矩阵对角化和本征值求解的线性代数运算库(\textrm{SCALPACK}支持并行计算)\\
+\textrm{BLAS/BLACS} &\makecell[tl]{涉及向量运算、矩阵乘法的基本线性代数运算库\\ (\textrm{BLAVS}支持并行计算)}\\
+\textrm{LAPACK/SCALAPACK} &\makecell[tl]{涉及矩阵对角化和本征值求解的线性代数运算库\\ (\textrm{SCALPACK}支持并行计算)}\\
 \textrm{OBJECTS}  &支持\textrm{FFTW}所需要的各类数学库的目标文件和库函数\\
 \textrm{INCS} &\textrm{FFTW}库中必要的头文件目录\\
 \textrm{OBJECTS} &用于代码优化的选项\\
-\textrm{LLIBS} &指定了所需要的全部库函数
+\textrm{LLIBS} &指定了所需要的全部库函数\\
 %后续编译过程中，链接器将通过\textrm{\$(FCL) -o vasp ..all-objects.. \$(LLIBS)}命令完成最终全部库函数的链接
         \bottomrule
     \end{tabular*}
