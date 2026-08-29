@@ -1,73 +1,78 @@
-\section{\rm{VASP}的编译}%完全指南：编译器、数学库、MPI库与GPU编译详解
+\chapter{\rm{VASP}的编译}%完全指南：编译器、数学库、MPI库与GPU编译详解
 因为\textrm{VASP}是在\textrm{Linux}系统下运行的，
 %（Vienna Ab initio Simulation Package）作为第一性原理计算领域最核心的软件之一，其
 独立用户有必要了解其编译安装的技术细节。%必须面对的技术挑战。
 %编译安装。与许多一键安装的普通软件不同，
-一般地讲，科学计算软件的编译，主要需要了解的无非是编译器版本、数学库、\textrm{MPI}并行库以及可选的\textrm{GPU}加速支持等，%任何一个环节的疏漏都可能导致编译失败或运行时性能低下。
-\textrm{VASP}的编译也不例外。
-
-\textrm{VASP}的计算会涉及大规模的矩阵运算、快速傅里叶变换\textrm{(Fast Fourier Transformation, FFT)}和并行通信，计算任务的效率也高度依赖编译器优化、数学库的算法实现以及并行通信库的性能。因此，\textrm{VASP}的编译根源于其对底层计算资源的深度依赖。理解\textrm{VASP}编译的每一个环节，不仅是成功安装\textrm{VASP}的前提，也是后续计算能够高效运行的基础。
+一般地讲，在\textrm{Linux}环境下，大型的科学计算软件的编译和维护，主要依赖\textrm{make}命令工具。因为科学计算软件常有大量源代码文件，用户不大可能逐个对源代码文件进行编译和链接。\textrm{make}命令工具，通过执行安装文件\textrm{makefile}指定的全部指令、实现软件的编译、链接的自动化构建，提高软件开发的效率。科学计算的过程常常会涉及大规模的矩阵运算、快速傅里叶变换\textrm{(Fast Fourier Transformation, FFT)}和并行通信，计算任务的效率也高度依赖编译器优化、数学库的算法实现以及并行通信库的性能。因此，科学计算软件的编译，根源于其对底层计算资源的深度理解和掌握。同样，\textrm{VASP}的编译，主要就是明确安装文件\textrm{makefile}中编译器版本、数学库、\textrm{MPI (Message Passing Interface)}并行库以及可选的\textrm{GPU}加速支持等变量的设定，以及涉及的编译、链接命令的参数的意义。%任何一个环节的疏漏都可能导致编译失败或运行时性能低下。\textrm{VASP}的编译也不例外。
+理解\textrm{VASP}编译的每一个环节，不仅是成功安装\textrm{VASP}的前提，也是后续计算能够高效运行的基础。
 
 %本文将从零开始，
-这里介绍\textrm{VASP}编译的完整流程，涵盖编译器选择、重要数学库(包括\textrm{BLAS}、\textrm{LAPACK}、\textrm{ScaLAPACK}、\textrm{FFTW})的安装与配置、\textrm{MPI}库的选型与设置\textrm{GPU}加速编译(\textrm{OpenACC}与\textrm{CUDA})。重点安装文件\textrm{makefile.include}的必要说明，以及常见问题的诊断与解决。%无论你是初次接触VASP的新手，还是希望优化现有编译配置的老手，本文都将提供详实的参考。
+这里介绍\textrm{VASP}编译的完整流程，涵盖编译器选择、重要数学库(包括\textrm{BLAS}、\textrm{LAPACK}、\textrm{ScaLAPACK}、\textrm{FFTW})的配置、\textrm{MPI}库的选型与设置\textrm{GPU}加速编译(\textrm{OpenACC}与\textrm{CUDA})。重点是安装文件\textrm{makefile.include}的必要说明。%以及常见问题的诊断与解决。无论你是初次接触VASP的新手，还是希望优化现有编译配置的老手，本文都将提供详实的参考。
 
-\subsection{\rm{VASP}编译的系统要求}
+\section{\rm{VASP}编译的系统要求}
 %在开始编译之前，首先需要确认系统是否满足VASP的基本要求。根据VASP官方文档，
 %编译\textrm{VASP}需要的组件有
 %### 1.1 编译器要求
-
-\textrm{VASP}主要用\textrm{Fortran}语言编写(需要\textrm{F2008}及以上标准的编译器)，同时也包含少量的\textrm{C}和\textrm{C++}代码。官方推荐的编译器套件包括：
+\textrm{VASP}源代码主要用\textrm{Fortran}语言编写(需要使用\textrm{F2008}及以上标准的编译器)，同时也包含少量的\textrm{C}和\textrm{C++}代码。官方推荐的编译器套件包括：
 \begin{itemize}
 	\item \textrm{Intel oneAPI}~(含\textrm{ifort}编译器)
-	\item \textrm{NVIDIA HPC-SDK}~(含\textrm{nvfortran}编译器)\footnote{特别地，对于\textrm{GPU}版本的\textrm{OpenACC}编译，建议使用\textrm{NVIDIA HPC-SDK}(版本≥21.2)}
-	\item \textrm{GCC/GFortran}~(版本要求$≥\mathrm{7.X}$，从\textrm{VASP~6.2.0}开始支持)
+	\item \textrm{NVIDIA HPC-SDK}~(含\textrm{nvfortran}编译器)\footnote{特别地，对于\textrm{GPU}版本的\textrm{OpenACC}编译，建议使用\textrm{NVIDIA HPC-SDK}(版本$\geqslant$21.2)}
+	\item \textrm{GCC/GFortran}~(版本要求$\geqslant\mathrm{7.X}$，从\textrm{VASP~6.2.0}开始支持)
         \item \textrm{AMD AOCC}~(\textrm{AMD}优化编译器，适用于\textrm{AMD EPYC}处理器)
 \end{itemize}
+用户可以根据自己的硬件配置，选择符合要求的一款编译器安装即可。在高性能计算集群中，相关的编译器一般都是安装好的，用户只需向集群运维和管理员确认编译器环境加载方案，遵照运行即可。
 
 %### 1.2 必需数值库
-\textrm{VASP}编译主要依赖的重要数学函数库、及其功能见下表。%关键数学库(\textrm{Math Kernel Library, MKL})是\textrm{intel}的}：
-\begin{table}[h!]
-    \centering
-    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
-        \toprule
- 库名称  &功能  &备注\\ 
-\midrule
-\textrm{BLAS} &基础线性代数运算 &矩阵乘法、向量运算等\\
-\textrm{LAPACK} &高级线性代数运算 &特征值求解、矩阵分解等\\
-\textrm{ScaLAPACK} &并行线性代数运算 &分布式内存并行版本\\
-\textrm{FFTW} &快速\textrm{Fourier}变换 &处理平面波基组的核心库\\
-        \bottomrule
-    \end{tabular*}
-    \caption{\textrm{VASP}编译最依赖的数学库。备注如果使用\textrm{Intel oneAPI}套件，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}已包含在重要数学库\textrm{(Math Kernel Library, MKL)}中，无需单独安装。}
-\label{Tab:Compile-Tag-0}
-\end{table}
+\textrm{VASP}编译主要依赖的重要数学函数库包括
+%见下表。关键数学库(\textrm{Math Kernel Library, MKL})是\textrm{intel}的}：
+%\begin{table}[h!]
+%    \centering
+%    \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
+%        \toprule
+% 库名称  &功能  &备注\\ 
+%\midrule
+%\textrm{BLAS} &基础线性代数运算 &矩阵乘法、向量运算等\\
+%\textrm{LAPACK} &高级线性代数运算 &特征值求解、矩阵分解等\\
+%\textrm{ScaLAPACK} &并行线性代数运算 &分布式内存并行版本\\
+%\textrm{FFTW} &快速\textrm{Fourier}变换 &处理平面波基组的核心库\\
+%        \bottomrule
+%    \end{tabular*}
+%    \caption{\textrm{VASP}编译最依赖的数学库。备注如果使用\textrm{Intel oneAPI}套件，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}已包含在重要数学库\textrm{(Math Kernel Library, MKL)}中，无需单独安装。}
+%\label{Tab:Compile-Tag-0}
+%\end{table}
+\begin{itemize}
+	\item \textrm{BLAS}:~完成基础线性代数运算，如矩阵乘法、向量运算等。
+	\item \textrm{LAPACK}:~完成高级线性代数运算，如矩阵的分解或矩阵特征值求解等。
+	\item \textrm{ScaLAPACK}:~完成分布式内存、并行环境下各类线性代数运算。
+	\item \textrm{FFTW}:~完成快速\textrm{Fourier}变换。
+\end{itemize}
+\textrm{VASP}计算中会有大量矩阵的构造、分解和矩阵对角化，物理量也会有实空间和倒空间的多次变换，因此这些库函数是完成计算所必须的。一般地，如果用户使用\textrm{Intel oneAPI}套件，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}和\textrm{FFTW}库均已包含在\textrm{MKL}库中，无须单独安装。如果使用\textrm{NVIDIA HPC-SDK}，\textrm{BLAS}、\textrm{LAPACK}和\textrm{ScaLAPACK}同样随\textrm{SDK}一同提供，唯一需要自行安装的数值库是\textrm{FFTW}。
 
-%**特别说明**：如果使用Intel oneAPI套件，BLAS、LAPACK和ScaLAPACK已包含在MKL（Math Kernel Library）中，无需单独安装。如果使用NVIDIA HPC-SDK，BLAS、LAPACK和ScaLAPACK同样随SDK一同提供，唯一需要自行安装的数值库是FFTW。
-
-\subsection{\rm{MPI}库编译要求}
-\textrm{VASP}支持分布式内存并行计算，通过\textrm{Message Passing Interface (MPI)}实现并行计算的信息同步与通信，\textrm{VASP}推荐的\textrm{MPI}库包括:
+%\section{\rm{MPI}库编译要求}
+\textrm{VASP}支持分布式内存并行计算，通过\textrm{MPI}实现并行计算的信息同步与通信，\textrm{VASP}推荐的\textrm{MPI}库包括:
 \begin{itemize}
 	\item \textrm{Intel oneAPI MPI}(与\textrm{Intel}编译器配套)
-	\item \textrm{OpenMPI}(最通用的开源\textrm{MPI}库，适用性较广)
+	\item \textrm{OpenMPI}(最通用的开源\textrm{MPI}编译器和支持库，适用性较广)
 	\item \textrm{NVIDIA HPC-SDK}自带的\textrm{OpenMPI}(面向\textrm{CUDA-aware}，可支持\textrm{GPU}间通信)
 \end{itemize}
-
+在高性能计算集群环境下，\textrm{MPI}属于标配，用户只需向集群运维和管理员确认编译器环境加载方案，遵照运行即可。
 %### 1.4 可选依赖库
-\subsection{可选的依赖库}
-除去前述必要的组件外，\textrm{VASP}还支持若干可选功能，这些功能需要额外的库支持。但因为这些功能用得较少，这里只对这些库作简单介绍。
+%\section{可选的依赖库}
+除去前述必要的组件外，\textrm{VASP}还支持若干可选功能，这些功能也需要额外的库支持。但因为这些功能用得较少，此处只对这些库作简单介绍。
 \begin{itemize}
-	\item \textrm{HDF5}:~用于支持读写\textrm{HDF5}格式文件(如\textrm{vaspout.h5})%，**强烈推荐启用**，是py4vasp等后处理工具的前提
+	\item \textrm{HDF5}:~用于支持读写\textrm{HDF5}格式文件(如\textrm{vaspout.h5})。%，**强烈推荐启用**，是py4vasp等后处理工具的前提
 	\item \textrm{NCCL~(NVIDIA Collective Communications Library)}:~用于支持\textrm{GPU}多卡通信，%**强烈推荐**
-		用于多\textrm{GPU}性能优化
-	\item \textrm{Wannier90}:~用于\textrm{Wannier}函数计算
-	\item \textrm{DFTD4}：用于\textrm{DFT-D4}色散校正
+		用于多\textrm{GPU}性能优化。
+	\item \textrm{Wannier90}:~用于\textrm{Wannier}函数计算。
+	\item \textrm{DFTD4}：用于\textrm{DFT-D4}色散校正。
 \end{itemize}
 
-\subsection{\rm{makefile.include}详解}
-\textrm{makefile.include}是\textrm{VASP}编译中的核心配置文件，它确定\textrm{make}工具\footnote{\textrm{make}是\textrm{Linux}操作系统下的一个构建工具，通过执行\textrm{make}命令，解释\textrm{makefile}文件中指定的指令，完成自动化编译和构建软件项目。即\textrm{make}可用于开发人员管理和维护复杂的软件项目，自动化编译过程并生成可执行文件。}所使用的编译器、编译选项、链接的库函数。%VASP官方明确表示：“从头编写makefile.include文件并不容易，因此建议从与系统最接近的模板文件开始”。
+\section{\rm{makefile.include}的内容简介}
+\textrm{makefile.include}是\textrm{VASP}编译中的核心配置文件，它指定了\textrm{make}命令%\footnote{\textrm{make}是\textrm{Linux}操作系统下的一个构建工具，通过执行\textrm{make}命令，解释\textrm{makefile}文件中指定的指令，完成自动化编译和构建软件项目。即\textrm{make}可用于开发人员管理和维护复杂的软件项目，自动化编译过程并生成可执行文件。}
+编译\textrm{VASP}源代码所使用的各类编译器版本、位置、编译选项、所需的库函数，以及编译过程中各种库函数的链接关系等。%VASP官方明确表示：“从头编写makefile.include文件并不容易，因此建议从与系统最接近的模板文件开始”。
 
 %### 6.1 模板文件的位置与选择
-\textrm{VASP}源代码的\textrm{arch/}目录下，提供了大量的模板文件，一般包括：
+\textrm{VASP}源代码的\textrm{arch/}目录下，提供了大量的模板文件，根据文件名后缀，用户大致可以判断所使用的编译环境的组合形式:
 \begin{itemize}
 	\item \textrm{makefile.include.oneapi}:~ 适用于\textrm{Intel oneAPI}编译器 + \textrm{MKL}
 	\item \textrm{makefile.include.intel}:~ 适用于早期版本\textrm{Intel Parallel Studio}
@@ -75,15 +80,15 @@
 	\item \textrm{makefile.include.nvhpc\_omp\_acc}:~适用于\textrm{NVIDIA HPC-SDK} + \textrm{OpenACC} + \textrm{OpenMP}
 	\item \textrm{makefile.include.linux\_nv\_acc}:~适用于\textrm{NVIDIA HPC-SDK} + \textrm{OpenACC}
 	\item \textrm{makefile.include.aocc\_ompi\_aocl}:~适用于\textrm{AMD AOCC} + \textrm{OpenMPI} + \textrm{AOCL}
-%	\item \textrm{makefile.include.gfortran}:~适用于\textrm{GCC/GFortran}(最通用的基础版)
+	\item \textrm{makefile.include.gfortran}:~适用于\textrm{GCC/GFortran}(最通用的基础版)
 \end{itemize}
 %
 %**重要原则**：
-%> **务必使用与所编译VASP版本一同发布的makefile.include模板文件。旧版本的模板文件可能不适用于新版本，反之亦然。**
+%> **务必
+习惯上，建议用户使用与所编译\textrm{VASP}版本一同发布的makefile.include模板文件，这些发布的编译安装文件中的环境变量和参数都是经过开发团队测试过的，旧版本的模板文件可能不完全适用新版本，反之亦然。%**
 %
 %### 6.2 makefile.include的结构
 一个完整的\textrm{makefile.include}通常包含以下部分：
-
 \begin{itemize}
 	\item 预编译选项\textrm{(CPP\_OPTIONS)}
 {\fontsize{8.2pt}{6.2pt}\selectfont{
@@ -218,7 +223,7 @@
 	\item 调整优化级别:~根据硬件和需求调整\textrm{OFLAG}
 \end{enumerate}
 
-\subsection{常见\rm{makefile.include}配置}
+\section{常见\rm{makefile.include}配置}
 %
 %**示例1：Intel oneAPI + MKL（纯CPU）** 
 \begin{itemize}
@@ -227,13 +232,13 @@
 	\lstinputlisting[linerange=1-56]{Figures/makefile.include.linux_intel_omp} %为保险:~选用文件名绝对路径
 }}
 	\item \textrm{GPU}架构:~\textrm{NVIDIA HPC-SDK + OpenAmpi}
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-80]{Figures/makefile.include.linux_nv_omp} %为保险:~选用文件名绝对路径
-}}
+%{\fontsize{8.2pt}{6.2pt}\selectfont{
+%	\lstinputlisting[linerange=1-80]{Figures/makefile.include.linux_nv_omp} %为保险:~选用文件名绝对路径
+%}}
 \item 纯开源编译:~\textrm{Linux}默认开源编译环境
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=1-48]{Figures/makefile.include.linux_gfortran} %为保险:~选用文件名绝对路径
-}}
+%{\fontsize{8.2pt}{6.2pt}\selectfont{
+%	\lstinputlisting[linerange=1-48]{Figures/makefile.include.linux_gfortran} %为保险:~选用文件名绝对路径
+%}}
 \end{itemize}
 %
 %```makefile
