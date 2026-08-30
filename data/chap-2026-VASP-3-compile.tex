@@ -104,7 +104,6 @@
 %```
 %
 
-
 \begin{table}[h!]
     \centering
     \begin{tabular*}{\textwidth}{|@{\extracolsep{\fill}}c|@{\extracolsep{\fill}}c|}
@@ -130,7 +129,7 @@
 %#### （二）
 \item 编译器及编译选项
 {\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=13-36]{Figures/makefile.include.linux_intel_omp} %为保险:~选用文件名绝对路径
+	\lstinputlisting[linerange=13-24]{Figures/makefile.include.linux_intel_omp} %为保险:~选用文件名绝对路径
 }}
 
 %```makefile
@@ -161,6 +160,7 @@
     \caption{主要编译器和编译选项的说明}
 \label{Tab:Makefile-Options}
 \end{table}
+
 
 %**优化级别选择**：
 %| 级别 | 选项 | 适用场景 |
@@ -205,23 +205,43 @@
 %`LLIBS`指定了需要链接的所有库。
 \end{itemize}
 
-用户自定义\textrm{makefile.include}的主要步骤
+用户自定义和修改\textrm{makefile.include}的主要步骤
 \begin{enumerate}
 	\item 选择模板:~从\textrm{arch/}目录复制最接近的模板
+%#!/bin/bash
+%echo "Hello from Bash"
+%ls -la /tmp
+%		\begin{lstlisting}
 %   ```bash
-%   cp arch/makefile.include.your_choice ./makefile.include
 %   ```
-
-	\item  指定编译器的正确路径
-	%：确认`FC`和`FCL`指向正确的编译器
-
-	\item 设置各类库函数路径:~包括\textrm{MKL\_ROOT}、\textrm{FFTW\_ROOT}、\textrm{NVROOT}等并指定必要的库函数名
+%\end{lstlisting}
+%Welcome to LaTeX command line!
+%
+%\verb|latex document.tex|   # 编译 LaTeX 文档
+%\verb|pdflatex document.tex|   # 编译为 PDF 文件
+%
+%\cmd{ls -l}   # 列出当前目录下的文件和目录
+%\cmd{cd /path/to/directory}   # 进入指定目录
+%\cmd{mkdir new_directory}   # 创建新目录
+\begin{verbatim}
+cp arch/makefile.include.your_choice ./makefile.include
+\end{verbatim}
+	\item  指定编译器的正确路径:\\
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=15-16]{Figures/makefile.include.linux_intel_omp} %为保险:~选用文件名绝对路径
+}}
+此处用户设定\textrm{FC}和\textrm{FCL}指向的编译器为\textrm{mpiifort}，它应该是已加载过的环境变量(通过命令\texttt{which mpiifort}可以获取)，否则必须指定编译器的绝对路径。
+	\item 设置各类库函数路径:~包括\textrm{MKL\_ROOT}、\textrm{FFTW\_ROOT}、\textrm{NVROOT}等并指定必要的库函数名:\\
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=25-25]{Figures/makefile.include.linux_intel_omp} %为保险:~选用文件名绝对路径
+}}
+此处用户设定\textrm{MKLROOT}(或\textrm{MKL\_PATH})的路径，必须是\textrm{Intel}的\textrm{MKL}库的路径(通过命令\texttt{echo \$MKLROOT}可以获取)。%比较老的\textrm{VASP}版本
 %   - 确认`FFTW_ROOT`或`FFTW`路径正确
-%   - 确认`MKLROOT`或`MKL_PATH`正确（Intel）
 %   - 确认`NVROOT`正确（NVIDIA HPC-SDK）
 	\item 选择预编译选项:~根据需要启用或禁用功能
 	\item 调整优化级别:~根据硬件和需求调整\textrm{OFLAG}
 \end{enumerate}
+原则上，如果用户的环境变量已经正确加载，只要在\textrm{makefile.include}文件中修改这几处，即可完成\textrm{VASP}软件的正确编译。编译命令为\texttt{make all}，产生的\textrm{VASP}可执行版本为\textrm{vasp\_std}、\textrm{vasp\_gma}和\textrm{vasp\_nlr}。
 
 \section{常见\rm{makefile.include}配置}
 %
