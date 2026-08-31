@@ -1,4 +1,5 @@
-\chapter{\rm{VASP}的编译}%完全指南：编译器、数学库、MPI库与GPU编译详解
+%\chapter{\rm{VASP}的编译}%完全指南：编译器、数学库、MPI库与GPU编译详解
+\chapter{\rm{VASP}的编译与输出}
 因为\textrm{VASP}是在\textrm{Linux}系统下运行的，
 %（Vienna Ab initio Simulation Package）作为第一性原理计算领域最核心的软件之一，其
 用户有必要了解其编译安装的技术细节。%必须面对的技术挑战。
@@ -273,7 +274,7 @@ cp arch/makefile.include.your_choice ./makefile.include
 	\item \textrm{vasp\_gam}:~允许仅有单个$\vec k$点(默认为$\Gamma$点)的\textrm{VASP}计算。
 	\item \textrm{vasp\_ncl}:~实现非线性光学计算的\textrm{VASP}计算。
 \end{itemize}
-
+将可执行文件所在目录\textrm{bin/}，加载到环境变量并生效后，即可在输入文件所在目录下运行可执行文件，直接启动\tezxtrm{VASP}计算。在高性能计算环境下，可在计算目录(输入文件所在目录)的作业提交脚本中，直接指定\textrm{VASP}可执行文件路径后，提交计算任务。
 %```makefile
 %CPP_OPTIONS = -DHOST=\"LinuxIFC\" -DMPI -DMPI_BLOCK=8000 -Duse_collective -DscaLAPACK -DCACHE_SIZE=4000 -Davoidalloc -Dvasp6
 %CPP         = mpiifort -E -DMPI -C -P $(CPP_OPTIONS) $< >$*.F90

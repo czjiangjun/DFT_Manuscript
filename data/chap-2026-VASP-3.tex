@@ -1,52 +1,43 @@
-\chapter{\rm{VASP}程序的执行与输出}
-\section{\rm{VASP}软件的编译}
-\subsection{\rm{VASP}软件的代码结构}
-\subsection{\rm{VASP}软件的编译与编译参数}
 \section{\rm{VASP}软件的特色}
 \subsection{\rm{VASP}的并行优势:~轮询调度算法}
 \subsection{\rm{VASP}的精度保证:~双网格技术}
+
 \section{\rm{VASP}的主要输出文件}
+对用户而言，准备好输入文件并成功提交服务器，只是\textrm{VASP}计算万里长征的第一步。计算完成后，所有结果都包含在\textrm{VASP}产生的一系列输出文件中，如何从这些输出文件中快速、准确地提取体系能量、结构、电子态密度、能带、电荷密度等信息，是每一位\textrm{VASP}用户必须掌握的核心技能。
+
+VASP的输出文件体系庞大而完整，主要包括：最主要的输出文件\textrm{OUTCAR}，其中包含计算过程的完整日志；结构文件\textrm{CONTCAR}，与\textrm{POSCAR}不同，\textrm{CONTCAR}记录了每次迭代后更新后的晶体结构；态密度文件\textrm{DOSCAR}，能量本征值文件\textrm{EIGENVAL}，电荷密度文件\textrm{CHGCAR}，体系本征态波函数文件\textrm{WAVECAR}，投影态波函数文件\textrm{PROCAR}，迭代计算过程中能量收敛纪录文件\textrm{OSZICAR}，局域势函数文件\textrm{LOCPOT}，电子局域函数文件\textrm{ELFCAR}，\textrm{Brillouin}区不可约$\vec k$点文件\textrm{IBZKPT}，离子轨迹文件\textrm{XDATCAR}等。此外，\textrm{VASP}还支持输出\textrm{XML}格式的输出文件\textrm{vasprun.xml}%和\textrm{HDF5}格式的输出文件\textrm{vaspout.h5}(需要有相关库函数支持)，
+，为后续的数据处理和可视化提供了便捷的途径。
+
 \subsection{主要输出文件:~\rm{OUTCAR}}
-\subsection{其余输出文件}
+%# VASP输出文件完全解读：从OUTCAR到vaspout.h5
 
-# VASP输出文件完全解读：从OUTCAR到vaspout.h5
+%## 引言
+%本文将对VASP的各类输出文件进行全面、深入的解读，从文件格式、数据组织方式到实际应用中的读取与处理方法，力求为读者提供一份系统而详尽的参考指南。
 
-## 引言
+%## 一、OUTCAR：VASP最主要的输出文件
 
-VASP（Vienna Ab initio Simulation Package）作为第一性原理计算领域最广泛使用的软件包之一，其计算结果的获取与解读依赖于对输出文件的深入理解。准备好输入文件并成功提交计算只是万里长征的第一步——计算完成后，所有计算结果都包含在VASP生成的一系列输出文件中。如何从这些看似庞杂的文件中准确提取能量、结构、电子态密度、能带、电荷密度等信息，是每一位VASP使用者必须掌握的核心技能。
+%### 1.1 OUTCAR概述
+\textrm{OUTCAR}是\textrm{VASP}计算中最重要的输出文件，它包含计算过程的主要信息，记录了从计算开始到结束的完整过程，包括汇总的输入参数、电子步自洽迭代{(Self-Consistent Field, SCF)}的每一步详细信息，以及离子步运动中原子在当前位置受力、应力张量、局域电荷与磁矩、介电性质等。\textrm{OUTCAR}是获取体系能量信息、\textrm{Fermi}能级以及原子受力信息的主要来源。\textrm{OUTCAR}中的信息详略，可以通过\textrm{INCAR}文件中的参数\texttt{NWRITE}标签进行控制:~\texttt{NWRITE}取值越大，\textrm{OUTCAR}输出的信息越详细，文件也越大。
+%### 1.2 OUTCAR的文件结构
+一般地，\textrm{OUTCAR}文件可总体划分为几个主要部分：
+\begin{itemize}
+	\item \textrm{VASP}的版本和并行信息；
+	\item \textrm{POTCAR}中关于原子的基本信息；
+	\item 根据计算模型\textrm{POSCAR}文件数据，确定最近邻原子间距离和晶体所属的对称性分析；
+	\item 全部计算任务的控制参数，包括\textrm{INCAR}文件未设定的参数及其默认值；
+	\item 计算任务过程的简要描述；
+	\item 倒空间中$\vec k$及其权重信息；
+	\item 电子步迭代信息，包括体系总能来源的各部分，\textrm{Fermi}能级和\textrm{Kohn-Sham}方程本征值等；
+	\item 离子步计算的各方向应力张量；
+	\item 离子步计算的每个原子的受力；
+	\item 局域电荷与原子磁矩和总磁矩；
+	\item 体系的介电性质。
+\end{itemize}
+%### 1.3 OUTCAR中的关键信息解析
+%#### （一）输入参数汇总
+\textrm{OUTCAR}的开头部分会将INCAR中的所有参数逐行打印出来，方便用户确认计算设置是否正确。这部分还包括从POTCAR中读取的赝势信息、从POSCAR中读取的结构信息以及从KPOINTS中读取的k点设置
 
-VASP的输出文件体系庞大而完整，主要包括：**OUTCAR**（最主要的输出文件，包含计算的完整日志）、**CONTCAR**（更新后的结构文件）、**DOSCAR**（态密度文件）、**EIGENVAL**（本征值文件）、**CHGCAR**（电荷密度文件）、**WAVECAR**（波函数文件）、**PROCAR**（投影波函数文件）、**OSZICAR**（简要能量汇总）、**LOCPOT**（局域势文件）、**ELFCAR**（电子局域函数文件）、**IBZKPT**（不可约布里渊区k点文件）、**XDATCAR**（离子轨迹文件）等。此外，VASP还支持输出**vasprun.xml**（XML格式的主输出文件）和**vaspout.h5**（HDF5格式的主输出文件），为后续的数据处理和可视化提供了更便捷的途径。
-
-本文将对VASP的各类输出文件进行全面、深入的解读，从文件格式、数据组织方式到实际应用中的读取与处理方法，力求为读者提供一份系统而详尽的参考指南。
-
-
-## 一、OUTCAR：VASP最主要的输出文件
-
-### 1.1 OUTCAR概述
-
-**OUTCAR**是VASP计算中最重要的输出文件，它包含了计算的完整详细信息。该文件以**人类可读的纯文本格式**记录了从计算开始到结束的全部过程，包括输入参数汇总、电子自洽迭代（SCF）的每一步详细信息、原子受力、应力张量、局域电荷与磁矩、介电性质等。OUTCAR是获取体系能量信息、费米能级以及原子受力信息的首要来源。
-
-OUTCAR所包含的信息量可以通过INCAR文件中的**NWRITE**标签进行控制。NWRITE取值越大，OUTCAR输出的信息越详细，文件体积也越大。
-
-### 1.2 OUTCAR的文件结构
-
-VASP官方文档将OUTCAR划分为以下几个主要部分：
-
-1. **最近邻距离与对称性分析**
-2. **详细的任务信息**
-3. **晶格、k点和原子位置信息**
-4. **电子步信息（包括费米能级和KS本征值）**
-5. **应力张量**
-6. **原子受力**
-7. **局域电荷与磁矩**
-8. **介电性质**
-
-### 1.3 OUTCAR中的关键信息解析
-
-#### （一）输入参数汇总
-OUTCAR的开头部分会将INCAR中的所有参数逐行打印出来，方便用户确认计算设置是否正确。这部分还包括从POTCAR中读取的赝势信息、从POSCAR中读取的结构信息以及从KPOINTS中读取的k点设置。
-
-#### （二）能量信息
+%#### （二）能量信息
 OUTCAR中包含两类重要的能量值：
 
 - **free energy TOTEN**：自由能
@@ -92,12 +83,13 @@ OUTCAR中包含两类重要的能量值：
 | 检查是否收敛 | `grep 'reached required' OUTCAR` |
 | 获取磁矩 | `grep 'magnetization' OUTCAR` |
 
-### 1.5 OUTCAR的常见问题
+%### 1.5 OUTCAR的常见问题
 
-1. **文件过大**：对于大型计算，OUTCAR可能达到数GB。可通过设置`NWRITE = 1`（默认）或`NWRITE = 0`减少输出量。
-2. **能量选择错误**：如前所述，不同ISMEAR设置下应选择不同的能量值。
-3. **收敛判断**：OUTCAR中可能出现“电子步未收敛”的警告，此时需要检查INCAR中的`NELM`、`ALGO`等参数。
+%1. **文件过大**：对于大型计算，OUTCAR可能达到数GB。可通过设置`NWRITE = 1`（默认）或`NWRITE = 0`减少输出量。
+%2. **能量选择错误**：如前所述，不同ISMEAR设置下应选择不同的能量值。
+%3. **收敛判断**：OUTCAR中可能出现“电子步未收敛”的警告，此时需要检查INCAR中的`NELM`、`ALGO`等参数。
 
+\subsection{其余输出文件}
 
 ## 二、CONTCAR：更新后的结构文件
 
@@ -522,28 +514,28 @@ XDATCAR由`NBLOCK`标签控制写入频率——每经过`NBLOCK`个离子步，
 当使用**KPOINTS_OPT**功能时，VASP会输出**PROCAR_OPT**文件，其格式与PROCAR相同。
 
 
-## 十四、现代输出格式：vasprun.xml与vaspout.h5
-
-### 14.1 vasprun.xml
-
-**vasprun.xml**是VASP的**XML格式**主输出文件。它包含了与OUTCAR类似的信息，但以结构化的XML格式呈现。
-
-vasprun.xml的优势在于：
-- **易于解析**：XML格式便于程序化读取
-- **与p4vasp兼容**：p4vasp可以直接读取vasprun.xml进行可视化
-
-### 14.2 vaspout.h5
-
-**vaspout.h5**是VASP的**HDF5格式**主输出文件。当启用HDF5支持时，VASP会生成此文件。
-
-vaspout.h5的优势在于：
-- **高效存储**：HDF5格式支持大规模数据的高效存储和读取
-- **与py4vasp兼容**：py4vasp后处理工具需要vaspout.h5作为输入
-
-### 14.3 vaspwave.h5
-
-当输出重定向到HDF5时，**vaspwave.h5**文件包含电荷密度和波函数。
-
+%## 十四、现代输出格式：vasprun.xml与vaspout.h5
+%
+%### 14.1 vasprun.xml
+%
+%**vasprun.xml**是VASP的**XML格式**主输出文件。它包含了与OUTCAR类似的信息，但以结构化的XML格式呈现。
+%
+%vasprun.xml的优势在于：
+%- **易于解析**：XML格式便于程序化读取
+%- **与p4vasp兼容**：p4vasp可以直接读取vasprun.xml进行可视化
+%
+%### 14.2 vaspout.h5
+%
+%**vaspout.h5**是VASP的**HDF5格式**主输出文件。当启用HDF5支持时，VASP会生成此文件。
+%
+%vaspout.h5的优势在于：
+%- **高效存储**：HDF5格式支持大规模数据的高效存储和读取
+%- **与py4vasp兼容**：py4vasp后处理工具需要vaspout.h5作为输入
+%
+%### 14.3 vaspwave.h5
+%
+%当输出重定向到HDF5时，**vaspwave.h5**文件包含电荷密度和波函数。
+%
 
 ## 十五、输出文件的协同使用
 
