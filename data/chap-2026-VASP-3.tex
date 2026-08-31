@@ -35,10 +35,10 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 \end{itemize}
 %### 1.3 OUTCAR中的关键信息解析
 %#### （一）输入参数汇总
-\textrm{OUTCAR}的开头部分会将INCAR中的所有参数逐行打印出来，方便用户确认计算设置是否正确。这部分还包括从POTCAR中读取的赝势信息、从POSCAR中读取的结构信息以及从KPOINTS中读取的k点设置
+%\textrm{OUTCAR}的开头部分会\textrm{INCAR}中的所有参数逐行打印出来，方便用户确认计算设置是否正确。这部分还包括从\textrm{POTCAR}中读取的赝势信息、从\textrm{POSCAR}中读取的结构信息以及从\textrm{KPOINTS}中读取的k点设置
 
 %#### （二）能量信息
-OUTCAR中包含两类重要的能量值：
+\textrm{OUTCAR}中包含两类重要的能量值：
 
 - **free energy TOTEN**：自由能
 - **energy without entropy**：不含熵项的能量
@@ -49,7 +49,7 @@ OUTCAR中包含两类重要的能量值：
 
 此外，费米能级可通过`grep 'Fermi' OUTCAR`获取。
 
-#### （三）电子自洽迭代信息
+%#### （三）电子自洽迭代信息
 在电子SCF循环中，OUTCAR会输出每一步的迭代信息：
 - 当前步数
 - 总能量变化
@@ -58,7 +58,7 @@ OUTCAR中包含两类重要的能量值：
 
 当电子步收敛时，OUTCAR会显示`reached required accuracy`或类似信息。
 
-#### （四）离子步信息
+%#### （四）离子步信息
 对于结构优化（`IBRION=1或2`）或分子动力学（`IBRION=0`）计算，OUTCAR会输出每个离子步的信息：
 - 离子步编号
 - 原子位置
@@ -67,7 +67,7 @@ OUTCAR中包含两类重要的能量值：
 
 原子受力信息可通过`grep 'TOTAL-FORCE' OUTCAR`定位。收敛标准（`EDIFFG`）是否满足也会在OUTCAR中明确标示。
 
-#### （五）应力张量
+%#### （五）应力张量
 当`ISIF > 0`时，OUTCAR会输出应力张量（stress tensor），单位为kBar。这对于研究体系在压力下的行为或进行晶胞优化至关重要。
 
 ### 1.4 如何高效读取OUTCAR
