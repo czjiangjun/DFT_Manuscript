@@ -1,6 +1,6 @@
 \chapter{\rm{VASP}的基本使用:~输入文件与控制参数}
 用户使用\textrm{VASP}，通常需要准备四个输入文件，%\textrm{VASP}的计算输入文件主要
-包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。
+包括\textrm{POSCAR}、\textrm{INCAR}、\textrm{KPOINTS}和\textrm{POTCAR}。\footnote{\textrm{VASP}中的文件名，很多是以\textrm{``CAR''}结尾命名的，这源自德语\textrm{``die Karte''}。这个词有``记录、档案''的意思。}
 这四个文件分别是计算对象的结构文件，计算控制参数文件，$\vec k$空间布点和积分方案文件和用于计算的元素的\textrm{PAW}方法所涉及的原子数据。
 这四个文件中，\textrm{POTCAR}的数据是\textrm{VASP}软件包自带的。其余三个文件，则需要用户按一定的规则输入或构建。这四个文件必须放置在同一工作目录下，且文件名必须全部大写、无扩展名，文件内容必须是纯文本格式。%这四个文件各自承担着不同的职责——INCAR是“控制中心”，POSCAR是“结构蓝图”，描述原子体系的几何构型；POTCAR是“能量密码本”，包含各元素的赝势信息；KPOINTS是“采样方案”，定义布里渊区中k点的取样方式。
 四个文件的内容共同决定了计算的精度、效率和最终结果的可靠性。
