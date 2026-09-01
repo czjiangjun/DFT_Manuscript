@@ -131,7 +131,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %| 获取应力张量 | `grep 'stress' OUTCAR` |
 %| 检查是否收敛 | `grep 'reached required' OUTCAR` |
 %| 获取磁矩 | `grep 'magnetization' OUTCAR` |
-%\end{itemize}<++>
+%\end{itemize}
 %
 %### 1.5 OUTCAR的常见问题
 
@@ -197,11 +197,17 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 	\item 电子步迭代对角化方法；
 	\item \textrm{N}:~电子步迭代步数编号；
 	\item \textrm{E}:~当前电子步计算得到的体系自由能；
-	\item \textrm{dE}:~体系自由能的变化，用于判断收敛趋势；
-	\item \textrm{d eps}:~体系的能带结构的能量变化；
+	\item \textrm{dE}:~体系当前与前一步的自由能的变化，用于判断收敛趋势；
+	\item \textrm{d eps}:~体系的带结构能量(本征值之和$\sum\limits_{\vec k,i}^\mathrm{occ}\varepsilon_{\vec k,i}$)变化；
 	\item \textrm{ncg}:~矩阵迭代对角化过程中\textrm{Hamiltonian}矩阵作用于波函数的评估次数；
-	\item \textrm{rms}:~电荷密度迭代的残差的均方根。
+	\item \textrm{rms (c)}:~\textrm{rms}表示残矢$\mathbf{R}=(\mathbf{H}-\varepsilon\mathbf{S})|\phi\rangle$的模量，\textrm{rms (c)}则是电荷密度迭代的残差的均方根。
 \end{itemize}
+最后给出的是关于电子步收敛的体系总能的参考信息，包括第一项是总自由能\textrm{F}，第二项$\mathrm{E}_0$是\textrm{OUTCAR}中\textrm{energy(sigma->0)}对应的能量，第三项\textrm{d E}是当前步和前一步总能的差(对于静态计算，此处\textrm{d E}是\textrm{OUTCAR}中的熵\textrm{(entropy T*S EENTROP)})。%与参数\textrm{SIGMA}的乘积)
+\textrm{MD}计算中，最后这部分各项略不同:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=16-16]{Figures/OSZICAR_MD} %为保险:~选用文件名绝对路径
+}}
+此处第一项\textrm{T}为当前离子步的温度；\mathrm{E}是总的自由能(包括离子动能和\textrm{Nos\'e}恒温方案的能量的贡献)；\textrm{F}与$\mathrm{E}_0$与前面一样；\textrm{EK}是体系的动能；\textrm{SP}是来自\textrm{Nos\'e}恒温方案的势能部分的贡献；\textrm{SK}则是来自\textrm{Nos\'e}恒温方案的动能部分贡献。
 
 利用\textrm{OSZICAR}文件，用户可以在计算运行过程中，对体系能量变化有总体把握，如通过命令\texttt{tail -f OSZICAR}实时查看当前电子步能量收敛情况；通过命令\textrm{grep -in ' F= ' OSZICAR}实时查看离子步能量变化状况。
 %2. **快速检查**：
@@ -254,7 +260,8 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 3.1 DOSCAR概述
 %
-%**DOSCAR**文件包含了体系的**态密度**（Density of States, DOS）和**积分态密度**（Integrated DOS）。其单位分别为**状态数/eV**和**状态数**。态密度是分析体系电子结构最核心的工具之一，通过DOSCAR可以绘制出总态密度（TDOS）和分波态密度（PDOS）图。
+态密度\textrm{(Density of States, DOS)}是计算电子结构最核心的工具之一，通过DOSCAR可以绘制出总态密度（TDOS）和分波态密度（PDOS）图。
+DOSCAR**文件包含了体系的**态密度**（Density of States, DOS）和**积分态密度**（Integrated DOS）。其单位分别为**状态数/eV**和**状态数**。
 %
 %对于动态模拟（分子动力学）和结构弛豫计算，DOSCAR中写入的是**平均后的DOS和积分DOS**。
 %
