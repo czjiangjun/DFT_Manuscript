@@ -1,0 +1,48 @@
+# Precompiler options
+CPP_OPTIONS= -DMPI -DHOST=\"IFC91_ompi\" -DIFC \
+             -DCACHE_SIZE=4000 -Davoidalloc \
+             -DMPI_BLOCK=8000 -DscaLAPACK -Duse_collective \
+             -DnoAugXCmeta -Duse_bse_te \
+             -Duse_shmem -Dtbdyn
+
+CPP        = gcc -E -P -C $*$(FUFFIX) >$*$(SUFFIX) $(CPP_OPTIONS)
+
+FC         = mpif90
+FCL        = mpif90
+
+FREE       = -ffree-form -ffree-line-length-none
+
+FFLAGS     = 
+OFLAG      = -O2
+OFLAG_IN   = $(OFLAG)
+DEBUG      = -O0
+
+LIBDIR     = /data1/gf01/libs/
+BLAS       = -L$(LIBDIR) -lrefblas
+LAPACK     = -L$(LIBDIR) -ltmglib -llapack
+BLACS      = 
+SCALAPACK  = -L$(LIBDIR) -lscalapack $(BLACS)
+
+OBJECTS    = fftmpiw.o fftmpi_map.o  fftw3d.o  fft3dlib.o \
+             /data1/gf01/fftw-3.3.4/lib/libfftw3.a
+INCS       =-I/data1/gf01/fftw-3.3.4/include
+
+LLIBS      = $(SCALAPACK) $(LAPACK) $(BLAS)
+
+OBJECTS_O1 += fft3dfurth.o fftw3d.o fftmpi.o fftmpiw.o chi.o
+OBJECTS_O2 += fft3dlib.o
+
+# For what used to be vasp.5.lib
+CPP_LIB    = $(CPP)
+FC_LIB     = $(FC) 
+CC_LIB     = gcc
+CFLAGS_LIB = -O
+FFLAGS_LIB = -O1
+FREE_LIB   = $(FREE)
+
+OBJECTS_LIB= linpack_double.o getshmem.o
+
+# Normally no need to change this
+SRCDIR     = ../../src
+BINDIR     = ../../bin
+
