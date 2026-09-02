@@ -260,14 +260,23 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 3.1 DOSCAR概述
 %
-态密度\textrm{(Density of States, DOS)}是计算电子结构最核心的工具之一，通过DOSCAR可以绘制出总态密度（TDOS）和分波态密度（PDOS）图。
-DOSCAR**文件包含了体系的**态密度**（Density of States, DOS）和**积分态密度**（Integrated DOS）。其单位分别为**状态数/eV**和**状态数**。
+态密度\textrm{(Density of States, DOS)}是呈现电子结构信息最有效的手段之一。\textrm{DOSCAR}是提供绘制总态密度\textrm{(TDOS)}和分波态密度\textrm{(PDOS)}图的数据来源。\textrm{DOSCAR}文件中的数据包含了体系的态密度和积分态密度\textrm{(Integrated DOS)}，相应的单位分别为``状态数\textrm{/eV}''和``状态数''。
 %
 %对于动态模拟（分子动力学）和结构弛豫计算，DOSCAR中写入的是**平均后的DOS和积分DOS**。
 %
 %### 3.2 DOSCAR的文件结构
 %
-%DOSCAR大致分为三个部分：
+\textrm{DOSCAR}文件的内容大致分为三个部分:
+\begin{itemize}
+	\item 文件信息描述 
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-6]{Figures/DOSCAR} %为保险:~选用文件名绝对路径
+}}
+用户可以根据经验判断这些数据的含义，分别是离子数，是否包括\textrm{PDOS}(0或1)\\
+晶体体积\textrm{$\AA^3$}\\
+体系名称\\
+能量范围(\textrm{EMAX},\textrm{EMIN})，\textrm{NEDOS}(\textrm{DOS}的数据点数，默认值为301)，\textrm{E-fermi}，固定值1.000\\
+按照传统习惯，绘制\textrm{DOS}图时，\textrm{E-fermi}能置为能量零点。
 %
 %#### （一）文件头（Header）
 %DOSCAR的前几行构成文件头，包含以下信息：
@@ -284,17 +293,21 @@ DOSCAR**文件包含了体系的**态密度**（Density of States, DOS）和**�
 %- 固定值1.0000
 %
 %#### （二）总DOS和积分DOS
-%紧接着文件头的是**NEDOS行**数据，每行包含三列：
+\item \textrm{TDOS}和\textrm{Integrated DOS}数据:\\
+%紧接着文件头的是**NEDOS行**数据，
+	每行包含三列，依次为能量-\textrm{DOS}-\textrm{Integrated DOS}的数值。
 %1. **能量**（Energy）
 %2. **DOS**（态密度）
 %3. **积分DOS**（Integrated DOS）
 %
-%对于自旋极化的计算（`ISPIN=2`），总DOS部分会包含两套数据：自旋向上和自旋向下。
+	对于自旋极化的计算\texttt{ISPIN=2}，\textrm{DOS}部分会分列出\textrm{spin-up}和\textrm{spin-dn}两部分。
 %
 %#### （三）分波DOS（可选）
-%当`LORBIT`设置适当（如`LORBIT ≥ 10`）时，DOSCAR还会包含每个原子的分波DOS。这部分数据以19列的形式呈现，包含了每个原子各轨道（s、p、d等）的投影态密度。
+\item 分波DOS(当$\mathtt{LORBIT}\geqslant10$)
+	\textrm{DOSCAR}还会列出属于每个原子的\textrm{PDOS}。这部分数据以19列的形式依次列出，包含了每个原子各轨道(\textit{s}，\textit{p}，\textit{d}}等)的投影态密度。
 %
 %### 3.3 影响DOSCAR输出的INCAR参数
+\end{itemize}
 %
 %以下INCAR参数直接影响DOSCAR的内容：
 %
@@ -309,10 +322,12 @@ DOSCAR**文件包含了体系的**态密度**（Density of States, DOS）和**�
 %
 %### 3.4 如何处理DOSCAR
 %
-%由于DOSCAR的原始数据格式较为复杂，通常使用以下工具进行可视化：
-%- **p4vasp**：VASP官方推荐的图形化工具，可直接读取DOSCAR并绘制DOS/PDOS图。
-%- **VASPKIT**：可提取DOSCAR中的总DOS和各原子分波DOS。
+\textrm{DOSCAR}的原始数据简单明了，通常可使用以下工具进行可视化：
+\begin{itemize}
+	\item \textrm{p4vasp}:~\textrm{VASP}官方推荐的图形化工具，可直接读取\textrm{DOSCAR}数据，并绘制\textrm{DOS/PDOS}图。
+	\item \textrm{VASPKIT}:~可提取\textrm{DOSCAR}中的\textrm{DOS}和各原子\textrm{PDOS}数据，用以绘图。
 %- **split_dos**：第三方脚本，可将DOSCAR分割为总态密度（DOS0）和各个原子的分波态密度（DOS1, DOS2, …）。
+\end{itemize}
 %
 %使用split_dos时，需要保证当前目录下有对应的OUTCAR和POSCAR文件。
 %
@@ -327,7 +342,7 @@ DOSCAR**文件包含了体系的**态密度**（Density of States, DOS）和**�
 %
 %### 4.1 EIGENVAL概述
 %
-%**EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（能带能量）。它是进行能带结构分析和绘制能带图的核心数据来源。
+EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（能带能量）。它是进行能带结构分析和绘制能带图的核心数据来源。
 %
 %### 4.2 不同计算类型中的EIGENVAL
 %
