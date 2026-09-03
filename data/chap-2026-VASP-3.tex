@@ -134,6 +134,11 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %\end{itemize}
 %
 %### 1.5 OUTCAR的常见问题
+除了\textrm{OUTCAR}文件，\textrm{VASP}还会以\textrm{XML}格式形式将结果输出到\textrm{vasprun.xml}文件中，它有着比\textrm{OUTCAR}更结构化的呈现形式。\textrm{vasprun.xml}的优势主要在于:
+\begin{itemize}
+	\item 便于解析:~\textrm{XML}格式便于程序化读取;
+	\item 与可视化工具\textrm{p4vasp}兼容:~\textrm{p4vasp}可以直接读取\textrm{vasprun.xml}数据将结果可视化。
+\end{itemize}
 
 %1. **文件过大**：对于大型计算，OUTCAR可能达到数GB。可通过设置`NWRITE = 1`（默认）或`NWRITE = 0`减少输出量。
 %2. **能量选择错误**：如前所述，不同ISMEAR设置下应选择不同的能量值。
@@ -410,7 +415,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 5.4 CHGCAR与CHG的区别
 %
-\textrm{VASP}还有名为\textrm{CHG}的输出文件，初学者不太清楚它与\textrm{CHGCAR}的关系。简言之，\textrm{CHG}主要提供的电荷密度可视化的绘图数据，其文件起始部分与\textrm{CHGCAR}相同，都是关于计算对象的结构和原子信息。但随后\textrm{CHG}文件中保存的是电荷密度绘图的三维空间网格剖分(默认是80$\times80\times80$的网格点)和各网格点的电荷密度数据。因此这些数据与\textrm{CHGCAR}的数据点没有对应关系。
+\textrm{VASP}还有名为\textrm{CHG}的输出文件，初学者不太清楚它与\textrm{CHGCAR}的关系。简言之，\textrm{CHG}主要提供的电荷密度可视化的绘图数据，其文件起始部分与\textrm{CHGCAR}相同，都是关于计算对象的结构和原子信息，但随后的电荷密度信息，是从第一个离子步起，每满十个离子步才往\textrm{CHG}文件一次。因此这些数据往往与\textrm{CHGCAR}的数据点没有对应关系。
 %- **CHGCAR**：包含PAW一中心占据数，用于重启计算。
 %- **CHG**：不包含PAW一中心占据数，主要用于**可视化**和后处理。
 %
@@ -469,7 +474,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-23]{Figures/PROCAR} %为保险:~选用文件名绝对路径
 }}
-对与每个$\vec k$点上的每个本征态(能带)波函数，\textrm{PROCAR}输出一个数据块信息，包含了每个离子的各轨道投影值的贡献，据此，用户可以判断特定能带的电子主要来自哪些原子和哪些轨道。
+对与每个$\vec k$点上的每个本征态(能带)波函数，\textrm{PROCAR}输出一个数据块信息，包含了每个离子的各轨道投影值的贡献，据此，用户可以判断特定能带的电子主要来自哪些原子的哪些轨道，通过投影值的大小，也可以初步估计本征态(能带)的局域化程度。
 %### 7.1 PROCAR概述
 %
 %**PROCAR**文件包含了每条能带的**spd轨道投影**和**位点投影**的波函数特征。它是分析电子态**轨道成分**和**局域化性质**的关键文件。
@@ -514,6 +519,8 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 9.1 LOCPOT概述
 %
+
+当需要计算材料的功函数\footnote{因为周期性边界的存在，不同体系的真空能级位置并不相同。通过沿体系表面法线方向对LOCPOT做平面平均，可以得到真空能级位置，这是计算材料功函数的理论依据。}时，就需要\textrm{LOCPOT}文件的输出数据(设置参数\texttt{LVTOT}=\textrm{.TRUE.})。此外，在异质结计算中，通过局域势，可以对齐不同材料的能带。\textrm{LOCPOT}文件保存的是体系的总局域势\textrm{(total local potential)}，\textrm{LOCPOT}文件的内容格式与\textrm{CHGCAR}类似。
 %**LOCPOT**文件包含了体系的**总局域势**（total local potential）。其单位为eV。LOCPOT的格式与CHGCAR类似，但**数据排列方式不同**。
 %
 %### 9.2 LOCPOT的生成条件
@@ -540,7 +547,11 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %
 %## 十、ELFCAR：电子局域函数文件
-%
+如果需要分析``原子之间成键''或考虑``电子局域化程度''等与周期体系中电子局域分布有关的问题，就需要\textrm{ELFCAR}文件中的数据(设置参数\textt{LELF}=\textrm{.TRUE.})，\textrm{ELFCAR}的文件格式与\textrm{CHG}文件类似，因此其存储的电子局域函数\textrm{Electron Localization Function, ELF}可直接用于可视化作图。计算\textrm{ELF}须注意
+\begin{itemize}
+	\item 为避免圆整误差，建议参数\texttt{PREC}=\textrm{High}；
+	\item \textrm{vasp\_nlc}版本尚未实现\textrm{ELF}的计算。
+\end{itemize}
 %### 10.1 ELFCAR概述
 %
 %**ELFCAR**文件包含了体系的**电子局域函数**（Electron Localization Function, ELF）。ELF是分析**原子之间成键**和**电子局域化程度**的重要工具。
@@ -573,6 +584,13 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 11.1 IBZKPT概述
 %
+如果\textrm{KPOINTS}中设置$\vec k$空间网格自动生成，则文件\textrm{IBZKPT}用于保存\textrm{VASP}程序自动产生的不可约布里渊区\textrm{Irreducible Brillouin Zone, IBZ}的$\vec k$点坐标及其权重(由体系点群对称性确定)。
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-23]{Figures/IBZKPT} %为保险:~选用文件名绝对路径
+}}
+\textrm{IBZKPT}文件的内容主要包括:~(1)总的不可约$\vec k$点数目；(2)每个$\vec k$点的坐标及其权重。针对四面体布点积分方案，会给出不等价四面体的数目、四面体的体积和四面体顶点关联列表。
+%- 后续行：每个k点的坐标和权重
+%- 如果选择了四面体方法，还会包含额外的四面体连接表
 %**IBZKPT**文件是在KPOINTS中选择**自动k点网格生成**时由VASP自动产生的输出文件。它包含了**不可约布里渊区**（Irreducible Brillouin Zone）的k点坐标和权重。
 %
 %### 11.2 IBZKPT的格式
@@ -590,6 +608,11 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %## 十二、XDATCAR：离子轨迹文件
 %
+在结构弛豫和\textrm{MD}计算中，每个离子步的原子径迹(\textrm{trajectory})由\textrmP{XDATCAR}文件记录。参数\texttt{NBLOCK}=\textrm{N}控制每经过\textrm{N}个离子步，在\textrm{XDATCAR}中记录一次当前的原子构型。
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-23]{Figures/XDATCAR} %为保险:~选用文件名绝对路径
+}}
+这些数据可用于可视化结构弛豫或\textrm{MD}过程中原子行经的轨迹，也可以用于提取特定离子步的原子构型，用于后续分析。
 %### 12.1 XDATCAR概述
 %
 %**XDATCAR**文件包含了**每个离子步的原子位置**。它是追踪结构弛豫或分子动力学过程中原子运动轨迹的核心文件。
@@ -605,6 +628,14 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %3. **OVITO可视化**：XDATCAR可直接导入OVITO等可视化软件进行动画展示。
 %
 %
+\textrm{DFT}计算的核心数据无非是体系总能量(总自由能)、电子结构(含态密度和能带)、电荷密度与\textrm{Kohn-Sham}本征态波函数。对应到\textrm{VASP}计算就是\textrm{OSZICAR}、\textrm{DOSCAR}、\textrm{EIGENVAL}、\textrm{CHGCAR}和\textrm{WAVECAR}。此外，上面还介绍了一些常用于数据分析和可视化的输出文件。还有一些更少用到的文件，这里简要提一下
+\begin{itemize}
+	\item \textrm{PARCHG}文件存储的是分数电荷密度\textrm{(partial charge densities)}，通常用于可视化特定能量范围或特定$\vec k$点、能带附近的电荷密度分布。
+	\item \textrm{PCDAT}文件存储的是\textrm{MD}计算中的对相关函数\textrm{(pair correlation function)}，主要用于\textrm{MD}模拟中的径向分布函数分析。
+	\item \textrm{REPORT}文件记录的是各种\textrm{MD}计算的输出结果，如伞状积分\textrm{(umbrella integration)}的数值等。
+\end{itemize}
+对于初学\textrm{VASP}的用户，建议尽早熟悉\textrm{OUTCAR}文件，并能逐渐旁及\textrm{OSZICAR}、\textrm{DOSCAR}、\textrm{EIGENVAL}、\textrm{CHGCAR}等文件。
+%%
 %## 十三、其他输出文件
 %
 %### 13.1 CHG文件
