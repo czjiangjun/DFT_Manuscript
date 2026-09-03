@@ -342,7 +342,8 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 4.1 EIGENVAL概述
 %
-EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（能带能量）。它是进行能带结构分析和绘制能带图的核心数据来源。
+
+除了态密度外，每个$\vec k$的能量本征值也是电子结构最重要的信息之一。\textrm{VASP}计算中所有$\vec k$点的求解\textrm{Kohn-Sham}方程得到的电子本征态能量(可用于绘制能带图的数据)都存于文件\textrm{EIGENVAL}中，因此计算结束，它保存的是最后一个离子步的最终电子能带数据。有必要指出的是，由于\textrm{VASP}程序的设定，在非静态计算时($\mathtt{IBRION}\neq-1$)，电子步求解的本征值的方法和精度都粗糙一些，因此\textrm{EIGENVAL}保存的电子结构数据，不建议直接用作电子结构的解析；如果需要当前结构(经历结构弛豫或\textrm{MD}计算)的电子结构数据，一个稳妥的做法是，先将\textrm{CONTCAR}复制为\textrm{POSCAR}，然后额外完成一次静态续算(\texttt{ISTART}=1，\texttt{NSW}=0，\texttt{ICHARG}=1，\texttt{IBRION}=-1)即可。
 %
 %### 4.2 不同计算类型中的EIGENVAL
 %
@@ -369,7 +370,25 @@ EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（�
 %
 %
 %## 五、CHGCAR：电荷密度文件
-%
+体系的电荷密度是\textrm{DFT}计算的核心，\textrm{VASP}计算中\textrm{CHGCAR}文件保存的就是这类数据。
+\textrm{CHGCAR}文件主要由以下数据构成：
+\begin{itemize}
+	\item 计算对象描述:~参照\textrm{POSCAR}类似的形式，描述晶格参数和原子坐标：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-11]{Figures/CHGCAR} %为保险:~选用文件名绝对路径
+}}
+\item \textrm{FFT}网格划分与电荷密度:~\textrm{NGXF}`, `NGYF`, `NGZF`三个整数。
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=12-15]{Figures/CHGCAR} %为保险:~选用文件名绝对路径
+}}
+	电荷密度数据以多行实数形式输出，共计$\mathrm{NGXF}\times\mathrm{NGYF}\times\mathrm{NGZF}$个数据点。
+\item \textrm{USPP/PAW}方法中补偿电荷\textrm{(Augmentation occupancies)}，它只在每个原子附近的实空间里有贡献。
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=23-38]{Figures/CHGCAR} %为保险:~选用文件名绝对路径
+}}
+\end{itemize}
+\textrm{CHGCAR}保存的是自洽迭代中每一个电子步的电荷密度，因此其最重要的功用，就是在\textrm{VASP}重启计算时，可以通过设置\texttt{ICHARG}=1令程序直接从已有的\textrm{CHGCAR}文件中读取电荷密度进行续算。而避免从头开始重新计算，节约计算时间和成本。%，官方建议在反复重启计算（如微调k点网格）时，从CHGCAR开始。
+而对于原子数较多的体系，\textrm{CHGCAR}文件可能过大，用户也可以通过设置参数\texttt{LCHARG}=\textrm{.FALSE.}避免数据写出到\textrm{CHGCAR}文件中。
 %### 5.1 CHGCAR概述
 %
 %**CHGCAR**文件存储了体系的**电荷密度**以及**PAW的一中心占据数**（one-center occupancies）。它是VASP默认输出的文件之一（可通过设置`LCHARG = .FALSE.`避免输出，或通过`LH5`重定向到vaspwave.h5）。
@@ -391,7 +410,7 @@ EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（�
 %
 %### 5.4 CHGCAR与CHG的区别
 %
-%VASP还输出一个名为**CHG**的文件：
+\textrm{VASP}还有名为\textrm{CHG}的输出文件，初学者不太清楚它与\textrm{CHGCAR}的关系。简言之，\textrm{CHG}主要提供的电荷密度可视化的绘图数据，其文件起始部分与\textrm{CHGCAR}相同，都是关于计算对象的结构和原子信息。但随后\textrm{CHG}文件中保存的是电荷密度绘图的三维空间网格剖分(默认是80$\times80\times80$的网格点)和各网格点的电荷密度数据。因此这些数据与\textrm{CHGCAR}的数据点没有对应关系。
 %- **CHGCAR**：包含PAW一中心占据数，用于重启计算。
 %- **CHG**：不包含PAW一中心占据数，主要用于**可视化**和后处理。
 %
@@ -401,9 +420,10 @@ EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（�
 %2. **平面平均**：对于表面和界面体系，可对CHGCAR做平面平均（planar average）以获得沿某一方向的电荷分布。
 %3. **可视化**：CHGCAR可通过VESTA等软件直接可视化。
 %
-%
+
 %## 六、WAVECAR：波函数文件
-%
+根据\textrm{DFT}理论，\textrm{Kohn-Sham}方程的波函数是中间变量。一般地，第一原理计算软件中波函数\footnote{因为选定了基函数，所以波函数文件中存储的，实际上是构成波函数的基组系数。}都是以非格式(二进制)输出形式写入文件的，用户必须借助工具才能读取数据。\textrm{VASP}也不例外，\textrm{WAVECAR}是一个二进制文件，也是\textrm{VASP}最大的输出文件之一。与\textrm{CHGCAR}类似，保存\textrm{WAVECAR}文件的主要作用之一，就是节省重启/续算时的计算时间。因为\textrm{WAVECAR}保存的是程序结束前最后完成的电子步的波函数，所以在续算任务启动时，用户如使用已有的\textrm{WAVECAR}数据(参数\texttt{ISTART}=1)，则有可能有效加速电子步\textrm{SCF}的收敛速率。
+
 %### 6.1 WAVECAR概述
 %
 %**WAVECAR**是一个**二进制文件**，包含了体系的**波函数系数**及相关信息。它是VASP中体积最大的输出文件之一，通常可以用于从之前的计算继续。
@@ -441,9 +461,15 @@ EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（�
 %2. **MD续算**：WAVECAR、CHGCAR和CONTCAR可以一致地用于分子动力学续算。
 %3. **注意一致性**：如果要从MD的WAVECAR进行其他计算，需要先做静态续算。
 %
-%
+
 %## 七、PROCAR：投影波函数文件
 %
+
+在对\textrm{VASP}计算结果解析中，会有分析体系本征态(能带)波函数中各组成元素的\textit{s}、\textit{p}、\textit{d}\、\textit{f}等轨道的贡献多寡的需求，而\textrm{PROCAR}文件中听过的就是这些数据信息(要求控制参数$\mathtt{LORBIT}\geqslant11$)\footnote{在并行版本中，如果$\mathtt{NPAR}\neq1$`，则\textit{s}，\textit{p}，\textit{d}等投影的波函数数据不会被计算。}。
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-23]{Figures/PROCAR} %为保险:~选用文件名绝对路径
+}}
+对与每个$\vec k$点上的每个本征态(能带)波函数，\textrm{PROCAR}输出一个数据块信息，包含了每个离子的各轨道投影值的贡献，据此，用户可以判断特定能带的电子主要来自哪些原子和哪些轨道。
 %### 7.1 PROCAR概述
 %
 %**PROCAR**文件包含了每条能带的**spd轨道投影**和**位点投影**的波函数特征。它是分析电子态**轨道成分**和**局域化性质**的关键文件。
@@ -454,7 +480,7 @@ EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（�
 %- 在INCAR中设置**LORBIT ≥ 10**或设置所有原子的**RWIGS**值。
 %- 对于`LORBIT < 10`，必须在INCAR中显式指定`RWIGS`。
 %
-%**重要提醒**：在并行版本中，如果`NPAR ≠ 1`，则spd和位点投影的波函数特征**不会被计算**。
+%**重要提醒**：
 %
 %### 7.3 PROCAR的文件格式
 %
@@ -472,7 +498,6 @@ EIGENVAL**文件包含了计算结束时**所有k点的Kohn-Sham本征值**（�
 %...
 %```
 %
-%对每个k点和每条能带，PROCAR输出一个数据块，包含每个离子的各轨道投影值。
 %
 %### 7.4 PROCAR的用途
 %
