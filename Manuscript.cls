@@ -2509,7 +2509,8 @@
 \newcommand\thu@titlepage@info{%
   \thu@titlepage@info@tabular{2.3cm}{2.85cm}{2.75cm}{0.77cm}{%
     \ifthu@degree@type@academic
-      \thu@info@item{编著者}{\thu@name@title}{\thu@author}%
+%      \thu@info@item{编著人}{\thu@name@title}{\thu@author}%
+      \thu@info@item{编著}{\thu@name@title}{\thu@author}%
     \else
       \thu@info@item{专业领域}{}{\thu@professional@field}%
       \thu@info@item{工程领域}{}{\thu@engineering@field}%
