@@ -1,11 +1,11 @@
 \section{\rm{VASP}软件的特色}
-\subsection{\rm{VASP}的并行优势:~轮询调度算法}
-\subsection{\rm{VASP}的精度保证:~双网格技术}
+\subsection{\textcolor{red}{\rm{VASP}的并行优势:~轮询调度算法}}
+\subsection{\textcolor{red}{\rm{VASP}的精度保证:~双网格技术}}
 
-\section{\rm{VASP}的主要输出文件}
-对用户而言，准备好输入文件并成功提交服务器，只是完成\textrm{VASP}计算的第一步。计算完成后，所有结果都包含在\textrm{VASP}产生的一系列输出文件中，如何从这些输出文件中快速、准确地提取体系能量、结构、电子态密度、能带、电荷密度等信息，是每一位\textrm{VASP}用户必须掌握的核心技能。
+\section{\rm{VASP}的输出文件}
+对用户而言，准备好输入文件并成功提交服务器，只是完成\textrm{VASP}计算的第一步。计算完成后，\textrm{VASP}将产生一系列输出文件。如何从这些输出文件中快速、准确地提取体系能量、结构、电子态密度、能带、电荷密度等信息，是每一位\textrm{VASP}用户必须掌握的基本技能。
 
-VASP的输出文件体系庞大而完整，主要包括：最主要的输出文件\textrm{OUTCAR}，其中包含计算过程的完整日志；结构文件\textrm{CONTCAR}，与\textrm{POSCAR}不同，\textrm{CONTCAR}记录了每次迭代后更新后的晶体结构；态密度文件\textrm{DOSCAR}，能量本征值文件\textrm{EIGENVAL}，电荷密度文件\textrm{CHGCAR}，体系本征态波函数文件\textrm{WAVECAR}，投影态波函数文件\textrm{PROCAR}，迭代计算过程中能量收敛纪录文件\textrm{OSZICAR}，局域势函数文件\textrm{LOCPOT}，电子局域函数文件\textrm{ELFCAR}，\textrm{Brillouin}区不可约$\vec k$点文件\textrm{IBZKPT}，离子轨迹文件\textrm{XDATCAR}等。此外，\textrm{VASP}还支持输出\textrm{XML}格式的输出文件\textrm{vasprun.xml}%和\textrm{HDF5}格式的输出文件\textrm{vaspout.h5}(需要有相关库函数支持)，
+\textrm{VASP}的输出文件体系庞大而完整，主要包括:~输出文件\textrm{OUTCAR}，其中包含计算过程的完整日志；结构文件\textrm{CONTCAR}，与\textrm{POSCAR}不同，\textrm{CONTCAR}记录了每次迭代后更新后的晶体结构；态密度文件\textrm{DOSCAR}，能量本征值文件\textrm{EIGENVAL}，电荷密度文件\textrm{CHGCAR}，体系本征态波函数文件\textrm{WAVECAR}，投影态波函数文件\textrm{PROCAR}，迭代计算过程中能量收敛纪录文件\textrm{OSZICAR}，局域势函数文件\textrm{LOCPOT}，电子局域函数文件\textrm{ELFCAR}，\textrm{Brillouin}区不可约$\vec k$点文件\textrm{IBZKPT}，离子轨迹文件\textrm{XDATCAR}等。此外，\textrm{VASP}还支持输出\textrm{XML}格式的输出文件\textrm{vasprun.xml}%和\textrm{HDF5}格式的输出文件\textrm{vaspout.h5}(需要有相关库函数支持)，
 ，为后续的数据处理和可视化提供了便捷的途径。
 
 \subsection{主要输出文件:~\rm{OUTCAR}}
@@ -212,7 +212,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=16-16]{Figures/OSZICAR_MD} %为保险:~选用文件名绝对路径
 }}
-此处第一项\textrm{T}为当前离子步的温度；\mathrm{E}是总的自由能(包括离子动能和\textrm{Nos\'e}恒温方案的能量的贡献)；\textrm{F}与$\mathrm{E}_0$与前面一样；\textrm{EK}是体系的动能；\textrm{SP}是来自\textrm{Nos\'e}恒温方案的势能部分的贡献；\textrm{SK}则是来自\textrm{Nos\'e}恒温方案的动能部分贡献。
+此处第一项\textrm{T}为当前离子步的温度:~\textrm{E}是总的自由能(包括离子动能和\textrm{Nos\'e}恒温方案的能量的贡献)；\textrm{F}与$\mathrm{E}_0$与前面一样；\textrm{EK}是体系的动能；\textrm{SP}是来自\textrm{Nos\'e}恒温方案的势能部分的贡献；\textrm{SK}则是来自\textrm{Nos\'e}恒温方案的动能部分贡献。
 
 利用\textrm{OSZICAR}文件，用户可以在计算运行过程中，对体系能量变化有总体把握，如通过命令\texttt{tail -f OSZICAR}实时查看当前电子步能量收敛情况；通过命令\textrm{grep -in ' F= ' OSZICAR}实时查看离子步能量变化状况。
 %2. **快速检查**：
@@ -278,7 +278,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 	\lstinputlisting[linerange=1-6]{Figures/DOSCAR} %为保险:~选用文件名绝对路径
 }}
 用户可以根据经验判断这些数据的含义，分别是离子数，是否包括\textrm{PDOS}(0或1)\\
-晶体体积\textrm{$\AA^3$}\\
+晶体体积($\mathrm{\AA}^3$)\\
 体系名称\\
 能量范围(\textrm{EMAX},\textrm{EMIN})，\textrm{NEDOS}(\textrm{DOS}的数据点数，默认值为301)，\textrm{E-fermi}，固定值1.000\\
 按照传统习惯，绘制\textrm{DOS}图时，\textrm{E-fermi}能置为能量零点。
@@ -309,7 +309,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %#### （三）分波DOS（可选）
 \item 分波DOS(当$\mathtt{LORBIT}\geqslant10$)
-	\textrm{DOSCAR}还会列出属于每个原子的\textrm{PDOS}。这部分数据以19列的形式依次列出，包含了每个原子各轨道(\textit{s}，\textit{p}，\textit{d}}等)的投影态密度。
+	\textrm{DOSCAR}还会列出属于每个原子的\textrm{PDOS}。这部分数据以19列的形式依次列出，包含了每个原子各轨道(\textit{s}，\textit{p}，\textit{d}等)的投影态密度。
 %
 %### 3.3 影响DOSCAR输出的INCAR参数
 \end{itemize}
@@ -415,6 +415,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %### 5.4 CHGCAR与CHG的区别
 %
+
 \textrm{VASP}还有名为\textrm{CHG}的输出文件，初学者不太清楚它与\textrm{CHGCAR}的关系。简言之，\textrm{CHG}主要提供的电荷密度可视化的绘图数据，其文件起始部分与\textrm{CHGCAR}相同，都是关于计算对象的结构和原子信息，但随后的电荷密度信息，是从第一个离子步起，每满十个离子步才往\textrm{CHG}文件一次。因此这些数据往往与\textrm{CHGCAR}的数据点没有对应关系。
 %- **CHGCAR**：包含PAW一中心占据数，用于重启计算。
 %- **CHG**：不包含PAW一中心占据数，主要用于**可视化**和后处理。
@@ -466,11 +467,9 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %2. **MD续算**：WAVECAR、CHGCAR和CONTCAR可以一致地用于分子动力学续算。
 %3. **注意一致性**：如果要从MD的WAVECAR进行其他计算，需要先做静态续算。
 %
-
 %## 七、PROCAR：投影波函数文件
 %
-
-在对\textrm{VASP}计算结果解析中，会有分析体系本征态(能带)波函数中各组成元素的\textit{s}、\textit{p}、\textit{d}\、\textit{f}等轨道的贡献多寡的需求，而\textrm{PROCAR}文件中听过的就是这些数据信息(要求控制参数$\mathtt{LORBIT}\geqslant11$)\footnote{在并行版本中，如果$\mathtt{NPAR}\neq1$`，则\textit{s}，\textit{p}，\textit{d}等投影的波函数数据不会被计算。}。
+在对\textrm{VASP}计算结果解析中，会有分析体系本征态(能带)波函数中各组成元素的\textit{s}、\textit{p}、\textit{d}、\textit{f}等轨道的贡献多寡的需求，而\textrm{PROCAR}文件中听过的就是这些数据信息(要求控制参数$\mathtt{LORBIT}\geqslant11$)\footnote{在并行版本中，如果$\mathtt{NPAR}\neq1$`，则\textit{s}，\textit{p}，\textit{d}等投影的波函数数据不会被计算。}。
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-23]{Figures/PROCAR} %为保险:~选用文件名绝对路径
 }}
@@ -546,10 +545,11 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %3. **能带对齐**：在异质结计算中，通过局域势对齐不同材料的能带。
 %
 %
+
 %## 十、ELFCAR：电子局域函数文件
-如果需要分析``原子之间成键''或考虑``电子局域化程度''等与周期体系中电子局域分布有关的问题，就需要\textrm{ELFCAR}文件中的数据(设置参数\textt{LELF}=\textrm{.TRUE.})，\textrm{ELFCAR}的文件格式与\textrm{CHG}文件类似，因此其存储的电子局域函数\textrm{Electron Localization Function, ELF}可直接用于可视化作图。计算\textrm{ELF}须注意
+如果需要分析``原子之间成键''或考虑``电子局域化程度''等与周期体系中电子局域分布有关的问题，就需要\textrm{ELFCAR}文件中的数据(设置参数\texttt{LELF}=\textrm{.TRUE.})，\textrm{ELFCAR}的文件格式与\textrm{CHG}文件类似，因此其存储的电子局域函数\textrm{Electron Localization Function, ELF}可直接用\textrm{VESTA}等工具直接可视化展示。计算\textrm{ELF}须注意的是:
 \begin{itemize}
-	\item 为避免圆整误差，建议参数\texttt{PREC}=\textrm{High}；
+	\item 为避免圆整误差，建议设置参数\texttt{PREC}=\textrm{High}，采用高精度的计算；
 	\item \textrm{vasp\_nlc}版本尚未实现\textrm{ELF}的计算。
 \end{itemize}
 %### 10.1 ELFCAR概述
@@ -608,11 +608,12 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %
 %## 十二、XDATCAR：离子轨迹文件
 %
-在结构弛豫和\textrm{MD}计算中，每个离子步的原子径迹(\textrm{trajectory})由\textrmP{XDATCAR}文件记录。参数\texttt{NBLOCK}=\textrm{N}控制每经过\textrm{N}个离子步，在\textrm{XDATCAR}中记录一次当前的原子构型。
+
+在结构弛豫和\textrm{MD}计算中，每个离子步的原子径迹(\textrm{trajectory})由\textrm{XDATCAR}文件记录。参数\texttt{NBLOCK}=\textrm{N}控制每经过\textrm{N}个离子步，在\textrm{XDATCAR}中记录一次当前的原子构型。
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-23]{Figures/XDATCAR} %为保险:~选用文件名绝对路径
 }}
-这些数据可用于可视化结构弛豫或\textrm{MD}过程中原子行经的轨迹，也可以用于提取特定离子步的原子构型，用于后续分析。
+这些数据可借助可视化工具如\textrm{OVITO}等，展示结构弛豫或\textrm{MD}过程中各原子的行经轨迹，也可以用于提取特定离子步的原子构型，为后续分析提供依据。
 %### 12.1 XDATCAR概述
 %
 %**XDATCAR**文件包含了**每个离子步的原子位置**。它是追踪结构弛豫或分子动力学过程中原子运动轨迹的核心文件。
@@ -628,7 +629,7 @@ VASP的输出文件体系庞大而完整，主要包括：最主要的输出文�
 %3. **OVITO可视化**：XDATCAR可直接导入OVITO等可视化软件进行动画展示。
 %
 %
-\textrm{DFT}计算的核心数据无非是体系总能量(总自由能)、电子结构(含态密度和能带)、电荷密度与\textrm{Kohn-Sham}本征态波函数。对应到\textrm{VASP}计算就是\textrm{OSZICAR}、\textrm{DOSCAR}、\textrm{EIGENVAL}、\textrm{CHGCAR}和\textrm{WAVECAR}。此外，上面还介绍了一些常用于数据分析和可视化的输出文件。还有一些更少用到的文件，这里简要提一下
+\textrm{DFT}计算的核心数据无非是体系总能量(总自由能)、电子结构(含态密度和能带)、电荷密度与\textrm{Kohn-Sham}本征态波函数。对应到\textrm{VASP}计算就是\textrm{OSZICAR}、\textrm{DOSCAR}、\textrm{EIGENVAL}、\textrm{CHGCAR}和\textrm{WAVECAR}。此外，上面还介绍了一些常用于数据分析和可视化的输出文件。还有一些更少用到的文件，这里只简要提一下:
 \begin{itemize}
 	\item \textrm{PARCHG}文件存储的是分数电荷密度\textrm{(partial charge densities)}，通常用于可视化特定能量范围或特定$\vec k$点、能带附近的电荷密度分布。
 	\item \textrm{PCDAT}文件存储的是\textrm{MD}计算中的对相关函数\textrm{(pair correlation function)}，主要用于\textrm{MD}模拟中的径向分布函数分析。
