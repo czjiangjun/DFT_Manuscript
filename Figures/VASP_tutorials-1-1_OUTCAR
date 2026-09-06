@@ -1,0 +1,23 @@
+ E-fermi :  -8.8433     XC(G=0):  -0.8046     alpha+bet : -0.1463
+
+ Fermi energy:        -8.8432905119
+
+ k-point     1 :       0.0000    0.0000    0.0000
+  band No.  band energies     occupation 
+      1     -23.8440      2.00000
+      2      -8.9042      1.33333
+      3      -8.9042      1.33333
+      4      -8.9042      1.33333
+      5      -0.4679      0.00000
+      6       1.8630      0.00000
+      7       1.8630      0.00000
+      8       1.8630      0.00000
+
+  FREE ENERGIE OF THE ION-ELECTRON SYSTEM (eV)
+  ---------------------------------------------------
+  free  energy   TOTEN  =        -0.31456934 eV
+
+  energy  without entropy=       -0.00604470  energy(sigma->0) =       -0.16030702
+
+  entropy T*S    EENTRO =        -0.30852464
+
