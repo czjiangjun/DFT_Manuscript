@@ -1,0 +1,2 @@
+SYSTEM = O atom in a box
+ISMEAR = 0  ! Gaussian smearing

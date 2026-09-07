@@ -1,21 +1,44 @@
 \chapter{\rm{VASP}教程与算例}
 \textrm{VASP}的官方网站提供了系统而完整的示范教程%\url{https://vasp.at/wiki/index.php/Category:Tutorials}
-\url{https://vasp.at/tutorials/latest/}，这个教程在一直在维护和更新。笔者以为这是迄今为止最完整的\textrm{VASP}教程，除了对各算例有比较详细的输入、输出内容的说明，包括编译、安装及执行在内，都有详细的指导，有兴趣的\textrm{VASP}用户，特别是初学者，建议遵照教程尝试练习。本章也将参照教程的算例，对\textrm{VASP}具体计算中的内容作必要说明。另外，编著的\textrm{}也比较细致地描述了
+\url{https://vasp.at/tutorials/latest/}，这个教程在一直在维护和更新。笔者以为这是迄今为止最完整的\textrm{VASP}教程，除了对各算例有比较详细的输入、输出内容的说明，包括编译、安装及执行在内，都有详细的指导，有兴趣的\textrm{VASP}用户，特别是初学者，建议遵照教程尝试练习。本章也将参照教程的算例，对\textrm{VASP}具体计算中的内容作必要说明。另外，\textrm{June Gunn Lee}编著的\textrm{Computational Materials Science:~an introduction}\cite{J.-G._Lee}一书也有\textrm{VASP}算例的相关章节，可资参阅。
 \section{基本计算}
-\subsection{体系的结构优化和基态总能量}
-\subsection{体系的态密度和能带}
-\subsection{自旋极化与体系的磁性}
-\subsection{含过渡金属的\textrm{DFT+}$U$计算}
-\subsection{基本的第一原理分子动力学模拟}
-\section{材料模拟}
-\subsection{表面催化}
-\subsection{声子振动}
-\subsection{\rm{NEB}与过渡态搜索}
-\section{原子/分子计算}\label{Sec:atom-Pt}
-真空中的孤立原子的基态能量是\textrm{VASP}中最简单的算例。通过这个算例，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。
+\subsection{原子/分子计算}\label{Sec:atom-O}
+真空中的孤立原子的基态能量是\textrm{VASP}中最简单的算例。本算例提供了计算单个\ch{O}原子能量的示范。初学者可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。
 
+\textrm{VASP}完成的是周期体系的\textrm{DFT}计算，所以对于孤立的\ch{O}原子，是将该原子置于一个足够大的晶胞内，然后根据周期边界条件计算孤立原子的相关能量。\textrm{DFT}计算的基本变量是体系的电荷密度，其计算过程可以概括为：
+\begin{enumerate}
+	\item 根据体系的初始电荷密度，确定体系的\textrm{Kohn-Sham}方程的\textrm{Hamiltonian}；
+	\item 对角化\textrm{Hamiltonian}矩阵，获得体系的本征态波函数和本征值，并计算体系各项能量；
+	\item 根据得到的体系本征态波函数，更新体系的电荷密度；
+	\item 重复步骤\textrm{1.-3.}直到体系总能量收敛。
+\end{enumerate}
+
+表示周期体系中的\ch{O}原子的\textrm{POSCAR}中，晶胞参数设置为足够大(8\AA)，确保近邻晶格的\ch{O}原子间不会存在显著的相互作用:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-8]{Figures/VASP_tutorials-1-1_POSCAR} %为保险:~选用文件名绝对路径
+}}
+
+如前所述，\textrm{INCAR}文件包含的是各类计算控制参数。为了减轻用户设置控制参数的复杂手续，\textrm{VASP}程序对每个没有列入\textrm{INCAR}文件的控制参数都设为其默认值。
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-8]{Figures/VASP_tutorials-1-1_INCAR} %为保险:~选用文件名绝对路径
+}}
+初学者如有兴趣，可以留意检索\textrm{VASP}手册的相关章节，了解控制参数\texttt{SYSTEM}和\texttt{ISMEAR}=0的含义。
+
+对于原子体系，\textrm{KPOINTS}文件设置为:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-5]{Figures/VASP_tutorials-1-1_KPOINTS}%为保险:~选用文件名绝对路径
+}}
+对于孤立原子或分子计算，一个$\vec k$点已经足够。原则上，\textrm{KPOINTS}文件中包含的波矢$\vec k$越多，计算得到的原子间相互作用越精确。但因为本算例中，由于晶胞参数足够大，孤立\ch{O}原子间相互作用作用可以忽略，没有必要徒劳使用更多的$\vec k$点。
+
+以下给出计算所需的\ch{O}元素的\textrm{POTCAR}文件的前几行：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-12]{Figures/VASP_tutorials-1-1_POTCAR}%为保险:~选用文件名绝对路径
+}}
+需要注意的是，用户不要随便改动\textrm{POTCAR}的内容。\textrm{VASP}官网明确指出，普通用户没必要了解\textrm{POTCAR}的详细内容，只需要注意\textrm{POTCAR}文件第4行\ch{O}元素的价电子构象(\textrm{O: s2p4})和第12行的参数\textt{ZVAL}=6(表示\ch{O}元素的6个价电子)，两者是保持一致的。
+
+运行\textrm{VASP}程序，完成计算后，屏幕的标准输出
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
-\subsection{输入文件}
+%\subsection{输入文件}
 \textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}
 \subsubsection{\rm{INCAR}}
 \textrm{INCAR}是\textrm{VASP}计算的核心控制文件。对于\textrm{Pt}的计算，\textrm{INCAR}的设置如图\ref{Pt_atom:INCAR}所示。
@@ -1310,6 +1333,15 @@ chmod~+x~./run.lattice}}\\% \# change the file mode to execution mode\\
 
 有关旋-轨耦合(\textrm{Spin-Orbital coupling, SOC})、非共线磁性(\textrm{nonlinear magnetization})等相关的计算，与\textrm{LDA}+$U$、光学介电函数和\textit{GW}计算类似，主要是控制参数文件\textrm{INCAR}的修改，有兴趣的用户请参阅有关算例。
 
+%\subsection{体系的结构优化和基态总能量}
+%\subsection{体系的态密度和能带}
+%\subsection{自旋极化与体系的磁性}
+%\subsection{含过渡金属的\textrm{DFT+}$U$计算}
+%\subsection{基本的第一原理分子动力学模拟}
+%\section{材料模拟}
+%\subsection{表面催化}
+%\subsection{声子振动}
+%\subsection{\rm{NEB}与过渡态搜索}
 \clearpage\newpage
 \textbf{课后作业}
 \begin{enumerate}
