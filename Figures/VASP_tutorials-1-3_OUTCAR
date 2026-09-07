@@ -1,0 +1,34 @@
+ ion  position               nearest neighbor table
+   1  0.000  0.000  0.000-
+
+  LATTYP: Found a simple orthorhombic cell.
+ ALAT       =     7.0000000000
+ B/A-ratio  =     1.0714285714
+ C/A-ratio  =     1.1428571429
+
+  Lattice vectors:
+
+ A1 = (   7.0000000000,   0.0000000000,   0.0000000000)
+ A2 = (   0.0000000000,   7.5000000000,   0.0000000000)
+ A3 = (   0.0000000000,   0.0000000000,   8.0000000000)
+
+
+Analysis of symmetry for initial positions (statically):
+=====================================================================
+ Subroutine PRICEL returns:
+ Original cell was already a primitive cell.
+
+
+ Routine SETGRP: Setting up the symmetry group for a 
+ simple orthorhombic supercell.
+
+
+ Subroutine GETGRP returns: Found  8 space group operations
+ (whereof  8 operations were pure point group operations)
+ out of a pool of  8 trial point group operations.
+
+
+The static configuration has the point symmetry D_2h.
+
+  energy without entropy =       -1.89067302  energy(sigma->0) =       -1.89067302
+

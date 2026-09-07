@@ -144,7 +144,7 @@
 %2. **能量选择错误**：如前所述，不同ISMEAR设置下应选择不同的能量值。
 %3. **收敛判断**：OUTCAR中可能出现“电子步未收敛”的警告，此时需要检查INCAR中的`NELM`、`ALGO`等参数。
 
-\subsection{其余输出文件}
+\subsection{常用输出文件:~\rm{CONTCAR}}\label{subsect:CONTCAR}
 \textrm{VASP}的主要计算结果都体现在\textrm{OUTCAR}文件中，但有些重要的结果数据，如结构弛豫后的晶体和原子数据、用于绘制相关物理量图表的数据，\textrm{VASP}会将必要的数据单独存储到特定文件中。这些输出文件中的数据功能相对具体，这里简要地介绍几个文件。
 %## 二、CONTCAR：更新后的结构文件
 %
@@ -193,6 +193,7 @@
 %- CONTCAR中每行开头的缩进使用的是**空格**而非制表符（Tab）。
 %- VASP 5.x版本在晶格向量之后增加了原子种类符号行，这使得CONTCAR的向后兼容性更好。
 
+\subsection{常用输出文件:~\rm{OSZICAR}}\label{subsectr:OSZICAR}
 \textrm{DFT}计算过程中，用户主要关心的是体系能量的变化趋势。\textrm{VASP}计算过程中，频繁地检索逐渐增长的\textrm{OUTCAR}文件来监控中间计算过程，显然不是最便捷的方法，而\textrm{OSZICAR}文件\footnote{文件名中的\textrm{``OSZI''}源自德语\textrm{``oszillieren''}，这个词是``振荡''的意思。}就是计算过程中简要的能量汇总文件(如果用户直接运行\textrm{vasp}执行文件，在屏幕上显示的主要也是\textrm{OSZICAR}文件的内容)。典型的\textrm{OSZICAR}文件的内容如下所示:
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-24]{Figures/OSZICAR} %为保险:~选用文件名绝对路径
@@ -260,7 +261,7 @@
 %
 
 %
-%
+\subsection{常用输出文件:~\rm{DOSCAR}}\label{subsectr:DOSCAR}
 %## 三、DOSCAR：态密度文件
 %
 %### 3.1 DOSCAR概述
@@ -343,6 +344,7 @@
 %3. **四面体方法**：当使用`ISMEAR = -4`或`-5`（四面体方法）时，积分态密度的计算采用特殊公式。
 %
 %
+\subsection{常用输出文件:~\rm{EIGENVAL}}\label{subsectr:EIGENVAL}
 %## 四、EIGENVAL：本征值文件
 %
 %### 4.1 EIGENVAL概述
@@ -374,6 +376,7 @@
 %3. **分析能隙**：确定价带顶和导带底的位置及能隙大小。
 %
 %
+\subsection{常用输出文件:~\rm{CHGCAR}}\label{subsectr:CHGCAR}
 %## 五、CHGCAR：电荷密度文件
 体系的电荷密度是\textrm{DFT}计算的核心，\textrm{VASP}计算中\textrm{CHGCAR}文件保存的就是这类数据。
 \textrm{CHGCAR}文件主要由以下数据构成：
@@ -427,6 +430,7 @@
 %3. **可视化**：CHGCAR可通过VESTA等软件直接可视化。
 %
 
+\subsection{常用输出文件:~\rm{WAVECAR}}\label{subsectr:WAVECAR}
 %## 六、WAVECAR：波函数文件
 根据\textrm{DFT}理论，\textrm{Kohn-Sham}方程的波函数是中间变量。一般地，第一原理计算软件中波函数\footnote{因为选定了基函数，所以波函数文件中存储的，实际上是构成波函数的基组系数。}都是以非格式(二进制)输出形式写入文件的，用户必须借助工具才能读取数据。\textrm{VASP}也不例外，\textrm{WAVECAR}是一个二进制文件，也是\textrm{VASP}最大的输出文件之一。与\textrm{CHGCAR}类似，保存\textrm{WAVECAR}文件的主要作用之一，就是节省重启/续算时的计算时间。因为\textrm{WAVECAR}保存的是程序结束前最后完成的电子步的波函数，所以在续算任务启动时，用户如使用已有的\textrm{WAVECAR}数据(参数\texttt{ISTART}=1)，则有可能有效加速电子步\textrm{SCF}的收敛速率。
 
@@ -467,6 +471,7 @@
 %2. **MD续算**：WAVECAR、CHGCAR和CONTCAR可以一致地用于分子动力学续算。
 %3. **注意一致性**：如果要从MD的WAVECAR进行其他计算，需要先做静态续算。
 %
+\subsection{其余输出文件}
 %## 七、PROCAR：投影波函数文件
 %
 在对\textrm{VASP}计算结果解析中，会有分析体系本征态(能带)波函数中各组成元素的\textit{s}、\textit{p}、\textit{d}、\textit{f}等轨道的贡献多寡的需求，而\textrm{PROCAR}文件中听过的就是这些数据信息(要求控制参数$\mathtt{LORBIT}\geqslant11$)\footnote{在并行版本中，如果$\mathtt{NPAR}\neq1$`，则\textit{s}，\textit{p}，\textit{d}等投影的波函数数据不会被计算。}。

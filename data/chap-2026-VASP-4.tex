@@ -36,7 +36,43 @@
 }}
 需要注意的是，用户不要随便改动\textrm{POTCAR}的内容。\textrm{VASP}官网明确指出，普通用户没必要了解\textrm{POTCAR}的详细内容，只需要注意\textrm{POTCAR}文件第4行\ch{O}元素的价电子构象(\textrm{O: s2p4})和第12行的参数\textt{ZVAL}=6(表示\ch{O}元素的6个价电子)，两者是保持一致的。
 
-运行\textrm{VASP}程序，完成计算后，屏幕的标准输出
+运行\textrm{VASP}程序，完成计算后，屏幕的标准输出如下所示：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-24]{Figures/VASP_tutorials-1-1_stdout}%为保险:~选用文件名绝对路径
+}}
+标准输出中，在\textrm{entering main loop}前面，是计算资源配置和初始化；在这一行之后输出的内容与\textrm{OSZICAR}文件内容一致，每一列的含义请参阅\ref{subsectr:OSZICAR}的相关部分内容。
+
+根据\textrm{VASP}的程序设计，最初的电子密度源于\textrm{POTCAR}；为了迭代对角化的稳定性，在最初的四次电子迭代步，电荷密度保持不变，之后每一步的电荷密度才开始更新，所以最初四次电子迭代，\textrm{rms(c)}没有数据输出。默认的电子步收敛的标准是$\mathrm{dE}<10^{-4}$和$\mathrm{d~eps}<10^{-4}$。
+
+更完整的输出信息在\textrm{OUTCAR}文件中，当计算对象达到收敛后，\textrm{OUTCAR}中体系能量本征值，由于采用默认的低精度计算，读者的计算结果和这里的结果可能有微笑的数值差别:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-15]{Figures/VASP_tutorials-1-1_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+\textrm{E-fermi}的值是\textrm{-8.8433}，单位是\textrm{eV}。固体物理中，习惯上先将\textrm{Fermi}能级置零。然后再讨论体系的\textrm{Kohn-Sham}方程的本征态(\textrm{band energies})。而体系的占据态(\texttt{occupation})的能量都应该非正值。
+
+\textrm{DFT}计算结果与实际的孤立原子的物理态的关系:\\
+\ch{O}([\ch{He}]$2s^22p^4$)共有6个价电子，两个$2s$电子和四个$2p$电子。根据上述讨论可知，$2s$电子的能量本征(相比于\textrm{Fermi}能级)为：
+\begin{displaymath}
+	-23.8439\mathrm{eV}+8.8431\mathrm{eV}=-15.0008\mathrm{eV}
+\end{displaymath}
+$2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$电子平均占据3个$2p$轨道，因此这里简并的能带(轨道)2,3,4的占据数为1.3333。
+
+体系最终的自由能为：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=16-20]{Figures/VASP_tutorials-1-1_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+而体系的熵的贡献是
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=22-22]{Figures/VASP_tutorials-1-1_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+由于\textrm{DFT}计算得到的简并$2p$轨道，会引入非物理的熵(\mathrm{S})的贡献。参数\texttt{SIGMA}是计算引入的\textrm{Gaussian}展宽，它可以视为认为引入的电子温度\textrm{T}，小的\texttt{SIGMA}会降低熵的贡献，但可能会引起\textrm{Fermi}积分的变慢。这部分非物理的贡献就是自由能计算的熵的来源。
+
+需要指出的是，计算得到的孤立\ch{O}原子总能\textrm{energy without entropy}接近于0,严格地讲，如果选择的晶格足够大，并且计算精度足够高，该值应该严格为0，因为用于计算的赝势是孤立非极化的原子生成的。原则上说，用于计算的赝势的构象(体系能量计算的参照点)是任意的，但对于非孤立体系(比如小一点的晶胞中有若干个原子)，计算得到的能量绝对值意义不大，只有相对能量(即本征态能量相对\textrm{Fermi}能，总能相对参照点)才是有意义的。
+
+一般地，如果在计算完成后，重启计算，\textrm{VASP}将从\textrm{WAVECAR}读入波函数，计算将很快收敛。如果删除\textrm{WAVECAR}，体系将重新开始完整计算。
+
+\subsection{原子/分子自旋极化计算}\label{Sec:atom-1}
+
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
 \textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}

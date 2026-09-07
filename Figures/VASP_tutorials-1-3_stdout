@@ -1,0 +1,11 @@
+ running on    2 total cores
+ distrk:  each k-point on    2 cores,    1 groups
+ distr:  one band on    1 cores,    2 groups
+ vasp.6.2.1 16May21 (build Jun 06 2021 00:45:36) complex                        
+    ....
+    ....
+DAV:  15    -0.189033389318E+01   -0.30871E-03   -0.44399E-05    48   0.517E-02    0.961E-03
+DAV:  16    -0.189062353556E+01   -0.28964E-03   -0.39883E-05    40   0.293E-02    0.586E-03
+DAV:  17    -0.189067302283E+01   -0.49487E-04   -0.32857E-06    48   0.132E-02
+   1 F= -.18906730E+01 E0= -.18906730E+01  d E =-.290707E-20  mag=     1.9998
+ writing wavefunctions
