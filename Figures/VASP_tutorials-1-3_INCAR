@@ -1,0 +1,3 @@
+SYSTEM = O atom in a box
+ISMEAR = 0       ! Gaussian smearing
+ISPIN  = 2       ! spin polarized calculation

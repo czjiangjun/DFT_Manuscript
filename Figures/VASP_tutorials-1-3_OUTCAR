@@ -30,5 +30,6 @@ Analysis of symmetry for initial positions (statically):
 
 The static configuration has the point symmetry D_2h.
 
-  energy without entropy =       -1.89067302  energy(sigma->0) =       -1.89067302
+  energy  without entropy =       -1.51495945  energy(sigma->0) =       -1.59207906,
 
+  energy without entropy =       -1.89067302  energy(sigma->0) =       -1.89067302
