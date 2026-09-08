@@ -2,7 +2,7 @@
 \textrm{VASP}的官方网站提供了系统而完整的示范教程%\url{https://vasp.at/wiki/index.php/Category:Tutorials}
 \url{https://vasp.at/tutorials/latest/}，这个教程在一直在维护和更新。笔者以为这是迄今为止最完整的\textrm{VASP}教程，除了对各算例有比较详细的输入、输出内容的说明，包括编译、安装及执行在内，都有详细的指导，有兴趣的\textrm{VASP}用户，特别是初学者，建议遵照教程尝试练习。本章也将参照教程的算例，对\textrm{VASP}具体计算中的内容作必要说明。另外，\textrm{June Gunn Lee}编著的\textrm{Computational Materials Science:~an introduction}\cite{J.-G._Lee}一书也有\textrm{VASP}算例的相关章节，可资参阅。
 \section{基本计算}
-\subsection{原子/分子计算}\label{Sec:atom-O}
+\subsection{原子基态能量的计算}\label{Sec:atom-O}
 真空中的孤立原子的基态能量是\textrm{VASP}中最简单的算例。本算例提供了计算单个\ch{O}原子能量的示范。初学者可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。
 
 \subsubsection{孤立原子/分子计算}\label{Sec:atom-O-1}
@@ -72,7 +72,7 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 
 一般地，如果在计算完成后，重启计算，\textrm{VASP}将从\textrm{WAVECAR}读入波函数，计算将很快收敛。如果删除\textrm{WAVECAR}，体系将重新开始完整计算。
 
-\subsubsection{原子/分子自旋极化计算}\label{Sec:atom-O-2}
+\subsubsection{考虑自旋极化的原子基态能量}\label{Sec:atom-O-2}
 对于孤立\ch{O}原子，考虑自旋极化计算后可以得到\ch{O}原子的自旋磁矩，根据自旋密度泛函理论\textrm{(Spin Density Functional Theory, SDFT)}，\ch{O}原子中自旋向上\textrm{(spin-up)}和自旋向下\textrm{(spin-dn)}态和电荷密度将解耦，两种自旋允许具备不同的本征态。考虑自旋的体系总能与非自旋体系的能量差，反映了两种不同自旋态的相互作用大小。
 
 自旋极化计算的\textrm{POTCAR}、\textrm{POSCAR}和\textrm{KPOINTS}与\ref{Sec:atom-O-1}中相同，\textrm{INCAR}参数设置如下：
@@ -101,7 +101,7 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 \end{displaymath}
 这里$\mathbf{g}_s\approx2$是自旋的$g$因子，$\sigma_z$表示\textrm{Pauli}矩阵，$\mu_B$为\textrm{Bohr}磁子。不难看出，体系达到收敛时，\textrm{spin-up}的电子数多出2个电子，因此$\langle\mu_{s,z}\rangle=2\mu_B$。所以最后屏幕显示的标准输出有体系磁矩\textrm{mag}=1.999，与$\langle\mu_{s,z}\rangle$的数值一致。
 
-\subsubsection{原子/分子自旋极化与点群对称性}\label{Sec:atom-O-3}
+\subsubsection{点群对称性的影响}\label{Sec:atom-O-3}
 \textrm{VASP}计算中，为了节约计算资源，软件会主动检查并判断体系所属的点群对称性。利用对称性原理，减少计算开销，对于具有对称性的复杂体系，这样做毫无疑问是很有必要的。但有必须说明的是，\textrm{DFT}计算和描述的体系基态，并没有对称性的要求与约束。如果用户计算中要避免体系对称性的约束(或者人为地使用不同于对称性结构)，建议手动关闭软件的对称性检查功能。\textrm{INCAR}文件中，对称性检查与参数控制为\texttt{ISYM}。
 
 为了说明点群对称性对计算的影响，在\ref{Sec:atom-O-2}中，孤立\ch{O}原子的晶格具有$\mathrm{O}_h$点群立方对称性，现将对称性降为$\mathrm{D}_{2h}$正交对称性，其\textrm{POSCAR}文件修改为：
@@ -128,6 +128,8 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 }}
 显然，仅仅改变\textrm{Gaussian}展宽参数，体系能量也将有较大改变。这说明，如果两个计算体系能量要对比，其\textrm{Gaussian}展宽参数尽量应尽量保持一致。
 
+\subsubsection{分子中的键长}\label{Sec:atom-O-4}
+结构弛豫是\textrm{VASP}中最常见的计算类型之一。根据\textrm{Born-Oppenheimer}近似,
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
