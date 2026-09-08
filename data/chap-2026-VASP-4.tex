@@ -5,6 +5,7 @@
 \subsection{原子/分子计算}\label{Sec:atom-O}
 真空中的孤立原子的基态能量是\textrm{VASP}中最简单的算例。本算例提供了计算单个\ch{O}原子能量的示范。初学者可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。
 
+\subsubsection{孤立原子/分子计算}\label{Sec:atom-O-1}
 \textrm{VASP}完成的是周期体系的\textrm{DFT}计算，所以对于孤立的\ch{O}原子，是将该原子置于一个足够大的晶胞内，然后根据周期边界条件计算孤立原子的相关能量。\textrm{DFT}计算的基本变量是体系的电荷密度，其计算过程可以概括为：
 \begin{enumerate}
 	\item 根据体系的初始电荷密度，确定体系的\textrm{Kohn-Sham}方程的\textrm{Hamiltonian}；
@@ -40,11 +41,11 @@
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-24]{Figures/VASP_tutorials-1-1_stdout}%为保险:~选用文件名绝对路径
 }}
-标准输出中，在\textrm{entering main loop}前面，是计算资源配置和初始化；在这一行之后输出的内容与\textrm{OSZICAR}文件内容一致，每一列的含义请参阅\ref{subsectr:OSZICAR}的相关部分内容。
+标准输出中，在\textrm{entering main loop}前面，是计算资源配置和初始化；在这一行之后输出的内容与\textrm{OSZICAR}文件内容一致，每一列的含义，可参阅\ref{subsectr:OSZICAR}的相关部分内容，兹不赘述。
 
 根据\textrm{VASP}的程序设计，最初的电子密度源于\textrm{POTCAR}；为了迭代对角化的稳定性，在最初的四次电子迭代步，电荷密度保持不变，之后每一步的电荷密度才开始更新，所以最初四次电子迭代，\textrm{rms(c)}没有数据输出。默认的电子步收敛的标准是$\mathrm{dE}<10^{-4}$和$\mathrm{d~eps}<10^{-4}$。
 
-更完整的输出信息在\textrm{OUTCAR}文件中，当计算对象达到收敛后，\textrm{OUTCAR}中体系能量本征值，由于采用默认的低精度计算，读者的计算结果和这里的结果可能有微笑的数值差别:
+更完整的输出信息在\textrm{OUTCAR}文件中，当计算对象达到收敛后，\textrm{OUTCAR}中体系能量本征值。有必要指出的是，由于本次采用默认的低精度计算，读者自行完成的计算结果，很可能因为具体计算硬件及相关配置的影响，和这里给出的结果有微小的数值差异:
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-15]{Figures/VASP_tutorials-1-1_OUTCAR}%为保险:~选用文件名绝对路径
 }}
@@ -71,8 +72,63 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 
 一般地，如果在计算完成后，重启计算，\textrm{VASP}将从\textrm{WAVECAR}读入波函数，计算将很快收敛。如果删除\textrm{WAVECAR}，体系将重新开始完整计算。
 
-\subsection{原子/分子自旋极化计算}\label{Sec:atom-1}
+\subsubsection{原子/分子自旋极化计算}\label{Sec:atom-O-2}
+对于孤立\ch{O}原子，考虑自旋极化计算后可以得到\ch{O}原子的自旋磁矩，根据自旋密度泛函理论\textrm{(Spin Density Functional Theory, SDFT)}，\ch{O}原子中自旋向上\textrm{(spin-up)}和自旋向下\textrm{(spin-dn)}态和电荷密度将解耦，两种自旋允许具备不同的本征态。考虑自旋的体系总能与非自旋体系的能量差，反映了两种不同自旋态的相互作用大小。
 
+自旋极化计算的\textrm{POTCAR}、\textrm{POSCAR}和\textrm{KPOINTS}与\ref{Sec:atom-O-1}中相同，\textrm{INCAR}参数设置如下：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-3]{Figures/VASP_tutorials-1-2_INCAR}%为保险:~选用文件名绝对路径
+}}
+这里为了分别考虑不同自旋的贡献，增加参数\texttt{ISPIN}=2。
+
+使用这四个输入文件，开启新的计算。这里顺便说明一下\textrm{vasp\_std}和{vasp\_gam}两种\textrm{VASP}计算的区别：当\textrm{KPOINTS}文件中的$\vec k$点仅有$\Gamma$点(即(0, 0, 0)点)时，可以采用\textrm{vasp\_gam}替代\textrm{vasp\_std}命令，这样做，计算过程中的某些数组将会采用实数型，而不必是复数型。因此采用\textrm{vasp\_gam}计算，可以节约内存开销和计算成本。
+
+屏幕显示的标准输出，将会出现示警信息(\textrm{WARRING!!!}):
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-50]{Figures/VASP_tutorials-1-2_stdout}%为保险:~选用文件名绝对路径
+}}
+这里出现示警信息是因为在\textrm{INCAR}文件中设置了参数\texttt{ISPIN}=2，但并未指定参数\textrm{MAGMOM}的初始值。\textrm{VASP}计算中在标准输出和\textrm{OUTCAR}出现示警信息，仅是一种提示，并不意味着计算一定会出错(错误信息的提示为\textrm{ERROR!!!})，提醒用户留意确认当前计算是否是预期想执行的，有必要检查控制参数；示警信息有助于用户尽早避免一些常见的误操作，从而提升\textrm{VASP}计算的效能。
+
+类似地，在输出文件的电子步收敛后，可以看到自旋极化计算的自旋本征态能量和占据数，可以与非自旋极化计算的结果对照：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-25]{Figures/VASP_tutorials-1-2_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+显然，在\textrm{SDFT}计算中，不同自旋电子的本征态能量是不同的，根据\textrm{Hund}规则，4个$2p$电子中3个优先占据\textrm{spin-up}\footnote{\textrm{VASP}计算结果只是通过自旋态1\textrm{spin component 1}和自旋态2\textrm{spin component 2}来标示不同自旋，这里根据习惯，称前者为\textrm{spin-up}。}轨道(\textrm{occupation 1.00})；剩下1个电子进入相反自旋\textrm{spin-dn}轨道，如前所说，\textrm{spin-dn}轨道电子的分数占据(\textrm{occupation 0.3333})，源于\textrm{DFT}理论中基本变量是体系的电子密度，而非波函数。
+
+孤立\ch{O}原子的自旋磁矩，可以通过两个不同自旋的磁矩的抵扣后的净磁矩计算得到，换言之，如选择体系的磁化方向为$z$轴方向，则有
+\begin{displaymath}
+	\langle\mu_{s,z}\rangle=\mathbf{g}_s\langle\dfrac12\sigma_z\rangle\mu_B
+\end{displaymath}
+这里$\mathbf{g}_s\approx2$是自旋的$g$因子，$\sigma_z$表示\textrm{Pauli}矩阵，$\mu_B$为\textrm{Bohr}磁子。不难看出，体系达到收敛时，\textrm{spin-up}的电子数多出2个电子，因此$\langle\mu_{s,z}\rangle=2\mu_B$。所以最后屏幕显示的标准输出有体系磁矩\textrm{mag}=1.999，与$\langle\mu_{s,z}\rangle$的数值一致。
+
+\subsubsection{原子/分子自旋极化与点群对称性}\label{Sec:atom-O-3}
+\textrm{VASP}计算中，为了节约计算资源，软件会主动检查并判断体系所属的点群对称性。利用对称性原理，减少计算开销，对于具有对称性的复杂体系，这样做毫无疑问是很有必要的。但有必须说明的是，\textrm{DFT}计算和描述的体系基态，并没有对称性的要求与约束。如果用户计算中要避免体系对称性的约束(或者人为地使用不同于对称性结构)，建议手动关闭软件的对称性检查功能。\textrm{INCAR}文件中，对称性检查与参数控制为\texttt{ISYM}。
+
+为了说明点群对称性对计算的影响，在\ref{Sec:atom-O-2}中，孤立\ch{O}原子的晶格具有$\mathrm{O}_h$点群立方对称性，现将对称性降为$\mathrm{D}_{2h}$正交对称性，其\textrm{POSCAR}文件修改为：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-8]{Figures/VASP_tutorials-1-3_POSCAR}%为保险:~选用文件名绝对路径
+}}
+\textrm{POTCAR}、\textrm{INCAR}文件和\textrm{KPOINTS}文件都保持不变，
+
+提交\textrm{vasp\_gam}计算结束后，检索输出文件\textrm{OUTCAR}：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-31]{Figures/VASP_tutorials-1-3_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+可以看到，体系属于正交对称性\textrm{point symmetry D\_2h}，即体系所属的点群对称性为$\mathrm{D}_{2h}$，而此前\ref{Sec:atom-O-2}中，体系属于立方对称性\textrm{point symmetry O\_h}，即$\mathrm{O}_h$。
+
+对比正交点群对称性条件下的体系总能\textrm{(energy without entropy)}：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-3_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+远低于未考虑自旋极化的孤立\ch{O}原子参考点能量(见\ref{Sec:atom-O-1})。不难看出，考虑自旋极化后，\ch{O}原子的$2p$电子占据方式更接近真实的基态构象，因此能量大大降低，降低对称性也会引起基态能量的少量降低，这称为对称性破缺\textrm{(Symmetry Breaking)}。\textrm{VASP}计算默认使用的\textrm{GGA}泛函的贡献，对绝大部分原子，都是在打破对称性条件下得到的计算完成的。
+
+最后，在\textrm{INCAR}文件中增加参数\texttt{SIGMA}=0.01，并重新完成计算，在\textrm{OUTCAR}文件中，体系的总能变成：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=35-35]{Figures/VASP_tutorials-1-3_OUTCAR}%为保险:~选用文件名绝对路径
+}}
+显然，仅仅改变\textrm{Gaussian}展宽参数，体系能量也将有较大改变。这说明，如果两个计算体系能量要对比，其\textrm{Gaussian}展宽参数尽量应尽量保持一致。
+
+\subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
 \textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}
