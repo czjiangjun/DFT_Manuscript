@@ -129,7 +129,24 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 显然，仅仅改变\textrm{Gaussian}展宽参数，体系能量也将有较大改变。这说明，如果两个计算体系能量要对比，其\textrm{Gaussian}展宽参数尽量应尽量保持一致。
 
 \subsubsection{分子中的键长}\label{Sec:atom-O-4}
-结构弛豫是\textrm{VASP}中最常见的计算类型之一。根据\textrm{Born-Oppenheimer}近似,
+结构弛豫是\textrm{VASP}中最常见的计算类型之一。由于原子核的质量远大于电子质量，根据\textrm{Born-Oppenheimer}近似，可将两者的运动分别处理，考察电子运动的时候可以认为原子核的位置是固定不动的；而考虑原子核/离子运动时，可以认为它们是在电子运动构成的能量面上运动，这个能量面一般称为势能面\textrm{(Potential Surface)}。结构弛豫就是在势能面上找到体系中各原子所受的受力和应力都为零的位置。一般第一原理计算软件完成结构弛豫的步骤为:
+\begin{enumerate}
+	\item 在体系的初始结构，采用\textrm{DFT}方法得到体系的基态能量；
+	\item 根据\textrm{Hellmann-Feyman}定理，利用电子\textrm{Hamiltonian}的梯度，可以计算离子所受力和应力
+		\begin{displaymath}
+			\nabla_nE=\dfrac{\lanele\Psi_G|\nabla_n\mathrm{H}|\Psi_G\rangle}{\langle\Psi_G|\Psi_G\rangle}
+		\end{displaymath}
+\end{enumerate}
+\item 根据优化算法，离子依照受力，朝有利于当前能量优化方向移动；
+\item 重复步骤1.-3. 直到体系总能达到预设的收敛标准。
+\end{enumerate}
+
+\ch{O2}分子弛豫的初始结构\textrm{POSCAR}：
+在大的晶胞中，两个\ch{O}原子的初始距离是1.22\AA。
+输入控制参数\textrm{INCAR}
+计算中考虑原子自旋，参数\texttt{NSW}和\texttt{IBRION}
+\textrm{KPOINTS}和\textrm{POTCAR}不变。
+
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
