@@ -35,7 +35,7 @@
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-12]{Figures/VASP_tutorials-1-1_POTCAR}%为保险:~选用文件名绝对路径
 }}
-需要注意的是，用户不要随便改动\textrm{POTCAR}的内容。\textrm{VASP}官网明确指出，普通用户没必要了解\textrm{POTCAR}的详细内容，只需要注意\textrm{POTCAR}文件第4行\ch{O}元素的价电子构象(\textrm{O: s2p4})和第12行的参数\textt{ZVAL}=6(表示\ch{O}元素的6个价电子)，两者是保持一致的。
+需要注意的是，用户不要随便改动\textrm{POTCAR}的内容。\textrm{VASP}官网明确指出，普通用户没必要了解\textrm{POTCAR}的详细内容，只需要注意\textrm{POTCAR}文件第4行\ch{O}元素的价电子构象(\textrm{O: s2p4})和第12行的参数\texttt{ZVAL}=6(表示\ch{O}元素的6个价电子)，两者是保持一致的。
 
 运行\textrm{VASP}程序，完成计算后，屏幕的标准输出如下所示：
 {\fontsize{8.2pt}{6.2pt}\selectfont{
@@ -66,7 +66,7 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=22-22]{Figures/VASP_tutorials-1-1_OUTCAR}%为保险:~选用文件名绝对路径
 }}
-由于\textrm{DFT}计算得到的简并$2p$轨道，会引入非物理的熵(\mathrm{S})的贡献。参数\texttt{SIGMA}是计算引入的\textrm{Gaussian}展宽，它可以视为认为引入的电子温度\textrm{T}，小的\texttt{SIGMA}会降低熵的贡献，但可能会引起\textrm{Fermi}积分的变慢。这部分非物理的贡献就是自由能计算的熵的来源。
+由于\textrm{DFT}计算得到的简并$2p$轨道，会引入非物理的熵(\textrm{S})的贡献。参数\texttt{SIGMA}是计算引入的\textrm{Gaussian}展宽，它可以视为认为引入的电子温度\textrm{T}，小的\texttt{SIGMA}会降低熵的贡献，但可能会引起\textrm{Fermi}积分的变慢。这部分非物理的贡献就是自由能计算的熵的来源。
 
 需要指出的是，计算得到的孤立\ch{O}原子总能\textrm{energy without entropy}接近于0,严格地讲，如果选择的晶格足够大，并且计算精度足够高，该值应该严格为0，因为用于计算的赝势是孤立非极化的原子生成的。原则上说，用于计算的赝势的构象(体系能量计算的参照点)是任意的，但对于非孤立体系(比如小一点的晶胞中有若干个原子)，计算得到的能量绝对值意义不大，只有相对能量(即本征态能量相对\textrm{Fermi}能，总能相对参照点)才是有意义的。
 
@@ -93,7 +93,7 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=1-25]{Figures/VASP_tutorials-1-2_OUTCAR}%为保险:~选用文件名绝对路径
 }}
-显然，在\textrm{SDFT}计算中，不同自旋电子的本征态能量是不同的，根据\textrm{Hund}规则，4个$2p$电子中3个优先占据\textrm{spin-up}\footnote{\textrm{VASP}计算结果只是通过自旋态1\textrm{spin component 1}和自旋态2\textrm{spin component 2}来标示不同自旋，这里根据习惯，称前者为\textrm{spin-up}。}轨道(\textrm{occupation 1.00})；剩下1个电子进入相反自旋\textrm{spin-dn}轨道，如前所说，\textrm{spin-dn}轨道电子的分数占据(\textrm{occupation 0.3333})，源于\textrm{DFT}理论中基本变量是体系的电子密度，而非波函数。
+显然，在\textrm{SDFT}计算中，不同自旋电子的本征态能量是不同的，根据\textrm{Hund}规则，4个$2p$电子中3个优先占据\textrm{spin-up}\footnote{\textrm{VASP}计算结果只是通过自旋态1\textrm{(spin component 1)}和自旋态2\textrm{(spin component 2)}来标示不同自旋，这里根据习惯，称前者为\textrm{spin-up}。}轨道(\textrm{occupation 1.00})；剩下1个电子进入相反自旋\textrm{spin-dn}轨道，如前所说，\textrm{spin-dn}轨道电子的分数占据(\textrm{occupation 0.3333})，源于\textrm{DFT}理论中基本变量是体系的电子密度，而非波函数。
 
 孤立\ch{O}原子的自旋磁矩，可以通过两个不同自旋的磁矩的抵扣后的净磁矩计算得到，换言之，如选择体系的磁化方向为$z$轴方向，则有
 \begin{displaymath}
@@ -134,9 +134,8 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 	\item 在体系的初始结构，采用\textrm{DFT}方法得到体系的基态能量；
 	\item 根据\textrm{Hellmann-Feyman}定理，利用电子\textrm{Hamiltonian}的梯度，可以计算离子所受力和应力
 		\begin{displaymath}
-			\nabla_nE=\dfrac{\lanele\Psi_G|\nabla_n\mathrm{H}|\Psi_G\rangle}{\langle\Psi_G|\Psi_G\rangle}
+			\nabla_nE=\dfrac{\langle\Psi_G|\nabla_n\mathrm{H}|\Psi_G\rangle}{\langle\Psi_G|\Psi_G\rangle}
 		\end{displaymath}
-\end{enumerate}
 \item 根据优化算法，离子依照受力，朝有利于当前能量优化方向移动；
 \item 重复步骤1.-3. 直到体系总能达到预设的收敛标准。
 \end{enumerate}
@@ -145,19 +144,18 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 在大的晶胞中，两个\ch{O}原子的初始距离是1.22\AA。
 \textrm{KPOINTS}和\textrm{POTCAR}不变。
 输入控制参数\textrm{INCAR}
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_INCAR}%为保险:~选用文件名绝对路径
-}}
+%{\fontsize{8.2pt}{6.2pt}\selectfont{
+%	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_INCAR}%为保险:~选用文件名绝对路径
+%}}
 计算中考虑原子自旋，参数\texttt{NSW}指定结构弛豫中离子步移动的上限，\texttt{IBRION}=2表示采用共轭梯度\textrm{(Conjugate Gradient, CG)}算法完成结构弛豫所需要的能量优化。关于\textrm{CG}算法参见\textcolor{red}{有关章节}。一般地，当弛豫对象的自由度较低($\leqslant4$)并且偏离基态较小，\textrm{CG}算法非常高效；否则，建议用户通过参数\texttt{IBRION}选择不同的结构弛豫算法来完成能量搜索。
 
 结构弛豫计算完成后，用户可以通过标准输出\textrm{stdout}或\textrm{OSZICAR}文件，统计完成结构弛豫使用的电子步和离子步的数目，并在最后检查\textrm{CONTCAR}中的原子结构，与\textrm{POSCAR}中的数据对照，检查并确定结构弛豫对晶胞数据和原子位置的改变。也可以通过\textrm{py4vasp}查看相关数据。
-{\fontsize{8.2pt}{6.2pt}\selectfont{
-	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_CONTCAR}%为保险:~选用文件名绝对路径
-}}
-\begin{lstlisting}[language=Python, basicstyle=\ttfamily, keywordstyle=\color{blue}, stringstyle=\color{red!70!black}]
+%{\fontsize{8.2pt}{6.2pt}\selectfont{
+%	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_CONTCAR}%为保险:~选用文件名绝对路径
+%}}
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, stringstyle=\color{red!70!black}, frame=single]
 import py4vasp
 my_calc = py4vasp.Calculation.from_path("./e04_02-bond")
-
 my_calc.structure.print()
 \end{lstlisting}
 
