@@ -144,15 +144,15 @@ $2s$电子比$2p$电子更局域，在\textrm{DFT}理论中，4个简并的$2p$�
 在大的晶胞中，两个\ch{O}原子的初始距离是1.22\AA。
 \textrm{KPOINTS}和\textrm{POTCAR}不变。
 输入控制参数\textrm{INCAR}
-%{\fontsize{8.2pt}{6.2pt}\selectfont{
-%	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_INCAR}%为保险:~选用文件名绝对路径
-%}}
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_INCAR}%为保险:~选用文件名绝对路径
+}}
 计算中考虑原子自旋，参数\texttt{NSW}指定结构弛豫中离子步移动的上限，\texttt{IBRION}=2表示采用共轭梯度\textrm{(Conjugate Gradient, CG)}算法完成结构弛豫所需要的能量优化。关于\textrm{CG}算法参见\textcolor{red}{有关章节}。一般地，当弛豫对象的自由度较低($\leqslant4$)并且偏离基态较小，\textrm{CG}算法非常高效；否则，建议用户通过参数\texttt{IBRION}选择不同的结构弛豫算法来完成能量搜索。
 
 结构弛豫计算完成后，用户可以通过标准输出\textrm{stdout}或\textrm{OSZICAR}文件，统计完成结构弛豫使用的电子步和离子步的数目，并在最后检查\textrm{CONTCAR}中的原子结构，与\textrm{POSCAR}中的数据对照，检查并确定结构弛豫对晶胞数据和原子位置的改变。也可以通过\textrm{py4vasp}查看相关数据。
-%{\fontsize{8.2pt}{6.2pt}\selectfont{
-%	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_CONTCAR}%为保险:~选用文件名绝对路径
-%}}
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-4_CONTCAR}%为保险:~选用文件名绝对路径
+}}
 \begin{lstlisting}[language=Python, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, stringstyle=\color{red!70!black}, frame=single]
 import py4vasp
 my_calc = py4vasp.Calculation.from_path("./e04_02-bond")
