@@ -161,14 +161,96 @@ my_calc = py4vasp.Calculation.from_path("./e04_02-bond")
 my_calc.structure.print()
 \end{lstlisting}
 
-类似地，如果应用\textrm{CG}算法完成\ch{CO}的结构弛豫，
+类似地，如果应用\textrm{CG}算法完成\ch{CO}的结构弛豫，\textrm{VASP}建议，对于原子间间距(键长)较短的双原子分子，如\ch{O2},\ch{CO},\ch{N2},\ch{F2},\ch{P2},\ch{S2},\ch{Cl2}等，选择较为硬的原子数据集。
 
+结构文件\textrm{POSCAR}的内容为:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-5_POSCAR}%为保险:~选用文件名绝对路径
+}}
+计算控制文件\textrm{INCAR}的内容为:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-5_INCAR}%为保险:~选用文件名绝对路径
+}}
+对于复杂体系的\textrm{POTCAR}文件的组织命令如下(注意确保\textrm{POSCAR}中原子顺序一致)
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{green!60!black}, stringstyle=\color{red!70!black}, frame=single]
+cd $TUTORIALS/molecules/e05_*
+    cat pot/C_h/POTCAR pot/O_h/POTCAR > POTCAR
+\end{lstlisting}
+较硬的原子数据集会需要更多的计算资源开销，当计算精度不高时，可以采用标准的原子数据集而非较硬的。
+
+在完成计算之后，学习修改参数后重启计算：设置参数\texttt{POTIM}=0.2(默认为\texttt{POTIM}=0.5)，重启计算
+\begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{green!60!black}, stringstyle=\color{red!70!black}, frame=single]
+cd $TUTORIALS/molecules/e05_*
+    rm WAVECAR
+    echo "POTIM = 0.2" >> INCAR
+    mpirun -np 2 vasp_gam
+\end{lstlisting}
+随后，可以用\textrm{Python}模块\textrm{py4vasp}查看可视化的分子结构。
 \begin{lstlisting}[language=bash, basicstyle=\ttfamily\small, keywordstyle=\color{blue}, commentstyle=\color{green!60!black}, stringstyle=\color{red!70!black}, frame=single]
 # 这是一个 Bash 注释
 $ pip install py4vasp
 $ my_calc = py4vasp.Calculation.from_path("./e04_02-bond")
 $ echo "Calculation complete"
 \end{lstlisting}
+
+\subsubsection{分子振动频率的计算}\label{Sec:atom-CO-2}
+实际体系中任何分子都存在振动，很多化学键都存在特征的振动频率(10-100\textrm{Thz}不等)。在\textrm{VASP}计算中，分子的振动频率与$\Gamma$点的声子振动频率相似(\textcolor{red}{关于声子频率的计算参见理论进阶部分相关章节。})原则上，会涉及计算\textrm{Born-Oppeneheimer}近似下势能面$E(\mathbf{R})$的一阶和二阶导数。该势能面确定了离子的运动方式。
+\begin{displaymath}
+	\bigg(\sum_{\mu}\dfrac{\hbar^2}{2M_{\mu}}\nabla_{\mathbf{R}_{\mu}}^2+E(\mathbf{R})\bigg)\zeta(\mathbf{R})=\varepsilon\zeta(\mathbf{R})
+\end{displaymath}
+氏中$\mathbf{R}_{\mu}$是第$\mu$个离子的坐标位置，离子质量为$M_\{\mu}$，$\zeta{\mathbf{R}}$和$\varepsilon$分别是离子体系的本征态和本征值。在\textrm{Born-Oppeneheimer}近似条件下，$E(\mathbf{R})$是体系中各离子分别位于$\mathbf{R}=\{\mathbf{R}_{\mu}\}$时，电子体系的基态能量。
+
+求解离子体系的振动频率$\omega$就是求解
+\begin{displaymath}
+	\det\bigg|\dfrac{1}{\sqrt{M_{\mu}M_{nu}}\dfrac{\partal^2E(\mathbf{R})}{\partial R_{\mu i}\partial R_{\nu j}}-\omega^2\bigg|=0
+\end{displaymath}
+其中$\dfrac{\partial^2E(\mathbf{R})}{\partial R_{\mu i}\partial R_{\nu j}}$称为对应离子位置变量$\mu$和$\nv$的\textrm{Hessian}矩阵，$i,j=x,y,z$、
+
+计算中的初始结构文件\textrm{POSCAR}
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-5_POSCAR}%为保险:~选用文件名绝对路径
+}}
+控制参数文件\textrm{INCAR}为:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-6]{Figures/VASP_tutorials-1-6_INCAR}%为保险:~选用文件名绝对路径
+}}
+其中参数\texttt{IBRION}=5,采用有限差分方法计算\ch{CO}分子的振动频率，因此设置参数\texttt{NFREE}和\textrm{POTIM}。\textrm{KPOINTS}和\textrm{POTCAR}文件保持不变。
+计算结束后，在输出文件\textrm{OUTCAR}的最后，可以看到分子\textrm{CO}的正则振动模信息：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-6_INCAR}%为保险:~选用文件名绝对路径
+}}
+根据文献\cite{JCE_1996}，实验观测得到\ch{CO}的振动频率为$\textrm{2143cm}^{-1}$，即64.25\textrm{THz}，而计算值为63.887522\textrm{THz}，两者非常接近。
+
+\subsubsection{分波态密度的计算}\label{Sec:atom-CO-5}
+\textrm{DOS}描述的是在单位能量范围内，体系具有电子态的数目。因此可以
+\begin{displaymath}
+	N=\int_{-\inty}^{\inty}f(epsilon)D(epsilon)
+\end{displaymath}
+这里$N$是总的态的数目，$f(\epsilon)$是\textrm{Fermi}分布函数，$D(\epsilon)$表示\textrm{DOS}随能量$\epsilon$变化的函数。在有限温度下的相互作用电子体系，该函数也称为谱函数\textrm{(spectral function)}，常用于实验中的光电子谱\textrm{(Phote Electron Spectroscopy, PES)}的评估。
+
+一般地，可以将态密度细分为分波态密度\textrm{(partial DOS, PDOS)}，局域态密度\textrm{(local DOS, LDOS)}和总态密度\textrm{(totla DOS, TDOS)}。其中\textrm{PDOS}表示指定原子轨道在\textrm{DOS}中的贡献。在这个算例中，总态密度\textrm{TDOS}来自全部\ch{CO}分子的贡献，据此可以计算\ch{O}的$2p$轨道的分波态密度\textrm{(PDOS)}。对于周期体系，由于电子波函数还是波矢$\vec k$的函数，因此计算态密度要考虑$\vec k$空间的贡献，局域态密度\textrm{(LDOS)}就是对$\vec k$空间积分得到的。
+
+计算中的结构文件\textrm{POSCAR}为：
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-10]{Figures/VASP_tutorials-1-7_POSCAR}%为保险:~选用文件名绝对路径
+}}
+注意，如果只完成\textrm{DFT}静态计算，在\textrm{POSCAR}文件中引入\textrm{selective degree of freedom}不会有任何影响。
+计算控制文件\textrm{INCAR}为:
+{\fontsize{8.2pt}{6.2pt}\selectfont{
+	\lstinputlisting[linerange=1-3]{Figures/VASP_tutorials-1-7_INCAR}%为保险:~选用文件名绝对路径
+}}
+这里参数\texttt{LORBIT}=11，\textrm{VASP}将计算得到的分波投影函数输出到文件\textrm{PROCAR}。
+使用\textrm{Python}模块\textrm{py4vasp}可以帮助用户将\textrm{DOS}作图，也可以引入字符串\textrm{"p"}完成分波态密度作图。
+\begin{lstlisting}[language=Python, basicstyle=\ttfamily, keywordstyle=\color{blue}, stringstyle=\color{red!70!black}]
+import py4vasp
+my_calc = py4vasp.Calculation.from_path("./e07_CO-partial-dos")
+
+my_calc.dos.plot()
+# uncomment the line below to plot the partial DOS
+# my_calc.dos.plot("p")
+\end{lstlisting}
+\subsubsection{分子计算算例:\rm{H$_3$O}}{Sec:atom-H2O}
+
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
