@@ -1,0 +1,975 @@
+# 第一部分：硅作为典型体材料
+
+## 学习目标
+
+完成本教程后，你将能够：
+
+- 通过查看晶格矩阵识别面心立方（fcc）结构
+- 创建以Γ为中心的k点网格
+- 通过在不同晶胞体积下手动执行密度泛函理论（DFT）计算，找到fcc结构的晶格常数
+- 使用POSCAR文件中的通用缩放因子
+
+对fcc硅在不同晶格常数下执行多次DFT计算，并找到总能量相对于晶格常数的最小值。
+
+## 背景知识
+
+共有14种布拉维晶格，它们由7种晶格系统（三斜、单斜、正交、四方、六方和立方）与一种居中类型（简单、底心、体心和面心）组合而成。
+
+**原胞**是周期性系统（即体晶体）的最小构建单元。它由三个晶格矢量a、b和c张成，其某些性质（例如夹角）取决于晶格系统。
+
+此外，如果对实空间晶格进行傅里叶变换，系统将变换到k空间，也称为倒空间。**第一布里渊区**是倒空间中唯一确定的原胞。一个在计算上很重要的概念是**不可约布里渊区**，即第一布里渊区经过晶体点群中所有对称操作约化后的区域。另一个值得一提的概念是**高对称线和点**的使用，由于电子能带结构中对称性导致的简并，这些点具有特殊意义。这些点有特殊名称，例如布里渊区原点处的Γ点。
+
+## 1.1 输入文件
+
+运行此示例的输入文件已准备在 `$TUTORIALS/bulk/e01_fcc-Si` 中。VASP在当前目录中查找四个主要输入文件，即 **POSCAR**、**INCAR**、**KPOINTS** 和 **POTCAR**。请查看它们！
+
+### POSCAR 文件
+
+```
+fcc Si
+a
+0.5 0.5 0.0
+0.0 0.5 0.5
+0.5 0.0 0.5
+1
+cartesian
+0 0 0
+```
+
+### INCAR 文件
+
+```
+System = fcc Si
+ISTART = 0    ! 从头开始
+ICHARG = 2    ! 原子电荷密度的叠加
+ENCUT = 240   ! 能量截断
+ISMEAR = 0    ! 高斯展宽
+SIGMA = 0.1   ! 展宽
+```
+
+### KPOINTS 文件
+
+```
+K-Points
+0
+Monkhorst Pack
+11 11 11
+0 0 0
+```
+
+### POTCAR
+
+Si的赝势。
+
+## 1.2 关于POSCAR文件
+
+fcc结构的常规晶胞显示了对应于立方体（a=b=c）的所有对称性，并在每个面的中心有附加位点。但存在一种晶格矢量的选择，可以在更小的晶胞中表示相同的结构，这就是**原胞**。原胞晶格矢量的对称选择为：
+
+**a** = a/2(ˆx + ˆy)
+**b** = a/2(ˆy + ˆz)
+**c** = a/2(ˆz + ˆx)
+
+> **问题：** 常规晶胞中有多少个原子？原胞中有多少个原子？
+
+> **答案：** 常规晶胞有8个顶点和6个面，原子被多个晶胞共享，分别贡献1/8和1/2。总共得到 n = 8 × 1/8 + 6 × 1/2 = 4 个原子在常规晶胞中。类似地，原胞中有1个原子。
+
+如果你打开此示例的POSCAR文件，晶格常数由通用缩放参数位置处的占位符 `a` 表示。
+
+> **问题：** 你看到方程(1a)-(1c)如何对应到POSCAR文件了吗？
+
+> **答案：** 第3、4、5行分别对应于 b/a、c/a 和 a/a。然后，通过将第2行中的通用缩放参数解释为晶格常数，方程(1a)-(1c)得以恢复。
+
+## 1.3 关于INCAR文件
+
+VASP的默认设置是在当前目录中查找现有的 **WAVECAR** 文件，并从那里重新开始计算。因此，可以删除WAVECAR文件以开始新的计算。也可以通过 **ISTART** 和 **ICHARG** 标签明确控制此行为。请在 **VASP Wiki** 上查看这些标签的含义！
+
+> **问题：** 电荷密度如何初始化？能量截断是多少？如果INCAR文件中未设置，能量截断会是多少？
+
+## 1.4 关于KPOINTS文件
+
+**Monkhorst Pack** 模式用于生成等间距k点的k网格。每个方向上奇数个k点产生以Γ为中心的k网格。
+
+打开终端，通过输入以下命令导航到此示例的目录：
+
+```bash
+cd $TUTORIALS/bulk/e01_*
+```
+
+为了在不同晶格常数下运行VASP，需要调整POSCAR文件。对于每次运行，将 `a` 替换为3.5到4.3，步长为0.1，并使用以下命令运行VASP：
+
+```bash
+mpirun -np 2 vasp_std
+```
+
+VASP运行后，**OSZICAR** 文件包含总自由能的摘要。在不同晶格常数下运行多次VASP计算，并将结果存储在 `loop_lattice_constant.dat` 中！
+
+> **问题：** 查看提供的脚本来完成这项工作！
+
+```bash
+rm -f loop_lattice_constant.dat
+for a in 3.5 3.6 3.7 3.8 3.9 4.0 4.1 4.2 4.3
+do
+cat > POSCAR << EOF
+fcc: $a
+0.5 0.5 0.0
+0.0 0.5 0.5
+0.5 0.0 0.5
+1
+cartesian
+0 0 0
+EOF
+mpirun -np 2 vasp_std
+en=$(awk '/F=/ {print $0}' OSZICAR)
+echo $a $en >> loop_lattice_constant.dat
+done
+```
+
+在此示例的目录中，在终端输入以下命令运行上述脚本：
+
+```bash
+bash loop_lattice_constant.sh
+```
+
+绘制 `loop_lattice_constant.dat` 中收集的数据！
+
+> **问题：** 查看答案！
+
+你可以使用此示例目录中准备的gnuplot脚本 `loop_lattice_constant.gp`：
+
+```
+set term png
+set output "loop_lattice_constant.png"
+set title "lattice constant of fcc Si"
+set xlabel "lattice constant [Angstrom]"
+set ylabel "total free energy"
+plot "loop_lattice_constant.dat" using 1:4 w lp
+```
+
+通过在此示例目录中的终端输入以下命令来执行：
+
+```bash
+gnuplot loop_lattice_constant.gp
+```
+
+然后，从文件浏览器中打开 `loop_lattice_constant.png`。你可能需要刷新文件浏览器。
+
+> **问题：** 在测试的参数中，总能量在哪个晶格常数下最小化？
+
+> **答案：** 在测试的参数中，总能量在3.9 Å处最小化。因此，最终计算使用：
+
+```
+fcc Si
+3.9    ! 缩放参数
+0.5 0.5 0.0
+0.0 0.5 0.5
+0.5 0.0 0.5
+1
+cartesian
+0 0 0
+```
+
+```bash
+cp POSCAR ../e02_*/. 
+```
+
+## 1.4 问题
+
+- Γ点的定义是什么？
+- 写出原胞fcc晶格矩阵的另一种形式！
+- 常规fcc晶胞是否包含非原胞平移？
+
+---
+
+# 第二部分：态密度（DOS）
+
+## 学习目标
+
+完成本教程后，你将能够：
+
+- 从VASP输出中提取不可约k点的数量
+- 估算利用倒晶格点群对称性节省的计算量
+- 说明Monkhorst–Pack方法所解决的任务
+- 设置适当的ISMEAR来计算态密度（DOS）
+- 使用py4vasp绘制DOS
+- 设置NEDOS、EMIN和EMAX标签
+
+执行具有适当数量k点和能量展宽的DFT计算，以绘制fcc Si的DOS。
+
+在局部上，系统可能遵循32个晶体点群之一，这些是晶体的离散旋转对称性。为了减少计算量，VASP默认搜索并利用这些系统对称性。此外，在倒空间中，系统遵循由布拉维晶格指定的特定平移对称群。这种非局域对称性通过将周期性边界条件施加到POSCAR文件中指定的结构来隐式定义，并导致倒晶格的点群对称性。VASP同样搜索并利用这些对称性，但关键的是，KPOINTS中指定的k网格也必须保持与POSCAR文件中指定结构所定义的倒晶格相同的点群对称性。
+
+更多信息请阅读以下文章：**Symmetry reduction of the mesh**、**KPOINTS**。
+
+运行此示例的输入文件已准备在 `$TUTORIALS/bulk/e02_fcc-Si-DOS` 中。请查看它们！
+
+### POSCAR（来自示例1）
+
+```
+fcc Si
+3.9
+0.0 0.5 0.5
+0.5 0.0 0.5
+0.5 0.5 0.0
+1
+cartesian
+0 0 0
+```
+
+### INCAR
+
+```
+System = fcc Si
+ENCUT = 240
+ISMEAR = -5    ! 四面体方法
+LORBIT = 11
+```
+
+### KPOINTS
+
+```
+K-Points
+0
+Monkhorst Pack
+15 15 15
+0 0 0
+```
+
+### POTCAR
+
+Si的赝势。
+
+> **问题：** 查看答案！
+
+**ISMEAR** = -5 调用带Blöchl修正的四面体方法。请注意，此方法对于部分占据不是变分的，并且对于具有部分填充能带的系统会产生错误的力和应力。因此，在对金属进行几何优化时不应使用它！
+
+**LORBIT** = 11 允许写入 **DOSCAR** 文件。
+
+关于 **KPOINTS** 文件，VASP中自动生成k网格的一种方案是 **Monkhorst–Pack** 方法。简而言之，基于倒晶格的点群对称性，第一布里渊区的一些k点被发现是等价的。由此，可以定义一组不可约k点和权重。不可约k点的权重表示第一布里渊区中存在多少个等价的k点。这允许将第一布里渊区所有k点的任何求和替换为所有不可约k点及其权重的求和。以Γ为中心的 N×N×N Monkhorst-Pack 网格保证倒晶格和生成晶格遵循相同的布拉维晶格。但根据你的计算，你可能不需要每个方向上相同数量的k点。并且通过改变每个方向上的k点数量，你仍然可能得到一个与你的布拉维晶格不一致的k网格。
+
+更多信息请阅读以下文章：**Monkhorst Pack**、**Symmetry reduction of the mesh**、**KPOINTS**。
+
+> **问题：** k点是否等间距？k网格是否以Γ为中心？为什么（不）？将指定的k网格与上一个示例中使用的k网格进行比较。有什么变化？
+
+> **答案：** **Monkhorst Pack** 模式用于生成等间距k点的k网格。每个方向上奇数个k点产生以Γ为中心的k网格。我们显著增加了k网格密度以产生平滑的DOS。对于示例1中的几何弛豫，较少的k点足以计算总能量。
+
+打开终端，导航到此示例的目录并输入以下命令运行VASP：
+
+```bash
+cd $TUTORIALS/bulk/e02_*
+mpirun -np 2 vasp_std
+```
+
+> **问题：** 查看答案！
+
+以下是 **OUTCAR** 文件的摘录，其中讨论了k网格：
+
+```
+KPOINTS: K-Points
+Automatic generation of k-mesh.
+Grid dimensions read from file:
+generate k-points for:    15   15   15
+
+Generating k-lattice:
+
+Cartesian coordinates           Fractional coordinates (reciprocal lattice)
+0.017094017  0.017094017 -0.017094017   0.066666667 -0.000000000 -0.000000000
+-0.017094017  0.017094017  0.017094017  -0.000000000  0.066666667  0.000000000
+0.017094017 -0.017094017  0.017094017   0.000000000  0.000000000  0.066666667
+
+Length of vectors
+0.029607706  0.029607706  0.029607706
+
+Shift w.r.t. Gamma in fractional coordinates (k-lattice)
+0.000000000  0.000000000  0.000000000
+
+TETIRR: Found   484 inequivalent tetrahedra from  20250
+
+Subroutine IBZKPT returns following result:
+===========================================
+
+ Found    120 irreducible k-points:
+
+Following reciprocal coordinates:
+            Coordinates               Weight
+ 0.000000  0.000000  0.000000      1.000000
+ 0.066667 -0.000000 -0.000000      8.000000
+ 0.133333  0.000000  0.000000      8.000000
+ 0.200000  0.000000  0.000000      8.000000
+ 0.266667  0.000000 -0.000000      8.000000
+ 0.333333 -0.000000 -0.000000      8.000000
+ ...
+```
+
+它指出找到了120个不可约k点，并列出了它们及其各自的权重。权重表示完整第一布里渊区中存在多少个等价的k点。第一布里渊区所有3375个k点的任何求和，都被替换为所有120个不可约k点及其权重的求和。
+
+### 使用py4vasp绘制fcc Si的DOS
+
+```python
+import py4vasp
+mycalc = py4vasp.Calculation.from_path("./e02_fcc-Si-DOS")
+mycalc.dos.plot()
+```
+
+在这里，DOS被平移，使得在图中费米能级位于0 eV。现在让我们以更高的分辨率绘制费米能级附近的DOS！这意味着我们需要在该能量范围内用更多点重新计算DOS，例如-15 eV到2 eV。
+
+打开你当前的 **OUTCAR** 文件，找到收敛结果的费米能，以设置能量范围。查看 **NEDOS**、**EMIN** 和 **EMAX** 标签，并将它们添加到你的 **INCAR** 文件中。然后，重新运行计算！
+
+> **问题：** 查看答案！
+
+```
+E-fermi :   9.9123     XC(G=0): -11.0959     alpha+bet :-16.1732
+
+Fermi energy:      9.9122785711
+
+k-point   1 :    0.0000 0.0000 0.0000
+ band No.  band energies     occupation
+     1      -4.3780      2.00000
+     2      20.6956      0.00000
+     3      20.6956      0.00000
+ ...
+```
+
+费米能为9.9123 eV。
+
+```
+System = fcc Si
+ENCUT = 240
+ISMEAR = -5    ! 四面体方法
+LORBIT = 11
+ICHARG = 11    ! 读取CHGCAR文件
+NEDOS = 401    ! DOS的点数
+EMIN = -5
+EMAX = 12
+```
+
+如上更新你的 **INCAR**，然后运行：
+
+```bash
+mpirun -np 2 vasp_std
+```
+
+你可以像之前一样绘制结果。注意 **EMIN** 和 **EMAX** 不是相对于费米能定义的。
+
+```python
+import py4vasp
+mycalc = py4vasp.Calculation.from_path("./e02_fcc-Si-DOS")
+mycalc.dos.plot()
+```
+
+## 2.4 问题
+
+- 为什么不能使用 ISMEAR = -5 进行几何弛豫？
+- 如何增加DOS的分辨率？换句话说，如何增加计算DOS的点数？
+- 在此示例中，第一布里渊区中有多少个k点？
+- 在此示例中，VASP在多少个k点上计算了所有Kohn–Sham轨道和相应的本征能量？为什么这个数量与第一布里渊区中的k点数量不同？
+
+---
+
+# 第三部分：能带结构
+
+## 学习目标
+
+完成本教程后，你将能够：
+
+- 获得倒空间中沿高对称线的能带结构
+- 使用py4vasp绘制能带结构
+
+计算fcc Si沿L-Γ-X-U和K-Γ的能带结构并绘制结果。
+
+哪些k点是高对称点取决于你的结构的空间群。有几个工具可用于查找空间群并绘制布里渊区以选择k路径。其中之一是 **SeeK-path**，它接受 **POSCAR** 文件作为输入，并可通过Web界面访问。
+
+你可以从文件浏览器下载此示例的 **POSCAR**。右键单击文件并从菜单中选择“下载”。然后，将此示例的 **POSCAR** 上传到 **SeeK-path** 并绘制布里渊区。确定哪些坐标对应于给定的k路径L-Γ-X-U和K-Γ，并与此示例的 **KPOINTS** 文件进行比较！
+
+运行此示例的输入文件已准备在 `$TUTORIALS/bulk/e03_fcc-Si-band` 中。请查看它们！
+
+通常，在VASP中进行能带结构计算需要5个输入文件：通常的4个文件——**POSCAR**、**INCAR**、**KPOINTS** 和 **POTCAR**，以及自洽计算的 **CHGCAR** 文件！
+
+### POSCAR（从示例2复制）
+
+```
+fcc Si
+3.9
+0.5 0.5 0.0
+0.0 0.5 0.5
+0.5 0.0 0.5
+1
+cartesian
+0 0 0
+```
+
+### INCAR
+
+```
+System = fcc Si
+ICHARG = 11    ! 读取CHGCAR文件并保持密度固定
+ENCUT = 240
+ISMEAR = 0
+SIGMA = 0.1
+LORBIT = 11
+```
+
+### KPOINTS
+
+```
+kpoints for band structure L-G-X-U K-G
+10
+line
+reciprocal
+0.50000 0.50000 0.50000 L
+0.00000 0.00000 0.00000 G
+0.00000 0.00000 0.00000 G
+0.00000 0.50000 0.50000 X
+0.00000 0.50000 0.50000 X
+0.25000 0.62500 0.62500 U
+0.37500 0.7500 0.37500 K
+0.00000 0.00000 0.00000 G
+```
+
+### POTCAR
+
+Si的赝势。
+
+特别要注意如何在 **KPOINTS** 文件中指定k路径。第3行的第一个字母 `line` 开启线模式，它生成沿路径的点，而不是网格中的点。请阅读 **VASP Wiki** 上的相应说明！
+
+打开终端，导航到此示例的目录，从示例2复制电荷密度，并通过输入以下命令运行VASP：
+
+```bash
+cd $TUTORIALS/bulk/e03_*
+cp ../e02_*/CHGCAR .
+mpirun -np 2 vasp_std
+```
+
+然后，使用py4vasp绘制能带结构！
+
+```python
+import py4vasp
+mycalc = py4vasp.Calculation.from_path("./e03_fcc-Si-band")
+mycalc.band.plot()
+```
+
+
+
+以下是该页面的完整中文翻译（已补全之前未完成的部分）：
+
+---
+
+# 第二部分：更多关于硅的内容
+
+## 学习目标
+
+完成本教程后，你将能够：
+
+- 手动执行体积弛豫
+- 在密度泛函理论（DFT）框架下，以最少的指导获得材料的态密度（DOS）和能带结构
+
+对立方金刚石结构的硅执行体积弛豫，并沿你选择的高对称路径计算 DOS 和能带结构！回顾你在第一部分所做的内容，并将相同的流程应用于硅的另一种稳定结构：立方金刚石。你可以通过选择接近预期结构的输入来实现这一点。结果将作为后续示例讨论的基准！
+
+这里，我们利用了算法会收敛到能量景观中附近局部极小值这一事实，但让我们借此机会提出一点提醒。有时你可能会倾向于声称你的从头计算对应于系统的基态，但实际上它可能对应于一个亚稳态，即使底层物理在 DFT 框架内得到了很好的描述。这可能是因为初始参数离基态太远，导致你的计算收敛到了一个局部极小值。这个问题的好处在于，不同的晶体结构、磁构型等可以相互比较。为了对你的计算做出正确的解释，一个良好的做法是将你的结果与自然，或者换句话说，与相应的实验（如果可用）进行比较。
+
+运行此示例的输入文件已准备在 `$TUTORIALS/bulk/e04_cd-Si` 中。请查看它们，并添加完成此示例所需的任何文件！
+
+### POSCAR
+
+```
+cubic diamond Si
+a
+0.0 0.5 0.5
+0.5 0.0 0.5
+0.5 0.5 0.0
+2
+Direct
+-0.125 -0.125 -0.125
+0.125 0.125 0.125
+```
+
+### INCAR
+
+```
+System = volume relaxation cd Si
+ENCUT = 540
+ISMEAR = 0
+SIGMA = 0.1
+EDIFF = 1e-6
+ISTART = 0
+ICHARG = 2
+```
+
+### KPOINTS
+
+```
+K-Points
+0
+Monkhorst Pack
+11 11 11
+0 0 0
+```
+
+### POTCAR
+
+Si 的赝势。
+
+> **问题：** 什么是直接坐标？如果你不确定，可以阅读 VASP Wiki 上的 POSCAR 文章！
+
+上述输入文件是执行体积弛豫的良好起点。回顾一下，根据你计算的目的，ISMEAR、ISTART 和 ICHARG 有哪些可能的设置。EDIFF 标签控制什么？让我们一步步来做！
+
+切换到本示例的目录：
+
+```bash
+cd $TUTORIALS/bulk/e04_*
+```
+
+---
+
+## 第1步：确定最优晶格常数
+
+从猜测区间 $[5.4, 5.6]$ 埃开始，确定最优晶格常数，精确到小数点后 2 位。
+
+**点击获取提示！**
+
+你可以使用提供的脚本 `loop_lattice_constant.sh`：
+
+```bash
+for a in 5.4 5.5 5.6
+do
+cat > POSCAR << EOF
+cubic diamond Si
+$a
+0.0 0.5 0.5
+0.5 0.0 0.5
+0.5 0.5 0.0
+2
+Direct
+-0.125 -0.125 -0.125
+0.125 0.125 0.125
+EOF
+mpirun -np 4 vasp_std
+en=$(awk '/F=/ {print $0}' OSZICAR)
+echo $a $en >> loop_lattice_constant.dat
+done
+```
+
+然后，使用 `loop_lattice_constant.gp` 绘制结果：
+
+```
+set term png
+set output "loop_lattice_constant.png"
+set title "lattice constant of cd Si"
+set xlabel "lattice constant [Angstrom]"
+set ylabel "total free energy"
+plot "loop_lattice_constant.dat" using 1:4 w lp
+```
+
+在终端中输入以下命令：
+
+```bash
+gnuplot loop_lattice_constant.gp
+```
+
+打开 `loop_lattice_constant.png` 检查结果。改变循环中的晶格常数，直到达到所需的精度。最优晶格常数是多少？
+
+备份最优晶格常数下自洽解的电荷密度。
+
+**点击查看答案！**
+
+计算三个晶格常数的能量，然后选择最低的两个。最优最小值必定在那个新区间内。将你的下一个猜测设在两者中间，并重复。最终晶格常数为 $5.468$ 埃。别忘了用最优晶格常数做最后一次运行，以写入 CHGCAR 文件，并复制一份作为备份。
+
+```
+cubic diamond Si
+5.468
+0.0 0.5 0.5
+0.5 0.0 0.5
+0.5 0.5 0.0
+2
+Direct
+-0.125 -0.125 -0.125
+0.125 0.125 0.125
+```
+
+```bash
+mpirun -np 2 vasp_std
+cp CHGCAR CHGCAR.bk
+```
+
+---
+
+## 第2步：计算态密度（DOS）
+
+将优化后的晶格常数输入到 POSCAR 文件中，并计算 DOS！你需要在 INCAR 中设置哪些标签？你需要更改其他输入文件吗？
+
+**点击查看答案！**
+
+```
+cubic diamond Si
+5.468
+0.0 0.5 0.5
+0.5 0.0 0.5
+0.5 0.5 0.0
+2
+Direct
+-0.125 -0.125 -0.125
+0.125 0.125 0.125
+```
+
+```
+System = cd Si DOS
+ENCUT = 400
+ISMEAR = -5
+LORBIT = 11
+```
+
+```
+K-Points
+0
+Monkhorst Pack
+15 15 15
+0 0 0
+```
+
+DOS 对截断能的敏感度不如体积弛豫，因此这里可以使用较小的 ENCUT 值。`ISMEAR = -5` 是带 Blöchl 修正的四面体方法，`LORBIT = 11` 允许写入 DOSCAR 文件。
+
+**提示：** 确保将 `vaspout.h5` 文件复制为 `backup.h5`：
+
+```bash
+cp vaspout.h5 backup.h5
+```
+
+这样你可以在后续计算之后回顾它。
+
+使用 py4vasp 绘制 DOS！你在体积弛豫时能使用 `ISMEAR = -5` 吗？
+
+```python
+import py4vasp
+mycalc = py4vasp.Calculation.from_file("./e04_cd-Si/backup.h5")
+mycalc.dos.plot()
+```
+
+检查 DOS。它看起来像第一部分中 fcc Si 的 DOS 吗？有什么区别？注意，立方金刚石 Si 是半导体，因此 DOS 中会出现带隙；而第一部分中的 fcc Si 是金属，没有带隙。PBE 计算得到的带隙约为 0.6 eV，实验值约为 1.17 eV。
+
+---
+
+## 第3步：计算能带结构
+
+要计算能带结构，请从 DOS 计算中复制 CHGCAR 文件，并在 INCAR 中设置 `ICHARG = 11`。你还需要将 KPOINTS 文件更改为线模式。使用与第一部分相同的路径：L-Γ-X-U K-Γ。
+
+```bash
+# 确保当前目录中有 CHGCAR
+cp ../e04_cd-Si/CHGCAR .
+```
+
+### INCAR
+
+```
+System = cd Si band
+ICHARG = 11    ! 读取 CHGCAR 文件并保持密度固定
+ENCUT = 240
+ISMEAR = 0
+SIGMA = 0.1
+LORBIT = 11
+```
+
+### KPOINTS
+
+```
+kpoints for band structure L-G-X-U K-G
+10
+line
+reciprocal
+0.50000 0.50000 0.50000 L
+0.00000 0.00000 0.00000 G
+0.00000 0.00000 0.00000 G
+0.00000 0.50000 0.50000 X
+0.00000 0.50000 0.50000 X
+0.25000 0.62500 0.62500 U
+0.37500 0.7500 0.37500 K
+0.00000 0.00000 0.00000 G
+```
+
+### POTCAR
+
+Si 的赝势。
+
+运行 VASP：
+
+```bash
+mpirun -np 2 vasp_std
+```
+
+然后，使用 py4vasp 绘制能带结构：
+
+```python
+import py4vasp
+mycalc = py4vasp.Calculation.from_path("./e04_cd-Si")
+mycalc.band.plot()
+```
+
+分析结果：
+
+- 价带顶和导带底分别位于哪个 k 点？
+- 带隙是直接带隙还是间接带隙？
+- 将你的结果与实验值进行比较。
+
+---
+
+## 第4步：问题
+
+- 立方金刚石 Si 的最优晶格常数是多少？
+- 带隙是多少？是直接带隙还是间接带隙？
+- 将你的结果与实验值进行比较。
+- 为什么 DFT 通常会低估带隙？
+- 你能在体积弛豫时使用 `ISMEAR = -5` 吗？为什么？
+- 第一部分中 fcc Si 的 DOS 与本部分中立方金刚石 Si 的 DOS 有何异同？
+- 你选择了哪条 k 点路径？为什么？
+
+---
+
+## 备注
+
+- 数值可能因赝势、截断能、k 点网格等设置略有不同。
+- 实验带隙：约 1.17 eV（0 K），间接带隙。
+- PBE 计算的带隙通常约 0.6 eV。
+- 第一部分中的 fcc Si 是金属，没有带隙；本部分的立方金刚石 Si 是半导体，有带隙。
+
+
+
+
+
+
+
+以下是 VASP 教程第三部分和第四部分的完整中文翻译：
+
+---
+
+# 第三部分：自旋极化体系统
+
+## 学习目标
+
+完成本教程后，你将能够：
+
+- 执行共线自旋密度泛函理论（SDFT）计算
+- 对共线磁性材料进行体积弛豫
+- 解读磁性系统的态密度（DOS）
+- 使用 py4vasp 绘制磁性系统的 DOS 和能带结构
+
+对自旋极化的面心立方（fcc）镍执行体积弛豫，并获得其 DOS 和能带结构。
+
+在 SDFT 中，哈密顿量是一个 \(2\times2\) 矩阵，Kohn–Sham（KS）轨道是自旋空间中的二分量矢量。在这里，两个分量对应于 fcc 镍中的自旋向上和自旋向下，并且可以具有不同的本征值。两个自旋分量之间的相互作用源于交换关联泛函，该泛函依赖于自旋向上和自旋向下的电荷密度。
+
+在实践中，你可以通过设置 `ISPIN = 2` 来执行自旋极化计算，从而获得共线磁矩。如果自旋方向很重要，可以包含自旋轨道耦合，设置 `LSORBIT = True` 并使用可执行文件 `vasp_ncl`。
+
+运行此示例的输入文件已准备在 `$TUTORIALS/bulk/e08_fcc-Ni` 中。请查看它们！
+
+### POSCAR
+
+```
+fcc Ni
+3.5
+0.0 0.5 0.5
+0.5 0.0 0.5
+0.5 0.5 0.0
+1
+Cartesian
+0.0 0.0 0.0
+```
+
+### INCAR（体积弛豫）
+
+```
+SYSTEM = fcc Ni relaxation
+ICHARG = 2    ! 叠加原子密度
+ISMEAR = 1    ! Methfessel-Paxton
+SIGMA = 0.2   ! 展宽，单位为 eV
+ENCUT = 540   ! 截断能
+IBRION = 2    ! 共轭梯度算法
+ISIF = 7      ! 体积弛豫
+NSW = 6       ! 离子步数
+EDIFFG = -0.001    ! 当力 < 0.001 时停止
+ISPIN = 2     ! 自旋极化
+MAGMOM = 1    ! 初始磁矩
+```
+
+### INCAR（DOS 计算）
+
+```
+SYSTEM = fcc Ni DOS
+ENCUT = 350
+ISMEAR = -5
+LORBIT = 11
+ISPIN = 2
+MAGMOM = 1
+```
+
+### INCAR（能带结构计算）
+
+```
+SYSTEM = fcc Ni band
+ICHARG = 11
+ISMEAR = 1
+SIGMA = 0.2
+ENCUT = 540
+ISPIN = 2
+MAGMOM = 1
+```
+
+### KPOINTS（体积弛豫）
+
+```
+K-Points
+0
+Monkhorst Pack
+9 9 9
+0 0 0
+```
+
+### KPOINTS（DOS 计算）
+
+```
+K-Points
+0
+Monkhorst Pack
+16 16 16
+0 0 0
+```
+
+### KPOINTS（能带结构计算）
+
+```
+kpoints for band structure L-G-X-U K-G
+10
+line
+reciprocal
+0.50000 0.50000 0.50000    ! L
+0.00000 0.00000 0.00000    ! G
+0.00000 0.00000 0.00000    ! G
+0.50000 0.00000 0.50000    ! X
+0.50000 0.00000 0.50000    ! X
+0.62500 0.25000 0.62500    ! U
+0.37500 0.3750 0.75000     ! K
+0.00000 0.00000 0.00000    ! G
+```
+
+### POTCAR
+
+Ni 的赝势。
+
+---
+
+## 提示
+
+**点击获取提示！**
+
+使用以下命令运行你的第一次计算：
+
+```bash
+cp INCAR.vol INCAR
+cp KPOINTS.vol KPOINTS
+mpirun -np 2 vasp_std
+```
+
+最多只会执行 6 个离子步，因为否则体积可能会变化太大，以至于 Pulay 应力会引入显著偏向较小体积的偏差。反复用新的体积开始新的计算，并密切关注 CONTCAR 与 POSCAR 之间的差异。
+
+---
+
+## 问题
+
+- 为什么在进行体积弛豫时，需要限制离子步数（`NSW`）？
+- 如何判断体积弛豫是否已经收敛？
+- fcc Ni 的磁矩是多少？
+- 自旋向上和自旋向下的 DOS 有何不同？
+- 为什么 fcc Ni 是铁磁性的？
+
+---
+
+# 第四部分：范德华力
+
+## 学习目标
+
+完成本教程后，你将能够：
+
+- 在密度泛函理论（DFT）计算中包含范德华相互作用的影响
+- 设置 `LWAVE` 和 `LCHARG`
+- 计算两种结构总能量之间的差值
+
+使用 Tkatchenko-Scheffler 方法考虑范德华相互作用，确定石墨的层间结合能。
+
+在广义梯度近似（GGA）水平上的半局域 DFT 低估了长程相互作用。对于石墨，PBE 预测的层间结合能约为 1 meV/atom，与 RPA 参考值 0.048 eV/atom [S. Lebègue et al., Phys. Rev. Lett. 105, 196401 (2010)] 相比太小了。这就需要一种不同的 GGA 类型密度泛函来处理范德华相互作用。
+
+Tkatchenko-Scheffler 方法基于 Becke 1997 年的幂级数拟设，并通过包含形式为 \(C_6 \cdot R^{-6}\) 的阻尼原子对色散修正来显式参数化。关于 VASP 中 Tkatchenko-Scheffler 方法实现的详细信息以及大量测试，请参见 [Bucko et al., Phys. Rev. B 87, 064110 (2013)]。
+
+运行此示例的输入文件已准备在 `$TUTORIALS/bulk/e10_VdW-TS-binding` 中。请查看子目录！
+
+### graphene（石墨烯）的 POSCAR
+
+```
+graphene
+1.0
+1.22800000  -2.12695839   0.00000000
+1.22800000   2.12695839   0.00000000
+0.00000000   0.00000000   20.
+2
+direct
+0.00000000   0.00000000   0.25000000
+0.33333333   0.66666667   0.25000000
+```
+
+### graphite（石墨）的 POSCAR
+
+```
+graphite
+1.0
+1.22800000  -2.12695839   0.00000000
+1.22800000   2.12695839   0.00000000
+0.00000000   0.00000000   6.71
+4
+direct
+0.00000000   0.00000000   0.25000000
+0.00000000   0.00000000   0.75000000
+0.33333333   0.66666667   0.25000000
+0.66666667   0.33333333   0.75000000
+```
+
+### INCAR
+
+```
+LWAVE = False
+LCHARG = False
+ISMEAR = -5
+SIGMA = 0.01
+ALGO = Fast
+PREC = Accurate
+EDIFF = 1e-6
+# 范德华设置
+IVDW = 20           ! Tkatchenko-Scheffler 方法
+LVDW_EWALD = True   ! （可选）对原子对相互作用使用 Ewald 求和
+```
+
+### KPOINTS（石墨烯）
+
+```
+K-Points
+0
+Monkhorst Pack
+15 15 1
+0 0 0
+```
+
+### KPOINTS（石墨）
+
+```
+K-Points
+0
+Monkhorst Pack
+15 15 7
+0 0 0
+```
+
+### POTCAR
+
+C 的赝势。
+
+---
+
+## 说明
+
+对于石墨烯，层在 \(z\) 方向没有相互作用，因此我们只需要在这个方向上一个 \(\mathbf{k}\) 点。请为 INCAR 文件中的每个标签添加注释，并在 VASP Wiki 上阅读具体设置！
+
+`LWAVE` 和 `LCHARG` 设置为 false，这样波函数和电荷密度就不会被写入文件。
+
