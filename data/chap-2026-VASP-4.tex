@@ -251,7 +251,7 @@ my_calc.dos.plot()
 \end{lstlisting}
 \subsubsection{分子计算算例:\rm{H$_3$O}}{Sec:atom-H2O}
 除了\textrm{CG}方法，结构弛豫常用的方案还有残差最小化方法\textrm{(the residual minimization method, RMM-DIIS)}方法，一般称为广义最小残差法\textrm{(generalized minimal residual method, GMRES)}，是一种准\textrm{Newton}算法\textrm{(quasi-Newton algorithm)}。
-按照迭代子空间直接反演\textrm{(Direct Inversion in the Iterative Subspace,DIIS)}最小化方法的原则，只要经过若干次迭代，就能获得体系的最小化，是一种直接求解的方法。在子空间得到最终结果。具体到\textrm{RMM}，这里最小化的是作用于原子的力而非体系的总能。对于一个作用于电子的连续的势函数$V(\vec r,\mathbf{R})$，它依赖于参数化的离子位置$\mathbf{R}=\{\mathbf{R}_{\mu}\}$，根据\textrm{Hellmann-Feynman}定理，原子的受力和\textrm{Hessian}矩阵的矩阵元可以表示为
+\textcolor{red}{按照迭代子空间直接反演\textrm{(Direct Inversion in the Iterative Subspace,DIIS)}最小化方法的原则，只要经过若干次迭代，就能获得体系的最小化，是一种直接求解的方法。在子空间得到最终结果。具体到\textrm{RMM}，这里最小化的是作用于原子的力而非体系的总能。对于一个作用于电子的连续的势函数$V(\vec r,\mathbf{R})$，它依赖于参数化的离子位置$\mathbf{R}=\{\mathbf{R}_{\mu}\}$，根据\textrm{Hellmann-Feynman}定理，原子的受力和\textrm{Hessian}矩阵的矩阵元可以表示为
 \begin{displaymath}
 	\begin{aligned}
 		F_{\mu i}=\dfrac{\partial E}{\partial R_{\mu i}}=\int\dfrac{\partial V(\vec r;\mathbf{R})}{\partial R_{\mu i}}n(\vec r;\mathbf{R})\mathrm{d}\vec r\\
@@ -262,7 +262,37 @@ my_calc.dos.plot()
 \begin{displaymath}
 	F_{\mu i}=\sum_{\nu j}H_{\mu i\nu j\partial R_{\nu j}}
 \end{displaymath}
-注意到\textrm{RMM-DIIS}方法会根据\textrm{Hessian}矩阵的特征值谱，把最小化问题，分解到不同的子空间来处理。
+注意到\textrm{RMM-DIIS}方法会根据\textrm{Hessian}矩阵的特征值分布，把最小化问题拆分到不同的子空间来处理。因此该算法非常高效，当然该方法对初值的选择会更敏感，也会存在其它偶发的问题，因此用户要特别注意。对于离子临近稳定位置，且自由度$\geqtslant3$的体系，该方法是好的选择，而对于自由度$geqslant$体系，应考虑其余的优化或分子动力学计算方法。}
+
+在\textrm{POSCAR}文件中，原子\ch{O}位于原点，\textrm{H-O}的键长约为$0.96\AA$，而\textrm{H-O-H}夹角为$105^{\circ}$，晶胞参数设置得足够大。确保\ch{H2O}是孤立分子，通过\texttt{Selective dynamic}参数，允许两个氢原子在$xy$平面内自由活动。这个离子中\textrm{POSCAR}第二行的\textrm{scaling parameter}是晶格参数和\textrm{Cartian}坐标表示的原子位置都需要乘的系数。
+
+这里的\textrm{INCAR}中，参数\texttt{IBRION}=1，表明结构优化采用\textrm{RMM-DIIS}算法；\texttt{NFREE}=2，表示计算对象有两个独立的自由度；\texttt{EDIFFG}取负值表示离子步采用力收敛标准；\texttt{ENCUT}取到比默认值(\textrm{POTCAR}中的\textrm{ENMAX}的最大值)大约30\%。这样的参数取值也是\textrm{VASP}计算弛豫时，考虑到计算应力张量和压应力时的推荐设置。
+
+本次计算，\ch{H}和\ch{O}选择标准原子数据集，而非硬核类型，只是因为作为示范计算，节约计算开销考虑。
+
+运行\textrm{VASP}，可以在标准输出\textrm{stdout}或者\textrm{OSZICAR}中，看到\textrm{RMM-DIIS}算法的计算收敛，用户可以与\textrm{CG}算法对比。
+
+通过\textrm{py4vasp}模块，可以观察结构弛豫对\textrm{H-O}的影响。对照\textrm{CONTCAR}数据，计算\textrm{H-O}键长和\textrm{H-O-H}的键角:
+\begin{itemize}
+	\item \textrm{H-O}键长:
+		\begin{displaymath}
+			\bigg[(0.09379929998266598)^2+(0.1208431793169455)^2\bigg]^{1/2}\times12\times0.52918\\
+			=0.9714163904\AA
+		\end{displaymath}
+	\item \textrm{H-O-H}键角:
+		\begin{displaymath}
+			\arccos\dfrac{0.09379929982665981^2-0.12084317931694552^2}{0.09379929982665981^2+0.12084317931694552^2}\\
+			=104.3622835581412\textdegree
+		\end{displaymath}
+\end{itemize}
+除了计算，也可以在\textrm{py4vasp}模块的可视化环境下直接获取有关键长、键角数据:
+\begin{itemize}
+	\item 构建$2\tiems2\times2$超晶胞
+	\item 右键点击第一个原子，再右键双击第二个原子，即可得到两个原子间的键长
+	\item 如果再右键双击第三个原子，即可得到对应的原子形成的键角
+\end{itemize}
+
+\ch{H2O}计算中的能量截断测试。
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
