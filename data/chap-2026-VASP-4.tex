@@ -219,7 +219,7 @@ $ echo "Calculation complete"
 {\fontsize{8.2pt}{6.2pt}\selectfont{
 	\lstinputlisting[linerange=33-33]{Figures/VASP_tutorials-1-6_INCAR}%为保险:~选用文件名绝对路径
 }}
-根据文献\cite{JChemEduc-73-804_1996}，实验观测得到\ch{CO}的振动频率为$\textrm{2143cm}^{-1}$，即64.25\textrm{THz}，而计算值为63.887522\textrm{THz}，两者非常接近。
+根据文献\cite{JCE_1996}，实验观测得到\ch{CO}的振动频率为$\textrm{2143cm}^{-1}$，即64.25\textrm{THz}，而计算值为63.887522\textrm{THz}，两者非常接近。
 
 \subsubsection{分波态密度的计算}\label{Sec:atom-CO-5}
 \textrm{DOS}描述的是在单位能量范围内，体系具有电子态的数目。因此可以
@@ -250,7 +250,19 @@ my_calc.dos.plot()
 # my_calc.dos.plot("p")
 \end{lstlisting}
 \subsubsection{分子计算算例:\rm{H$_3$O}}{Sec:atom-H2O}
-
+除了\textrm{CG}方法，结构弛豫常用的方案还有残差最小化方法\textrm{(the residual minimization method, RMM-DIIS)}方法，一般称为广义最小残差法\textrm{(generalized minimal residual method, GMRES)}，是一种准\textrm{Newton}算法\textrm{(quasi-Newton algorithm)}。
+按照迭代子空间直接反演\textrm{(Direct Inversion in the Iterative Subspace,DIIS)}最小化方法的原则，只要经过若干次迭代，就能获得体系的最小化，是一种直接求解的方法。在子空间得到最终结果。具体到\textrm{RMM}，这里最小化的是作用于原子的力而非体系的总能。对于一个作用于电子的连续的势函数$V(\vec r,\mathbf{R})$，它依赖于参数化的离子位置$\mathbf{R}=\{\mathbf{R}_{\mu}\}$，根据\textrm{Hellmann-Feynman}定理，原子的受力和\textrm{Hessian}矩阵的矩阵元可以表示为
+\begin{displaymath}
+	\begin{aligned}
+		F_{\mu i}=\dfrac{\partial E}{\partial R_{\mu i}}=\int\dfrac{\partial V(\vec r;\mathbf{R})}{\partial R_{\mu i}}n(\vec r;\mathbf{R})\mathrm{d}\vec r\\
+		H_{\mu i\nu j}=\dfrac{\partial^2E}{\partial R_{\mu i}\partial R_{\nu j}}=\int\dfrac{\partial^2V(\vec r;\mathbf{R})}{\partial R_{\mu i}\partial R_{\nu j}}n(\vec r;\mathbf{R})\mathrm{d}\vec  r+\int\dfrac{\partial V(\vec r;\mathbf{R})}{\partial R_{\mu i}}\dfrac{n(\vec r;\mathbf{R})}{\partial R_{\nu j}}\mathrm{d}\vec r
+	\end{aligned}
+\end{displaymath}
+这里$\mu,\nu$表示离子位置，$i,j=x,y,z$，$n(\vec r;\mathbf{R})$是电子电荷密度。\textrm{RMM_DIIS}方案最小化的是力的参量，即$|\mathbf{F}|^2$，这里
+\begin{displaymath}
+	F_{\mu i}=\sum_{\nu j}H_{\mu i\nu j\partial R_{\nu j}}
+\end{displaymath}
+注意到\textrm{RMM-DIIS}方法会根据\textrm{Hessian}矩阵的特征值谱，把最小化问题，分解到不同的子空间来处理。
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
