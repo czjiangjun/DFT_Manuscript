@@ -292,7 +292,65 @@ my_calc.dos.plot()
 	\item 如果再右键双击第三个原子，即可得到对应的原子形成的键角
 \end{itemize}
 
-\ch{H2O}计算中的能量截断测试。
+\ch{H2O}计算中的能量截断与参数\texttt{PREC}
+
+在计算控制文件\textrm{INCAR}中，存在控制参数\texttt{PREC}和\texttt{ENCUT}。参数\texttt{ENCUT}是能量截断收敛参数。
+
+在\textrm{PAW}方法中，\textrm{Kohn-Sham}方程解出的波函数形式为
+\begin{equation}
+	|\Psi_{i\vec k\sigma}\rangle=|\tilde{\Psi}_{i\vec k\sigma}\rangle+\sum_{\eta}\bigg(|\phi_{\eta}\rangle-|\tilde\phi_{\eta}\rangle\bigg)\langle\tilde p_{\eta}|\tilde\Psi_{i\vec k\sigma}\rangle
+	\label{eq:PAW-eq-1}
+\end{equation}
+波函数分解为离域的赝波函数$|\tilde{\Psi}_{i\vec k\sigma}\rangle$和原子为中心的局域部分。离域部分可以用平面波表示，其投影到实空间为
+\begin{equation}
+	\langle\vec r|\tilde{\Psi}_{i\vec k\sigma}\rangle=\dfrac1{\sqrt{\Omega_r}}\sum_{\vec G}C_{i\vec G\vec k}^{\sigma}(\vec r)\mathrm{e}^{\mathrm{i}(\vec G+\vec k)\cdot\vec r}
+	\label{eq:PAW-eq-2}
+\end{equation}
+这里$\vec r$表示实空间坐标，$i$是能带标记，$\sigma$是自旋标志，$\Omega_r$是实空间体积，$\vec G$是平面波的波矢，$\vec k$是\textrm{KPOINTS}中规定的简约波矢，$C_{i\vec G\vec k}^{\sigma}(\vec r)$是平面波的展开系数。
+
+当方程\eqref{eq:PAW-eq-2}中的平面波是完备的，方程\eqref{eq:PAW-eq-1}原则上是精确的。由于在实空间中，临近原子核的局域部分存在显著振荡由原子波函数表示，因此实际操作中，可以截断平面波的高阶部分:
+\begin{displaymath}
+	\dfrac12|\vec G+\vec k|^2<E_{\mathrm{cutoff}}
+\end{displaymath}
+原则上，截断能量主要由赝势，当然也与特定体系和性质确定的。因此为了确定合适截断能，开始计算时必须有收敛测试。
+
+典型的做法是按不同的截断能量计算与体系总能作图，可以确定截断能的收敛情况。截断能参数\texttt{ENCUT}确定了基函数的大小，截断能对总能的收敛一般比较慢，可以选择关心的物理量，如体系的振动频率、化学移动、带隙等随着体系截断能收敛的情况。在\textrm{VASP}中，计算物理量的精度主要由平面波的基组确定，但原则上如果不是收敛检验，没有办法指定需要的截断能，所以最保险的办法，是和总能对截断能收敛检测类似，进行物理量对参数\texttt{ENCUT}的收敛检测。
+
+\ch{H2O}的振动频率:~采用有限差分和密度泛函微扰理论\textrm{(Density-functional pertubation theory, DFPT)}。
+
+有限差分方法和\textrm{DFPT}都可以用于计算两阶导数、\textrm{Hessian}矩阵，声子频率。如果作用于电子的可微的势函数$V(\vec r;\mathbf{R})$中，离子位置$\mathbf{R}=\{\mathbf{R}_{\mu}\}$是参数，由\textrm{Hellmann-Feynman}定理，原子受力和\textrm{Hessian}矩阵表示为
+\begin{displaymath}
+	\begin{aligned}
+		\dfrac{\partial E}{\partial R_{\mu i}}=&\int\dfrac{\partial V(\vec r;\mathbf{R})}{\partial R_{\mu i}}n(\vec r;\mathbf{R})\mathrm{d}\vec r \\
+		\dfrac{\partial^2E}{\partial R_{\mu i}\partial R_{\nu j}}=&\int\dfrac{\partial^2V(\vec r;\mathbf{R})}{\partial R_{\mu i}\partial R_{\nu j}}n(\vec r;\mathbf{R})\mathrm{d}\vec r + \int\dfrac{\partial V(\vec r;\mathbf{R})}{\partial R_{\mu i}}\dfrac{n(\vec r;\mathbf{R})}{\partial R_{\nu j}}\mathrm{d}\vec r
+	\end{aligned}
+\end{displaymath}
+这里$\mu$、$\nu$是离子位置，$i,j=x,y,z$，$n(\vec r;\mathbf{R})$是电荷密度。电荷密度的线性变化，可以表示为
+\begin{displaymath}
+	\Delta^{\mathbf{R}}n(\vec r;\mathbf{R})=2\Re\sum_{i,\sigma}^{\mathrm{occ}}\Psi^{\ast}_{i\sigma}(\vec r;\mathbf{R})\Delta^{\mathbf{R}}\Psi^{\ast}_{i\sigma}(\vec r;\mathbf{R})
+\end{displaymath}
+这里$\Delta^{\mathbf{R}}$是描述离子偏离的有限差分算符，其定义为:
+\begin{displaymath}
+	\Delta^{\mathbf{R}}f=\sum_{\mu}\sum_{i=x,y,z}\dfrac{\partial f}{\partial R_{\mu i}}\Delta R_{\mu i}
+\end{displaymath}
+
+\textcolor{red}{简要回顾\textrm{DFPT}}，根据一阶微扰理论，\textrm{Kohn-Sham}方程解波函数的变化为$\Delta^{\mathbf{R}}\Psi_{i\sigma}(\vec r;\mathbf{R})$满足\textrm{Sternheimer}方程
+\begin{displaymath}
+	
+	(H-\epsilon_{i\sigma})|\nabla^{\mathbf{R}}\Psi_{i\sigma}\rangle=-(\Delta^{\mathbf{R}}V-\Delta^{\mathbf{R}}\epsilon_{i\sigma})|\Psi_{i\sigma}\rangle
+\end{displaymath}
+这里$H$是未经微扰的\textrm{Hamiltonian}，满足
+\begin{displaymath}
+	H=-\dfrac{\hbar^2}{2m}\nabla_{\vec r}^2 + V(\vec r;\mathbf{R})
+\end{displaymath}
+并有
+\begin{displaymath}
+	\Delta^{\mathbf{R}}V(\vec r;\mathbf{R})=\Delta^{\mathbf{R}}V_{\mathrm{ext}}(\vec r;\mathbf{R})+e^2\int\dfrac{\nabla^{\mathbf{R}}(\vec r^{\prime};\mathbf{R})}{|\vec r-\vec r^{\prime}|}\mathrm{d}\vec r^{\prime}+\dfrac{\mathrm{d}v_{xc}(n)}{\mathrm{d}n}\bigg|_{n=n(\vec r;\mathbf{R})}\Delta^{\mathbf{R}}n(\vec r;\mathbf{R})
+\end{displaymath}
+且$\Delta^{\mathbf{R}}\epsilon_{i\sigma}=\langle\Psi_{i\sigma}|\Delta^{\mathbf{R}}V|\Psi_{i\sigma}\rangle$。注意到根据有限差分定义的$\Delta^{\mathbf{R}}V$和这这里定义的$\delta^{\mathbf{R}}\Psi_{i\sigma}\rangle$，可以求解\textrm{Sternheimer}方程得到$\Delta^{\mathbf{R}}\Psi_{i\sigma}$，由此可以更新$\Delta^{\mathbf{R}}n$，当达到自洽迭代，力和\textrm{Hessian}矩阵就可以算出来了。
+
+\textcolor{red}{\textrm{DFPT}比有限差分方法的优势在与只需要计算占据态。此外，\textrm{DFPT}还有一个优点，就是不同波长的扰动部分是解耦的，因此\textrm{DFPT}可以不用采用超晶胞，即可计算任意波矢$\vec q$的声子频率。不过\textrm{VASP}中没有采用\textrm{DFPT}，因此孤立分子的振动频率计算与该方法无关。}
+\ch{H2O}的对相关函数\textrm{pair correlation function}
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
