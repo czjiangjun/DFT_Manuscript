@@ -441,7 +441,38 @@ $\vec k$点的生成是采用\textrm{Monkhorst-Pack}模式，均匀剖分第一\
 
 \textrm{DOS}计算中，如果增加$\vec k$网格点，则能产生更平滑的\textrm{DOS}图形，在几何结构优化中，可以用少量$\vec k$点来计算体系总能。
 
-运行\textrm{VASP}
+\textcolor{blue}{运行\textrm{VASP}}
+
+检查输出文件\textrm{OUTCAR}中的$\vec k$点的相关信息:~对于$15\times15\times15$的$\vec k$空间网格剖分，\textrm{OUTCAR}中列出120个不可约$\vec k$点及其权重，权重是$\vec k$点在第一\textrm{Brillouin}区内的等价$\vec k$点数目。对第一\textrm{Brillouin}区的3375个$\vec k$点的求和，等价于120个不等价$\vec k$点的权重求和。
+
+\textcolor{blue}{运行\textrm{py4vasp}将\textrm{DOS}可视化}
+
+图中给出的是\textrm{Fermi}能级附近的高分辨的\textrm{DOS}图，根据习惯，在\textrm{DOS}中将\textrm{Fermi}能级设置为0。为了得到更高分辨的\textrm{DOS}图，在指定能量范围$-15\mathrm{eV}\sim2\mathrm{eV}$内，需要采用更多$\vec k$点。\\为了确定能量范围，在\textrm{OUTCAR}中找到收敛结果中的\textrm{Fermi}能级，
+
+\textcolor{blue}{\textrm{Fermi}能级为}
+
+在\textrm{INCAR}中设置控制参数\texttt{NEDOS}，\texttt{EMIN}和\texttt{EMAX}，重新计算。
+
+应用\textrm{py4vasp}重新绘制体系的\textrm{DOS}，注意\texttt{EMIN}和\texttt{EMAX}是能量上下限，并非是相对\textrm{Fermi}能级设置的能量参数。
+
+%沿特定高对成性方向$L-\Gammma-X-U$和$K-\Gamma$绘制\textrm{FCC}\ch{Si}的能带图
+用于能带绘制的高对称性$\vec k$点路径的选择，依赖于所选择的空间群。有很多工具可以用来确定\textrm{Brillouin}区的空间群并提取$\vec k$点路径。\textcolor{blue}{一个在线的工具是\textrm{SeeK-path}\footnote{\url{https://seekpath.materialscloud.io/}}，该工具接受\textrm{POSCAR}文件。}，确定$\vec k$点路径上的各$高对称性\vec k$点坐标，并写入\textrm{KPOINTS}文件中。
+
+原则上，计算能带结构会需要5个输入文件，除了4个常用的\textrm{POSCA,INCAR,KPOINTS,POTCAR}，额外需要\textrm{CHGCAR}文件来完成自洽计算(\textrm{CHGCAR}采用\textrm{DOS}中的结果).
+
+输入控制文件\textrm{INCAR}中
+
+这里控制参数\texttt{ICHARG}=11，表明计算用的电荷密度直接由\textrm{CHGCAR}中读取，并且在计算过程中保持电荷密度固定。
+
+能带$\vec k$点路径的\textrm{KPOINTS}文件：
+
+执行\textrm{VASP}计算
+
+并用\textrm{py4vasp}模块绘制能带图形。
+
+%计算初基原胞中包含多个原子的\ch{Si}(金刚石型立方\ch{Si})\\
+
+
 
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
