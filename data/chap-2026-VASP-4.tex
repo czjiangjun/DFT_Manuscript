@@ -350,7 +350,42 @@ my_calc.dos.plot()
 且$\Delta^{\mathbf{R}}\epsilon_{i\sigma}=\langle\Psi_{i\sigma}|\Delta^{\mathbf{R}}V|\Psi_{i\sigma}\rangle$。注意到根据有限差分定义的$\Delta^{\mathbf{R}}V$和这这里定义的$\delta^{\mathbf{R}}\Psi_{i\sigma}\rangle$，可以求解\textrm{Sternheimer}方程得到$\Delta^{\mathbf{R}}\Psi_{i\sigma}$，由此可以更新$\Delta^{\mathbf{R}}n$，当达到自洽迭代，力和\textrm{Hessian}矩阵就可以算出来了。
 
 \textcolor{red}{\textrm{DFPT}比有限差分方法的优势在与只需要计算占据态。此外，\textrm{DFPT}还有一个优点，就是不同波长的扰动部分是解耦的，因此\textrm{DFPT}可以不用采用超晶胞，即可计算任意波矢$\vec q$的声子频率。不过\textrm{VASP}中没有采用\textrm{DFPT}，因此孤立分子的振动频率计算与该方法无关。}
+
+在参数设置文件\textrm{INCAR}中，\texttt{IBRION}=6表示采用有限差分方法，而\texttt{IBRION}=8表示采用\textrm{DFPT}理论。注意在\textrm{INCAR}文件中，完成能量截断的收敛测试后，设置参数\texttt{ENCUT}，以及\texttt{PREC}=\textrm{Accurate}。注意，有限差分方法中，需要有未占据能级的贡献，而\textrm{DFPT}中只需要占据能级的贡献，\textcolor{red}{因此\texttt{IBRION}=6时，需要设置计算参数\texttt{NBANDS}。}
+
+对于非共线的$N$-原子分子或晶体体系，共有$3N$个振动模式。具体到\ch{H2O}，只有3个非0频率模式，包括平动、振动和转动模式、其余频率模式则为0。
+
+采用线性响应\textrm{(DFPT)}方法(即\texttt{IBRION}=8，\texttt{EDIFF}=\textrm{1E-8})的结果为参考，通过参数\texttt{POTIM}改变步长，检验有限差分方法计算频率对时间步长的影响。
+
+在输出文件\textrm{OUTCAR}中，在每个振动频率下，依次给出的\texttt{X,Y,Z}是离子位置，\texttt{dx,dy,dz}表示分子中离子受力值的漂移，每一行是一个原子。
+
+\textcolor{red}{计算过程中注意检验\textrm{INCAR}文件中截断能\texttt{ENCUT}=529和\texttt{ENCUT}=800的收敛情况和对应的频率变化。具体到\ch{H2O}中，当的漂移过大时，0频率振动模就很难算准。此时最简单的办法是将能量截断参数\texttt{ENCUT}提升到800\textrm{eV}；不过，真正有意义的振动频率，反而对能量截断参数不敏感。}
+
 \ch{H2O}的对相关函数\textrm{pair correlation function}
+经典的分子动力学模拟，主要就是特定温度下，根据\textrm{Newton}第二定律，模拟组成分子的原子运动状况。换言之，在分子动力学模拟中，每个离子步迭代，模拟的是一个时间步长，在这个过程中，原子作为经典粒子，受力运动。如果原子的受力是通过量子力学的第一原理方法得到的，就称为第一原理分子动力学\textrm{(ab-initio MD)}。
+
+第一原理分子动力学模拟中，如果缓慢降低温度，也可以用来求解离子弛豫问题。与阻尼分子动力学\textrm{(damped MD)}中引入阻尼函数类似，这样的方法称为模拟退火方法\textrm{(simulated annealling approach)}。该方法特别适合于自由度$\geeslant20$的，有多个振动频率的体系。
+
+该方案模拟的\ch{H2O}分子的弛豫，比起采用\texttt{RMM-DIIS}方法更准确。第一原理分子动力学优于\textrm{RMM-DIIS}和\textrm{CG}算法在于，其模拟的原子径迹\textrm{(trajectories)}，即每个时间步上离子的位置连线，是有物理意义的。该方法还可以计算对相关函数，该函数描述的是，在一个给定的距离内，以一个粒子的视角位置，找到另一个粒子的概率。
+
+这里学习的是，\textrm{VASP}计算中通过\textrm{Nos\'e-Hoover}等温方法实现温度控制并完成分子动力学计算。
+输入控制文件\textrm{INCAR}
+
+计算结果采用\textrm{Py4vasp}，将每个时间步长下的能量可视化。
+
+由于模拟过程中温度的影响，体系的总能会表现出震荡。因为\textrm{Nos\'e-Hoover}恒温模拟过程中，每个时间步长和温度控制中，离子位置会有微小的移动。完成离子弛豫后，获得新的体系总能。因为计算过程中起始和终了温度是相同的，整个计算中，位置的振动和总能的振动遵从相同的分布规律。
+
+采用\textrm{Py4vasp}完成分子动力学模拟的离子位置移动的可视化。
+
+%对相关函数通过在一个给定的距离内，以一个粒子的视角位置，找到另一个粒子的概率。
+\textrm{VASP}计算的对相关函数的数，写入文件\textrm{PCDAT}。当粒子间距离较大时，对相关函数即体系的密度。这里的晶胞参数为
+$0.52918\times12=6.35916\AA$，因此根据对相关函数的形状，就可以估计两个粒子间开始发生相互作用的起始位置。对相关函数当距离小于6\AA时，出现相互作用，即\ch{H2O}中\ch{H}和\ch{O}的距离小于6\AA时，发生相互作用。
+
+在短程距离处，对相关函数描述的是一个\ch{H2O}分子中，原子间相互作用的形式。
+
+\textcolor{red}{\ch{H2O}分子的对相关函数中第一个峰位置约1\AA，第二个峰大约位于1.53\AA。考虑到其振动模式中，最主要的是对称弯曲振动，采用振动模式计算估计，峰位在1.53\AA附近裂分。}
+
+\textcolor{red}{当\ch{H2O}分子处于基态，\textrm{H-O}的键长接近0.97\AA，而H原子间间距为1.53\AA。分子振动的存在，会引起振动峰的扩展。因此这里振动模式引起的是峰的劈裂。根据这里的计算，振动频率引起的峰劈裂为与1.53\AA。}
 \subsection{体相材料计算}\label{Sec:bulk}
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
