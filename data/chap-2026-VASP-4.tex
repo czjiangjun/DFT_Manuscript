@@ -386,7 +386,63 @@ $0.52918\times12=6.35916\AA$，因此根据对相关函数的形状，就可以�
 \textcolor{red}{\ch{H2O}分子的对相关函数中第一个峰位置约1\AA，第二个峰大约位于1.53\AA。考虑到其振动模式中，最主要的是对称弯曲振动，采用振动模式计算估计，峰位在1.53\AA附近裂分。}
 
 \textcolor{red}{当\ch{H2O}分子处于基态，\textrm{H-O}的键长接近0.97\AA，而H原子间间距为1.53\AA。分子振动的存在，会引起振动峰的扩展。因此这里振动模式引起的是峰的劈裂。根据这里的计算，有一个频率为$3853.203528\mathrm{cm}^{-1}$，折算到\AA单位，有$1/3.853203528=0.2595243134013865\AA$，振动频率引起的两个峰的距离一致。}
+
 \subsection{体相材料计算}\label{Sec:bulk}
+对于周期体系，考虑空间对称性，共有7种晶系\footnote{7种晶系:~三斜晶系、单斜晶系、正交晶系、四方晶系、六方晶系和立方晶系}，7种晶系结合带心结构(带心结构包括:~底心、体心和面心三类)可以存在14种\textrm{Bravais}格子。周期体系的最小重复单元称为初基原胞\textrm{(primitive cell)}。早\textrm{VASP}计算中，常用的晶胞参数就是用初基原胞三个基本矢量$\vec a,\vec b,\vec c$。
+
+与周期体系的晶胞密切关联的，是实空间密切关联的\textrm{Fourier}变换的倒空间(也称$\vec k$空间)晶胞。$\vec k$空间的初基原胞称为第一\textrm{Brillouin}区。实际的计算中，还有一个重要的概念，就是不可约\textrm{Brillouin}区，不可约\textrm{Brillouin}区是体系所属的点群对称操作将第一\textrm{Brillouin}区分割后的最小等价区域。习惯上，用户选择不可约\textrm{Brillouin}区中的高对称性的线和点，根据这些线和点能量本征值，绘制体系能带图。一般这些高对称性线和点，都有专门的名称，如$\Gamma$点，就是第一\textrm{Brillouin}区的原点。
+
+结构文件\textrm{POSCAR}
+
+在\textrm{POSCAR}文件中，惯用的面心立方\textrm{(Face-Centered Cubic, FCC)}对称性中可以划分出更小的重复单元。因此初基原胞的晶胞参数可以确定为
+\begin{displaymath}
+	\begin{aligned}
+		\vec a =\dfrac{a}2(\hat{\vec x}+\hat{\vec y})\\
+		\vec b =\dfrac{a}2(\hat{\vec y}+\hat{\vec z})\\
+		\vec c =\dfrac{a}2(\hat{\vec z}+\hat{\vec x})\\
+	\end{aligned}
+\end{displaymath}
+
+在惯用原胞的立方结构中，共有8个顶点和6个面。考虑到顶点和面心原子的共享特征，因此每个惯用原胞中的贡献分别是1/8和1/2，由此惯用原胞中的重复单元的数目为：
+\begin{displaymath}
+	N=8\times\dfrac18+6\times\dfrac12=4
+\end{displaymath}
+而初基原胞中的最小重复单元为1。
+
+\textcolor{red}{在\textrm{POSCAR}文件中，第一行是体系名称，第二行是通用的标度参数\textrm{(scaling parameter)}$a$。第三到第五行分别是矢量$\vec a/a,\vec b/a,\vec c/a$(因此每个矢量值都要乘通用晶格系数)。}
+
+计算使用的输入控制参数文件\textrm{INCAR}
+
+在控制参数文件\textrm{INCAR}文件中，\textrm{VASP}默认会首先查找是否存在\textrm{WAVECAR}文件，并由此为起点开始计算。所以如果用户要向重新开始新的计算，建议删除\textrm{WAVEVAR}。\textcolor{red}{\textrm{VASP}计算的初始电荷密度，来自体系各原子电荷密度的叠加}，在重启的\textrm{VASP}计算中，还可以通过参数\texttt{ISTART}和\texttt{ICHARG}控制计算使用的初始电荷密度来源。
+
+选择的$\vec k$空间布点方案，保存在\textrm{KPOINTS}文件中
+$\vec k$点的生成是采用\textrm{Monkhorst-Pack}模式，均匀剖分第一\textrm{Brillouin}区实现的。如果在\textrm{Brillouin}区各方向上的布点都是奇数，就可以保证产生的是$\Gamma$-点位中心的网格布点。
+
+为了测试体系总能随不同晶胞参数的变化，应用\textrm{bash}脚本修改\textrm{POSCAR}文件中通用控制参数。这里通用参数由3.5到4.3，步长为0.1。\textcolor{red}{对应的脚本为}
+
+各种不同晶胞参数的\textrm{VASP}计算，得到的总自由能数据存在\textrm{OSZICAR}文件中。完成所有\textrm{VASP}计算后，将不同晶格常数和响应的能量存在\textrm{loop\_lattice\_constant.dat}文件中。
+
+根据文件\textrm{loop\_lattice\_constant.dat}中的数据，\textcolor{red}{绘制晶格-总自由能曲线。}
+
+扫描晶胞参数，总能最小的位对应晶胞参数为$3.9\AA$。因此\textcolor{red}{基态结构的\textrm{POSCAR}文件}为：
+
+\textbf{面心立方\rm{Si}的的态密度计算}
+\textcolor{red}{为了节约计算开销，\textrm{VASP}会根据体系所属的点群和空间群，将体系划分为更小的重复单元；相应地，\textrm{KPOINTS}文件规定的倒空间剖分的$\vec k$点网格也将约化为更少的不可约网格点。}
+
+输入控制文件\textrm{INCAR}中
+
+计算控制参数\texttt{ISMEAR}=-5，表示$\vec k$空间网格积分方案采用校正的\textrm{Bl\"ochl}方案。有必要指出的是，\textcolor{red}{对于占据数变化，该方法是不可变分的，因此对不部分占据的能带会产生错误的力和应力。}因此，特别要注意，对于导体体系，几何结构优化时，不要使用该参数设置。
+
+计算控制参数\textrm{LORBIT}=11，则会写入详细的\textrm{DOSCAR}文件。
+
+\textcolor{blue}{$\vec k$空间剖分文件\textrm{KPOINTS}文件中，\textrm{VASP}采用\textrm{Monkhorst-Pack}方法实现网格剖分，然后利用倒空间所属点群对称性，确定等价点和等价点权重，后续对$\vec k$空间\textrm{Brillouin}区的积分变成对不可约\textrm{Brillouin}区的$\vec k$点与权重的求和。
+
+习惯上，$\vec k$空间的网格剖分为$\Gamma$点为中心，各个方向的$\vec k$点并不要求完全一样多。}
+
+\textrm{DOS}计算中，如果增加$\vec k$网格点，则能产生更平滑的\textrm{DOS}图形，在几何结构优化中，可以用少量$\vec k$点来计算体系总能。
+
+运行\textrm{VASP}
+
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
 \textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}
