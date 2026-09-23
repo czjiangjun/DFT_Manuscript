@@ -470,7 +470,11 @@ $\vec k$点的生成是采用\textrm{Monkhorst-Pack}模式，均匀剖分第一\
 
 并用\textrm{py4vasp}模块绘制能带图形。
 
-%计算初基原胞中包含多个原子的\ch{Si}(金刚石型立方\ch{Si})\\
+\subsection{结构弛豫与收敛测试}
+除了通过改变晶胞参数来确定搜索体系最稳定的基态，\textrm{VASP}还可以通过\texttt{ISIF}参数，来实现体系的结构弛豫计算。这一部分将以金刚石型\ch{Si}和高压下金属相体心四方结构的\ch{Si}为例，说明在\textrm{VASP}计算中，如何较为合理地实现结构弛豫与参数收敛测试。
+
+\textcolor{red}{首先采用借助脚本改变晶胞参数而不使用控制参数\texttt{ISIF}计算初基原胞中包含多个原子的\ch{Si}(金刚石型)}
+
 有必要指出的是，通过\textrm{DFT}计算获得的弛豫(优化)基态，有时候也可能是某种亚稳态\textrm{(metastable state)}而非真实基态。出现这种情况，往往是因为计算的某些初始条件，偏离基态较远，\textrm{DFT}计算收敛到了局域极小位置。除了基态总能，这种现象还包括晶体结构、磁构象等性质，同样存在类似现象。所以对于计算结果，最好能与实验结果相对照，彼此印证。
 
 另一方面，与基态结构相比，\textrm{DOS}对截断能的敏感程度要低一些。因此，计算\textrm{DOS}时，可以适当调低截断能。
@@ -481,7 +485,44 @@ $\vec k$点的生成是采用\textrm{Monkhorst-Pack}模式，均匀剖分第一\
 
 \textrm{Pulay}应力是非物理的，计算中应该尽可能的消除或降低，习惯上的办法是，结构优化时，适当选取高一些的截断能，并且一旦发现优化过程中，体积变化较大时，选择合适的截断能，重新开启结构优化。
 
+理论上，输入控制文件中引入晶胞弛豫控制参数\texttt{ISIF}=3，在指定截断能\texttt{ENCUT}条件下直接优化计算对象的晶胞参数，可以将体系的结构弛豫到当前最稳定的基态。但正如此前讨论的，一般晶胞体积改变，意味着\textrm{Pulay}应力的贡献也会变化。更稳妥的办法是，利用脚本选择不同的晶格参数，选择晶胞弛豫参数\texttt{ISIF}=4，结构弛豫算法\texttt{IBRION}=2来弛豫晶胞的形状和离子位置坐标。因为这样的结构弛豫，晶胞的体积改变小，结构弛豫的基函数维度不变，优于\texttt{ISIF}=3条件下的截断能不变。而且如果结构弛豫过程中，一旦晶胞的形状或体积发生显著变化时，基函数(截断能)也应该作相应的调整。在这种情况下，就可以停止弛豫过程，将\textrm{CONTCAR}文件的数据取代\textrm{POSCAR}文件的数据，重启并继续结构弛豫。
 
+为了实现\textrm{VASP}计算任务按需要随时起止，重启任务又不必再从头计算，\textrm{VASP}的处理方法是，用户在认为有必要停止的时候，在执行目录下生成空文件\textrm{STOPCAR}。这样做最大的好处是不同于直接执行\textrm{kill}命令(或作业管理系统的\textrm{cancel}命令)，强行终止正在执行的\textrm{VASP}进程，而是等到当前离子步执行完毕后，保留中间数据，用于后续计算。在这种情况下，同样用\textrm{CONTCAR}的内容取代\textrm{POSCAR}，并将\textrm{INCAR}中的控制参数\texttt{ISTART}=0和\texttt{ICHARG}=2并选择适当的\texttt{ENCUT}，在移除\textrm{STOPCAR}文件后，重启弛豫过程。
+
+\textcolor{red}{以本算例为例，如果\textrm{INCAR}中参数\texttt{NSW}=10}，全部执行完毕，10个离子步后，结构弛豫结束，但体系尚未达到最稳定的基态。这时需要将\textrm{CONCAR}数据取代\textrm{POSCAR}中，然后重启弛豫计算进程。利用\textrm{STOPCAR}文件控制计算进程，原则上停止的标准是任意的，如果您在本例中第三个离子弛豫步结束前引入\textrm{STOPCAR}文件，则可以预见，如果在此基础上接续\textrm{VASP}计算，则将在第七步时得到与之前一致的结果。如果想要得到更好的结果，则可在\textrm{INCAR}设置控制参数\texttt{NSW}超过7即可。
+
+在结构弛豫计算中，剖分$\vec k$空间的网格点密度也会对结构弛豫有所影响。
+
+剖分$\vec k$空间网格的数目，主要由晶胞结构文件\textrm{POSCAR}确定，但有时也会与体系所计算的材料物性有关，如需要考虑长程相互作用，$\vec k$点网格需要密一些。因此，原则上\textrm{VASP}计算前，应该做一下$\vec k$点收敛测试。
+
+\textcolor{red}{对高压下金属态\ch{Si}(\ch{Si}\textrm{-II})的结构优化，考察$\vec k$空间网格布点的影响}
+
+\textcolor{red}{通过脚本控制$\vec k$空间网格密度}，结构弛豫控制参数\texttt{ISIF}=7，只优化晶胞的体积，不改变晶胞的形状和其中原子的位置。体积收敛的标准是
+\begin{itemize}
+	\item 体系总能误差收敛到2\textrm{meV}以内;
+	\item 晶格的第一个矢量变化的精度范围达到0.005\AA.
+\end{itemize}
+换言之，收敛的状态可以通过总能和晶格参数对$\vec k$空间网格点作图确定。
+
+\textcolor{red}{一个可行的解决方案}
+输入控制文件\textrm{INCAR}
+
+控制$\vec k$空间网格布点密度的\textrm{bash}脚本
+
+用于绘制检验$\vec k$空间布点收敛图线的\textrm{gnuplot}脚本
+
+注意随着$\vec k$点增加，总能和晶格参数并不单调地收敛到某一数值，而是表现出数值方差\textrm{(variance)}随着$\vec k$点的增加不断下降。而且有必要指出的是，如果$\vec k$空间网格点中是否包括$\Gamma$点，结果存在明显差别。
+
+为了计算体系\textrm{DOS}，以确定的最稳定基态晶胞为起点，选择$\vec k$空间布点数为$18\times18\times18$(因为当前体系为金属态)，并在\textrm{INCAR}中添加设置控制参数\texttt{LORBIT}=11。
+
+为了对比$\vec k$空间积分方案中\textrm{Gaussian}积分与四面体积分的差别，分别采用两种方法完成\textrm{DOS}计算并绘图。
+
+相关控制参数文件和绘图脚本分别为：
+
+\subsection{体心立方结构的极化计算:~\ch{Ni}}
+自旋极化\textrm{DFT}(Spin-Polarized DFT, SDFT)中，将体系中自旋向上\textrm{(spin-up)的电子和自旋向下\textrm{(spin-down)}的电子解耦分别处理，因此不同自旋的电子可以有不同的本征值。不同自旋的电子间相互作用，体现在交换-相关泛函里。具体计算中，在\textrm{INCAR}文件中，使用控制参数\texttt{ISPIN}=2，即可打开自旋极化计算，同时会自动计算体系的共线磁矩\textrm{(collinear magnetic moments)}。如果需要考虑旋-轨耦合\textrm{(spin-orbit coupling, SOC)}，则需要设置控制参数\texttt{LSORBIT}=\textrm{True}，并在执行计算时使用非共线磁矩版命令\textrm{vasp\_ncl}。
+
+结构弛豫、\textrm{DOS}和能带计算的输入文件\textrm{INCAR}和$\vec k$空间网格剖分文件\textrm{KPOINTS}。
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
 \textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}
