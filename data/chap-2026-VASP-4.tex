@@ -565,9 +565,131 @@ $\vec k$空间剖分网格
 \begin{displaymath}
 	1+8\times\dfrac18+6\times\dfrac12+12\times\dfrac14=8
 \end{displaymath}
-类似的，可以算出菱形三方晶胞的原子数目为4。注意，在\ch{NaCl}结构中的初基原胞含有两个原子。
+类似的，可以算出菱形三方晶胞的原子数目为4。需要指出的是，在\ch{NaCl}结构中的初基原胞中含有\ch{Ni}和\ch{O}两类原子。
+
+对于考虑自旋极化的磁性材料，需要特别注意，可以通过控制参数\texttt{MAGMOM}来设置磁性原子的初始构型。一般对磁性材料来说，初始构象往往会对计算模拟最终得到的磁性结果(如:~铁磁与反铁磁等)有影响。所以如果计算时对初始构象有特定要求，就应该通过控制参数\texttt{MAGMOM}来据此设置。控制参数\textrm{LORBIT}会将临近原子附近的局域磁矩投影分配到各轨道，并将结果写入\textrm{OUTCAR}文件中。
+
+在\textrm{VASP.6.4.3}，允许用户使用控制参数\textrm{XC}来指定计算所使用的交换-相关泛函。由于部分地引入\textrm{Hartree-Fock}交换项的贡献，含有杂化泛函的计算比起\textrm{GGA}和\textrm{meta-GGA}泛函的计算要复杂得多，\textcolor{red}{所以减少计算开销，对使用\textrm{HSE06}泛函的计算，使用更少一些的$\vec k$点，而随着$\vec k$空间网格剖分更粗略，带隙的误差也会存在0.2\textrm{eV}的涨落。}
+
+\textrm{PBE}是周期体系\textrm{DFT}计算最常用的标准交换-相关泛函，主要用于和体系总能有关的计算，如几何结构优化、形成能或成键能等。
+
+\textcolor{red}{应用\textrm{py4vasp}模块，可以提取能带的带隙信息}:\\
+\textcolor{red}{\textrm{PBE}计算的带隙为约0.96\textrm{eV}，远低于实验观测的$4.0\sim4.3\mathrm{eV}$的带隙值。}
 
 \textrm{INCAR}文件中，控制参数\texttt{BANDGAP}，将在\textrm{OUTCAR}文件中输出带隙。
+
+半导体带隙的分类
+\begin{itemize}
+	\item 直接带隙:~价带顶与导带底对应同一个$\vec k$点位置；
+	\item 非直接带隙:~价带顶与导带底不在同一了$\vec k$点位置。
+\end{itemize}
+
+\textcolor{red}{除了最小带隙，\textrm{py4vasp}模块还可以提取能带的最小直接带隙，以辅助用户判断带隙类型}:\\
+\ch{NiO}的最小直接带隙是1.126\textrm{eV}，比最小带隙大约0.17\textrm{eV}，因此反铁磁的\ch{NiO}的带隙为间接带隙。
+
+如果\textrm{INCAR}参数中设置了控制参数\texttt{BANDGAP}，在\textrm{OUTCAR}文件中会给出体系的最小带隙，而且会给出价带顶和导带底各自对应的$\vec k$点位置：\\
+\textcolor{red}{相应的命令是
+	\textrm{grep -B3 -A2 "fundamental gap" OUTCAR}}
+
+不难看出，反铁磁的\ch{NiO}能带中，两个不同自旋的能带是简并的。这也是反铁磁计算的基本设定。
+
+应用\textrm{py4vasp}模块，还可以提取原子的磁矩信息：
+
+不难看出，由于反铁磁要求，\texttt{MAGMOM}设定，两个\ch{Ni}原子的初始构型分别为自旋向上(+2)和自旋向下(-2)，因此计算最后得到的\ch{Ni}原子的磁矩也是自旋相反的，严格保持反铁磁熟悉。类似地，\ch{O}原子的磁矩均为0。通过\textrm{PBE}泛函得到\textrm{Ni}的磁矩大小\textrm{($1.37\mu_{\mathrm{B}}$)}比实验值\textrm{($1.9\sim2.2\mu_{\mathrm{B}}$)小得多。有必要指出的是，将计算得到的局域磁矩投影到原子轨道，其数值的精度非常依赖构建原子数据集的半径的大小。所以即使\textrm{DFT}计算得到的磁矩是精确的，投影到原子的上的磁矩大小，也很可能与实验值不一致。
+
+在\textrm{GGA}计算基础上，检验各类修正后的交换-相关泛函的预测带隙和原子磁矩的能力，至少在定性结果上，有没有比简单的\textrm{GGA}有所改善，与实验结果相符合。
+
+\begin{itemize}
+	\item \textrm{DFT+}$U$\\
+一般地，\textrm{DFT}+$U$中，在\textrm{LDA}或\textrm{GGA}泛函考虑交换-相关作用基础上，引入在位\textrm{(on-site)}的\textrm{Coulomb}和交换作用参数$U$，唯相地描述局域的\textit{d}或\textit{f}电子间相互作用。相比于各类改进的交换-相关泛函方法，\textrm{DFT+}$U$的计算开销最小，仅依赖唯相参数$U$即可修正部分电子的局域相关作用。但成也萧何，败也萧何，由于$U$是可调参数，带有很强的经验属性，因此\textrm{DFT+}$U$方法的普适性大大降低，也是其饱受诟病的根源。
+
+本算例中，\ch{Ni}原子的参数$U=8.00~\mathrm{eV}$和$J=0.95~\mathrm{eV}$，计算得到的最小带隙为3.438~\textrm{eV}；\textcolor{red}{磁矩为}
+
+\item \textrm{SCAN}泛函\\
+	\textrm{SCAN}是周期体系计算中最常用的\textrm{meta-GGA}泛函。所谓\textrm{meta-GGA}，就是在\textrm{GGA}泛函包含密度梯度的贡献外，还包含了密度的二阶梯度的贡献，进一步提升交换-相关泛函的计算精度。因为密度的二阶梯度贡献主要来自动能密度，所以\textrm{meta-GGA}主要来自的是动能密度的贡献。\textrm{SCAN}泛函的优势在于完全不依赖经验参数，具有交换-相关泛函应有的全部解析特性。
+
+	本算例中，\textrm{meta-GGA}泛函计算得到的最小带隙为2.581~\textrm{eV}；\textcolor{red}{磁矩为}
+
+\item \textrm{MBJ}泛函\\
+	\textrm{MBJ}是另一类\textrm{meta-GGA}泛函，在固体计算中，\textrm{MBJ}在固体能带的带隙计算表现出特殊的优势。但\textrm{MBJ}在准确估算较大带隙的同时，会在体系总能中引入额外的非物理势的贡献。因此，\textrm{MBJ}泛函无法与体系总能关系紧密的物理量计算中，如结构优化或求体系稳定的基态。
+
+	本算例中，\textrm{meta-GGA}泛函计算得到的最小带隙为4.614~\textrm{eV}；\textcolor{red}{磁矩为}
+
+\item \textrm{HSE06}泛函\\
+	\textrm{HSE06}是屏蔽杂化泛函\textrm{(screened hybrid functional)}。杂化泛函中的``杂化''意味着在局域形式的泛函中，掺入了非局域的\textrm{Hartree-Fock (HF)}交换能的贡献。在周期体系中，考虑到多电子体系的屏蔽效应，交换-相关泛函的离域部分主要也来自电子的近程相互作用。因此，\textrm{HSE06}屏蔽了电子的长程相互作用部分的贡献，使得该泛函在$\vec k$空间网格上，比\textrm{PBE0}泛函有更快速的收敛属性。但是，也因为包含了\textrm{HF}交换能的贡献，考虑杂化泛函后的计算开销比一般\textrm{GGA}泛函计算要高1-2个数量级。
+
+	本算例中，\textrm{meta-GGA}泛函计算得到的最小带隙为4.788~\textrm{eV}；\textcolor{red}{磁矩为}
+\end{itemize}
+总的来看，\textrm{DFT+}$U$，\textrm{MBJ}和\textrm{HSE06}对能带的带隙计算都较为精确。但是\textrm{DFT+}$U$对带隙表现出一定程度的低估，而\textrm{MBJ}和\textrm{HSE06}对带隙表现出一定程度的高估。
+
+在\ch{Ni}的原子磁矩计算中，\textrm{DFT+}$U$和\textrm{MBJ}得到的结果接近$1.73\mu_{\mathrm{B}}$，与实验值吻合得最好，但仍比实验值偏小。有必要指出的是，当前计算的磁矩是\ch{Ni}的\textit{d}电子自旋部分的贡献，尚未包含轨道磁矩的贡献。在\ch{NiO}中，轨道磁矩的贡献大约为$0.3\sim0.5\mu_{\mathrm{B}}$。
+
+\subsection{\rm{Van der Waals }力}
+\textcolor{red}{考虑\textrm{Ven der Waals}相互作用后，采用\textrm{Tkatchenko-Scheffler}方法计算石墨\textrm{graphite}的层间相互作用。}
+
+\textrm{GGA}泛函的半局域\textrm{(semilocal)}特征，使得它常常低估长程相互作用。以石墨的模拟为例，\textrm{PBE}泛函估计得层间相互作用能为$\sim1\mathrm{meV/atom}$，相比于无相规近似\textrm{(Random Phase Approximationg, RPA)}的值$0.048~\mathrm{eV/atom}$\upcite{PRL105-196401_2010}小得多。所以在需要在\textrm{GGA}泛函基础上，寻找可以考虑\textrm{Van der Waals}相互作用贡献的形式。\textrm{Tkatchenko-Scheffler}方法基于1997年\textrm{Becke}的幂级数假设，为实现原子对\textrm{(atom-pairwise)}之间的色散作用校正\textrm{(dispersion correction)}，引入阻尼函数\textrm{damped function}来处理短程作用的一套方法。该方法额外引入的解析的函数形为$C_6\cdot R^{-6}$，用于原子对的色散校正项的计算。\upcite{PRL102-073005_2009,PRB87-064110_2013}。
+
+石墨烯\textrm{(Graphene)}的结构文件
+
+石墨的结构文件
+
+计算控制文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINS}
+
+在石墨烯中，$z$方向没有相互作用，因此$z$向的$\vec k$空间布点为1.
+
+在\textrm{INCAR}中，因为本次计算主要是体系总能，不需要计算\textrm{DOS}和能带结构，因此计算控制参数\texttt{LWAVE}和\texttt{LCHARG}都设置为\textrm{FALSE}，这样计算过程中不会有数据输出到\textrm{WAVE}、\textrm{CHGCAR}中，适当节省计算资源和存储空间。
+
+分别计算石墨烯和石墨体系。
+
+完成后，可以通过\textrm{py4vasp}模块，实现$3\times3\times3$网格的石墨结构可视化。
+
+不难看出，不同层的石墨的层间距有很大差别，为了得到每一个原子的层间成键能，一个简单而直白的办法，就是分别从石墨和石墨烯的\textrm{OUTCAR}文件中提取体系总能，然后将总能分别除以各种晶胞中的原子数目，两者的能量差可以认为是每个原子的层间成键能。
+
+应用\textrm{bash}脚本提取体系总能，并计算
+\begin{displaymath}
+	\begin{aligned}
+		&-37.42908542/4-(-18.54564785/2)\\
+		=&-0.0844473~\mathrm{eV/atom}
+	\end{aligned}
+\end{displaymath}
+\textcolor{red}{\textrm{Tkatchenko-Scheffler method}可以给出较为合理的稳定构型}，但是高估了原子的层间成键能。相比于\textrm{RPA}的参考值$0.048\mathrm{eV/atom}$，这种原子层间成键能的高估，部分原因是源于未考虑多体相互作用。为了校正这部分贡献，可以使用多体色散方法\textrm{(Many-body-dispersion-energy method, MBDM)}\upcite{PRL108-236402_2012}。
+
+改变石墨和石墨烯计算的控制参数文件\textrm{INCAR}中\textrm{Van der Waals}的计算控制参数\texttt{IVDW}，包含多体校正，
+
+再计算每个原子的层间成键能。
+
+应用\textrm{Bash}脚本完成计算并提取体系总能，最后可得
+\begin{displaymath}
+	\begin{aligned}
+		&-37.44318263/4-(-18.61910927/2)\\
+		=&-0.0512410225\mathrm{eV/atom}
+	\end{aligned}
+\end{displaymath}
+这样计算的每个原子的层间成键能与\textrm{RPA}参考值比较接近。
+
+\textcolor{red}{采用\textrm{Tkatchenko-Scheffler}方法考虑\textrm{Van der Waals}相互作用，确定石墨层堆积方向的层间距}
+
+原子间的长程的\textrm{Coulomb}相互作用不仅可以采用\textrm{Tkatchenko-Scheffler}方法计算，也可以采用\textrm{Ewald}求和计算。一般地，采用\textrm{Ewald}求和，为了避免奇点\textrm{(singularities)}的出现，将短程相互作用放在正空间处理，而将长程相互作用放在倒空间计算。
+
+在本算例中，采用\textrm{Tkatchenko-Scheffler}方法计算，因为\textrm{GGA}泛函典型地会低估长程色散相互作用(如\textrm{Van der Waals}相互作用)，导致高估石墨层堆积方向层的晶格常数。比如，采用\textrm{PBE}泛函，计算得到的石墨的堆积层方向层间距离为8.84\AA，而实验值仅为6.71\AA。
+
+结构文件\textrm{POSCAR}
+
+计算参数控制文件\textrm{INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+在\textrm{POSCAR}中，沿$z$方向是石墨层装堆积方向，该值是待优化的。
+
+应用\textrm{Bash}脚本，选择$z$向层间距离范围$[6.6,6.8]$，变化步长为0.01。将其余自由度都固定为实验值，仅改变$z$方向的层间距离，得到一系列的$z$向值和总能的关系，绘制图形，可以确定优化的层间距离。
+
+\textcolor{red}{\textrm{gnuplot}绘图脚本}
+
+应用\textrm{Tkatchenko-Scheffler}方法得到的层间距离为6.65\AA，与实验值6.71\AA吻合得较好。而该方法估算的原子间层间成键能却高于\textrm{RPA}参考值。
+
+
 %通过学习金属\textrm{Pt}原子基态能量的计算，可以掌握典型的\textrm{VASP}的主体流程\footnote{在所有计算之前，请确认\textrm{VASP}软件已经正确安装。}，了解体系基态能量最小化的基本算法，并熟悉基本的输入/输出文件的内容。此外，还可以了解如何在已完成计算的基础上，进行计算精度提升或完成后续计算等一系列处理方式。
 %\subsection{输入文件}
 \textrm{VASP}要求所有的计算都在指定的计算目录下进行(比如针对当前的算例，可以建目录\textrm{Pt\_atom})。首先准备计算所必需的四个输入文件，文件名必须是\textrm{INCAR}、\textrm{KPOINTS}、\textrm{POSCAR}和\textrm{POTCAR}。前三个文件，既可以手动输入也可以通过修改其余计算中的对应文件得到;~\textrm{POTCAR}文件存储的是计算对象构成元素的原子数据，包括具体的原子分波、赝原子分波以及赝势和构造赝势使用的交换-相关泛函等信息。\textrm{VASP}开发组在发布软件时会一并提供全部元素的\textrm{POTCAR}。\footnote{由于历史的原因，习惯上将\textrm{POTCAR}称为赝势文件，但实际上\textrm{POTCAR}文件中包含的内容不仅是原子赝势，还包括原子价电子分波函数和赝分波函数，以及补偿电荷等和赝势、\textrm{PAW}势相关的诸多信息，因此称“数据集(\textrm{Dataset})”更准确.}
