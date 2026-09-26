@@ -80,7 +80,48 @@
 与\textrm{DOS}中类似，与自旋向上的电子本征值比，自旋向下的能量相对于\textrm{Fermi}能向上移动。如能带图中所示，在\textbf{M}点和\textbf{K}点附近，自旋向上的能量有三个能带的本征值在$-0.5\mathrm{eV}$附近，而自旋向下的电子能带中，相应部分在$1.3~\mathrm{eV}$附近。这就是交换裂分。
 
 \subsection{反铁磁的体心立方\ch{Cr}的磁性原胞}
+体心立方\textrm{(Body-Centered Cubic, BCC)}的金属\ch{Cr}，\textcolor{red}{构建反铁磁序的生成矢量是$\vec q=(1/2,1/2,1/2)$}。检查$\vec k$空间网格收敛和能带计算，最后计算分波\textrm{DOS}。
 
+矢量$\vec q$描述在体相材料中，局域磁矩在空间格点中的规律性变化。这个矢量可能比晶格更大，在这种情况下，定义反铁磁相的周期单元，必须以$\vec q$为周期。
 
+具体到\textrm{BCC}\ch{Cr}，如果仅考虑顺磁相，则初级原胞仅含有一个原子。在反铁磁\textrm{(AntiFerromagnetic, AFM)}相，初级原胞将含有两个原子，其分数坐标分别为$(0,0,0)$和$(0.5,0.5,0.5)$。在反铁磁相中，\ch{Cr}原子的磁矩沿体心立方的体对角线方向依次翻转，因此该磁结构的初基原胞是顺磁相初基原胞的2倍。
 
+为了描述反铁磁序，在倒空间晶格中引入矢量$\vec q=(1/2,1/2,1/2)$，该矢量的存在，意味着在正空间中，\textcolor{red}{考虑磁矩翻转后，划分原胞的周期为原来初基原胞的2倍}。
 
+\textrm{BCC}\ch{Cr}的结构文件
+
+\textcolor{red}{\textrm{POSCAR}中，第二行的控制参数\textrm{Scaling factor}改变的不仅是晶格矢量矩阵，它意味着实际的原子坐标也发生了改变!!}
+
+这里的磁性初基原胞是完成的\textrm{BCC}\ch{Cr}。因此磁性初基原胞是体系的惯用晶胞。
+
+在\textrm{SCF}所需的输入控制文件中，控制参数\texttt{LKPINTS\_OPT}=F，意味着本次计算忽略当前计算目录下的\textrm{KPOINTS\_OPT}文件。反铁磁相的初始磁矩由控制参数\texttt{MAGMOM}=2 -2确定。初始磁矩打破了晶体对称性，两个\textrm{Cr}原子不再等价。
+
+后续计算中，计算用的$\vec k$空间网格剖分更精细，因此\textrm{INCAR}中的控制参数也作适当调整，这里控制参数\textrm{MAGMOM}=-0.1 0.1，仅仅是为了打破晶体对称性。因为此次计算中，已经设置了控制参数\texttt{ICHARG}=1，初始磁矩不再是有控制参数\textrm{MAGMOM}给定，体系的自旋电荷密度和总的密度将由\texttt{CHGCAR}文件给出。后续将根据精细空间网格计算能带，所以设置控制参数\texttt{LKPOINTS\_OPT}=True。
+
+在\textrm{DOS}计算所用的计算控制文件中，计算控制参数\texttt{ALGO}=None。该参数为了后续处理方便，但要求收敛后的\textrm{WAVECAR}文件存在\textcolor{red}{或存在\textrm{vaspwave.h5}文件)}
+
+用于计算的\textrm{KPOINTS}文件和精细\textrm{KPOINTS.fine}都是以$\Gamma$点为中心的$\vec k$空间网格剖分方案，唯一的区别是$\vec k$点网格密度不同。而\textrm{KPOINTS\_OPT}是与精密网格\textrm{KPOINTS.fine}匹配的能带计算高对称性$\vec k$点路径网格点。
+
+完成自洽计算后，根据\texrm{OSZICAR}文件可以看到，因为严格的反铁磁序要求，体系的净磁矩为0。
+
+应用\textrm{py4vasp}模块，可以得到晶格中每个\textrm{Cr}原子上的局域净磁矩。
+
+由\textrm{OUTCAR}最后的\textcolor{red}{\textrm{Total CPU time used}}可以估算计算的总开销。备份当前计算结果后，再利用当前的电荷密度，而采用精密$\vec k$空间布点的\textrm{KPOINTS}，重启计算。
+
+\textcolor{red}{注意这里删去了\textrm{WAVECAR}文件!(因为$\vec k$点不同，直接读当前\textrm{WAVECAR}，\textrm{OUTCAR}中会出现$\vec k$点不一致，读取\textrm{WAVECAR}失败的提示)}而且如果不删去\textrm{WAVECAR}，继续执行计算会因此受到影响。因为如果没有\textrm{WAVECAR}存在，\textrm{Kohn-Sham}轨道的初始值是随机生成的，其电子弛豫前五步的电荷密度将保持固定；而如果之前的\textrm{WAVECAR}存在，执行\textrm{VASP}读取$\vec k$点波函数失败，但前五步的电荷密度不再保持固定，因此基于相对粗的$\vec k$空间剖分网格计算收敛的收敛结果也没有得到有效的利用。
+
+再次检查每个原子上的局域磁矩。
+
+对照两套不同的$\vec k$空间网格点的计算结果。通过参数\textcolor{red}{\textrm{LOOP}}可以对比计算资源的消耗的差别。毫无疑问，$\vec k$点越多计算开销越大。不难看出，随着$\vec k$点增长，晶胞内每个原子上的局域磁矩并未表现出收敛趋势。而每个原子上的局域电荷，随着$\vec k$点的增加，几乎没有变化。所以，对于用户感兴趣的材料性质的计算，计算时有必要考虑做一下收敛测试。
+
+根据\textrm{KPOINTS\_OPT}的$\vec k$点分布，计算并绘制反铁磁相的能带数据，并用\textrm{py4vasp}查看生成的能带。
+
+最后，绘制体系的\textrm{DOS}，\textcolor{red}{注意两个格点上\ch{Cr}原子$d$轨道对\textrm{DOS}的贡献。}
+
+从\textrm{DOS}看，由于反铁磁相计算的特征，与铁磁相不同，总\textrm{DOS}中，自旋向上和自旋向下的能量没有表现出自旋裂分；但具体到晶胞中格点1位置上的\ch{Cr}的$d$电子的局域自旋\textrm{DOS}的贡献，自旋向上和自旋向下的差别很明显；显然，不难推断，格点2位置上的e\ch{Cr}的$d$电子的局域自旋与格点1上必然相反。这是\textrm{AFM}计算特征决定的。
+
+尽管局域自旋磁矩的计算与投影方法有一定的关系(有控制计算参数\texttt{LORBIT}确定)，平面波网格贡献的磁矩则是由自旋极化的\textrm{DFT}直接计算得到。可以用\textrm{py4vasp}模块直接读取\textrm{vaspwave.h5}文件并作可视化。
+
+这里，是垂直于晶格矢量，位于晶胞中坐标为0.5的平面上，平面波部分贡献的电子局域自旋磁矩的等高线图。对于矢量场的箭头图\textrm{(quiver plot)}，默认的就是磁化密度，因为电荷密度是标量，无须用箭头图表示。整个平面是一个变量。所以这里给出的是晶格中格点2的磁化密度。
+
+\subsection{反铁磁\ch{NiO}中的$e_g$和$t_{2g}$轨道}
