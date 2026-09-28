@@ -125,3 +125,87 @@
 这里，是垂直于晶格矢量，位于晶胞中坐标为0.5的平面上，平面波部分贡献的电子局域自旋磁矩的等高线图。对于矢量场的箭头图\textrm{(quiver plot)}，默认的就是磁化密度，因为电荷密度是标量，无须用箭头图表示。整个平面是一个变量。所以这里给出的是晶格中格点2的磁化密度。
 
 \subsection{反铁磁\ch{NiO}中的$e_g$和$t_{2g}$轨道}
+传统的描述材料磁学性质，最简易的第一步是考虑晶体场理论\textrm{(Crystal Field Theory)}引起的轨道劈裂。\ch{NiO}是过渡金属氧化物，其中的\ch{Ni2+}的周围，有六个\ch{O2-}作为配体，形成\ch{NiO6}八面体的配位场(晶体场)。由于八面体晶体场的$O_h$点群对称性低于球对称性，因此\ch{Ni}的$3d$轨道分裂为$t_{2g}$和$e_g$两类简并轨道。这里$t_{2g}$和$e_g$是$O_h$点群的\textrm{Mulliken}符号，其中$e_g$包括$d_{z^2}$和$d_{x^2-y^2}$轨道，$e$表示二重简并，即有两个能量相同的轨道，$g$指德文\textrm{gerade}，是德语``偶数/成对'的意思，在群论中，表示存在反演对称(中心对称)。$t_{2g}$包括$d_{xy}$，$d_{xz}$和$d_{yz}$轨道，$t$表示三重简并，同样，下标的$g$也是德文的\textrm{gerade}；而下标2，表示存在关于镜面的反对称。
+
+$d$轨道裂分出的$e_g$轨道指向配体\ch{O2-}，而$t_{2g}$轨道则与配体尽可能不发生交叠。因为\ch{O2-}的负电荷对$d$电子的排斥作用，$e_g$轨道在正八面体的晶体场中的能量比$t_{2g}$要高。
+
+具有球对称性的离子态\ch{Ni2+}的构象为$[\mathrm{Ar}]3d^8$，考虑晶体场作用后，有6个电子完全占据$t_{2g}$轨道，而2个电子分别占据两个简并的$e_g$轨道，形成总的自旋为1的状态。因此离子态\ch{Ni2+}的最大磁矩为$2\mu_{\mathrm{B}}/\mathrm{f.u.}$\footnote{这里\textrm{f.u.}表示化学式单位\textrm{(formula unit)}。}。
+
+输入控制文件中，有迭代电荷密度的计算控制参数\texttt{IMIX}，\texttt{IMIX}=4，表示采用\textrm{Pulay}混合方案。该方法中，与电荷密度混合有关的是\texttt{AMIX}和\texttt{BMIX}两个系数，而描述磁性自由度的系数是\texttt{AMIX\_MAG}和\texttt{BMIX\_MAG}。对于磁性体系的计算，\textrm{Pulay}方法的优点是可以采用线性混合，即可以将\texttt{BMIX}和\texttt{BMIX\_MAG}设置于极近于0的值。
+
+计算控制参数\texttt{EFERMI}=\textrm{MIDGAP}，表示把\textrm{Fermi}能级的位置确定在带隙的中心。
+
+计算的\textrm{Bash}命令
+
+利用\textrm{py4vasp}绘制\ch{Ni}中来自$e_g$和$t_{2g}$的\textrm{DOS}贡献。
+
+$t_{2g}$和$e_g$轨道是通过$d$轨道线性组合得到的不可约表示，特别需要指出的是，在\textrm{DOS}图中，\textrm{Fermi}能级位于带隙的正中位置。
+
+计算反铁磁\ch{NiO}的能带。并通过\textrm{py4vasp}解析带隙的数值。
+
+计算得到的带隙\textrm{1.001~eV}，远低于实验获得带隙\textrm{4.2~eV}\upcite{PBR57-1505_1998}。这根源于\textrm{DFT}的``先天不足''，严重低估交换相互作用。为了提升\textrm{DFT}的带隙计算能力，发展了各种提升交换-相关能力的理论方法，但是最常用的办法是\textrm{DFT}+$U$，利用$U$值唯相地描述电子的交换-相关作用。
+
+通过对\textrm{DOS}图的分析不难看出，$t_{2g}$轨道是完全占据的，利用\textrm{py4vasp}分析每个\ch{Ni}原子格点上的$e_g$轨道贡献。
+
+不难看出，两个\ch{Ni}原子个点上的$e_g$轨道贡献完全相反，但是都是一部分轨道占据，另有一部分轨道是未占据的。
+
+\textrm{py4vasp}分析计算得到的每个\ch{Ni}原子的在位磁矩。
+
+\textcolor{red}{\ch{Ni}原子磁矩为1.3401$\mu_{\mathrm B}$，和实验值1.9$\mu_{\mathrm B}$}，相关的综述见于\cite{PRB62-73_2000}。
+
+最后，\textrm{py4vasp}查看反铁磁\ch{NiO}的磁结构。
+
+\subsection{\ch{NiO}结构弛豫中的在位\rm{Coulomb}相互作用与赝势的选择}
+使用不同的\textrm{PAW}原子数据集，使用参数$U=8~\mathrm{eV}$和$J=0.95~\mathrm{eV}$，得到反铁磁\ch{NiO}的状态方程\textrm{(Equation of State, EOS)}，确定体系达到基态平衡时的晶格常数，能带带隙和在位磁矩。
+
+\textrm{DFT}+$U$是在\textrm{DFT}基础上为了处理强关联电子体系，特别是过渡金属氧化物和含$f$电子体系(如稀土和锕系元素)。通常使用的\textrm{LDA}和\textrm{GGA}泛函因为无法正确地考虑其在位\textrm{Coulomb}排斥\textrm{(the on-site Coulomb repulsion)}，以至于对强关联体系的计算常常给出定性错误的结果，比如明明是\textrm{Mott}绝缘体，\textrm{DFT}计算得到的能带却错误地确定为导体。由于传统习惯的原因，\textrm{DFT}+$U$也习惯上称呼为\textrm{LDA}+$U$或\textrm{LSDA}+$U$，即使使用的泛函是\textrm{GGA}或\textrm{meta-GGA}。本书中则统一称为\textrm{DFT}+$U$。
+
+%这个练习是关于\textrm{PAW}原子数据集选取和\textrm{DFT}+$U$方法两部分内容之间的插曲，对于非磁性计算也同样重要。
+
+计算控制参数文件
+
+$\vec k$空间网格剖分文件
+
+选择的原子数据集包括:~\textrm{Ni, Ni\_GW，Ni\_pv, Ni\_sv\_GW和O, O\_GW，O\_GW\_new, O\_h, O\_h\_GW, O\_s，O\_s\_GW}。
+
+对比每一类不同的\textrm{PAW}原子数据集。
+
+对于每一类计算构建单独的输入文件。
+
+对\ch{O}元素，有7个可选的原子数据集。这7种原子数据集有相同的初始原子构型。有两种分类形式，一种是通过原子数据集中构建赝势函数的``硬度''区分，\textrm{\_s}表示选择较低的截断能，得到的赝势是软的；相应地，\textrm{\_h}表示硬的，主要用于描述分子中原子间键长较短的场景。另一种分类是将带有\textrm{\_GW}的归并为一类，这些原子数据集特别适合于包含未占据态的计算，如描述光学性质的计算中电子的激发。在本算例中，主要计算体相材料(\ch{O}原子和其它元素间键长不是非常短)的磁学性质，计算中主要考虑的是基态能量和\ch{Ni}的$3d$轨道，所以对\ch{O}元素的原子数据集，主要选择不会严重损失计算精度且计算开销相对小的。
+
+对\ch{Ni}元素，有4种可选的原子数据集。它们中有的具有不同的初始原子构型，但无论哪一种，价电子中都含有$3d$壳层。因为磁性计算只需要考虑基态，不涉及考虑额外的$p$或$s$轨道对磁性的影响，所以不必选选择含有\textrm{\_GW}的原子数据集。
+
+再针对选择的每一组\textrm{PAW}原子数据集，组合不同的$U$值。利用\textrm{ASE}模块，选用一套\textrm{POSCAR}模板文件\textrm{POSCAR.tmp}，对每一类参数完成平衡态晶格常数计算生成对应的\textrm{POSCAR}文件。\textcolor{red}{其\textrm{Python}脚本为:}
+
+相应的\textrm{POTCAR}生成脚本
+
+类似地，\textrm{INCAR}文件也是通过模板文件\textrm{INCAR.tmp}修改后得到。不同是每个不同的计算，通过计算控制参数\texttt{XC}，选择交换-相关泛函；再设置不同的在位\textrm{Coulomb}排斥值$U$，最后分配到各计算目录中，\textcolor{red}{相应的\textrm{Python}脚本为}
+
+最后，在提交计算之前，可以通过\textrm{Bash}脚本，检查生成的计算目录是否完整，并可以在各目录中查看输入文件是否已经正确生成。
+
+%因为这一批次的计算耗时较长
+执行脚本，完成由两类\textrm{POTCAR}、三个$U$值和四个不同晶格常数组合的计算
+\textrm{Bash}脚本。
+
+计算过程中，可以用\textrm{Python}脚本检查计算中间结果，包括\textrm{fundamental gap}，查找\textrm{BANDGAP}并得到相应的值。
+
+用于提取体系总能、在位磁矩和基础带隙的\textrm{Python}脚本
+
+根据计算数据，可以拟合反铁磁\textrm{NiO}的\textrm{Birch-Murnaghan EOS}，对应的\textrm{Python}脚本为
+
+\textcolor{red}{\textbf{采用以下\textrm{Python}脚本}}，对每一类选定的\textrm{PAW}原子数据集，绘制基态稳定晶格常数、磁矩和带隙随$U$值变化的曲线。
+
+不难看出，对于两种不同的\textrm{PAW}原子数据集，晶格常数随$U$值的变化有明显的不同。对\textrm{Ni\_sv\_GW}，\ch{Ni}的$s$和$p$轨道都作为价电子轨道处理，因此这部分轨道将与$d$轨道杂化，随着$U$值的增大，在\textrm{Fermi}面附近$d$轨道将被推向远离\textrm{Fermi}面的方向移动，在\textrm{Fermi}面贡献也将减小。因此\textrm{Fermi}面附近$s$、$p$电子态更离域。因此含有$s,p$轨道的原子数据集，计算得到的晶格常数随$U$值增大而增大。
+
+而不同的\textrm{Ni}原子数据集，$s$和$p$电子作为冻芯电子，因此这部分电子不受$U$值影响，晶格常数也不会表现随$U$值的增大。相反，晶格常数会因为$U$值增大，\textrm{Fermi}面附近$d$电子态减少，表现出下降。
+
+随着在位\textrm{Coulomb}相互作用\textrm{(Hubbard $U$)}的增大，对位于基态平衡位置的\ch{Ni}原子的在位局域磁矩也有明显影响。不过由于局域磁矩主要来自\ch{Ni}的$d$轨道，所以相比之下，不同\textrm{PAW}原子数据集的影响则小得多。
+
+在基态稳定结构下带隙结果随$U$值变化的比较中，不难看出，不同\textrm{PAW}原子数据集对结果基本没有区别。所以选择\textrm{PAW}原子数据集的时候，要着眼计算的属性。本算例中，考虑\textrm{DFT}+$U$是主要的，$U$值的变化要特别注意。采用更精确的\textrm{PAW}数据，因为包含更多的价电子、更高的截断能，固然可以得到更精确的结果，但也需要更多的计算开销。而如果关心的计算性质对选择的\textrm{PAW}原子数据集不敏感，则最好选择开销相对小的原子数据集，避免无谓的计算开销。
+
+还要注意的是，有些物理量和体系的晶格有关。很多计算直接选择实验得到的晶格参数进行计算。有必要指出的是，基态稳定晶格常数与体系总能(即交换-相关泛函的选择也很有关系)。
+
+\textcolor{red}{带隙随晶格常数变化的数据关系}
+
+\subsection{采用\rm{DFT}+$U$的\ch{NiO}和\rm{Heisenberg}模型}
