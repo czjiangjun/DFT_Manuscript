@@ -209,3 +209,72 @@ $\vec k$空间网格剖分文件
 \textcolor{red}{带隙随晶格常数变化的数据关系}
 
 \subsection{采用\rm{DFT}+$U$的\ch{NiO}和\rm{Heisenberg}模型}
+基于\textrm{DFT}+$U$方法，选取$U=8~\mathrm{eV}$，$J=0.95~\mathrm{eV}$，计算\ch{NiO}在\textrm{Heisenberg}模型下的交换相互作用参数。
+
+根据\textrm{Heisenberg}交换模型，\ch{NiO}中如果最近邻格点$\langle i,j\rangle$的相互作用为$J_1$，次近邻格点$\langle\langle i,j\rangle\rangle$的相互作用为$J_2$，则有：
+\begin{displaymath}
+	H=-J_1\sum_{\langle i,j\rangle}\vec{\mathrm{e}}_i\cdot\vec{\mathrm{e}}_j-J_2\sum_{\langle\langle i,j\rangle\rangle}\vec{\mathrm{e}}_i\cdot\vec{\mathrm{e}}_j
+\end{displaymath}
+其中$\mathrm{e}_i$和$\mathrm{e}_j$表示沿在位磁矩方向的单位矢量。这里分别考虑一种铁磁\textrm{(ferromagentic, FM)}有序相和两种反铁磁序相。两个反铁磁序相，其中一个沿(001)/(110)面\textrm{(AF1)}，另一个沿(111)面\textrm{(AF2)}。根据\textrm{Heisenberg}模型，考虑近邻和次近邻的交换能后，单位晶胞的能量表示为：
+\begin{displaymath}
+	\begin{aligned}
+		E_{\mathrm{FM}}=&E_0-6J_1-3J_2\\
+		E_{\mathrm{AF_1}}=&E_0+2J_1-3J_2\\
+		E_{\mathrm{AF2}}=&E_0+3J_2
+	\end{aligned}
+\end{displaymath}
+式中，$J_1$和$J_2$是\textrm{Heisenberg}交换参数。因此可有$J_1$和$J_2$的表达式为：
+\begin{displaymath}
+	\begin{aligned}
+		J_1=&\dfrac18(E_{\mathrm{AF_1}}-E_{\mathrm{FM}})\\
+		J_2=&\dfrac1{24}(4E_{\mathrm{AF_2}}-3E_{\mathrm{AF_1}}-E{\mathrm{FM}})
+	\end{aligned}
+\end{displaymath}
+采用共线磁性的第一原理计算，可以得到各类体系的总能，进而得到交换参数。当体系的模型\textrm{Hamiltonian}可以通过临界温度\textrm{(Critical temperature)}等性质得到时，该方法就特别有用。\upcite{PRB84-115114_2011}
+
+\textcolor{red}{铁磁序相\textrm{(FM)}与反铁磁相\textrm{(AFM1)}的结构文件\textrm{POSCAR}}
+
+\textcolor{red}{反铁磁序相\textrm{(AFM2)}的结构文件\textrm{POSCAR}}
+
+\textcolor{red}{反铁磁序相\textrm{(AFM2)}的计算控制与参数文件\textrm{INCAR}}\\
+\textcolor{red}{反铁磁序相\textrm{(AFM1)}的计算控制与参数文件\textrm{INCAR}}\\
+\textcolor{red}{铁磁序相\textrm{(FM)}的计算控制与参数文件\textrm{INCAR}}
+
+\textcolor{red}{铁磁序相\textrm{(FM)}与反铁磁相\textrm{(AFM1)}的$\vec k$空间网格剖分文件\textrm{KPOINTS}}
+
+\textcolor{red}{反铁磁序相\textrm{(AFM2)}的$\vec k$空间网格剖分文件\textrm{KPOINTS}}
+
+不难看出，\textrm{INCAR}文件的基本设置是\textrm{DFT}+$U$计算。这里设置的截断能和$\vec k$空间剖分网格都没有很好的做收敛测试，只是作为示例，节约计算开销，在实际计算中，建议做一下相关参数的收敛测试。为了得到的体系总能更精确，推荐$\vec k$空间积分采用四面体方式，即计算控制参数\texttt{ISMEAR}=-5，并且电子步的收敛能量差\texttt{EIDFF}应该相对更小。几个\textrm{INCAR}文件的差别仅在于由\texttt{MAGMOM}确定的初始的局域磁构象。\texttt{MAGMOM}的值也确定了体系许可的对称操作，所以即使\textrm{FM}和\textrm{AFM1}的初始结构相同，但最后得到不同的磁构象。不过，经验表明，实际计算的时候，如果不加对称性约束，最终得到的磁构象会与最初的磁构象更接近。在磁性计算环境下，这是\textrm{VASP}计算的优势所在，不过因为没有能利用对称性，磁结构的基态计算需要更多的开销。
+
+%而且这里
+%\texttt{MAGMOM = 4*5.0 4*0}完全等价于
+%\texttt{MAGMOM = 5.0 5.0 5.0 5.0 0.0 0.0 0.0 0.0}
+
+\textrm{KPOINTS}文件中$\vec k$空间剖分的网格点反比于晶格矢量的长度，这里给出的$\vec k$点网格较为密，实际计算中，对于每一类计算，最好做一下$\vec k$空间剖分的网格密度收敛测试，而不是一上来就选择较为密的$\vec k$空间网格剖分。在极端情况下，如果计算的体系中只有一个磁结构是导体态(金属态)，而其它的都存在带隙，对于导体态，考虑长程相互作用，因此更密的$\vec k$空间剖分网格将给出更可靠的结果。
+
+执行计算脚本
+
+计算完毕，应用\textrm{py4vasp}模块，提取体系的基态总能，并得到两个交换相互作用的参数$J_1$和$J_2$。
+
+\textcolor{red}{注意，由于计算中磁有序态的最小重复单元不同，因此用于计算交换相互作用参数的基态总能，必须经过折算，然后才代入到交换相互作用公式中。}
+
+\subsection{\rm{BCC}\ch{Fe}中引入\rm{SOC}降低空间群对称性}
+计算\textrm{BCC}\ch{Fe}在考虑\textrm{SOC}之后，沿高对称性路径$\mathrm{H}_3-\Gamma-H$的的能带结构。
+在\textrm{VASP}计算中考虑\textrm{SOC}，主要根据文献\cite{PRB62-11556_2000}给出的自旋-轨道相互作用计算方案，与自旋\textrm{DFT(SPin-Density Functional Theory, SDFT)}方法中引入非共线磁性的处理方式类似，基于微软理论，用自旋的\textrm{SDFT}波函数作为零阶微扰函数来描述非共线磁性的贡献。因此，体系的电荷密度可写成$2\times2$密度矩阵形式:
+\begin{displaymath}
+	n(\vec r)=
+	\begin{pmatrix}
+		n_{\arrowup\arrowup}(\vec r) &n_{\arrowup\arrowdown}(\vec r)\\
+		n_{\arrowdown\arrowup}(\vec r) &n_{\arrowdown\arrowdown}(\vec r)
+	\end{pmatrix}
+\end{displaymath}
+在考虑相对论效应的零阶规范近似\textrm{(the Zeroth-order-refular approximation, ZERO)}下，有
+\begin{displaymath}
+	\begin{aligned}
+		\hat{H}_{\mathrm{SOC}}=&\dfrac1{(2c)^2}\dfrac{K^2(r)}{r}\dfrac{\mathrm{d}V(r)}{\mathrm{d}r}\vec\sigma\cdot\vec L\\
+		K(r)=\dfrac1{1-\frac{V(r)}{2c^2}}
+	\end{aligned}
+\end{displaymath}
+这里所有的计算采用\textrm{CGS}制量纲。
+
+这样考虑得到体系的\textrm{SOC}能量修正较小，可以定性说明\textrm{SOC}的一些影响。例如，在得到的\textrm{BCC}\ch{Fe}的能带计算结果中，沿着高对称$\vec k$点路径$\Gamma-H_3$和$\Gamma-H$的能带数值，与不考虑\textrm{SOC}的结果几乎没有差别；但考虑\textrm{SOC}之后的能带，存在能带的反向交叉\textrm{(anticrossing)}的能带结构，这是典型的\textrm{SOC}效应。
