@@ -1,3 +1,4 @@
+一般地，体系地磁性研究主要涉及三部分内容：电子自旋，量子统计的电子-电子的交换作用。概言之，磁性是一种群体的量子电动力学现象。在第一原理计算中，主要的挑战是如何通过\textrm{VASP}计算描述磁性。
 \subsection{六方密堆积\ch{Co}的铁磁态态密度和能带计算}
 在\textrm{VASP}自旋极化计算中，设置计算控制参数\texttt{ISPIN}=2，电子将按照指定的极化方向(一般默认为$z$轴方向)分为自旋向上和自旋向下两部分，对应的\textrm{Kohn-Sham}方程将在各自不同的空间里求解，因此两种自旋的本征态可以有不同的本征值。由于全部格点都有相同的极化方向，因此也称为共线磁结构\textrm{(collinear magnetic structure)}。
 
@@ -299,16 +300,121 @@ $\vec k$空间网格剖分文件
 \end{enumerate}
 该处理方案的优点是，允许在计算过程中改变磁化方向，却不用担心计算结果收敛到了不同的磁化方向。但这个方案的前提是\textrm{SOC}是小的微扰，这样由\textrm{SOC}引起的电荷密度和磁化程度都不会很大。换言之，磁性原子的轨道角动量裂分主要由晶体场引起，而不是由局域磁矩引起的。
 
-\ch{FeO}的立方结构，采用\textrm{Python}模块\textrm{ASE}，实现\ch{FeO}的晶格结构可视化。
+为计算\textrm{MAE}，选择球坐标系中的极角$\theta$和$\phi$标识各个不同方向。参照文献\ref{PRB86-115134_2012}的选择
+\begin{itemize}
+	\item 当磁化取向轴平行于立方体的体对角线($[111]$方向)，则取$\theta=0$；
+	\item 当磁化取向轴位于立方体的$(1\bar{1}0)$面内，则取$\phi=0$。
+\end{itemize}
+严格地讲，由于畸变，实际上\ch{FeO}晶格是单斜结构而非立方结构。因此这里的立方体$[111]$方向、$(1\bar{1}0)$面，都是近似的说法。具体的\textrm{MAE}计算步骤是
+\begin{enumerate}
+	\item 由传统的立方晶胞结构出发，构建$2\times2\times$的超晶胞结构；
+	\item 引入波矢为$\vec 1=(1/2,1/2,1/2)$的自旋波，并构造单斜畸变；
+	\item 得到用于磁性计算的初基原胞；
+	\item 在产生畸变的超晶胞结构中，确定立方$[111]$方向，并确定在立方$(1\bar{1}0)$面内的进动旋转；
+	\item \textcolor{red}{分别选择极角$\phi=0$和$\phi=90^{\textcircle}$，$\theta\in[0,\pi]$的范围内，计算一系列\texttt{SAXIS}的变化}。
+\end{enumerate}
 
-引入$q=(1/2,1/2,1/2)$自旋波\textrm{(spin wave)}矢量，使立方晶体形成单斜畸变，\textrm{red}{以下脚本可以将\textrm{FCC}晶格产生各种不同的畸变}，畸变后可以通过\textrm{Spglib}模块确定新的空间群。
+\subsubsection{初始立方晶胞}
+理想\ch{FeO}的晶体结构为$Fm\bar{3}m$，采用\textrm{Python}模块\textrm{ASE}，实现\ch{FeO}的晶格结构可视化，并可以构建超晶胞。
+
+\subsubsection{引入自旋波矢和畸变}
+引入$q=(1/2,1/2,1/2)$自旋波\textrm{(spin wave)}矢量，使立方晶体形成单斜畸变，\textrm{red}{以下脚本可以对\textrm{FCC}晶格产生各种不同的畸变}，畸变后可以通过\textrm{Spglib}模块确定新的空间群。
 
 确定超晶胞体积\\
 畸变超晶胞体积\\
 空间群
 
-引入自旋波，将一个平面上的自旋向下的原子类型由\ch{Fe}变成\ch{Mo}后
+为引入自旋波，将某一平面上的自旋向下的原子类型由\ch{Fe}替换\ch{Mo}后
 
 得到的空间群是
+
+\subsubsection{用于磁性计算的初基原胞}
+由惯用原胞的产生的超晶胞，固然可以方便地可视化磁性计算结构。但是为了节约计算开销，这里还是选择相应的初基原胞。具有反铁磁序结构的初基原胞\textcolor{red}{与立方结构的\ch{NiO}相同}。对畸变的晶胞，也采取类似的变换规则，可以得到相应的原子位置：
+\begin{displaymath}
+	\mathbf{A}_{\mathrm{prim}}=\mathbf{P}\cdot\mathbf{A}_{\mathrm{conv}}
+\end{displaymath}
+相应地可以有
+\begin{displaymath}
+	\vec v_{\mathrm{prim}}=(\mathbf{P}^{-1})^{T}\cdot\vec v_{\mathrm{conv}}
+\end{displaymath}
+通过等价原子位置的剔除，得到一套适合磁性计算的初基原胞，\textcolor{red}{并检验其空间群是否是我们希望的}。在得到的畸变初基原胞中，将\ch{Mn}换回\ch{Fe}，排序好原子后，得到\textrm{POSCAR}文件。最后，再根据\textrm{POSCAR}文件中的原子序，在\textrm{INCAR}文件中设计计算反铁磁结构需要的控制参数\texttt{MAGMOM}的值。\textcolor{red}{以上内容的\textrm{Python}命令脚本为}:
+
+初基原胞\\
+晶格参数\\
+体积\\
+原子位置\\
+空间群\\
+\texttt{MAGMOM}
+
+为理解初基原胞中原子在惯用超晶胞中的相对位置，按照\textrm{py4vasp}模块作图，注意标出立方体对角线$[1,1,1]$和面对角线$[1,1,0]$方向。
+
+画出初基原胞和惯用超晶胞的格矢，沿立方晶胞方向。
+
+\subsubsection{立方晶胞的$[111]$轴和$1\bar{1}0$面}
+确认在惯用晶胞和初基原胞中$[111]$轴和$1\bar{1}0$面的方向：
+
+$[h,k,l]$方向指的是由原点指向分数坐标$[h,k,l]$的方向，\textcolor{red}{因此$[1,1,1]$方向就是立方超晶胞中由原点指向第七个原子的方向。}晶胞畸变时没有改变原子位置，因此$[1,1,1]$方向依然是原点指向第七个原子的方向。
+
+$(hkl)$面是指惯用晶胞中采用\textrm{Miller}指数$(hkl)$表示的平面，\textcolor{red}{\textrm{Miller}指数的值与晶轴截距成反比}。因此$1\bar{1}0$面满足
+\begin{itemize}
+	\item 截取$x$-轴位于(1,0,0)点位置；
+	\item 截取$y$-轴位于(0,-1,0)点位置；
+	\item 平行于$z$-轴(对应的\textrm{Miller}指数为0，即相交于$\infinity$)。
+\end{itemize}
+注意到如果$[111]$轴向确定了$(1\bar{-1}0)$平面的一个方向，另一个方向就是$[110]$方向。由此可以确定立方超晶胞和畸变晶胞中第四个原子。在$(1\hbar{1}0)$面内的进动旋转轴方向即为[-110]方向。
+
+在畸变的惯用超晶胞中，[-110]方向确定的原子\textrm{Cartesian}坐标。\textcolor{red}{思考:晶体的轴向如何用初级原胞格矢表示?}
+
+确定晶轴和晶面的\textrm{Python}脚本代码
+
+晶轴$[-110]$方向在惯用晶胞中:\\
+相应的\textrm{Cartesian}坐标为
+
+晶轴$[-440]$方向在初基原胞中:\\
+相应的\textrm{Cartesian}坐标为
+
+由此，可以得到根据立方晶胞的晶轴方向确定\textrm{Cartesian}坐标的函数关系，此外，还可以得到单位矢量及两个矢量夹角的计算关系。利用这些几何与代数关系，可以确定沿着$[111]$，$[-110]$，$[110]$和[00-1]方向的单位矢量，并可以检查其夹角。定义相关函数关系的\textrm{Python}代码为：
+
+晶轴$[111]$方向的单位矢量，用\textrm{Cartesian}坐标表示为：\\
+晶轴$[-111]$方向的单位矢量，用\textrm{Cartesian}坐标表示为：\\
+晶轴$[110]$方向的单位矢量，用\textrm{Cartesian}坐标表示为：\\
+
+晶轴$[111]$方向与$[-1,1,0]$方向的夹角为：$90.0^{\textcircle}$\\
+\textcolor{red}{注意：由$111$向$110$的进动旋转\texttt{SAXIS}的极角$\theta$为:}
+\textcolor{red}{注意：由$111$向$00-1$的进动旋转\texttt{SAXIS}的极角$\theta$为:}
+
+\subsubsection{沿着\textrm{MAE}路径的\tt{SAXIS}}
+\textcolor{red}{计算控制参数\texttt{SAXIS}指定了自旋进动(磁化旋进)方向的定量改变值。}
+
+对于\ch{FeO}，当极角$\chi=0$，如要使$\theta$增大，则需要绕$e-111$(沿$[-110]$方向的单位矢量)方向旋转$e111$(沿着$[111]$方向的单位矢量)；当极角$\chi=90$，进动轴$e-110$首先沿着$e111$方向旋转$\pi/2$，随后$\theta$会随着到达新位置的$e-110$轴的旋转而增大。\textcolor{red}{为确定一套\texttt{SAXIS}的值，采用\textrm{Python}的\textrm{Scipy}模块，编写代码如下}
+
+对于$\phi=0^{\textcircle}$的一个旋转轴，生成\texttt{SAXIS}列表值:\\
+对于$\phi=90^{\textcircle}$的一个旋转轴，生成\texttt{SAXIS}列表值:
+
+采用\textrm{Python}将\texttt{SAXI}的值在原胞中可视化的代码如下。
+
+在原地附近黑色和红色的平面分别对应的是$\phi=0^{\textcircle}$和$\phi=90^{\textcircle}$。
+
+最后，在\textrm{Python}代码中给出\textrm{Bash}数组，执行该脚本就可以遍历全部\texttt{SAXIS}的值：
+
+每$5^{\textcircle}$一个步长。
+
+根据上述讨论，已经得到初基原胞的\textrm{POSCAR}，反铁磁相的自旋波矢$\vec q=(1/2,1/2,1/2)$的初始自旋计算控制参数\texttt{MAGMOM}，可用于共线磁性计算和非共线磁性计算，以及\textrm{MAE}路径(以\textrm{Bash}数组给出的计算控制参数\texttt{SAXIS}的值)。
+
+这个计算是共线磁性的\textrm{DFT}+$U$计算和多组沿\textrm{MAE}路径的非共线磁性计算的组合结果。
+
+结构文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR.ispin2}(共线磁性\textrm{DFT+}$U$计算)
+
+计算控制文件\textrm{INCAR.path}(非共线磁性\textrm{MAE}计算，当前不含计算控制参数\texttt{SAXIS})
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在本次\textrm{VASP}计算中，共线磁性计算结束后，启动非共线磁性计算时，要求直接入读入电荷密度和磁矩，这就意味着两类计算的截断能(由计算控制参数\texttt{ENCUT}确定)和\textrm{FFT}网格都应该保持一致。而共线计算中的能带数目(由\texttt{NBANDS}确定)考虑了两种自旋的能带数加和。从纯计算的角度上说，从已有的电荷密度开始新的计算，是可以改变$\vec k$空间网格剖分的，但是考虑到计算过程中电荷密度保持不变\textrm{计算控制参数\texttt{ICHARG}=11}，建议保持相同的$\vec k$空间网格密度。
+
+指定\textrm{VASP}计算的\textrm{Bash}命令为
+
+\textrm{MAE}路径的可视化\textrm{Python}脚本为
 
 
