@@ -1,6 +1,413 @@
 分子动力学\textrm{(Molecular Dynamics, MD)}是根据\textrm{Newton}力学，按照体系中每个粒子(原子或分子)受力情况，描述粒子运动随时间变化的模拟计算过程。
 
 \subsection{\ch{Si}的熔融}
+\subsubsection{金刚石结构的\ch{Si}}
+采用第一原理分子动力学\textrm{(ab-initio MD)}模拟64个原子的金刚石\ch{Si}在\textrm{Nos\'e-Hoover}等温的正则系综\textrm{(canonical ensemble)}\footnote{\textrm{canonical}，汉译作``正则''，出自《楚辞\textperiodcentered 离骚》``皇揽揆余於初度兮，肇锡余以嘉名;~名余曰正则兮，字余曰灵均''，《楚辞章句》注%\upcite{Chucizhangju}
+:~``正，平也;~则，法也;~灵，神也;~均，调也。言正平可法则者，莫过于天;~养物均调者，莫神于地。高平曰原，故父伯庸名我为平以法天，字我为原以法地。言己上之能安君，下之能养民也。''意思是说(父辈给屈原赐名、字)``正则''、``灵均''隐喻着某种意义，即平、正是天道的象征，原、均是地的象征。因此``正则''的含义是``符合天道''，与\textrm{canonical}的意思\textrm{of, relating to, or forming a canon}意义一致。}中90\textrm{fs}的动力学行为。
+
+在\textrm{MD}模拟中，指定温度下，原子或分子的运动规律是由经典力学描述的，换言之，每个时间步长里，原子或分子是作为经典粒子处理，其受力与运动服从\textrm{Newdon}第二定律。如果粒子的受力是由第一原理计算得到的，就被称为第一原理\textrm{MD}。考虑到计算考虑的正则系综(\textrm{NVT}系综)，计算过程中保持粒子数\textrm{(N)}不变，体积\textrm{(V)}不变并且温度\textrm{(T)}不变。
+
+计算中的金刚石结构的\ch{Si}的格式为\textrm{.cif}格式\footnote{\textcolor{red}{\textrm{cif}格式}}。\textrm{Python}的开源材料分析模块\textrm{(Python Materials Genomics, Pymatgen)}模块，可以把\textrm{.cif}格式文件转换为\textrm{POSCAR}格式。由于\textrm{MD}模拟的体系较大，很多模拟对象是在惯用晶胞基础上扩展成的超晶胞上完成的，为的是将影响体系动力学主要因素都考虑在内。因此，在实际计算中，仔细估计物理量随体系扩张的收敛条件，是选择晶格大小的重要因素。
+
+使用\textrm{Pymatgen}完成\textrm{cif}格式转换成\textrm{POSCAR}的代码如下：
+
+使用超晶胞完成\textrm{MD}模拟，因为超晶胞的大小决定了晶格振动模式的最大波长，所以分子动力学模拟中的超晶胞必须足够大，这样才能包含全部振动模式，因为\textrm{MD}模拟中，很多物理量是和振动模式有关的。这类计算往往可以通过声子计算估计，或者通过几个不同大小的超晶胞模拟估计。
+
+另一方面，对于计算诸如表面问题中的``吸附-基底''或气体和液体的模拟问题中，模拟的晶胞必须足够大，因为模拟引入了周期边界条件，如果最小重复单元太小，会在周期边界上非物理的原子、分子间相互作用。有必要指出的是，这同样适用于此类体系的弛豫问题。
+
+总之，\textrm{MD}模拟中，所选择的超晶胞必须足够大，为的是保证各态遍历假设\textrm{(ergodic simulation)}，确保体系的全部振动模式都包括在内。
+
+64个原子的模拟对象\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在\textrm{INCAR}文件中，计算控制参数\texttt{ISMEAR}，\texttt{SIGMA}，\texttt{ALGO}，\texttt{PREC}和\texttt{ISYM}是求解\textrm{Kohn-Sham}方程波函数相关的。其余都是和\textrm{MD}模拟有关的而控制参数，\texttt{IBRION}=0即开启\textrm{MD}计算，而\texttt{NSW}和\texttt{POTIM}分别是指定\textrm{MD}模拟的离子步的数目和步长，步长的时间单位是\textrm{fs}。
+
+参数\texttt{MDALGO}设置的是等温条件，这里使用的是\textrm{Nos\'e-Hoover}等温模拟，该等温方式中热浴(环境)和体系的能量交换是通过热惯性\textrm{(thermal inertia)}，即\textrm{Nos\'e}质量完成的。\textrm{Nos\'e}质量参数为\texttt{SMASS}。为完成\textrm{NVT}系综模拟，起始温度(\texttt{TEBEG})和终了温度(\texttt{TEEND})保持相同。而通过参数\texttt{ISIF}=2，确保模拟过程中体积不变。
+
+因为计算采用超晶胞，因此\textrm{KPOINTS}文件中只有$\Gamma$点。
+
+为了节省计算开销，采用\textrm{vasp\_gam}，而且可以算得快些。类似的，标准输出(或者\textrm{OSZICAR})中有关参数的说明：
+
+\begin{itemize}
+	\item \texttt{T}:~当前离子步的瞬时温度。
+	\item \texttt{E}:~总能，对应\textrm{OUTCAR}中的\texttt{ETOTAL}:~(1)源于离子自由度的势能\texttt{F}，(2)\textrm{Nos\'e-Hoover}等温模拟贡献的势能\texttt{SP}和动能\texttt{SK}，(3)离子的动能\texttt{EK}。
+	\item \texttt{F}:~\textrm{DFT}计算的体系自由能(因为展宽因子\texttt{SIGMA}，引入了虚拟电子温度)，对应\textrm{OUTCAR}中的\textrm{TOTEN}:~从\textrm{MD}的角度看，这就是离子自由度的势能部分。
+	\item \texttt{E0}:~\textrm{DFT}计算的总能，源于\textrm{DFT}总自由能\texttt{F}扣除熵的贡献，对应\texttt{SIGMA}的贡献为零。
+	\item \texttt{EK}:~离子的动能，对应\textrm{OUTCAR}中的\texttt{EKIN}。
+	\item \texttt{SP}:~\textrm{Nos\'e-Hoover}等温贡献的势能:~对应\textrm{OUTCAR}中的\texttt{ES}。
+	\item \texttt{SK}:~\textrm{Nos\'e-Hoover}等温贡献的动能:~对应\textrm{OUTCAR}中的\texttt{EPS}。
+\end{itemize}
+
+值得注意的是，每个离子步温度并不是恒定的常数。因为每个离子步的瞬时温度并非可观测的系综平均值。因为模拟中的等温模拟的要求，并不是每一个时间步长里的瞬时温度都要恒定，而只要求系综平均的温度是固定值即可。在\textrm{OUTCAR}文件中，有提示字符串\textcolor{red}{\textrm{mean temperature}}。如果有足够多的原子，在热力学极限下，这种瞬时温度的涨落就可以忽略。
+
+采用\textrm{py4vasp}作图对能量和时间步长。
+
+根据模拟，可以看到继续\textrm{90fs}和\textrm{2000K}的模拟，金刚石结构的\ch{Si}将会熔融，因此可以得到第一原理计算的原子受力，由此可以得到精确的经典的粒子径迹\textrm{(trajectories)}。
+
+\subsubsection{\ch{Si}的熔融}
+对64个原子的金刚石构型\ch{Si}，应用\textrm{2000K}的正则系综，完成第一原理\textrm{MD}模拟，时长分别为\textrm{90fs}，\textrm{180fs}和\textrm{195fs}，得到熔融\ch{Si}的对相关函数。
+
+液态的结构可以通过径向分布函数\textrm{(radial distribution function)}表示，在这里也就是对相关函数。大致地说，对相关函数描述的是以一个粒子为中心，在给定距离范围内找到另一个粒子的概率。更准确地说，是以给定的任意参照粒子为中心，在距离$r$的范围内，局域粒子密度与系统平均密度的比例。可以写作
+\begin{displaymath}
+	g(r)=\dfrac{\Omega_r}{N^2}\langle\sum_i\sum_{j\neq i}\delta(\vec r-\mathbf{R}_{ij})\rangle
+\end{displaymath}
+这里$\Omega_r$是实空间体积，$N$是粒子数，$\mathbf{R}_{ij}=\mathbf{R}_i-\mathbf{R}_j$，而$\langle\cdot\rangle$表示取系综平均值。
+\begin{displaymath}
+	A_{\mathrm{obs}}=\langle A(p(t),q(t))\rangle_{\mathrm{time}}=\lim_{t_{\mathrm{obs}}\rightarrow\infinity}\dfrac1{t_{\mathrm{obs}}}\int_0^{t_{\mathrm{obs}}}A(p(t),q(t))\mathrm{d}t
+\end{displaymath}
+这里$A_{\mathrm{obs}}$表示可观测的宏观物理量，是对物理量$A(p(t),q(t))$对时间的平均，也就是在$p(t)$和$q(t)$定义的相空间内的点随时间$t$变化的曲线。
+
+晶体中的长程序，在对相关函数形式中，表现为一系列特定的峰值位置。而液态中，粒子与固态中类似，依然受很强的束缚，但体系在发生熔融的时候，对相关函数则有了很大的改变。
+
+应用对相关函数，可以计算任何与原子对有关的函数\textrm{B}。
+\begin{displaymath}
+	\mathrm{B}_{\mathrm{obs}}=\langle\sum_i\sum_{j>i}b(\mathbf{R}_{ij})\rangle=\dfrac12N_{\rho}\int_0^{\infinity}b(r)g(r)4\pi r^2\mathrm{d}r
+\end{displaymath}
+该公式对各向同性的液体成立，$\rho$是粒子密度。\textcolor{red}{Computer Simulation of Liquids by M. P. Allen and D. J. Tildesley}
+
+将重新计算\textrm{MD}，计算前，将前次模拟得到的\textrm{CONTCAR}保存到\textrm{POSCAR}。
+
+\textrm{INCAR}文件
+
+\textrm{KPOINTS}文件
+
+计算模拟参数与之前一样。
+
+计算得到的对相关函数写入\textrm{PCDAT}文件，可以通过\textrm{Bash}脚本\textrm{pair\_correlation.sh}和\textrm{pair\_correlation.gp}通过\textrm{gnuplot}实现可视化。
+
+前面的计算已经完成了\textrm{90fs}的模拟，因此将当前的e\textrm{PCDAT}为\textrm{PCDAT.90fs}。由当前最后的结构\textrm{(CONTCAR)}，开启重新计算，完成的计算是\ch{Si}熔融时长\textrm{180fs}的模拟，但模拟结果则是对\textrm{90fs}取的系综平均(计算控制参数\texttt{NSW}和\texttt{POTIM})。得到的\textrm{PCDAT}另存为\textrm{PCDAT.180fs}。然后就可以作图对比两个对相关函数。
+
+从对相关函数结果看，前\textrm{90fs}，系统保持与初始结构接近，因为对相关函数中存在晶体才有的长程有序特征峰。有必要指出的是，当$r$超过超晶胞最短晶格一半的时候，$g(r)$对$r$的曲线没有意义。因此在本算例中$r$的取值应该是$\leqslant 5.4\AA$。
+
+%长距离条件下的对相关函数
+采用\textrm{py4vasp}可视化结构。
+
+\textrm{XDATCAR}保存了每个时间步长的离子位置。粒子径迹是粒子在实际空间的运动轨迹。例如，下图中，根据灰色箭头，\textcolor{red}{cyan}色的原子离开中心的绿色盒子。
+
+另一种表示\textrm{XDATCAR}文件是中心盒表示。在每个时间步长内，通过粒子位置加载周期边界条件，得到``封装的''离子径迹。在上述图示中，就是如红色虚线箭头示意的\textrm{cyan}原子被周期镜像取代。
+
+将\textrm{CONTCAR}另存为\textrm{POSCAR}文件，并修改\textrm{INCAR}文件中的计算控制参数计算额外的\textrm{15fs}，注意\textrm{OUTCAR}中\texttt{NPACO}，\texttt{APACO}，\texttt{NBLOCK}和\texttt{KBLOCK}。这些计算控制参数可以改变最大距离(本算例中，对相关函数中该值为$5.4\mathrm{\AA}$)，根据最后的离子位置，重启计算。
+
+因此\textrm{INCAR}中，设置\texttt{NSW}=5\texttt{APACO}=5.4，按照\textrm{Bash}脚本
+
+用\textrm{Bash}脚本，通过\textrm{gnuplot}绘制新的对相关函数可视化图\textrm{pair\_correlation.png}。
+
+最后\textrm{15fs}对应的是总模拟时间为\textrm{195fs}的对相关函数。可以看到这里的对相关函数比较差。
+
+\subsubsection{分子的几何结构}
+采用第一原理\textrm{MD}模拟\textrm{Langevin}等温条件下16个\ch{Ni}原子\textrm{NPT}系综下的几何结构的原子坐标。
+
+\textrm{VASP}中通过计算控制参数\texttt{MDALGO}设定各种等温模拟，本算例将采用\textrm{Langevin}等温，因此\texttt{MDALGO}=3。\textrm{Lagevine}等温对粒子运动方程的贡献包括随机项和确定项，确定项来自\textrm{Nos\'e-Hoover}等温，而随机项来自\textrm{Andersen}等温(\textrm{MDALGO}=1)，\textcolor{red}{这就是以随机方式引入温度的影响的等温方式}。
+
+在有很强的分子间相互作用力的体系，如弯曲振动模的模拟中，\textrm{Andersen}等温和\textrm{Langevin}等温\textcolor{red}{没有在各态遍历假设之上，引入新的内容}。实际上，\textcolor{red}{这两种等温方式，在平衡自由度上非常有效的}。相反，\textrm{Nose\'e-Hoover}等温在小体系或强直体系中，没有考虑各态遍历假设。例如，在单个丁烷模拟中就存在这个问题。实际上，在\textrm{VASP}模拟中，等温方式主要取决于热力学系综的选择。
+
+在\textrm{MD}模拟中，有可能会想检查每个时间步长的原子位置变动。\textcolor{red}{原子位置的配置，主要归结为分子几何结构}。在\textrm{VASP}中，\textrm{ICONST}文件中确定的是体系内部的几何坐标。
+
+在金刚石型\ch{Si}的初级原胞基础上，构建$2\times2\times2$的超晶胞，\textcolor{red}{在原有\textrm{Pymatgen}构建代码，增添下以下代码内并执行}
+
+由此可以对照生成的\textrm{POSCAR}文件和参照\textrm{POSCAR.ref}。
+
+输入控制文件\textrm{INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+\textcolor{red}{\textrm{ICONST}文件}
+
+在\textrm{INCAR}文件中，计算控制参数\texttt{ISYM}=0，计算过程中完全不考虑空间群对称性。\textrm{DFT}计算步中，计算精度控制参数\texttt{PREC}\textrm{=normal},\textrm{IVDW}=10考虑\textrm{Van der Waals}校正。此外的都是\textrm{DFT}重用的计算参数，为了节约存储空间，不写\textrm{WAVECAR}文件和\textrm{CHGCAR}文件。
+
+\textrm{MD}计算的计算控制参数包括\texttt{IBRION}，\texttt{NSW}和\texttt{POTIM}。而\texttt{ISIF}=3和\texttt{MDALGO}=3，表示计算选择\textrm{Langevin}等温完成\textrm{NPT}系综模拟。
+
+\textrm{ICONST}文件确定了待检查的分子结构。第一列确定了几何坐标的种类，如离子距离坐标原点的距离，或者是离子间的夹角。随后的整数，是\textrm{POSCAR}文件中相同顺序的原子序号。只有最后的整数是指定行为，即整数7，表示监察原子位置。
+
+\textrm{KPOINTS}文件确定了一套均匀的$\vec k$空间网格剖分方案，包括$\Gamma$点，每个方向上两个格点。本该采用更大的计算晶胞，但计算开销太大。实际计算中，需要检查关注的物理量计算是否随晶胞结构和$\vec k$点收敛。因为这里只关心空间坐标的变化，所以这样的计算已经足够。
+
+运行计算脚本，因为不仅是$\Gamma$点计算，主要要用\textrm{vasp\_std}。因为$vasp\_gam$只支持仅有$\Gamma$点的单个$\vec k$点，在\textrm{vasp\_gam}中开的数组是是实数类型的，而非复数类型的。而这里的均匀$\vec k$空间网格剖分点，不仅仅是$\Gamma$点。
+
+在\textrm{REPORT}文件中，有每个\textrm{MD}步，有待检查原子坐标，例如，在第一个\textrm{MD}模拟步中的数据
+
+采用\textrm{py4vasp}，提取检视的体积并作图。
+
+\textrm{OUTCAR}文件中保存了模拟的总时间，
+
+根据当前计算的结果，估计10000\textrm{MD}步的大致时间。从目前的结果看，10个\textrm{MD}步骤，大致是\textrm{74s}，所以10000\textrm{MD}步大约是{20}小时。
+
+10000\textrm{MD}步的步数规模是一个典型的\textrm{MD}模拟得到合理结果的必要步数。因此，从这个算例可以看得出，第一原理\textrm{MD}模拟是非常吃计算开销，并且也非常耗时。所以很多体系采用第一原理\textrm{MD}模拟是不太可行的。
 
 \subsection{机器学习力场}
+在第一原理\textrm{MD}运行过程中，实时训练原子受力的力场。本算例是采用\textrm{Langevin}等温完成16个\ch{Si}原子体系\textrm{NPT}系综的第一原理\textrm{MD}模拟，在模拟中实现每个离子步实时修正力场。
+
+第一原理\textrm{MD}模拟极其消耗计算开销。因为好的热力学平均，需要好的系综采样。换言之，模拟的时间极长。同时，每个第一原理\textrm{MD}步(离子步)的计算开销也很大，因为离子步包含的电子步采用\textrm{DFT}方法计算，属于完全的量子力学计算。前面的计算已经可以估算出\textrm{MD}的耗时程度。
+
+在经典的\textrm{MD}理论中，并非采用\textrm{DFT}计算来得到每个原子上的作用力，而是通过力场\textrm{(Force Field)}来描述原子受力。力场也被称为原子间相互作用势\textrm{(Interatomic Potentials)}，可以通过实验观测或已有原子间作用力的经验总结得到，如\textrm{Van der Waals}相互作用，静电相互作用等等。而原子间相互作用势的优劣，取决于对体系相互作用的了解程度。显然，经典\textrm{MD}虽然依赖经验，但这样做大大降低了每个\textrm{MD}计算的开销，较长时间的\textrm{MD}模拟也变得可行。
+
+源于第一原理的\textrm{MD}机器学习力场\textrm{(Machine learning Force Field)}既从第一原理层面，通过量子力学精确处理相互作用的电子能量(势能面)，精确刻画了粒子间相互作用的物理本质，又支持以较低的计算开销完成长的分子动力学模拟，可谓``鱼与熊掌兼得''的策略。
+
+模拟结构\textrm{POSCAR}文件
+
+计算控制参数\textrm{INCAR}文件
+
+\textrm{ICONST}
+
+$\vec k$空间网格剖分\textrm{KPOINTS}文件
+
+s输入文件中关于\textrm{DFT}和\textrm{MD}计算的控制参数之外，机器学历力场的计算控制参数\texttt{ML\_LMLFF}=\textrm{T}，表示使用机器学习力场方法；而\texttt{ML\_ISTART}=0设定为采用从第一原理\textrm{MD}中训练新的力场的方式完成计算。\textcolor{red}{\textrm{RANDOM\_SEED}保证了本算例的可重复性。}实际上，\textrm{MD}模拟应有足够的时长，确保随机种子\textrm{(random seed)}是完全无关的。\textcolor{red}{不过自本例中，希望模拟时长尽可能短，并且，当训练的力场取决于随机种子时，原子需要面对的局域参考构型\textrm{(local reference configurations)}的数目也要加入学习-训练的过程。}局域参考构象受模拟时长的影响，因此也就会影响力场的性能。
+
+\textcolor{red}{\textrm{ICONST}的意义与之前相同。}
+
+\textrm{KPOINTS}文件确定的$\vec k$空间网格的均匀剖分方案。在机器学习方案中，如果学习的力是正确的，可以将小的晶胞上训练的力场，可以适用到大体系中。这就要求学习的力是随着$\vec k$空间网格剖分点收敛。后续会介绍力场在不同体系下的迁移。
+
+为了让\textrm{VASP}将学习的力场作为输入数据读入，首先将\textrm{ML\_FFN}另存为\textrm{ML\_FF}；再重启\textrm{MD}模拟时，是使用力场或重新学习力场，就要特别注意参数\texttt{ML\_START}的正确设置。
+
+\textrm{ML\_LOGFILE}文件保存了机器学习力场方法的全部日志数据。
+
+参数输入样本误差\textrm{(In-sample error)}是训练集的平均误差，而输出样本误差\textrm{(out-of-samole error)}是考虑同样系综的随机新构象后出现的平均误差。对于训练得较理想的力场，输出样本误差应该达到极小。\textrm{Bayesian}误差本质是输出样本误差的估计，标志力场训练的理想程度。
+
+采用\textrm{py4vasp}画出\textrm{Bayesian}误差和输入样本误差。
+
+如果\textrm{Bayesian}误差图中存在大的尖峰，表明机器学习力场面对的局域原子构象偏离了\textrm{VASP}学习的数据。因此对照第一原理参比结果，用预测的力场得到的结果显然较差。
+
+当训练力场的时候，如满足以下任一条件，\textrm{VASP}将由\textrm{MD}模拟得到结构作为机器学习的新的局域构象的参考态。
+\begin{itemize}
+	\item 如果尚没有机器学习力场存在，将晶胞结构的局域参考构象加入训练集，，用于构建力场；
+	\item 在任何一个\textrm{MD}步，任何原子受力的\textrm{Bayesian}误差如果高于\texttt{ML\_CDOUB}$\times$\texttt{ML\_CTIFOR}确定的阈值，该结构的局域参考态构象也将被加入训练集，重新训练力场；
+	\item 力场构造完毕，根据参数\texttt{ML\_NMDINT}\textrm{VASP}开始若干步\textrm{MD}模拟的预热步骤。在预热步中，\textrm{VASP}对于原子受力的\textrm{Bayesian}误差限制较小。当预热步骤完成后，如果原子受力的\textrm{Bayesian}误差是高于\texttt{ML\_CTIFOR}规定的阈值，\textcolor{red}{则该结构将被当作待考订结构}对待，当待考订结构数目达到\texttt{ML\_MCONF\_NEW}所规定的数目，就将新的局域参考构象会被加入到训练集。
+\end{itemize}
+必须指出的是，\textrm{Bayesian}误差是对输出采样数据的估计，并不是机器学习力场的质量标记。
+、
+\subsubsection{通过离子弛豫测试力场}
+采用前面算例训练的机器学习力场计算16个\ch{Si}原子构成晶胞的若干个$E-V$曲线，并与\textrm{DFT}计算结果对比。
+
+机器学习的算法目标之一，就是最小化输出采样数据误差，\textcolor{red}{即考虑训练集之外的数据后出现的误差。}只是训练过程中只考虑训练数据，因此只计算输入采样误差，这是训练集的平均误差。
+
+\textrm{Bayesian}误差属于对输出采样误差的一种估计方案，\textcolor{red}{属于力场训练的优化驱动方向。}不过，相比于输出采样误差，\textrm{Bayesian}误差诉不上纯粹的力场质量的衡量标准。\textcolor{red}{为了完成前面力场的测试，可以采用其中一条、两条或三条策略}
+\begin{itemize}
+	\item 准备随机构象的独立测试数据集，通过\textrm{DFT}和机器学习力场的预测数据集分别计算两个结构得到的力、应力和能量差；
+	\item 如有了第一原理参考数据和力场计算的结果，检查两者得到的物理性质的一致性。如弛豫的结构参数，声子，不同相的相对能量，弹性常数，缺陷组成等。
+\end{itemize}
+这个算例，对照的是后一种策略，对照弛豫的结构参数。
+
+输入\textrm{INCAR}文件，保留前面的\textrm{ML\_FFN}
+
+参考用的结构文件\textrm{POSCAR.ref}
+
+\textrm{INCAR}文件
+
+\textrm{KPOINTS}文件
+
+在\textrm{INCAR}文件中确定为离子弛豫。
+
+计算采用的\textrm{Bash}脚本。
+
+运行上述脚本，可以采用以下脚本\textrm{volume\_energy.sh}，提取每次得到的体积和能量。该脚本的内容是：
+
+运行脚本
+
+对照机器学习力场\textrm{(Machine-Learned Force Field, MLFF)}和\textrm{DFT}得到的参照数据分别得到的总能和体积的$E-V$曲线图。\textrm{DFT}与机器学习训练训练的力场得到的数据是一样的。
+
+\textrm{MLFF}结果与\textrm{DFT}参考数据非常接近。
+
+\subsubsection{系综平均的晶格常数和晶胞体积}
+使用机器学习力场使用\textrm{Langvin}常温在温度\textrm{400K}\textrm{NPT}系综平均下16个\ch{Si}原子的晶格常数和晶胞体积。
+
+通常\textrm{DFT}计算的晶格常数和晶胞体积仅是$T=0\mathrm{K}$的基态性质。不过很多材料的结构特征会随着温度上升发生变化。更重要的是，实验上测量的晶格参数是热力学系综平均。采用前面训练的机器学习力场计算晶格常数和晶胞体积，这是统计力学可观测的物理量。力场训练的温度是$T=400\mathrm{K}$，晶格结构和晶胞体积计算也是在该温度下完成的。
+
+初始结构文件\textrm{POSCAR.init}
+
+初始输入文件\textrm{INCAR.init}
+
+\textrm{KPOINTS}
+
+\textrm{INCAR}文件中%第一原理计算没有特别的说明
+确定了\textrm{MD}模拟，并使用机器学习力场。
+
+\textrm{POSCAR}文件是\textrm{400K}等温的\ch{Si}晶体。
+
+执行\textrm{Bash}脚本。
+
+在\textrm{OUTCAR}文件中，查看最后10000离子步的计算耗时，估计总的耗时，并对照第一原理\textrm{MD}模拟的时间。
+
+不到\textrm{10min}和\textrm{20h}的差别。
+
+然后在\textrm{REPORT}文件中，检查每个\textrm{MD}离子步的几何结构坐标。通过\textrm{Bash}脚本\textrm{get\_lattice\_parameters.sh}提取结构参数，并对模拟时间取平均。
+
+晶胞体积
+
+晶格参数和平均晶格参数。
+
+从计算结果看，得到的结果和理想对称性的晶胞的偏差，模拟的时间还应该增加。
+
+\subsubsection{机器学习力场的迁移和热膨胀系数}
+应用\textrm{400K}得到的机器学习力场，分别模拟\textrm{200K}和\textrm{300K}的16个\ch{Si}原子构成的晶格常数和晶胞体积，检验机器学习力场的迁移能力。分别作\textrm{200K}、\textrm{300K}和\textrm{400K}时的\textrm{E-V}曲线，确定体系的热膨胀系数。
+
+训练好的机器学习力场，可以直接用于\textrm{MD}模拟而不再需要电子步的第一原理计算。如果在\textrm{MD}模拟中，出现偶尔的\textrm{Bayesian}误差增大，意味着模拟进入到了未知的相空间中。例如出现相变或结构变化，这种情况下有必要重新训练力场，以便模拟在新的相空间中的行为。
+
+因为训练的数据到\textrm{ML\_ABN}文件中，为了继续训练力场，在\textrm{INCAR}中，设置计算控制参数\texttt{ML\_ISTART}=1,将\textrm{ML\_ABN}文件另存为\textrm{ML\_AB}。训练常常要分为很多轮，另外可能训练中会包含缺陷、表面或新的相空间内容。最终得到的力场参数保存在\textrm{ML\_FFN}文件中。
+
+不过，当有些模拟控制参数，如温度，发生改变时，则未必需要重新训练力场。特别是如果全部局域参考构象足以覆盖全部系综，更没有此必要。特别是如果没有相变发生，这一点可以通过检验金刚石结构\ch{Si}来验证:~在训练得到机器学历力场的条件下，通过足够长的\textrm{MD}模拟，再把该力场平移到新的观测条件下，完成相同的模拟，考察两种条件下的晶胞体积的变化。
+
+根据结果数据绘制的图像，构建$T=400\msthrm{T}$的力场所需要的全部局域构象，可以覆盖部分\textrm{200K}条件参数的部分局域构象。
+
+$T=200\mathrm{K}$时的\textrm{POSCAR}结构
+
+$T=300\mathrm{K}$时的初始结构\textrm{POSCAR.init}
+
+$T=200\mathrm{K}$时的计算控制参数文件\textrm{INCAR.init}
+
+$T=300\mathrm{K}$时的计算控制参数文件\textrm{INCAR.init}
+
+\textrm{MD}模拟中改变的原子位置参数文件\textrm{ICONST}
+
+$\vec k$空间网格剖分文件
+
+在\textrm{ICONST}文件中，参数\texttt{LR}和\texttt{LV}分别是监控晶格常数和晶胞体积变化，\texttt{LA}监控的是晶格的角度。
+
+\textrm{Bash}命令执行计算。
+
+提取全部\textrm{MD}模拟的每个离子步的晶格矢量和晶胞体积，分别作系综平均。
+
+编写\textrm{Python}脚本或使用现有\textrm{Bash}脚本\textrm{get\_lattice\_parameters.sh}% !表示注释\textrm{Bash}脚本
+脚本的内容:
+
+200\textrm{K}时，体积:
+晶格常数:
+平均晶格:
+
+300\textrm{K}时，体积:
+晶格常数:
+平均晶格:
+
+应用\textrm{Py4vasp}脚本，绘制晶胞体积-温度的变化曲线图，并与\textrm{400K}时的结果对照。
+
+体积分别为：
+
+在当前(200\textrm{K}-400\textrm{K})温度范围内，体系的晶胞体积$V$随温度$T$基本呈线性关系。因此可据此估计各向同性的膨胀系数:
+\begin{displaymath}
+	\alpha_V=\dfrac1{V}\dfrac{\mathrm{d}V}{\mathrm{d}T}
+\end{displaymath}
+
+换言之，由此可以得到体系体积对温度变化斜率随温度的关系。
+
+热膨胀系数为\ch{Si}:~$3.46850\times10^{-6}$。
+
+s实验中，线膨胀系数定义为:
+\begin{displaymath}
+	\alpha_L=\dfrac1L\dfrac{\mathrm{d}}L\mathrm{d}T$
+\end{displaymath}
+对于\ch{Si}的线膨胀系数实验为约$2.6\times10^{_6}$\upcite{JAP56-314_1884}。对于立方晶系，有等式
+\begin{dieplaymath}
+	\alpha_L=\alpha_V/3
+\end{dieplaymath}
+并据该式可以确定$\alpha_L$
+
+并得到线性膨胀系数为$1.15617\times10^{-6}$。
+
+同时，$\alpha_L$可以通过直接计算晶格矢量的长度得到。这里也可以利用立方晶体三个格矢等同，对计算值求平均，提升统计的精确程度。利用\textrm{Py4vasp}模块，写\textrm{Python}代码，作格矢对温度变化的曲线，得到$\alpha_L$，并与晶胞膨胀系数计算得到的值对比，可以判断哪个数值更合理。
+
+\ch{Si}的线性膨胀系数为:~$1.38308\times10^{-6}~\mathrm{K}^{-1}$
+
 \subsection{\ch{Cl-}对\ch{CH3Cl}的取代反应}
+\subsubsection{自由能的缓慢增长模拟}
+对采用缓慢增长\textrm{Slow-growth}模拟和热力学积分，对\ch{CH3Cl}被\ch{Cl-}的$\mathrm{SN}_2$亲核取代反应，计算作为反应坐标\textrm{(Reaction Coordinate)}函数的自由能。
+
+计算化学反应的自由能变化曲线，可以得到反应的活化自由能\textrm{(Activation Free Energy)}。化学反应伴随了稳定的反应物变到过渡态\textrm{Transition State}。得到自由能曲线的办法称为热力学积分\textrm{(Thermodynamic Integration)}。
+
+通过计算化学反应过程中的自由能曲线，可以得到反应的活化自由能\textrm{(activation free energy)}。活化自由能就是从稳定的反应物形态转化为产物形态所需要做的功。在\textrm{MD}模拟中，得到反应的自由能曲线的方法称为热力学积分，是沿着反应路径\textrm{(Reaction Path)}对自由能梯度进行积分计算。反应路径(也成为反应通道)是联结化学反应的起始和终了的热力学态的能量面，习惯上，将反应通道简化为反应物向产物变化的能量变化曲线，称为反应坐标\textrm{(Reaction Coordinate)}。
+
+缓慢增长模拟采用第一原理\textrm{MD}模拟来确定反应物到产物的转变过程及机理，系统由参与反应的物质构成，假设体系渐次被活化的单步能量只有旋转自由度能级，确保化学反应可以非常缓慢地发生，并能满足反应过程中每个时刻都保持可逆的要求。根据热力学要求，这样才满足对体系做的功等于反应的自由能。
+
+与之相反的，同样存在快速切换\textrm{Fast-switching}模拟。这种情况下采用多次快速完成对过渡态的纯静态自由能计算实现的。这样做导致对反应体系做的功是不可逆的。通过\textrm{Jarzynski}恒等式\textrm{(Jarzynski equality)}\footnote{\textrm{Jarzynski}恒等式是非平衡统计力学中连接非平衡做功过程与平衡态自由能差的核心等式。}，这些不可逆功可变成可逆反应的自由能。
+
+另外还有一种方法是通过分析势能面\textrm{(Potential Energy Surface, PES)}在稳定点附近的局域\textrm{topology}结构。这种静态方法只需要对势能面上一些稳定点的旋转、振动能级进行模拟和分析，因此计算开销也小得多。不过，该方法尚未考虑出现在过渡态中的被微小的转动、振动模激发的反应，所以只能用于定性估计类似的反应路径：
+
+\textcolor{red}{\huge 有机化学反应!!!!}
+
+这是一个$\textrm{SN}_2$反应。氯代甲烷\textrm{(Chloromethane)}\ch{CH3Cl}和\ch{Cl-}碰撞，氯代甲烷成为亲核体，与\ch{Cl-}成键；逐渐形成松散的，但可原位观测的稳定中间体态；最终，离子态的\ch{Cl-}取代氯代甲烷中原来的\ch{Cl}，取代反应完成。$\mathrm{SN}_2$反应是对称的，一个\ch{Cl-}从一侧进攻，而另一个\ch{Cl-}从另一侧离开，其间伴随了\ch{CH3}结构的翻转。因此反应的自由能曲线也将是对称的。
+
+初始结构文件\textrm{POSCAR.init}
+
+初始计算控制文件\textrm{INCAR.init}
+
+模拟反应的计算控制参数文件\textrm{INCAR.refit}
+
+\textrm{ICONST}文件
+
+\textrm{ML\_AB}文件中保存的是已经完成的\ch{CH3Cl}和\ch{Cl-}阴离子的第一原理数据，包括:~晶格矢量，原子位置，能量，力和应力张量。
+
+\textrm{INCAR.refit}文件中与\textrm{MLFF}方法有关的控制计算参数为
+\begin{itemize}
+	\item \texttt{ML\_LMLFF}=\textrm{T}，表示开启并使用\textrm{MLFF}；
+	\item \texttt{ML\_MODE}=\textrm{refit}表示允许在现有\textrm{ML\_AB}文件基础上产生力场文件。
+\end{itemize}
+
+\texttt{SYSTEM}只是描述允许计算体系，允许是任意字符串。\texttt{ISYM}在\textrm{MD}模拟中通常设置为关闭对称性。\texttt{POMASS}指定了参与反应的原子/离子质量，默认为\textrm{POTCAR}中的元素质量。如果设定了该值，则不使用\textrm{POTCAR}中的默认值。之所以在化学反应\textrm{MD}模拟中改变某些元素的质量，比如这里对于三个\ch{H}元素，质量比\ch{H}的\textrm{POTCAR}中的质量重，因为如果适当减缓\ch{C-H}键的振动频率，可以通过\texttt{POTIM}使用更大的时间步长，而不会损失反应过程中的动力学信息。
+
+这种模拟中轻微改变元素质量，与同位素效应\textrm{(Isotope effect)}不同，并不改变第一原理\textrm{MD}模拟的力场。
+%\footnote{所谓同位素效应，会改变实际反应速率的，本质上是离子自由度的量子效应。必须考虑从量子力学角度考虑离子的处理。原则上，机器学习力场是可以重现第一原理\textrm{MD}的，两者是等效的。除非训练的力场不够充分，否则两者的结果并没有区别。在第一原理\textrm{MD}模拟中，离子是作为经典粒子对待的，而每个离子所受的力则是通过量子力学方法计算得到的。最后，在经典力学中，热力学平均的方程中，离子质量也会彼此抵消，因此无法在\textrm{MD}中观察到同位素效应。}
+
+%\textrm{INCAR}文件中计算控制参数\texttt{KSPACING}确定了$\vec k$点网格密度，将该值设置为大得离谱的数值，本质上只包含$\Gamma$点。当然可以通过\textrm{KPOINTS}文件确定$\vec k$空间剖分网格。
+
+\texttt{IBRION}，\texttt{NSW}和\texttt{POTIM}控制了模拟中每个离子步离子位置的更新方式。\texttt{MDALGO}，\texttt{ANDERSEN\_PROB}，\texttt{TEBEG}和\texttt{ISIF}共同确定了热力学系综。\textrm{Andersen}等温采用随机碰撞来模拟热浴行为。
+
+\textrm{ICONST}文件给出具体的反应坐标中原子/离子的成键关系。在本算例中，\textrm{POSCAR}中，原子1是\ch{C}，原子5与6是\ch{Cl-}，\textrm{ICONST}文件中确定的反应坐标，就是有两种不同的\ch{C-Cl}键的键长。这意味着，如果在\ch{CH3Cl}中\chP{C-Cl}键的键长为\textrm{1.8\AA}，而\ch{C}与被取代的\ch{Cl-}离子的距离为\textrm{3.0\AA}，则反应坐标为的值为\textrm{1.8\AA-3.0\AA=-1.2\AA}。在过渡态\textrm{Transition State}，两个\ch{Cl-}离子距离\ch{C}具有相同的距离，因此反应坐标为0.
+
+\textcolor{red}{在完成一个化学反应模拟的过程中，设计合适的反应坐标是各类反应动力学模拟最重要的任务。}
+
+除了\textrm{ICONST}中规定的原子成键关系，\textrm{INCAR}文件中\texttt{INCREM}参数限制了发生的反应沿反应通道演化的速度，需要说明的是，该速度指的是每个离子步长内的速度，而非单位时间的速度。
+
+设置\texttt{LBLUEOUT}参数会在\textrm{REPORT}文件中输出计算的自由能梯度数据。
+
+运行\textrm{Bash}脚本
+
+将第一原理计算的能量、力和应力保存到\textrm{ML\_AB}文件中，生成机器学习力场。
+
+将产生的机器学习力场由输出文件\textrm{ML\_FFN}复制到\textrm{ML\_FF}文件中，执行\textrm{Bash}脚本。
+
+将前面运行的\textrm{CONTCAR}作为反应物初始结构\textrm{POSCAR}；并用首次计算最终的\texttt{RANDOM\_SEED}作为第二次计算的原子初始速度。
+
+这两步确保后续计算在第一次计算基础上完成后续计算。
+
+%执行3000\textrm{MD}步，
+关于热力学积分:~一旦需要在特定的反应坐标$\epsilon^{\prime}$计算自由能梯度$\dfrac{\partial A}{\partial\epsilon}$，可以通过对反应路径积分，计算反应中任意两个态\textrm{A}和\textrm{B}的自由能差分$\Delta_{\mathrm{A}\rightarrow\mathrm{B}}$
+\begin{displaymath}
+	\Delta A_{\mathrm{A}\rightarrow\mathrm{B}}=\int_{\epsilon_{\mathrm{A}}}^{\epsilon_\mathrm{B}}\left.\dfrac{\partial A}{\partial\epsilon}\right|_{\epsilon^{\prime}}\mathrm{d}\epsilon^{\prime}=\Delta A(\epsilon_{\mathrm{B}})-\Delta A(\epsilon_{\mathrm{A}})
+\end{displaymath}
+
+热力学积分的主要困难在于在每个$\epsilon^{\prime}$点都能有足够多好的自由能梯度采样$\dfrac{\partial A}{\partial\epsilon}$。采用缓慢增长方法，反应坐标$\epsilon^{\prime}$都随着时间步长(\texttt{POTIM}设定)$\mathrm{d}\tau$改变，反应速率(由\texttt{INCREM}设定)为$\dot{\epsilon}^{\prime}$。因此上式在缓慢增长近似下，引入
+\begin{displaymath}
+	\mathrm{d}\epsilon^{\prime}=\dot{\epsilon}^{\prime}\mathrm{d}\tau
+\end{displaymath}
+该方法不适合转变速率和时间步长都不是足够小的状态。\textrm{MD}模拟的质量可以通过反应过程的可逆程度来检验。\textcolor{red}{如果自由能曲线是由$\Dalta A(\epsilon)$绘制得到是迟滞曲线，表明转换速率和时间步长都不是足够小。}
+
+实际上，缓慢增长模拟只是用来快速了解反应自由能曲线的。为了完成一个高质量的热力学积分，\textrm{VASP}中还有其余更合适的方法，比如``蓝月亮''\textrm{(blue-moon)}方法\footnote{蓝月亮方法是一种基于约束分子动力学的自由能计算方法，用于沿指定反应坐标计算化学反应的平均力势(\textrm{PMF}，即自由能剖面)}，可以更精确地控制收敛，但计算成本的开销更大。
+
+完成1500步\textrm{MD}模拟，会出现一个目录\textbf{run1}，打开\textbf{run1}\textrm{/REPORT}文件。在每个\textrm{MD}步，有以下数据：
+
+\textcolor{red}{作为缓慢增大模拟的后处理，将反应坐标起始点作为${\epsilon^{\prime}}$态，在$\epsilon^{\prime}$的自由能梯度$\dfrac{\partial A}{\partial\epsilon}$是曲线起始点的梯度。}由此可以开启积分。
+
+采用\textrm{Py4vasp}实现\textrm{MD}径迹的可视化。
+
+继续完成1250步\textrm{MD}模拟，又有一个目录\textbf{run2}生成，完成计算后可以根据\textrm{Bash}脚本\textrm{free-energy\_gradient.sh}提取自由能梯度：
+
+执行脚本产生\textrm{free-energy\_gradient.dat}
+
+采用\textrm{Python}脚本完成热力学积分，绘制反应自由能作为反应坐标函数的曲线。
+
+生成的自由能作图中，$\epsilon<0$，模拟的是反应物，$\epsilon>0$，模拟的是产物。$\epsilon=0$对应于过渡态。
+
+因为反应是$\mathrm{SN}_2$是对称取代反应，所以自由能曲线是对称的。本次模拟得到的反应通道偏离理想对称点，归因于时间步长(\texttt{POTIM})或者变换速率(\texttt{INCREM})太大。
+从\textrm{MD}径迹中每个态里找到代表性的构象。
+
+依次检验起始步作为反应物，近似750步左右，作为反应过渡态，到1499步作为产物。
+\subsubsection{反应物态的概率分布}
+完成反应物\ch{CH3Cl}和\ch{Cl-}离子的自由\textrm{MD}模拟，并计算反应坐标的概率密度。
+
+如果\ch{CH3Cl}和\ch{Cl-}离子间的反应未经活化，反应不可能自发进行。该结论可以通过反应物系综内计算对反应坐标的概率密度
+\begin{displaymath}
+	P(\epsilon^{\prime})=\langle\delta(\epsilon^{\prime}-\epsilon(\mathbf{R}))\rangle_{\mathbf{R}^{\prime}}, \epsilon^{\prime}<0
+\end{displaymath}
+得到验证。
+
+\subsubsection{过渡态的平均速率}
