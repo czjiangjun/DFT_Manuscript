@@ -515,4 +515,112 @@ s实验中，线膨胀系数定义为:
 \section{机器学习力场}
 结合第一原理\textrm{MD}的机器学习力场可以节约模拟时间，并依然从第一原理更深刻地认知物理。这里介绍\textrm{MLFF}中的误差分析与超参数优化。
 
+\subsection{训练集与测试集的误差分析}
+对于给定的参比数据，计算\textrm{MLFF}模型的训练集和测试集误差。
 
+\textrm{MLFF}模型的误差评估了训练集模型的精度，以及模型外推到训练集以外数据的可靠性。机器学习方法中，需要区分两种误差，训练集误差和测试集误差。训练集误差是用训练集评估的，训练集的误差是用\textrm{DFT}计算值与\textrm{MLFF}预测值差值来计算的。
+
+测试误差则是通过未参与训练过程的外部测试集数据来评估的。一般认为采用\textrm{MLFF}计算测试集中的采样数据，在同等条件下，可以得到比较好的数据。\textcolor{red}{例如，即使一开始的训练是在原子数目少一点的体系上构建的，测试集中的结构应该拥有相同数目原子结构的描述能力。而且测试集要能得到描述对象的某些热力学相。}通过这种方式构建的测试集误差，能够给出由训练集推演的\textrm{MLFF}模型的结果到底有多好。
+
+一般地，对比训练集误差与测试集误差，一般是三种结果：
+\begin{itemize}
+	\item 如果训练集的误差较小而测试集的误差较大，说明存在过拟合\textrm{(Overfitting)}，这种现象说明通过机器学习得到力场，不适合处理训练集以外的结构，外推性差。必须通过增加训练集或调节超参数来提升力场的预测能力；
+	\item 训练集误差和测试集误差大致相当，表明对于应用体系，只要没有引起明显的误差，那么该力场就是适用的；
+	\item 训练误差加大，相反测试误差较小，意味着测试集出现了偏差，不具备普适性。
+\end{itemize}
+\textcolor{red}{关于机器学习方法的误差分析，参见文献\cite{DOI:10.1063/5.0160326}，其中有关于\textrm{MLFF}的专门讨论。}
+
+本算例中，将会根据保存在\textrm{ML\_AB}文件中的已有的第一原理数据重新拟合\textrm{MLFF}模型。通过\txtrm{ML\_AB}中的数据，分析训练集误差和测试集误差，也就是评估得到的力场。
+
+%根据\textrm{VASP}产生的第一原理数据和\textrm{ML\_AB}文件，拟合\textrm{MLFF}模型。根据之前的计算结果，而不重新启动\textrm{DFT}计算。
+
+计算控制文件\textrm{INCAR.refit}
+
+计算控制文件\textrm{INCAR.run}
+
+结构文件\textrm{POSCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+\textrm{ML\_AB}之前完成的\ch{LiH}体系的第一原理计算数据，包括晶格矢量，原子位置，能量，力和应力。
+
+\subsubsection{重新拟合的输入说明}
+重新拟合的输入控制文件\textrm{INCAR.refit}只有计算控制参数\texttt{ML\_LMLFF}确定机器学习模式，\texttt{ML\_MODE}选择拟合方式。一般地，重新拟合需要在实时训练完成\textrm{ML\_AB}文件之后才能开始，这样得到的\textrm{MLFF}更精确，因为此时的模型权重是通过线性回归\textrm{Linear Regression}确定的。%
+采用重新拟合后的\textrm{MLFF}，\textrm{VASP}在计算时会更快(\texttt{ML\_MODE}=\textrm{run})，因为重新拟合会引入更多的功能算法。
+
+\textrm{POSCAR}文件不会对重新拟合产生影响，因为重新拟合是根据第一原理计算的\textrm{ML\_AB}文件的数据实现的，而\textrm{POSCAR}文件仅是用于预测步，因此\textrm{OUCAR}中的能量和力会受到其影响。但在分析\textrm{MLFF}的时候不会注意到这些结果。
+
+\textrm{KPOINTS}文件中仅含$\Gamma$点
+
+重新拟合的时候，不会涉及\textrm{POTCAR}文件。机器学习算法会根据\textrm{ML\_AB}文件确定原子，这些原子可以和\textrm{POTCAR}中的原子无关。
+
+\subsubsection{误差分析输入说明}
+测试集的文件位置
+
+包括\textrm{POSCAR}结构文件和\textrm{DFT}计算数据
+
+本算例的测试集包括50个独立的结构，实际应用中，考虑到最终力场的应用场景，测试集应该更大些，比如差不多500个结构。
+
+使用\textrmP{Bash}脚本确定训练集误差
+
+重新拟合后，\textrm{VASP}会将力场写入\textrm{ML\_FFN}文件，而训练集误差则写入\textrm{ML\_LOGFILE}文件中。采用\textrm{Bash}命令检查\textrm{ML\_LOGFILE}文件，
+
+\textrm{grep ERR ML\_LOGFILE}
+
+最后一行有5列数据，第三个是能量的训练集误差，单位是\textrm{eV}；第四个是力误差，单位是\textrm{eV/AA}；最后一个是应力张量的误差，单位是\textrm{kbar}。
+
+下面为了分析测试误差，并与训练误差对比。将得到的\textrm{MLFF}也能够用到测试集中，应用\textrm{Bash}脚本，分别计算测试数据集的能量、力和应力。
+
+相应的\textrm{Bash}脚本为\textrm{test\_set\_analysis.sh}
+
+计算完成后，将通过\textrm{Py4vasp}模块执行\textrm{Python}命令，对比\textrm{DFT}数据和\textrm{MLFF}数据的误差。并将每种构型的测试集误差都绘图给出。
+
+为计算总的测试误差对测试集中构型的平均值，执行\textrm{Python}脚本
+
+由此可以得到的结论:~相比于测试集误差，力的训练集误差更小一些。不过因为两类误差都小于\textrm{10~meV/AA}，\textrm{MLFF}看起来还比较可靠。测试集误差与训练集误差总体上在同一数量级，所以\textrm{MLFF}可以用于训练集以外的结构计算。
+
+\subsection{通过超参数优化精度}
+所谓超参数，就是在\textrm{MLFF}模型中由用户定义，但无法通过训练\textrm{MLFF}来优化的参数。对超参数的优化，可以在改善\textrm{MLFF}的性能的同时，提升模拟精度。超参数包括截断半径\texttt{ML\_RCUT1}和\texttt{ML\_RCUT2}，它们描述的是计算的局域原子环境。%有关超参数及其优化，建议参考文献\cite{Hyperparameter optimization}。
+
+根据经验，以下超参数对于提升\textrm{MLFF}的性能和精度最重要
+
+\textcolor{red}{这里只是给出\textrm{VASP}中的少量超参数。}
+
+这个例子主要是优化\texttt{ML\_RCUT1}提升力场的性能。
+
+交叉验证\textrm{(Cross-Validation)}是判断超参数质量的一种方法。作为一个准备步骤，检查训练集误差没有远小于测试集误差，以防止过拟合。然后系统地改变超参数，寻找最优值。如果只是随机地变化超参数，不可能提升\textrm{MLFF}的质量。最后再对比不同超参数下训练集误差和测试集误差。
+
+以优化\texttt{ML\_RCUT1}为例，对一系列的\texttt{ML\_RCUT1}的值，计算训练集误差(存于\textrm{ML\_LOGFILE文件})和力场(存于\textrm{ML\_FF}文件)。通过\textrm{Py4vasp}可以对\textrm{ML\_FF}文件中测试集进行误差分析。在参数改变过程中，只考虑训练集误差就够了。然后只需要基于\textrm{MLFF}的训练集的最小误差来分析测试集误差。
+
+\textrm{INCAR.refit}
+
+\textrm{INCAR.run}
+
+\textrm{POSCAR}
+
+\textrm{ML\_AB}集结了前面计算的\ch{LiH}的第一原理数据:晶格矢量，原子位置，能量，力和应力。
+
+这里最重要的输入文件是\textrm{ML\_AB}和\textrm{INCAR}文件，而\textrm{VASP}计算必须的\textrm{POSCAR}和\textrm{POTCAR}不会影响超参数的优化。为了不使用\textrm{KPOINTS}，这里在\textrm{INCAR}文件中使用了计算控制参数\texttt{KSPACING}。无论何种方式剖分$\vec k$空间网格，倒空间晶格与重构力场无涉。
+
+这里的\textrm{ML\_AB}文件来自前面的计算，这里针对双体描述符\texttt{ML\_RCUT1}，\textrm{ML\_AB}保存的第一原理计算数据将会用于\texttt{ML\_RCUT1}取不同值时的重新拟合过程。该任务可以通过执行\textrm{Bash}脚本完成。
+
+\textrm{run\_hyperparam\_scan.sh}
+
+执行该脚本，分别针对各个\texttt{ML\_RCUT1}的计算。
+
+计算完毕后，再绘制训练集误差与截断半径的关系图。
+
+\textrm{Bash}脚本为\textrm{extra\_training\_error.sh}
+
+由此得到\textrm{training\_error.dat}数据文件，可以通过\textrm{Python}脚本绘制数据图，除了计算的数据，还有一个包含更多数据点的\textrm{training\_error\_store.dat}文件。这里作为算例，为解决计算开销计，只给出三个数据点。
+
+绘制的图中含有三类不同的误差。能量误差，力的误差和应力误差。途中红色部分是这个算例中的数据点。原则上，如果三个误差都是足够小，就是好的结果。但也有可能用户只关注其中三种误差中的某一个的情况。例如，对于缺陷形成能\textrm{(defect-formation energies)}，\textrm{MLFF}模型就应该最小化能量误差；相反，声子频率计算会要求\textrm{MLFF}最小化力的误差。为了突出某一种误差，可以在拟合时引入权重系数。拟合中增加能量误差的重要性，可以调节计算控制参数\texttt{ML\_WTOTEN}。类似地，力的重要性，通过计算控制参数\texttt{ML\_WTIFOR}增加其权重，而应力误差的权重则是\texttt{ML\_WTSIF}。如果是关注体积预测的精确程度，就会关注应力张量的误差。
+
+根据计算结果绘图，可以看出\texttt{ML\_RCUT1}=13是最精确的结果。因此保留\textbf{ML\_ABN\_13.0}和\textbf{ML\_FFN\_13.0}，留作进一步分析。实际上，继续执行\textrm{Bash}脚本，可以重复测试集分析的步骤
+
+其中\textrm{test\_set\_analysis.sh}脚本为:
+
+原则上，为了得到最好的\textrm{MLFF}，需要\textrm{VASP}要对每一个可能的超参数重复上述优化流程。但实际操作时，不可能优化全部超参数。使用\textrm{VASP}时，有默认的参数选项，这都是在一系列体相和分子数据集上优化过。\textcolor{red}{根据力场的计算预测能力，考虑上表中某些超参数优化是值得的。}
+
+\subsection{优化\rm{MLFF}的性能}
+根据现有的\textrm{ML\_AB}文件，优化力场性能。
