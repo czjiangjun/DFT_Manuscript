@@ -410,4 +410,109 @@ s实验中，线膨胀系数定义为:
 \end{displaymath}
 得到验证。
 
+通过\textrm{Bash}脚本，建立\textrm{ML\_FF}文件的软链接。
+
+初始结构文件\textrm{POSCAR.init}
+
+初始计算控制文件\textrm{INCAR.init}
+
+\textrm{ICONST}
+
+力场参数文件\textrm{ML\_FF}
+
+这里的\textrm{INCAR}文件中，没有设置计算控制参数\texttt{LBLUEOUT}和\texttt{INCREM}，因此自由能梯度不会写入到\textrm{REPORT}文件，\textrm{MD}计算也不会强制沿着反应通道进行。也就是说，这是基于机器学习力场的自由非约束的\textrm{MD}模拟。
+
+执行计算的\textrm{Bash}脚本
+
+起始10000步\textrm{MD}。为计算反应速率常数\textrm{(Reaction rate constant)}和实验可检测的活化能。
+
+化学反应的反应速率常数由反应物\textrm{R}和产物\textrm{P}共同确定。实验上可测量的反应速率常数，满足\textrm{Eyring}方程
+\begin{displaymath}
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{k_{\mathrm{B}}T}h\mathrm{exp}\bigg(-\dfrac{\Delta A^{\ddagger}}{k_{\mathrm{B}}T}\bigg)
+\end{displaymath}
+这里$\Delta A^{\ddagger}$是唯相的活化能，根据\textrm{Arrhenius}定理，可以通过实验中反应速率常数与温度$T$的数据得到，$h$是\textrm{Planck}常数，$k_{\mathrm{B}}$是\textrm{Boltzmanna}常数，$T$是体系的温度。在\textrm{MD}模拟中，反应速率常数可以定量地表示为
+\begin{displaymath}
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{\langle|\dot\epsilon|\rangle}2P(\epsilon_{\mathrm{ref},\mathbf{R}})\mathrm{exp}\bigg(-\dfrac{\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}}{k_{\mathrm{B}}T}\bigg)
+\end{displaymath}
+这里$\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}$是反应物在参考态$\epsilon_{\mathrm{ref},\mathbf{R}}$和过渡态$\epsilon_{\epsilon^{\ast}}$的自由能之差。这个指可以通过自由能曲线的计算直接得到。
+
+只要体系还是反应物，选择的参考态是任意的，反应速率与所选参考态无关。因为反应速率正比于在参考态找到当前系统的概率；但反应速率与过渡态的广义速率的绝对值的热力学统计平均$\langle|\dot{\epsilon}^{\ast}|\rangle$有关。后面将会讨论如何计算$\langle|\dot{\epsilon}^{\ast}|\rangle$。
+
+由此得到实验测量的唯相活化能与\textrm{MD}模拟的活化能的关系为
+\begin{displaymath}
+	\Delta A^{\ddagger}=\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}-k_{\mathrm{B}}T\ln\bigg(\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle|\dot{\epsilon}^{\ast}(0)|\rangle}2P(\epsilon_{\mathrm{ref},\mathbf{R}})\bingg)
+\end{displaymath}
+理论值与实验值对比时，有个常见的错误就是遗漏了上式中的第二项。
+
+完成5000步\textrm{MD}模拟，会出现一个名为\textbf{run1}的计算目录。因为没有设置\texttt{LBLUEOUT}，因此\textrm{REPORT}文件中没有\textrm{MD}模拟\textcolor{red}{关于反应坐标约束\texttt{cc>}引领的数据。}取而代之的是\texttt{mc>}引领的记录反应坐标的数据。
+
+采用\textrm{Py4vasp}可以可视化\textrm{MD}模拟中的原子径迹。
+
+计算完成后，会有第二个目录\textbf{run2}出现。通过\textrm{Python}脚本，可以从\textrm{REPORT}文件中提取反应坐标并绘图。
+
+不难看出，反应不会自发发生。在产物区$\epsilon^{\prime}>0.1\mathrm{\AA}$的概率密度为零也证明了这一点。因为反应过程的自由能能垒远高于$k_{\mathrm{B}}T$，所以反应是吸热过程，在可观测时间长度内，直接的\textrm{MD}模拟，也几乎不可能看到一次翻越势垒。考虑到取值范围$[-1.5\AA,-1.49\AA]$处，$P(\epsilon^{\prime})\approx1.54$，所以反应和活化过程都是稀有事件\textrm{(Rare events)}。
 \subsubsection{过渡态的平均速率}
+计算\ch{CH3Cl}与\ch{Cl-}离子形成过渡态的平均广义速度，反应速率和唯相活化能。
+
+反应速率常数可以写作
+\begin{displaymath}
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{\langle|\dot{\epsilon}^{\ast}|}2P(\epsilon_{\mathrm{ref},\mathbf{R}})\mathrm{exp}\bigg(-\dfrac{\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}}{k_{\mathrm{B}}T}\bigg)
+\end{displaymath}
+因此唯相的活化自由能$\Delta A^{\ddagger}$和可逆做功$\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}$的关系为
+\begin{displaymath}
+	\Delta A^{\ddagger}=\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}-k_{\mathrm{B}}T\ln\bigg(\dfrac{h}{k_{\mathrm{B}T}}\dfrac{\langle|\dot{\epsilon}^{\ast}|\rangle}2P(\epsilon_{mathrm{ref},\mathbf{R}})\bigg)
+\end{displaymath}
+因此，根据上述计算，可以通过\textrm{MD}模拟得到$k_{\mathrm{R}\rightarrow\mathrm{P}}$和$\Delta A^{\ddagger}$，唯一未知的量是过渡态的广义速度的热力学平均，其定义为
+\begin{displaymath}
+	\dot{\epsilon}=\sum_{i=1}^N\sum_{\mu=x,y,z}\dfrac{\partial\epsilon}{\partial\mathrm{R}_{i,\mu}}\dot{\mathrm{R}}_{i,\mu}
+\end{displaymath}
+这里$\mathrm{R}_{i,\mu}$表示原子$i$的\textrm{Cartesian}坐标。
+
+\textcolor{red}{与前面的计算类似}，执行\textrm{Bash}脚本
+
+初始结构文件\textrm{POSCAR.init}
+
+初始计算控制参数文件\textrm{INCAR.init}
+
+\textrm{ICONST}
+
+机器学习力场\textrm{ML\_FF}。
+
+\textrm{POSCAR}确定了过渡态位置的各原子的结构关系
+
+\textrm{INCAR}文件中，未设置\textrm{INCREM}。\textrm{INCAR}与\textrm{ICONST}文件设置相结合，就可以完成\textcolor{red}{受限的}过渡态的\textrm{MD}模拟。
+
+执行\textrm{Bash}脚本运行
+
+首先执行6000步\textrm{MD}模拟。根据前面的计算提取$\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}}\rightarrow\epsilon^{\ast}}$的数值。比如可通过以下\textrm{Python}代码提取$\epsilon_{\mathrm{ref},\mathbf{R}}=-1.5\AA$相关的数据。
+
+根据上例，得到$P(\epsilon_{\mathrm{ref},\mathbf{R}})$，即$[-1.5\AA,-1.49\AA]$处，$P(\epsilon^{\prime})\approx1.54$。
+
+根据\textrm{SHAKE}算法，广义速度计算方式如下
+
+由质量求逆的度规张量\textrm{(metric tensor)}
+\begin{displaymath}
+	Z=\sum_{i=1}^N\dfrac1{m_i}\sum_{\mu=x,y,z}\bigg(\dfrac{\partial\epsilon}{\partial\mathrm{R}_{i,\mu}}\bigg)^2
+\end{displaymath}
+因此广义速度可以表示为
+\begin{displaymath}
+	\langle|\dot{\epsilon}^{\ast}|\rangle=\sqrt{\dfrac{2k_{\mathrm{B}}T}{\pi}}\dfrac1{\langle Z^{-1/2}\rangle_{\epsilon^{\ast}}}
+\end{displaymath}
+\textcolor{red}{这些物理量的计算脚本如下!!!}
+
+采用\textrm{Py4vasp}模块，按照计算得到的广义速度对\textrm{MD}模拟步数绘图，并判断结果是否收敛。
+
+\textcolor{red}{作为例子，这个计算的收敛足够。当读者自己计算时，一般需要更精确地观察所以计算量对\textrm{MD}步数、\textrm{fs}单位的单位步长以及其余重要的参量有更好的收敛结果。例如，可以根据\textrm{Mann-Kendall}趋势测试，确保数据并没有出现特定的趋势，即平均值不会出现漂移。}
+
+计算反应速率常数$k_{\mathrm{R}\rightarrow\mathrm{P}}$的\textrm{Python}代码如下:
+
+计算得到的反应速率常数
+
+活化能
+
+这些数值可以与文献中第一原理\textrm{MD}模拟得到的体系数值对比。采用``蓝月亮''方法得到的预测实验活化能为0.4182~\textrm{eV}。注意，由于$\Delta A^{\ddagger}$的微小偏差会对$k_{\mathrm{R}\rightarrow\mathrm{P}}$有很大的影响，所以这两类数据一般不能直接对比。
+
+\section{机器学习力场}
+结合第一原理\textrm{MD}的机器学习力场可以节约模拟时间，并依然从第一原理更深刻地认知物理。这里介绍\textrm{MLFF}中的误差分析与超参数优化。
+
+
