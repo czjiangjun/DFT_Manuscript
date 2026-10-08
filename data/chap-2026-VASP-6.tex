@@ -718,3 +718,31 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 输出为
 
 不难看出，优化后的\texttt{ML\_RCUT1}取为13.0，而对于元素\ch{Li}和\ch{H}的描述符数目分别取为$[249,249]$。
+
+使用该\textrm{MLFF}模型完成计算，执行\textrm{MD}模拟计算对分布函数\textrm{(pair-distribution function)}。对分布函数与静态结构因子满足\textrm{Fourier}变换关系。静态结构因子是可以通过散射实验，如\textrm{X-}射线衍射或中子散射实验直接得到。因此通过分布函数，就能通过实验数据来验证\textrm{MLFF}模型的可靠性。%有关结构因此的信息参阅文献\cite{PR95-249_1954}。
+
+这里模拟\ch{LiH}的对分布函数的条件是温度\textrm{450K}，压力\textrm{1bar}，采用\textrm{Langevin}等温条件维持温度和压力。
+
+计算控制文件\textrm{INCAR}
+
+结构文件\textrm{POSCAR}
+
+力场文件\textrm{ML\_FF}
+
+这里的\textrm{POSCAR}文件已经预先弛豫和达到平衡，并包含了起始初速度。
+
+模拟使用之前建立的力场。%在\textrm{Bash}命令下利用\textrm{link}命令，减少存储开销。
+
+\textrm{POTCAR}文件在\textrm{VASP}计算中必须要存在，尽管纯的\textrm{MLFF}模型模拟完用不到\textrm{POTCAR}。所以\textrm{POTCAR}的内容反而无足轻重。
+
+使用以下\textrm{Bash}脚本，执行\textrm{MLFF}模型模拟。
+
+首先作出能量随温度变化的图，确保在\textrm{MD}模拟执行过程中，能量守恒且温度在期望的范围内涨落。
+
+如果能量和温度曲线在一个确定的平均值附近波动，可以认为这个\textrm{MD}模拟得以正确执行。
+
+利用\textrm{Py4vasp}模块作出对分布函数。
+
+从\textrm{OSZICAR}提取能量和温度数据，并作图，采用\textrm{gnuplot}作图命令依次为
+
+如果没有\textrm{Py4vasp}，使命的\textrm{Bash}脚本为\textrm{extract\_PCDAT.sh}，该脚本产生文件\textrm{PCDAT.xy}，因此可以用\textrm{gnuplot}命令绘图。
