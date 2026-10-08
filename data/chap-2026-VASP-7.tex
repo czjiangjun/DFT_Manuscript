@@ -1,0 +1,46 @@
+\section{表面}
+理想周期体系是永恒的。但实际上，体相体系的极限是其表面。\textrm{VASP}模拟表面时，在两个维度上保持体相结构，在一个方向上引入真空，从而构成表面\textrm{(surface)}或厚板\textrm{(slab)}。学习表面的结构弛豫，计算\textrm{DOS}和能带，模拟表面的分子吸附和\textrm{STM}图像。
+
+\subsection{\ch{Ni}表面}
+对两个五层\textrm{(100)}\ch{Ni}表面执行自旋极化计算，采用\textrm{RMM-DIIS}方法完成结构弛豫。通过对比表面能和体相计算得到弛豫能。
+
+表面是实际体相体系的最前沿，\textrm{VASP}模拟表面时，将晶胞沿某个方向延伸结构，使得原有材料部分保持体相结构，部分则是被真空填充。这样的结构称为表面或\textrm{Slab}或直接称呼\textrm{Slab}。一般沿延伸结构方向用一个$\vec k$点表示，表明真空区域隔绝了重复单元间的相互作用。增加而外的$\vec k$点，有助于描述相邻晶胞的相互作用。\textcolor{red}{这样的重复单元足够厚(包含真空区和材料晶胞区域同样要求)，才可以在\textrm{Slab}中间，继续保持体相性质的模拟。换言之，沿着厚度延伸方向，不能再依赖周期边界条件；而模拟表面时，必须消除真空延伸带来的周期性影响。}
+
+\ch{Ni}-\textrm{(100)}面的\textrm{POSCAR}文件
+
+体相\textrm{POSCAR}
+
+\textrm{INCAR}
+
+体相\textrm{INCAR}
+
+$\vec k$空间剖分网格方案\textrm{KPOINTS}
+
+体相\textrm{KPOINTS}
+
+\textrm{POSCAR}中确定的晶格常数为\textrm{3.53\AA}。体相晶胞中只有一个原子，在表面计算中，每层一个原子，共计有五层。真空层大小为$3\times3.53\AA=10.59\AA$。采用\texttt{selective dynamics}模式允许两层原子弛豫而剩下三层原子固定。
+
+根据自旋极化计算的要求，设置\texttt{ISPIN}=2且有\texttt{MAGMOM}=1。%换言之，在\textrm{Kohn-Sham}轨道求解的时候，两部分自旋电子是分别考虑的，而构造\textrm{Hamiltonian}时，则要系统考虑全部电子。
+初始电荷密度通过原子电荷密度叠加得到。%\texttt{ICHARG}设置使得占据波函数由\textrm{Methfessel-Paxton}方法近似得到\upcite{PRB40-3616_1989}。
+结构弛豫由计算控制参数\texttt{IBRION}，\texttt{NSW}、\texttt{POTIM}和\texttt{ISIF}确定。为了使得原子受到的力和应力为零，在给定赝势基础上，依次执行
+\begin{itemize}
+	\item 给定原子位置，通过\textrm{SDFT}计算电子基态；
+	\item 利用\textrm{Hellmann-Feyman}定理，计算电子\textrm{Hamiltonian}的梯度值，作为作用于原子上的力和应力；
+	\item 采用\textrm{RMM-DIIS}方法，离子弛豫到其瞬时基态；
+	\item 重复上述三步，直到体系达到收敛标准。
+\end{itemize}
+在\textrm{KPOINTS}中，$\vec k$空间网格点由\textrm{Monkhorst-Pack}方法确定。$\vec k$空间网格布点确保$\Gamma$点在中心位置。对于表面计算，在表面方向，只有一个$\vec k$点。
+
+分别对体相和表面执行\textrm{Bash}脚本，完成计算。
+
+采用\textrm{Py4vasp}模块可视化体相结构，构建$3\times3\times3$的晶胞。
+
+相比于体相的结构弛豫，表面的结构弛豫在真空方向(本算例中的$z$方向)
+
+表面的弛豫
+
+采用\textrm{Py4vasp}模块检查表面计算的收敛情况。
+
+\textrm{OUTCAR}文件中确认每个离子步的力的计算情况。第一个和最后一个离子步结束，原子受力有何不同，是否达到\texttt{EDIFFG}设置的收敛标注。
+
+\textcolor{red}{最后计算表面能}
