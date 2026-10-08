@@ -161,7 +161,7 @@ s输入文件中关于\textrm{DFT}和\textrm{MD}计算的控制参数之外，�
 
 为了让\textrm{VASP}将学习的力场作为输入数据读入，首先将\textrm{ML\_FFN}另存为\textrm{ML\_FF}；再重启\textrm{MD}模拟时，是使用力场或重新学习力场，就要特别注意参数\texttt{ML\_START}的正确设置。
 
-\textrm{ML\_LOGFILE}文件保存了机器学习力场方法的全部日志数据。
+\texttt{ML\_LOGFILE}文件保存了机器学习力场方法的全部日志数据。
 
 参数输入样本误差\textrm{(In-sample error)}是训练集的平均误差，而输出样本误差\textrm{(out-of-samole error)}是考虑同样系综的随机新构象后出现的平均误差。对于训练得较理想的力场，输出样本误差应该达到极小。\textrm{Bayesian}误差本质是输出样本误差的估计，标志力场训练的理想程度。
 
@@ -244,7 +244,7 @@ s输入文件中关于\textrm{DFT}和\textrm{MD}计算的控制参数之外，�
 
 训练好的机器学习力场，可以直接用于\textrm{MD}模拟而不再需要电子步的第一原理计算。如果在\textrm{MD}模拟中，出现偶尔的\textrm{Bayesian}误差增大，意味着模拟进入到了未知的相空间中。例如出现相变或结构变化，这种情况下有必要重新训练力场，以便模拟在新的相空间中的行为。
 
-因为训练的数据到\textrm{ML\_ABN}文件中，为了继续训练力场，在\textrm{INCAR}中，设置计算控制参数\texttt{ML\_ISTART}=1,将\textrm{ML\_ABN}文件另存为\textrm{ML\_AB}。训练常常要分为很多轮，另外可能训练中会包含缺陷、表面或新的相空间内容。最终得到的力场参数保存在\textrm{ML\_FFN}文件中。
+因为训练的数据到\texttt{ML\_ABN}文件中，为了继续训练力场，在\textrm{INCAR}中，设置计算控制参数\texttt{ML\_ISTART}=1,将\texttt{ML\_ABN}文件另存为\texttt{ML\_AB}。训练常常要分为很多轮，另外可能训练中会包含缺陷、表面或新的相空间内容。最终得到的力场参数保存在\textrm{ML\_FFN}文件中。
 
 不过，当有些模拟控制参数，如温度，发生改变时，则未必需要重新训练力场。特别是如果全部局域参考构象足以覆盖全部系综，更没有此必要。特别是如果没有相变发生，这一点可以通过检验金刚石结构\ch{Si}来验证:~在训练得到机器学历力场的条件下，通过足够长的\textrm{MD}模拟，再把该力场平移到新的观测条件下，完成相同的模拟，考察两种条件下的晶胞体积的变化。
 
@@ -334,12 +334,12 @@ s实验中，线膨胀系数定义为:
 
 \textrm{ICONST}文件
 
-\textrm{ML\_AB}文件中保存的是已经完成的\ch{CH3Cl}和\ch{Cl-}阴离子的第一原理数据，包括:~晶格矢量，原子位置，能量，力和应力张量。
+\texttt{ML\_AB}文件中保存的是已经完成的\ch{CH3Cl}和\ch{Cl-}阴离子的第一原理数据，包括:~晶格矢量，原子位置，能量，力和应力张量。
 
 \textrm{INCAR.refit}文件中与\textrm{MLFF}方法有关的控制计算参数为
 \begin{itemize}
 	\item \texttt{ML\_LMLFF}=\textrm{T}，表示开启并使用\textrm{MLFF}；
-	\item \texttt{ML\_MODE}=\textrm{refit}表示允许在现有\textrm{ML\_AB}文件基础上产生力场文件。
+	\item \texttt{ML\_MODE}=\textrm{refit}表示允许在现有\texttt{ML\_AB}文件基础上产生力场文件。
 \end{itemize}
 
 \texttt{SYSTEM}只是描述允许计算体系，允许是任意字符串。\texttt{ISYM}在\textrm{MD}模拟中通常设置为关闭对称性。\texttt{POMASS}指定了参与反应的原子/离子质量，默认为\textrm{POTCAR}中的元素质量。如果设定了该值，则不使用\textrm{POTCAR}中的默认值。之所以在化学反应\textrm{MD}模拟中改变某些元素的质量，比如这里对于三个\ch{H}元素，质量比\ch{H}的\textrm{POTCAR}中的质量重，因为如果适当减缓\ch{C-H}键的振动频率，可以通过\texttt{POTIM}使用更大的时间步长，而不会损失反应过程中的动力学信息。
@@ -361,7 +361,7 @@ s实验中，线膨胀系数定义为:
 
 运行\textrm{Bash}脚本
 
-将第一原理计算的能量、力和应力保存到\textrm{ML\_AB}文件中，生成机器学习力场。
+将第一原理计算的能量、力和应力保存到\texttt{ML\_AB}文件中，生成机器学习力场。
 
 将产生的机器学习力场由输出文件\textrm{ML\_FFN}复制到\textrm{ML\_FF}文件中，执行\textrm{Bash}脚本。
 
@@ -530,9 +530,9 @@ s实验中，线膨胀系数定义为:
 \end{itemize}
 \textcolor{red}{关于机器学习方法的误差分析，参见文献\cite{DOI:10.1063/5.0160326}，其中有关于\textrm{MLFF}的专门讨论。}
 
-本算例中，将会根据保存在\textrm{ML\_AB}文件中的已有的第一原理数据重新拟合\textrm{MLFF}模型。通过\txtrm{ML\_AB}中的数据，分析训练集误差和测试集误差，也就是评估得到的力场。
+本算例中，将会根据保存在\texttt{ML\_AB}文件中的已有的第一原理数据重新拟合\textrm{MLFF}模型。通过\txtrm{ML\_AB}中的数据，分析训练集误差和测试集误差，也就是评估得到的力场。
 
-%根据\textrm{VASP}产生的第一原理数据和\textrm{ML\_AB}文件，拟合\textrm{MLFF}模型。根据之前的计算结果，而不重新启动\textrm{DFT}计算。
+%根据\textrm{VASP}产生的第一原理数据和\texttt{ML\_AB}文件，拟合\textrm{MLFF}模型。根据之前的计算结果，而不重新启动\textrm{DFT}计算。
 
 计算控制文件\textrm{INCAR.refit}
 
@@ -542,17 +542,17 @@ s实验中，线膨胀系数定义为:
 
 $\vec k$空间剖分网格文件\textrm{KPOINTS}
 
-\textrm{ML\_AB}之前完成的\ch{LiH}体系的第一原理计算数据，包括晶格矢量，原子位置，能量，力和应力。
+\texttt{ML\_AB}之前完成的\ch{LiH}体系的第一原理计算数据，包括晶格矢量，原子位置，能量，力和应力。
 
 \subsubsection{重新拟合的输入说明}
-重新拟合的输入控制文件\textrm{INCAR.refit}只有计算控制参数\texttt{ML\_LMLFF}确定机器学习模式，\texttt{ML\_MODE}选择拟合方式。一般地，重新拟合需要在实时训练完成\textrm{ML\_AB}文件之后才能开始，这样得到的\textrm{MLFF}更精确，因为此时的模型权重是通过线性回归\textrm{Linear Regression}确定的。%
+重新拟合的输入控制文件\textrm{INCAR.refit}只有计算控制参数\texttt{ML\_LMLFF}确定机器学习模式，\texttt{ML\_MODE}选择拟合方式。一般地，重新拟合需要在实时训练完成\texttt{ML\_AB}文件之后才能开始，这样得到的\textrm{MLFF}更精确，因为此时的模型权重是通过线性回归\textrm{Linear Regression}确定的。%
 采用重新拟合后的\textrm{MLFF}，\textrm{VASP}在计算时会更快(\texttt{ML\_MODE}=\textrm{run})，因为重新拟合会引入更多的功能算法。
 
-\textrm{POSCAR}文件不会对重新拟合产生影响，因为重新拟合是根据第一原理计算的\textrm{ML\_AB}文件的数据实现的，而\textrm{POSCAR}文件仅是用于预测步，因此\textrm{OUCAR}中的能量和力会受到其影响。但在分析\textrm{MLFF}的时候不会注意到这些结果。
+\textrm{POSCAR}文件不会对重新拟合产生影响，因为重新拟合是根据第一原理计算的\texttt{ML\_AB}文件的数据实现的，而\textrm{POSCAR}文件仅是用于预测步，因此\textrm{OUCAR}中的能量和力会受到其影响。但在分析\textrm{MLFF}的时候不会注意到这些结果。
 
 \textrm{KPOINTS}文件中仅含$\Gamma$点
 
-重新拟合的时候，不会涉及\textrm{POTCAR}文件。机器学习算法会根据\textrm{ML\_AB}文件确定原子，这些原子可以和\textrm{POTCAR}中的原子无关。
+重新拟合的时候，不会涉及\textrm{POTCAR}文件。机器学习算法会根据\texttt{ML\_AB}文件确定原子，这些原子可以和\textrm{POTCAR}中的原子无关。
 
 \subsubsection{误差分析输入说明}
 测试集的文件位置
@@ -563,10 +563,13 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 
 使用\textrmP{Bash}脚本确定训练集误差
 
-重新拟合后，\textrm{VASP}会将力场写入\textrm{ML\_FFN}文件，而训练集误差则写入\textrm{ML\_LOGFILE}文件中。采用\textrm{Bash}命令检查\textrm{ML\_LOGFILE}文件，
+重新拟合后，\textrm{VASP}会将力场写入\textrm{ML\_FFN}文件，而训练集误差则写入\texttt{ML\_LOGFILE}文件中。采用\textrm{Bash}命令检查\texttt{ML\_LOGFILE}文件，
 
 \textrm{grep ERR ML\_LOGFILE}
 
+进行误差分析：
+
+下表给出三种力场的测试集误差
 最后一行有5列数据，第三个是能量的训练集误差，单位是\textrm{eV}；第四个是力误差，单位是\textrm{eV/AA}；最后一个是应力张量的误差，单位是\textrm{kbar}。
 
 下面为了分析测试误差，并与训练误差对比。将得到的\textrm{MLFF}也能够用到测试集中，应用\textrm{Bash}脚本，分别计算测试数据集的能量、力和应力。
@@ -585,12 +588,30 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 根据经验，以下超参数对于提升\textrm{MLFF}的性能和精度最重要
 
 \textcolor{red}{这里只是给出\textrm{VASP}中的少量超参数。}
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}|@{\extracolsep{\fill}}c}
+        \toprule
+	超参数 &参数功能 &参数分类\\
+\midrule
+\texttt{ML\_RCUT1} & 双粒子间截断半径 &描述符\textrm{(descriptor)}\\
+\texttt{ML\_RCUT2} & 三粒子间截断半径 &描述符\textrm{(descriptor)}\\
+\texttt{ML\_WTIFOR} & 原子受力权重因子 &拟合参数\textrm{(fitting)}\\
+\texttt{ML\_WTOTEN} & 总能量权重因子 &拟合参数\textrm{(fitting)}\\
+\texttt{ML\_WTSIF} & 应力张量权重因子 &拟合参数\textrm{(fitting)}\\
+\texttt{ML\_EPS\_LOW} & 局域参考构型稀疏因子 &稀疏性约束参数\textrm{(sparse)}\\
+\texttt{ML\_EPS\_LOW} & 描述符型稀疏因子 &稀疏性约束参数\textrm{(sparse)}\\
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{INCAR}常用参数的简要描述}
+\label{Tab:Hyperparameter-Tag}
+\end{table}
 
 这个例子主要是优化\texttt{ML\_RCUT1}提升力场的性能。
 
 交叉验证\textrm{(Cross-Validation)}是判断超参数质量的一种方法。作为一个准备步骤，检查训练集误差没有远小于测试集误差，以防止过拟合。然后系统地改变超参数，寻找最优值。如果只是随机地变化超参数，不可能提升\textrm{MLFF}的质量。最后再对比不同超参数下训练集误差和测试集误差。
 
-以优化\texttt{ML\_RCUT1}为例，对一系列的\texttt{ML\_RCUT1}的值，计算训练集误差(存于\textrm{ML\_LOGFILE文件})和力场(存于\textrm{ML\_FF}文件)。通过\textrm{Py4vasp}可以对\textrm{ML\_FF}文件中测试集进行误差分析。在参数改变过程中，只考虑训练集误差就够了。然后只需要基于\textrm{MLFF}的训练集的最小误差来分析测试集误差。
+以优化\texttt{ML\_RCUT1}为例，对一系列的\texttt{ML\_RCUT1}的值，计算训练集误差(存于\texttt{ML\_LOGFILE文件})和力场(存于\textrm{ML\_FF}文件)。通过\textrm{Py4vasp}可以对\textrm{ML\_FF}文件中测试集进行误差分析。在参数改变过程中，只考虑训练集误差就够了。然后只需要基于\textrm{MLFF}的训练集的最小误差来分析测试集误差。
 
 \textrm{INCAR.refit}
 
@@ -598,11 +619,11 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 
 \textrm{POSCAR}
 
-\textrm{ML\_AB}集结了前面计算的\ch{LiH}的第一原理数据:晶格矢量，原子位置，能量，力和应力。
+\texttt{ML\_AB}集结了前面计算的\ch{LiH}的第一原理数据:晶格矢量，原子位置，能量，力和应力。
 
-这里最重要的输入文件是\textrm{ML\_AB}和\textrm{INCAR}文件，而\textrm{VASP}计算必须的\textrm{POSCAR}和\textrm{POTCAR}不会影响超参数的优化。为了不使用\textrm{KPOINTS}，这里在\textrm{INCAR}文件中使用了计算控制参数\texttt{KSPACING}。无论何种方式剖分$\vec k$空间网格，倒空间晶格与重构力场无涉。
+这里最重要的输入文件是\texttt{ML\_AB}和\textrm{INCAR}文件，而\textrm{VASP}计算必须的\textrm{POSCAR}和\textrm{POTCAR}不会影响超参数的优化。为了不使用\textrm{KPOINTS}，这里在\textrm{INCAR}文件中使用了计算控制参数\texttt{KSPACING}。无论何种方式剖分$\vec k$空间网格，倒空间晶格与重构力场无涉。
 
-这里的\textrm{ML\_AB}文件来自前面的计算，这里针对双体描述符\texttt{ML\_RCUT1}，\textrm{ML\_AB}保存的第一原理计算数据将会用于\texttt{ML\_RCUT1}取不同值时的重新拟合过程。该任务可以通过执行\textrm{Bash}脚本完成。
+这里的\texttt{ML\_AB}文件来自前面的计算，这里针对双体描述符\texttt{ML\_RCUT1}，\texttt{ML\_AB}保存的第一原理计算数据将会用于\texttt{ML\_RCUT1}取不同值时的重新拟合过程。该任务可以通过执行\textrm{Bash}脚本完成。
 
 \textrm{run\_hyperparam\_scan.sh}
 
@@ -623,4 +644,77 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 原则上，为了得到最好的\textrm{MLFF}，需要\textrm{VASP}要对每一个可能的超参数重复上述优化流程。但实际操作时，不可能优化全部超参数。使用\textrm{VASP}时，有默认的参数选项，这都是在一系列体相和分子数据集上优化过。\textcolor{red}{根据力场的计算预测能力，考虑上表中某些超参数优化是值得的。}
 
 \subsection{优化\rm{MLFF}的性能}
-根据现有的\textrm{ML\_AB}文件，优化力场性能。
+根据现有的\texttt{ML\_AB}文件，优化力场性能。
+
+有效的稀疏化提升力场的性能。例如，\textrm{VASPj通过计算控制参数\texttt{ML\_LSPARSDES}，采用\textrm{CUR}算法降低\textrm{MLFF}模型的角度描述符的数量。该协方差矩阵描述符$A$可分解为三个矩阵$C$，$U$和$R$，这里$C$是矩阵$A$的少数几行，$R$则是$A$的少数几列，而$U$则是一个小的幺正矩阵(酉矩阵，\textrm{unitary matrix})，它使得$CUR$的乘积接近矩阵$A$。%最初的\textrm{CUR}算法是用于有效筛选矩阵$A$中的重要行，这里\textrm{CUR}算法用于搜索不重要的角度描述符并筛除。通过计算控制参数\texttt{ML\_RDES\_SPARSDENS}和杠杆值\textrm{(leverage scores)}\footnote{杠杆值或杠杆得分衡量矩阵中每个数据点对拟合结果的影响力，常用于异常点检测和大规模矩阵计算的随机采样。}来考量。
+
+关于\textrm{CUR}算法的详细内容，参见文献\cite{CS106-697_2009, JCP152-234102_20220}。
+
+筛除描述符提升力场的计算能力的代价是降低计算精度。为了平衡精度和计算能力，可以将测试集精度为$y$轴，代码的时间开销为$x$轴作图，求出该多参量问题的\textrm{Pareto}前沿\textrm{(Pareto Front)}。根据得到到\textrm{Pareto}前沿，选定优化的\texttt{ML\_RDES\_SPARSDES}值。为了得到每一个的\texttt{ML\_RDES\_SPARSDES}的值，方案如下
+\begin{itemize}
+	\item 根据\texttt{ML\_RDES\_SPARSDES}值，重新拟合\textrm{ML\_FF}模型
+	\item 确定\textrm{MLFF}模型的测试集精度(\textcolor{red}{步骤见见面})
+	\item 确定\textrm{MLFF}模型的耗时情况
+\end{itemize}
+为了获得有意义的耗时结果，需要考虑多个\textrm{MD}模拟步的力计算部分时间并求其平均值，不过，如果将平均值写入文件也会严重降低执行效率，因此该步骤通常可以剔除。计算控制参数\texttt{ML\_OUTBLOCK}和\texttt{ML\_OUTPUT\_MODE}就是控制该部分的。
+
+计算控制稀疏化文件\textrm{INCAR.sparse}
+
+计算执行文件\textrm{INCAR.run}
+
+计算耗时平均取值文件\textrm{INCAR.timing}
+
+\ch{LiH}结构文件\textrm{POSCAR}
+
+\texttt{ML\_AB}文件中包括前面\ch{LiH}第一原理计算数据:~晶格矢量，原子位置，能量，力和应力。
+
+本部分计算中，有两类不同的\textrm{INCAR}文件
+\begin{itemize}
+	\item \textrm{INCAR.sparse}:~确定三体描述符，通过减少描述符重新拟合力场。这里设置计算控制参数\texttt{ML\_RCUT1}=13.0，因为这个值就是此前得到的优化值
+	\item \textrm{INCAR.run}:~对于给定的\textrm{POSCAR}计算能量、力和应力丈量。
+\end{itemize}
+再次使用前面第一原理计算得到的\texttt{ML\_AB}文件中的数据。
+
+\textrm{POSCAR}文件给定的是\textrm{MD}计算的初始结构，与稀疏化的过程无关。
+
+执行如下的\textrm{Bash}脚本完成稀疏化。
+
+对比前次计算的精确模型和稀疏化之后模型的描述符数目。描述符数目可以在\texttt{ML\_LOGFILE}文件中通过关键词\textrm{NDESC}检索到，执行\textrm{Bash}命令
+
+在\textrm{grep}输出的最后，是描述符的数目。执行以下\textrm{Bash}脚本，对比稀疏化前后的描述符数目
+
+从输出结果可以看到，两种情况下，径向描述符相同，都是24个，角度部分的描述符，稀疏化后减少了一半，两类原子有关的角度部分描述符都从452降为225。
+
+下面，与前面一样，再分析得到力场的情况。通过\textrm{Bash}脚本和\textrm{py4vasp}进行误差分析：
+
+下表给出三种力场的测试集误差
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}|@{\extracolsep{\fill}}c}
+        \toprule
+	标准\textrm{MLFF} &\textrm{MLFF}有关\texttt{ML\_RCUT1} &\textrm{MLFF}稀疏化\\
+	\midrule
+	\textrm{8.5E-3~eV/\AA} &\textrm{7.9E-3~eV/\AA} &\textrm{8.2E-3~eV/\AA}
+        \bottomrule
+    \end{tabular*}
+    \caption{三种力场的误差分析}
+\label{Tab:Test-set_Error-in-Sparcsified}
+\end{table}
+
+稀疏化使得测试集误差略有增大，但为每一类原子各减少了一半的加度描述符。
+
+随后\textcolor{red}{的相模拟}会评估\textrm{MLFF}模型的模拟能力。这种\textrm{MLFF}力场分析对于计算节点上同时执行的任务数会比较敏感，因为单个节点上任务越多，耗时越长。不过这里讨论的是怎分析\textrm{MLFF}模型的计算性能。
+\begin{itemize}
+	\item首先，减少计算中的\textrm{I/O}。在\textrm{INCAR.timing}中有如何减少每个\textrm{MD}执行过程中的写磁盘和输出的控制参数方案。为执行计算，将\textrm{INCAR.timing}另存为\textrm{INCAR}，开启\textrm{VASP}计算。
+	\item 针对不同的\textrm{MLFF}，执行\textrm{MD}计算，并保存到\textrm{OUTCAR}文件中。
+	\item 最后，执行``\textrm{grep LOOP+}''命令，对每个\textrm{MD}模拟步的耗时求\textrm{CPU}耗时的平均值。%如下的输出文件\textrm{OUTCAR.sparse_time}和\textrm{OUTCAR.no-sparse_timing}文件是预先准备好的。
+\end{itemize}
+注意，这里使用的是较小的第一原理数据(\texttt{ML\_AB}文件)。使用更大的数据库，稀疏化更有效，可以节约更多的时间。系数化最大可达的加速因子由计算控制参数\texttt{ML\_RDES\_SPARSDES}确定。
+
+\subsection{采用优化的\textrm{MLFF}模型完成反应模拟}
+根据得到的稀疏化的\textrm{MLFF}模型，来完成反应模拟。因为模型已经经过正确的训练，参数保存在\textrm{ML\_FF}文件中，因此无需对\textrm{INCAR}文件作任何改动。在\textrm{INCAR}文件中，与\textrm{ML\_FF}模型有关的仅有的计算控制参数为\texttt{ML\_LMLFF}=\textrm{TRUE}和\texttt{ML\_MODE}=\textrm{run}。在\textrm{ML\_FF}文件的第一行，记录了构建\textrm{MLFF}模型使用的超参数。而\textrm{ML\_FF}文件的剩下部分采用非格式输出(二进制格式)。采用如下\textrm{Bash}脚本检验\textrm{ML\_FF}模型使用的超参数
+
+输出为
+
+不难看出，优化后的\texttt{ML\_RCUT1}取为13.0，而对于元素\ch{Li}和\ch{H}的描述符数目分别取为$[249,249]$。
