@@ -185,6 +185,25 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 实际计算流程中要注意
 \begin{enumerate}
 	\item 开始计算时要注意$\vec k$空间网格剖分(\textrm{KPOINTS}文件)的收敛测试，截断能(\texttt{ENCUT})的收敛测试；同样，真空层厚度和\textrm{Slab}厚度也应该进行收敛测试。
-	\item 在\textrm{OUTCAR}文件中，会存在很大的\textrm{Pulay}应力(\textrm{external pressure}的数值），可以通过增大截断能(\texttt{ENCUT})避免。为了对比不同计算的总能，必须设置相同的\texttt{ENCUT}的值。所有的表面能都应该在足够大的截断能，确保没有\textrm{Pulay}应力可以忽略的条件下进行比较。
+	\item 在\textrm{OUTCAR}文件中，会存在很大的\textrm{Pulay}应力(\textrm{external pressure}的数值)，可以通过增大截断能(\texttt{ENCUT})避免。为了对比不同计算的总能，必须设置相同的\texttt{ENCUT}的值。所有的表面能都应该在足够大的截断能，确保没有\textrm{Pulay}应力可以忽略的条件下进行比较。
 	\item 再者，这里体相材料默认为给定的。当晶格常数随着交换-相关泛函发生较大变化时，应该对体相材料先进行合理的结构弛豫。
 \end{enumerate}
+
+\subsection{\ch{CO}分子在\ch{Ni}表面的吸附}
+\subsubsection{\ch{CO}分子在\ch{Ni}的$(111)$面上的吸附}
+完成\ch{CO}分子在五层的\ch{Ni}的$(111)$面(三层固定)上，通过\textrm{RMM-DISS}方法弛豫，并与单个分子对比结构的变化。
+
+分子在表面吸附上是表面科学中普通却又复杂的问题。即使对于简单分子，构型空间也很大，因此高维的势能面也可以很平坦。一般地，分子可以吸附在不同方向，由于与表面的相互作用和电荷转移，原本等价的键角也会发生变化。\ch{CO}吸附是催化反应中常用的试剂，因为\ch{CO}中毒后会变成\ch{CO2}。\upcite{NJC47-20222_2023}。
+
+吸附会显著地改变\textrm{Slab}上的电荷分布，因此系统会出现偶极矩。对周期性边界条件，有限偶极会通过真空区在势能中形成梯度。但是计算的目的是模拟单个孤立的\textrm{Slab}-吸附体系，该体系与周期坏境不发生相互作用。为了消除不希望的电场影响，有必要引入偶极校正\textrm{(dipole correction)}。该校正可以修正势能、能量和受力，并且推荐在任何具有反演对称性破缺(即允许存在偶极矩)的体系。
+
+最困难的是准备初始结构文件。采用\textrm{ASE}模块，其中包括方便的结构生成模块\textrm{builder}，执行以下代码产生孤立的\ch{CO}分子的\textrm{POSCAR}和吸附-\textrm{Slab}-吸附物的\textrm{POSCAR}。
+
+在表面上有不同的吸附位点:
+\begin{itemize}
+	\item \textcolor{red}{红点位置}:~吸附物位于顶点\textrm{(Top)}位。这是在高覆盖率\textrm{(high coverage)}\footnote{高覆盖率是表面完全被\ch{CO}覆盖的情况。}情况下最稳定的吸附位。
+	\item 
+\end{itemize}
+w为了模拟低覆盖的情形，采用超晶胞。关于其他高对称的吸附位点，可以在\textrm{ASE}中的\textrm{suface}模块的说明。
+
+同样地，在\textrm{POSCAR}文件中固定三层\ch{Ni}原子，允许两层表面原子弛豫。
