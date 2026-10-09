@@ -43,4 +43,148 @@ $\vec k$空间剖分网格方案\textrm{KPOINTS}
 
 \textrm{OUTCAR}文件中确认每个离子步的力的计算情况。第一个和最后一个离子步结束，原子受力有何不同，是否达到\texttt{EDIFFG}设置的收敛标注。
 
+在第一个离子步，第一、第二层原子的受力与第四、第五层原子是相当的。\textrm{POSCAR}中的控制参数\texttt{selective dynamics}许可第四、第五层原子弛豫。
+
+到第五个离子步，第四、第五层原子的受力已经极小。$\mathtt{EDIFFG}=10\times\mathtt{EDIFF}=1E-5$。
+
 \textcolor{red}{最后计算表面能}
+非弛豫表面能
+\begin{displaymath}
+	\begin{aligned}
+		\sigma^{\mathrm{unrel}}=&\dfrac1{2A}(E_{\mathrm{slab}^{\mathrm{unrel}}}-NE_{\mathrm{bluk}})\\
+		=&\dfrac1{2\times3.53^2/2}[-25.5567-5\cdot(-5.4681)]\\
+		=&143.0\mathrm{meV/\AA^2}
+	\end{aligned}
+\end{displaymath}
+这里利用了非弛豫的\textrm{Slab}的总能$E_{\mathrm{slab}}^{\mathrm{unrel}}=-25.5567\mathrm{eV}$。
+
+表面能的平均值则是通过计算弛豫\textrm{Slab}一侧上两层(第四、第五层)的能量得到：
+\begin{displaymath}
+	\sigma^{\mathrm{avg}}=\dfrac1{2A}(E_{\mathrm{slab}}-NE_{\mathrm{bulk}})=141.5\mathrm{meV/\AA^2}
+\end{displaymath}
+
+最后得到弛豫的表面能为：
+\begin{displaymath}
+	\sigma^{\mathrm{rel}}=2\sigma^{\mathrm{avg}}-\simgma^{\mathrm{unrel}}=140.1\mathrm{eV/\AA^2}
+\end{displaymath}
+可见表面弛豫能非常小。差不多是$3\mathrm{meV/\AA^2}$。但有些材料模拟中，弛豫能计算方法相同，不过弛豫的原子数比\textrm{FCC}密堆积金属\ch{Ni}的要多。文献给出100个\ch{Ni}原子的\textrm{PBE}表面能是$138\mathrm{meV/\AA^2}$\upcite{SD3-16080_2016}。可见当前的部分弛豫方法使用了最小的计算开销，但也能得到比较好的结果。
+
+主要到表面能的计算表达式
+\begin{displaymath}
+	\sigma=\dfrac{E_{\mathrm{slab}}-NE_{\mathrm{bluk}}}{2A}
+\end{displaymath}
+只对具有一定对称性和正确化学计量比的表面有效。公式中有因子$1/2$是因为当引入真空体相形成表面的时候，就同时存在两个表面。这个公式成立的条件就是两个表面必须是等价的，也就意味着\textrm{slab}是对称的。系数$N$表明\textrm{Slab}包含$N$个构成体相的最小晶胞数目，所以只有当\textrm{Slab}中的元素的化学计量比于体相元素时完全等同时才成立。
+
+由于体相材料中原子(或离子)因为完全成键，化学环境稳定。而表面原子与体相原子化学环境不同，一般都含有悬挂键(通常是未成对的自由基)，因此具有的能量高于体相原子。对照实验结果，\textrm{DFT}计算中，采用半局域交换-相关泛函计算表面体系，往往会高估其稳定性。也就是说，理论模拟得到的表面能，往往比实验值要低。
+
+另外，根据表面结构的一般规律，$(211)$面的表面能比$(111)$面的表面能要高，这表明构成$(211)$面需要更多的能量，换言之，对于\textrm{FCC}密堆积体系，沿$(211)$面切出表面比$(111)$面更困难。
+
+\subsubsection{\ch{Ni}的(100)表面的局域态密度}
+对\ch{Ni}的$(100)$面，计算每个\ch{Ni}原子的电荷和局域\textrm{DOS}。
+
+为了计算每个\ch{Ni}原子的电荷，必须首先确认哪些电荷属于哪些原子。%或者更一般地，需要通过哪些局域\textrm{Kohn-Sham}轨道计算哪些局域电荷。
+
+一个计算方案是划定一个小的范围，规定在此范围内的电子属于该原子，这也就是\textrm{POTCAR}文件中给出参数\texttt{RWIGS}，定义了元素的\textrm{Wigner-Seitz}半径。当计算控制参数\texttt{LORBIT}$<10$，可以根据\textrm{Wigner-Seitz}半径，计算原子周围的电荷密度。该方案的问题是电荷密度的划分较为笼统，没有办法进一步根据角动量$l$、磁量子数$m$和自旋量子数$\sigma$来进一步区分电荷密度。
+
+另一个方案是对电荷密度执行幺正变换，也就是对离域的\textrm{Kohn-Sham}轨道的子空间(占据轨道)实施变换，形成一套局域态基组，这样得到的基函数称为\textrm{Wannier}函数。显然\textrm{Wannier}函数并不唯一，通常说的\textrm{Wannier}函数是最大局域\textrm{Wannier}函数。如果\textrm{Kohn-Sham}轨道是强相干的\textrm{(strongly entangled)}，实施这种幺正变换会非常困难。
+
+还有一种办法，是采用投影子算符\textrm{(Projector operators)}，将\textrm{Kohn-Sham}轨道的某些特征部分投影出来。这样构成的基函数就是投影局域轨道\textrm{(Projected localized orbitals)}\textcolor{red}{\upcite{PRB77-205112_2008}}。这就是\textrm{INCAR}文件中计算控制参数\texttt{LORBIT}$>10$时，计算投影出来的局域分波\textrm{DOS}。投影用的投影子和相因子系数也都写入\textrm{PROCAR}文件。
+
+\ch{Ni}的$(100)$表面的结构文件\textrm{POSCAR}
+
+\textrm{INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+其中\textrm{POSCAR}文件来自前面计算的结构弛豫文件\textrm{CONTCAR}。
+
+\textrm{INCAR}文件中，计算控制参数\texttt{ISMEAR}$=-5$，\texttt{LORBIT}$=11$。%\texttt{ISMEAR}=-5将使用\textrm{Bl\"ochl}校正的四面体积分方法，该方法对于分数占据的轨道是不可变分的，因此对于存在部分占据轨道(金属或导体)，计算力和应力会有误差。所以不能用于导体和金属的几何结构优化。\texttt{LORBIT}=11，关于\textrm{DOS}的计算结果将同时写入\textrm{DOSCAR}和\textrm{PROCAR}文件。\textrm{PROCAR}文件包括\textrm{Kohn-Sham}轨道指定角动量$l$和磁量子数$m$的分波\textrm{DOS}，投影用的投影函数也写入了\textrm{PROCAR}文件。
+
+执行\textrm{Bash}脚本完成计算
+
+采用\textrm{Py4vasp}模块绘制\ch{Ni}表面的每一层的\textrm{DOS}图。%执行\textrm{Python}脚本，会给出\textrm{Py4vasp}的\textrm{DOS}作图函数，修改代码可以绘制指定层的\textrm{DOS}。相比于接近体相(第三层)的\textrm{DOS}，投影\textrm{DOS}在靠近表面部分(第五层)，会表现出更显著的交换裂分。
+
+在\textrm{OUTCAR}文件中，还分别给出相关元素的局域电荷和磁矩信息。
+
+不难看出，表面的第一层和第五层，电荷密度降低了，但磁性明显提升。
+
+采用\textrm{Py4vasp}模块，可以可视化在位的自旋磁矩，有在位自旋磁矩贡献的原子位置上有箭头标注。
+
+如果修改\textrm{INCAR}中的计算控制参数\texttt{LORBIT}=1且\texttt{RWIGS}=1.286，并再次执行\textrm{VASP}计算，注意\textrm{DOS}、局域电荷密度和磁矩的变化情况。
+
+\subsubsection{\ch{Ni}的(100)表面的能带}
+沿着高对称性方向$\Gamma-X-M-\Gamma$绘制\ch{Ni}的$(100)$表面的能带结构。
+
+在构建表面的时候，晶体结构沿着特定方向拉升，并填充了真空层。该操作同样会显著影响倒空间的\textrm{Brillouin zone}的形状。%在下图中，可以看到\ch{Ni}的体相结构的第一\textrm{Brillouin}区，也称为\textrm{FCC}结构的\textrm{Weiger-Seitz}元胞。采用\textrm{SeeK-path}工具软件，上传体相\textrm{POSCAR}文件，可以得到高对称性$\vec k$点路径。
+
+%采用同样的工具，可以得到表面计算所需要的\textrm{Weiger-Seitz}元胞。该\textrm{Weiger-Seitz}元胞有一个方向被压扁，而高对称性点的标记也都发生了改变。因为\textrm{Bravais}格子的格矢发生了改变，所以在选取高对称性点和方向时要比较注意。上图中，上面一张图给出表面计算所需要的\textrm{Wigner-Seitz}元胞的高对称性点。
+
+\ch{Ni}的$(100)$面结构文件\textrm{POSCAR}
+
+\textrm{POSCAR}文件
+
+$\vec k$空间高对称性点及路径的选择
+
+执行\textrm{Bash}脚本，采用前面计算完成的\textrm{CHGCAR}，完成\textrm{VASP}计算
+
+%静态计算
+%计算过程电荷密度保持不变
+%自旋极化计算
+
+采用\textrm{Py4vasp}绘制能带图，并将指定角动量量子数$l$的能带标出。
+
+\subsubsection{\ch{Ni}的(111)表面的弛豫}
+采用非自旋极化的\textrm{RMM-DIIS}方法弛豫\ch{Ni}的$(111)$表面五层结构，并确定表面能。
+
+%在每个电子步迭代只能，在对包括电荷密度在内的物理量进行计算的时候，都需要对第一\textrm{Brillouin}积分。对于金属和导体体系，由于\textrm{Fermi}面附近能带的部分占据(称为导带)，因此$\vec k$空间积分会有不连续的函数。在$T=0\mathrm{K}$，这些位置就是阶梯函数\textrm{(Step function)}。换言之，对于导带电子的积分需要非常密集的$\vec k$空间网格剖分，这样严重消耗计算资源。计算控制参数\texttt{ISMEAR}为用户提供了不同的解决方案。其中一个近似方案就是采用\textrm{Methfessel-Paxton}方法积分，该方法基于对台阶函数的平滑近似，采用多项式逼近台阶函数的方法，得到较为精确的积分结果。多项式的截断阶数由\texttt{ISMEAR}$>N$确定。
+
+\ch{Ni}的$(111)$表面结构文件\textrm{POSCAR}
+
+体相\ch{Ni}的结构文件\textrm{bulk/POSCAR}
+
+\textrm{INCAR}
+
+\textrm{bulk/INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+\textrm{bulk/KPOINTS}
+
+在\textrm{POSCAR}中，与$(100)$面类似，体相最小重复单元含有一个原子。划分的e$(111)$面的真空层厚度为
+\begin{displaymath}
+	(1-0.4)\times5.774\times3.53\AA\approx12.23\AA
+\end{displaymath}
+因此真空层为$12.12\AA$。\texttt{selective dynamics}选项指定了两层弛豫，另外三层固定。
+
+\textrm{INCAR}文件除了关闭自旋，与$(100)$计算完全相同，另外为了加速收敛，计算控制参数\texttt{NBANDS}确定的能带数目增加了一些。
+
+执行\textrm{Bash}脚本
+
+采用\textrm{Py4vasp}模块完成晶胞可视化并计算表面面积。
+%边长为$a=2.5\AA$，有一个角为$120^{\circle}$的平行四边形面积为
+%\begin{displaymath}
+%(2.5\AA)^2\cdot\sim(120/360\times\pi)=5.41236587737\AA	
+% \end{displaymath}
+%或者取两个全等三角形$A=(a^2\sqrt3)/4$。\ch{Ni}的$(111)$Mi按比$(100)$面的原子堆积更紧实。
+
+不难看出，$(111)$表面的受力更小一些，因为\ch{Ni}的$(111)$面更接近体相结构。按照同样的表面能计算方法，有非弛豫表面能$\sigma^{\mathrm{unrel}}$:
+\begin{displaymath}
+	\sigma^{\mathrm{unrel}}=\dfrac1{2A}(E_{\mathrm{slab}}^{\mathrm{unrel}}-NE_{\mathrm{bulk}})=122.7\mathrm{meV/AA^2}
+\end{displaymath}
+上面两层弛豫后的平均表面能$\langle\sigma\rangle$
+\begin{displaymath}
+	\langle\sigma\rangle=\dfrac1{2A}(E_{\mathrm{slab}}-NE_{\mathrm{bulk}})=122.1\mathrm{meV/AA^2}
+\end{displaymath}
+可得完全弛豫表面能$\sigma^{\mathrm{rel}}$为
+\begin{displaymath}
+	\sigma^{\mathrm{rel}}=2\langle\sigma\rangle-\sigma^{\mathrm{unrel}}=121.6\mathrm{meV/AA^2}
+\end{displaymath}
+
+在$(111)$面，弛豫引起每个面上的能量增益比$(100)$面更小，因为$(111)$面的原子更接近密堆积，所以原子间的间距更短。在\ch{Ni}的\textrm{FCC}结构中，$(111)$面的表面能最小。即使计算中还忽略了磁性的贡献，对比文献中表面能结果$\sim120\mathrm{meV/AA}$，误差也是最小的。\upcite{SD3-160080_2016}
+
+实际计算流程中要注意
+\begin{enumerate}
+	\item 开始计算时要注意$\vec k$空间网格剖分(\textrm{KPOINTS}文件)的收敛测试，截断能(\texttt{ENCUT})的收敛测试；同样，真空层厚度和\textrm{Slab}厚度也应该进行收敛测试。
+	\item 在\textrm{OUTCAR}文件中，会存在很大的\textrm{Pulay}应力(\textrm{external pressure}的数值），可以通过增大截断能(\texttt{ENCUT})避免。为了对比不同计算的总能，必须设置相同的\texttt{ENCUT}的值。所有的表面能都应该在足够大的截断能，确保没有\textrm{Pulay}应力可以忽略的条件下进行比较。
+	\item 再者，这里体相材料默认为给定的。当晶格常数随着交换-相关泛函发生较大变化时，应该对体相材料先进行合理的结构弛豫。
+\end{enumerate}

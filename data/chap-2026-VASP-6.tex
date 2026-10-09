@@ -370,22 +370,22 @@ s实验中，线膨胀系数定义为:
 这两步确保后续计算在第一次计算基础上完成后续计算。
 
 %执行3000\textrm{MD}步，
-关于热力学积分:~一旦需要在特定的反应坐标$\epsilon^{\prime}$计算自由能梯度$\dfrac{\partial A}{\partial\epsilon}$，可以通过对反应路径积分，计算反应中任意两个态\textrm{A}和\textrm{B}的自由能差分$\Delta_{\mathrm{A}\rightarrow\mathrm{B}}$
+关于热力学积分:~一旦需要在特定的反应坐标$\xi^{\prime}$计算自由能梯度$\dfrac{\partial A}{\partial\xi}$，可以通过对反应路径积分，计算反应中任意两个态\textrm{A}和\textrm{B}的自由能差分$\Delta_{\mathrm{A}\rightarrow\mathrm{B}}$
 \begin{displaymath}
-	\Delta A_{\mathrm{A}\rightarrow\mathrm{B}}=\int_{\epsilon_{\mathrm{A}}}^{\epsilon_\mathrm{B}}\left.\dfrac{\partial A}{\partial\epsilon}\right|_{\epsilon^{\prime}}\mathrm{d}\epsilon^{\prime}=\Delta A(\epsilon_{\mathrm{B}})-\Delta A(\epsilon_{\mathrm{A}})
+	\Delta A_{\mathrm{A}\rightarrow\mathrm{B}}=\int_{\xi_{\mathrm{A}}}^{\xi_\mathrm{B}}\left.\dfrac{\partial A}{\partial\xi}\right|_{\xi^{\prime}}\mathrm{d}\xi^{\prime}=\Delta A(\xi_{\mathrm{B}})-\Delta A(\xi_{\mathrm{A}})
 \end{displaymath}
 
-热力学积分的主要困难在于在每个$\epsilon^{\prime}$点都能有足够多好的自由能梯度采样$\dfrac{\partial A}{\partial\epsilon}$。采用缓慢增长方法，反应坐标$\epsilon^{\prime}$都随着时间步长(\texttt{POTIM}设定)$\mathrm{d}\tau$改变，反应速率(由\texttt{INCREM}设定)为$\dot{\epsilon}^{\prime}$。因此上式在缓慢增长近似下，引入
+热力学积分的主要困难在于在每个$\xi^{\prime}$点都能有足够多好的自由能梯度采样$\dfrac{\partial A}{\partial\xi}$。采用缓慢增长方法，反应坐标$\xi^{\prime}$都随着时间步长(\texttt{POTIM}设定)$\mathrm{d}\tau$改变，反应速率(由\texttt{INCREM}设定)为$\dot{\xi}^{\prime}$。因此上式在缓慢增长近似下，引入
 \begin{displaymath}
-	\mathrm{d}\epsilon^{\prime}=\dot{\epsilon}^{\prime}\mathrm{d}\tau
+	\mathrm{d}\xi^{\prime}=\dot{\xi}^{\prime}\mathrm{d}\tau
 \end{displaymath}
-该方法不适合转变速率和时间步长都不是足够小的状态。\textrm{MD}模拟的质量可以通过反应过程的可逆程度来检验。\textcolor{red}{如果自由能曲线是由$\Dalta A(\epsilon)$绘制得到是迟滞曲线，表明转换速率和时间步长都不是足够小。}
+该方法不适合转变速率和时间步长都不是足够小的状态。\textrm{MD}模拟的质量可以通过反应过程的可逆程度来检验。\textcolor{red}{如果自由能曲线是由$\Dalta A(\xi)$绘制得到是迟滞曲线，表明转换速率和时间步长都不是足够小。}
 
 实际上，缓慢增长模拟只是用来快速了解反应自由能曲线的。为了完成一个高质量的热力学积分，\textrm{VASP}中还有其余更合适的方法，比如``蓝月亮''\textrm{(blue-moon)}方法\footnote{蓝月亮方法是一种基于约束分子动力学的自由能计算方法，用于沿指定反应坐标计算化学反应的平均力势(\textrm{PMF}，即自由能剖面)}，可以更精确地控制收敛，但计算成本的开销更大。
 
 完成1500步\textrm{MD}模拟，会出现一个目录\textbf{run1}，打开\textbf{run1}\textrm{/REPORT}文件。在每个\textrm{MD}步，有以下数据：
 
-\textcolor{red}{作为缓慢增大模拟的后处理，将反应坐标起始点作为${\epsilon^{\prime}}$态，在$\epsilon^{\prime}$的自由能梯度$\dfrac{\partial A}{\partial\epsilon}$是曲线起始点的梯度。}由此可以开启积分。
+\textcolor{red}{作为缓慢增大模拟的后处理，将反应坐标起始点作为${\xi^{\prime}}$态，在$\xi^{\prime}$的自由能梯度$\dfrac{\partial A}{\partial\xi}$是曲线起始点的梯度。}由此可以开启积分。
 
 采用\textrm{Py4vasp}实现\textrm{MD}径迹的可视化。
 
@@ -395,7 +395,7 @@ s实验中，线膨胀系数定义为:
 
 采用\textrm{Python}脚本完成热力学积分，绘制反应自由能作为反应坐标函数的曲线。
 
-生成的自由能作图中，$\epsilon<0$，模拟的是反应物，$\epsilon>0$，模拟的是产物。$\epsilon=0$对应于过渡态。
+生成的自由能作图中，$\xi<0$，模拟的是反应物，$\xi>0$，模拟的是产物。$\xi=0$对应于过渡态。
 
 因为反应是$\mathrm{SN}_2$是对称取代反应，所以自由能曲线是对称的。本次模拟得到的反应通道偏离理想对称点，归因于时间步长(\texttt{POTIM})或者变换速率(\texttt{INCREM})太大。
 从\textrm{MD}径迹中每个态里找到代表性的构象。
@@ -406,7 +406,7 @@ s实验中，线膨胀系数定义为:
 
 如果\ch{CH3Cl}和\ch{Cl-}离子间的反应未经活化，反应不可能自发进行。该结论可以通过反应物系综内计算对反应坐标的概率密度
 \begin{displaymath}
-	P(\epsilon^{\prime})=\langle\delta(\epsilon^{\prime}-\epsilon(\mathbf{R}))\rangle_{\mathbf{R}^{\prime}}, \epsilon^{\prime}<0
+	P(\xi^{\prime})=\langle\delta(\xi^{\prime}-\xi(\mathbf{R}))\rangle_{\mathbf{R}^{\prime}}, \xi^{\prime}<0
 \end{displaymath}
 得到验证。
 
@@ -432,15 +432,15 @@ s实验中，线膨胀系数定义为:
 \end{displaymath}
 这里$\Delta A^{\ddagger}$是唯相的活化能，根据\textrm{Arrhenius}定理，可以通过实验中反应速率常数与温度$T$的数据得到，$h$是\textrm{Planck}常数，$k_{\mathrm{B}}$是\textrm{Boltzmanna}常数，$T$是体系的温度。在\textrm{MD}模拟中，反应速率常数可以定量地表示为
 \begin{displaymath}
-	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{\langle|\dot\epsilon|\rangle}2P(\epsilon_{\mathrm{ref},\mathbf{R}})\mathrm{exp}\bigg(-\dfrac{\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}}{k_{\mathrm{B}}T}\bigg)
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{\langle|\dot\xi|\rangle}2P(\xi_{\mathrm{ref},\mathbf{R}})\mathrm{exp}\bigg(-\dfrac{\Delta A_{\xi_{\mathrm{ref},\mathbf{R}\rightarrow\xi^{\ast}}}}{k_{\mathrm{B}}T}\bigg)
 \end{displaymath}
-这里$\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}$是反应物在参考态$\epsilon_{\mathrm{ref},\mathbf{R}}$和过渡态$\epsilon_{\epsilon^{\ast}}$的自由能之差。这个指可以通过自由能曲线的计算直接得到。
+这里$\Delta A_{\xi_{\mathrm{ref},\mathbf{R}\rightarrow\xi^{\ast}}}$是反应物在参考态$\xi_{\mathrm{ref},\mathbf{R}}$和过渡态$\xi_{\xi^{\ast}}$的自由能之差。这个指可以通过自由能曲线的计算直接得到。
 
-只要体系还是反应物，选择的参考态是任意的，反应速率与所选参考态无关。因为反应速率正比于在参考态找到当前系统的概率；但反应速率与过渡态的广义速率的绝对值的热力学统计平均$\langle|\dot{\epsilon}^{\ast}|\rangle$有关。后面将会讨论如何计算$\langle|\dot{\epsilon}^{\ast}|\rangle$。
+只要体系还是反应物，选择的参考态是任意的，反应速率与所选参考态无关。因为反应速率正比于在参考态找到当前系统的概率；但反应速率与过渡态的广义速率的绝对值的热力学统计平均$\langle|\dot{\xi}^{\ast}|\rangle$有关。后面将会讨论如何计算$\langle|\dot{\xi}^{\ast}|\rangle$。
 
 由此得到实验测量的唯相活化能与\textrm{MD}模拟的活化能的关系为
 \begin{displaymath}
-	\Delta A^{\ddagger}=\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}-k_{\mathrm{B}}T\ln\bigg(\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle|\dot{\epsilon}^{\ast}(0)|\rangle}2P(\epsilon_{\mathrm{ref},\mathbf{R}})\bingg)
+	\Delta A^{\ddagger}=\Delta A_{\xi_{\mathrm{ref},\mathbf{R}\rightarrow\xi^{\ast}}}-k_{\mathrm{B}}T\ln\bigg(\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle|\dot{\xi}^{\ast}(0)|\rangle}2P(\xi_{\mathrm{ref},\mathbf{R}})\bingg)
 \end{displaymath}
 理论值与实验值对比时，有个常见的错误就是遗漏了上式中的第二项。
 
@@ -450,21 +450,21 @@ s实验中，线膨胀系数定义为:
 
 计算完成后，会有第二个目录\textbf{run2}出现。通过\textrm{Python}脚本，可以从\textrm{REPORT}文件中提取反应坐标并绘图。
 
-不难看出，反应不会自发发生。在产物区$\epsilon^{\prime}>0.1\mathrm{\AA}$的概率密度为零也证明了这一点。因为反应过程的自由能能垒远高于$k_{\mathrm{B}}T$，所以反应是吸热过程，在可观测时间长度内，直接的\textrm{MD}模拟，也几乎不可能看到一次翻越势垒。考虑到取值范围$[-1.5\AA,-1.49\AA]$处，$P(\epsilon^{\prime})\approx1.54$，所以反应和活化过程都是稀有事件\textrm{(Rare events)}。
+不难看出，反应不会自发发生。在产物区$\xi^{\prime}>0.1\mathrm{\AA}$的概率密度为零也证明了这一点。因为反应过程的自由能能垒远高于$k_{\mathrm{B}}T$，所以反应是吸热过程，在可观测时间长度内，直接的\textrm{MD}模拟，也几乎不可能看到一次翻越势垒。考虑到取值范围$[-1.5\AA,-1.49\AA]$处，$P(\xi^{\prime})\approx1.54$，所以反应和活化过程都是稀有事件\textrm{(Rare events)}。
 \subsubsection{过渡态的平均速率}
 计算\ch{CH3Cl}与\ch{Cl-}离子形成过渡态的平均广义速度，反应速率和唯相活化能。
 
 反应速率常数可以写作
 \begin{displaymath}
-	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{\langle|\dot{\epsilon}^{\ast}|}2P(\epsilon_{\mathrm{ref},\mathbf{R}})\mathrm{exp}\bigg(-\dfrac{\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}}{k_{\mathrm{B}}T}\bigg)
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{\langle|\dot{\xi}^{\ast}|}2P(\xi_{\mathrm{ref},\mathbf{R}})\mathrm{exp}\bigg(-\dfrac{\Delta A_{\xi_{\mathrm{ref},\mathbf{R}\rightarrow\xi^{\ast}}}}{k_{\mathrm{B}}T}\bigg)
 \end{displaymath}
-因此唯相的活化自由能$\Delta A^{\ddagger}$和可逆做功$\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}$的关系为
+因此唯相的活化自由能$\Delta A^{\ddagger}$和可逆做功$\Delta A_{\xi_{\mathrm{ref},\mathbf{R}\rightarrow\xi^{\ast}}}$的关系为
 \begin{displaymath}
-	\Delta A^{\ddagger}=\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}\rightarrow\epsilon^{\ast}}}-k_{\mathrm{B}}T\ln\bigg(\dfrac{h}{k_{\mathrm{B}T}}\dfrac{\langle|\dot{\epsilon}^{\ast}|\rangle}2P(\epsilon_{mathrm{ref},\mathbf{R}})\bigg)
+	\Delta A^{\ddagger}=\Delta A_{\xi_{\mathrm{ref},\mathbf{R}\rightarrow\xi^{\ast}}}-k_{\mathrm{B}}T\ln\bigg(\dfrac{h}{k_{\mathrm{B}T}}\dfrac{\langle|\dot{\xi}^{\ast}|\rangle}2P(\xi_{mathrm{ref},\mathbf{R}})\bigg)
 \end{displaymath}
 因此，根据上述计算，可以通过\textrm{MD}模拟得到$k_{\mathrm{R}\rightarrow\mathrm{P}}$和$\Delta A^{\ddagger}$，唯一未知的量是过渡态的广义速度的热力学平均，其定义为
 \begin{displaymath}
-	\dot{\epsilon}=\sum_{i=1}^N\sum_{\mu=x,y,z}\dfrac{\partial\epsilon}{\partial\mathrm{R}_{i,\mu}}\dot{\mathrm{R}}_{i,\mu}
+	\dot{\xi}=\sum_{i=1}^N\sum_{\mu=x,y,z}\dfrac{\partial\xi}{\partial\mathrm{R}_{i,\mu}}\dot{\mathrm{R}}_{i,\mu}
 \end{displaymath}
 这里$\mathrm{R}_{i,\mu}$表示原子$i$的\textrm{Cartesian}坐标。
 
@@ -484,19 +484,19 @@ s实验中，线膨胀系数定义为:
 
 执行\textrm{Bash}脚本运行
 
-首先执行6000步\textrm{MD}模拟。根据前面的计算提取$\Delta A_{\epsilon_{\mathrm{ref},\mathbf{R}}\rightarrow\epsilon^{\ast}}$的数值。比如可通过以下\textrm{Python}代码提取$\epsilon_{\mathrm{ref},\mathbf{R}}=-1.5\AA$相关的数据。
+首先执行6000步\textrm{MD}模拟。根据前面的计算提取$\Delta A_{\xi_{\mathrm{ref},\mathbf{R}}\rightarrow\xi^{\ast}}$的数值。比如可通过以下\textrm{Python}代码提取$\xi_{\mathrm{ref},\mathbf{R}}=-1.5\AA$相关的数据。
 
-根据上例，得到$P(\epsilon_{\mathrm{ref},\mathbf{R}})$，即$[-1.5\AA,-1.49\AA]$处，$P(\epsilon^{\prime})\approx1.54$。
+根据上例，得到$P(\xi_{\mathrm{ref},\mathbf{R}})$，即$[-1.5\AA,-1.49\AA]$处，$P(\xi^{\prime})\approx1.54$。
 
 根据\textrm{SHAKE}算法，广义速度计算方式如下
 
 由质量求逆的度规张量\textrm{(metric tensor)}
 \begin{displaymath}
-	Z=\sum_{i=1}^N\dfrac1{m_i}\sum_{\mu=x,y,z}\bigg(\dfrac{\partial\epsilon}{\partial\mathrm{R}_{i,\mu}}\bigg)^2
+	Z=\sum_{i=1}^N\dfrac1{m_i}\sum_{\mu=x,y,z}\bigg(\dfrac{\partial\xi}{\partial\mathrm{R}_{i,\mu}}\bigg)^2
 \end{displaymath}
 因此广义速度可以表示为
 \begin{displaymath}
-	\langle|\dot{\epsilon}^{\ast}|\rangle=\sqrt{\dfrac{2k_{\mathrm{B}}T}{\pi}}\dfrac1{\langle Z^{-1/2}\rangle_{\epsilon^{\ast}}}
+	\langle|\dot{\xi}^{\ast}|\rangle=\sqrt{\dfrac{2k_{\mathrm{B}}T}{\pi}}\dfrac1{\langle Z^{-1/2}\rangle_{\xi^{\ast}}}
 \end{displaymath}
 \textcolor{red}{这些物理量的计算脚本如下!!!}
 
