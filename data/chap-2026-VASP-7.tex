@@ -271,5 +271,40 @@ w为了模拟低覆盖的情形，采用超晶胞。关于其他高对称的吸�
 \begin{displaymath}
 	E_{\mathrm{ads}}=E_{\mathrm{total}}-E_{\mathrm{slab}}-E_{\mathrm{molecule}}
 \end{displaymath}
+这里$E_{\mathrm{total}}$，$E_{\mathrm{slab}}$和$E_{\mathrm{molecule}}$分别对应于\textrm{Slab}-吸附分子的总能，清洁的未吸附\textrm{Slab}总能和孤立分子的总能。这些体系的结构已经弛豫。如果$E_{\mathrm{ads}}>0$，分子倾向于吸附到表面。$E_{\mathrm{ads}}$的数值则受到多种因素的影响，如吸附位点，覆盖度、表面所属晶面，吸附物的化学分解等。
+
+已经计算了清洁的未吸附\textrm{Slab}、\textrm{Slab}-吸附物和孤立\ch{CO}的能量数据，但两者的平面波截断能量\texttt{ENCUT}不同。对上述三个计算，很多性质已经很好地收敛，但是为了对比总能，则有必要将所有计算的截断能计算控制参数\texttt{ENCUT}设置为相同的值。%执行以下\textrm{Bash}代码，将已经得到的\textrm{CONTCAR}复制到\textrm{POSCAR}，将全部计算的截断能控制计算参数\texttt{ENCUT}设置为未吸附\textrm{Slab}所计算使用的值，并重新计算\textrm{Slab}-吸附物体系的总能量。
+对于\textrm{Slab}-吸附物体系，初始\textrm{POSCAR}来自\textrm{CONTCAR}
+
+\textrm{INCAR}
+
+\textrm{KPOINTS}
+
+注意这里\textrm{INCAR}文件中增加了\texttt{LVHAR}和\texttt{WRT\_POTENTIAL}，而计算中加了偶极校正。
+
+一般而言，除非有外部势场的扰动，如吸附或加外场引起电荷的累积，体系的电子是不大可能在表面累积的。但是对功函数\textrm{(Work function)}的计算表明，真空区的势函数依然还是完好的。如果在选定方向作线性平均，可以将势能为常数的位置确定为真空区域。\textcolor{red}{而对于搜索算法来说，一个小而有限的偶极矩会引起问题}。
+
+y应用\textrm{ASE}工具确定\textrm{Slab}-吸附体系的质量和合理的\textrm{DIPOL}。
+执行\textrm{Bash}脚本，计算\textrm{Slab}-吸附体系。
+
+应用\textrm{Python}的\textrm{Py4vasp}完成表面吸附能的值。
+
+\textrm{DFT}计算的\textrm{LDA}显著地高估了体系的吸附能，而半局域的\textrm{GGA}泛函稍微提升了一点预测计算结果，但还是高估了吸附能。\upcite{PRB59-7413_1999}。而有意思的是，这种半局域的交换-相关泛函形成表面的能量，但是却会高估吸附能。
+
+为计算功函数$\phi$可以通过\textrm{Py4vasp}来计算和绘制功函数图。
+
+我们注意到计算控制参数\texttt{LVHAR}=\mathrm{T}，而没有设置\texttt{LVTOT}=\mathrm{T}。换言之，在计算表面体系的真空层的功函数的时候，交换-相关势并未包含在内。这是因为从数值计算上，在真空区域，估算交换-相关势是病态的。而从物理角度看，交换-相关势对于真空部分的势函数的贡献为0。所以为了精确地计算真空部分势函数的时候，就不考虑交换-相关势的贡献。但是因为计算\textrm{Slab}-吸附物体系时采用的是自洽场，所以交换-相关效应已经包括在内。而且\textrm{Fermi}能也完全包括了交换-相关势。
+
+而一个采用厚的\textrm{Slab}和更高精度的计算表明，$\phi=5.10\mathrm{eV}$\upcite{SS687-332_2019}。
+
+在\textrm{Slab}的两侧，真空势函数的值略有差别，因为计算中的\textrm{Slab}是非对称的:~\textrm{Slab}的下表面是固定的，而\textrm{Slab}的上表面是弛豫过的。
+
+\subsubsection{\ch{CO}分子吸附在\ch{Ni}的$(111)$表面的分波\textrm{DOS}}
+计算\ch{Ni}的$(111)$表面-\ch{CO}吸附体系的分波\textrm{DOS}和功函数，由此确定成键与反键。
+
+孤立的\ch{CO}分子中，\ch{C}原子的$sp_z$杂化轨道与\ch{O}的$p_z$轨道形成了$\sigma$键，而\ch{C}和\ch{O}的$p_x$和$p_y$轨道形成两个$\pi$键；此外\ch{O}原子的$2s$轨道上有一组孤对电子，\ch{C}的$sp_z$杂化轨道上有一对电子。这两组轨道分别被称为\ch{CO}的$5\sigma$轨道，也是最高占据轨道\textrm{(the Highest Occupied Molecular Orbital, HOMO)}和\ch{CO}的$2\pi^{\ast}$轨道，最低未占据轨道\textrm{(the Lowest Unoccupied Molecular Orbital, LUMO)}，\textrm{HOMO}和\textrm{LUMO}轨道与金属表明相互作用，形成\ch{CO}-金属杂化的成键和反键轨道。由于反键性质的\ch{CO}的$5\sigma$-金属杂化轨道，在\textrm{Fermi}能级以上，对应于分子向表面的电荷提供；类似地，成键性质的$2\pi^{\ast}$-金属杂化轨道也被占据，而它被称为反馈键。
+
+上述\ch{CO}-金属表面成键描述，就是\textrm{Blyholder}模型\upcite{JPC68-2772_1964}。对分波\textrm{DOS}的模拟来观察电荷转移。
+
 
 
