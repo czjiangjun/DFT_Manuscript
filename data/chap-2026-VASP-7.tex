@@ -207,3 +207,69 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 w为了模拟低覆盖的情形，采用超晶胞。关于其他高对称的吸附位点，可以在\textrm{ASE}中的\textrm{suface}模块的说明。
 
 同样地，在\textrm{POSCAR}文件中固定三层\ch{Ni}原子，允许两层表面原子弛豫。
+
+结构文件\textrm{POSCAR}
+
+原则上，应该将偶极(\texttt{DIPOL})设置在电荷中心。但因为偶极无法事先了解，一个好的估计是取在\textrm{Slab}的质心\textrm{(Center of Mass)}。\textrm{ASE}中估算偶极的代码：
+
+可以得到偶极的位置是
+\textrm{DIPOL}=$0.5 0.5 0.452747064661102$
+
+\textrm{INCAR.1}
+
+\textrm{INCAR.relax}
+
+\textrm{KPOINTS}
+
+对于该\textrm{Slab-}吸附物体系，有两个\textrm{INCAR}文件，\textrm{INCAR.1}是在没有偶极校正的情况下，确定电荷分布。而\textrm{INCAR.relax}是读取\textrm{WAVECAR(ISTART=1)}重启计算，在偶极校正(计算控制参数\texttt{LDIPOL}，\texttt{IDIPOL}，\texttt{DIPOL}等)后完成结构弛豫(包含计算控制参数\texttt{IBRION}等)。
+
+\textcolor{red}{之所以在结构弛豫前先进行一次电子结构的静态计算，因为将表面作为周期体系处理，电荷密度分布会形成偶极矩\textrm{(Dipole moment)}，为了压制偶极矩引起的长程相互作用，有必要在势函数中引入锯齿型不连续结构，而不连续的锯齿结构与偶极矩尺度有关。而过早引入不连续部分会减慢\textrm{Kohn-Sham}方程迭代收敛。如果没有偶极校正，总能与真空厚度$L$会形成的依赖关系是$1/L^2$，真空厚度对收敛的影响得到抑制，由此有效提升``叠层的\textrm{Slab}形成的体相''的模拟。}
+
+%在\textrm{INCAR}文件中，计算控制参数截断能\texttt{ENCUT}=400是偏高的。检索\textrm{POTCAR}文件中各元素的\texttt{ENMAX}值，\ch{O}元素要求更大的\texttt{ENMAX}截断值。可以选择计算代价低的原子数据集，对于小分子\ch{CO}，建议采用稍微硬核的原子数据集，如$\mathrm{C\_h}$和$\mathrm{O\_h}$，看能否有不同的结果。一般地，采用硬核的原子数据集会增加计算开销，但是可以更好地描述较短的键长。
+
+\ch{Ni}的$(111)$表面是磁性的，因此计算过程中要考虑磁性(计算控制参数\texttt{ISPIN}=2，或\texttt{LNONCOLLINEAR}=\textrm{True})。因为\ch{CO}没有磁矩，所以非磁性计算已经是一个好的近似，所以，先完成非磁性计算。
+
+%时间反演对称性破缺的长型的晶胞，这个问题将会在电荷密度混合部分着重强调。因此在收敛问题下，注意检查电荷密度混合相关的参数
+
+在\textrm{KPOINTS}文件中，真空层方向的$\vec k$空间布点为1，而\textrm{Slab}方向的$\vec k$空间网格剖分较密。
+
+采用\textrm{ASE}计算并确定\ch{CO}的偶极
+
+\textrm{DIPOL=0.5 0.5 0.5088939356268327}
+
+单独\ch{CO}结构文件，\textrm{CO/POSCAR}
+
+单独\ch{CO}计算控制文件，\textrm{CO/INCAR}
+
+单独\ch{CO}计算的$\vec k$空间网格剖分文件，\textrm{CO/KPOINTS}
+
+按照要求，先完成\ch{CO}吸附在\ch{Ni}的$(111)$表面的计算模拟，包括电荷密度分布，考虑偶极校正后的结构弛豫。使用的\textrm{Bash}脚本
+
+在输出文件\textrm{OUTCAR}中，检索关键词\texttt{dipolmoment}和\texttt{dipol+quadrupol energy correction}，确定偶极矩和偶极矩引起的能量校正。
+
+对于非偶极分子吸附，偶极矩和偶极-四极能量校正值都比较小；而体系吸附带电粒子，如\ch{K+}或\ch{O}自由基，体系偶极矩会大很多。
+
+应用\textrm{Py4vasp}给出吸附体系的最终结构。
+
+\textcolor{blue}{有必要指出的是，原则上，在对比体系总能的时候，截断能计算控制参数\texttt{ENCUT}必须设置为相同。不过对于体系的基几何结构参数，如表面体系的层间距对比，对截断能的要求就没有这么严格，只要保证每个体系能够正确收敛，换言之，各自的截断能是独立的。}
+
+应用\textrm{Python}脚本和\textrm{Py4vasp}模块，可以计算表面吸附体系的层间距相对清洁表面的改变。换言之，就是由于\ch{CO}分子的存在，表面体系中\ch{Ni}原子弛豫后的凹凸起伏。
+
+为了对比孤立\ch{CO}分子和吸附到\ch{Ni}表面的\ch{CO}，首先完成孤立\ch{CO}分子的计算。\textrm{Bash}脚本如下：
+
+在孤立\ch{CO}中，直接引入偶极校正。因为在实际计算中，如果一开始就引入偶极校正，体系会更容易收敛一些。当分子不是强极性的，但电荷密度分布又表现出小的极性时，是一种常态。
+
+应用\textrm{Python}脚本和\textrm{Py4vasp}模块，计算键长的改变。
+
+计算结果显示，吸附到\ch{Ni}$(111)$表面的\ch{CO}，键长增加了约1\%。
+
+\subsubsection{\ch{CO}分子在\ch{Ni}$(111)$表面的吸附能和\ch{Ni}-111的功函数}
+
+计算\ch{CO}分子在\ch{Ni}$(111)$表面\textrm{Top}位的吸附能。
+
+表面吸附分子的吸附能$E_{\mathrm{ads}}$计算公式为
+\begin{displaymath}
+	E_{\mathrm{ads}}=E_{\mathrm{total}}-E_{\mathrm{slab}}-E_{\mathrm{molecule}}
+\end{displaymath}
+
+
