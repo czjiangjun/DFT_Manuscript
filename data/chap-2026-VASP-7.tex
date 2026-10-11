@@ -366,8 +366,95 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 计算结果会发现有额外的振动模式，沿着平行于吸附表面，\ch{C}和\ch{O}相向运动有两个振动模，使得整个\ch{CO}分子倒向和远离\textrm{Cartesian}坐标的$x-y$平面。这些振动模式比已经计算得到的垂直表面的群体运动频率略高。另外两个沿$x$和$y$方向的振动模式，比这它小约10\%。
 
+\subsection{\rm{STM}模拟}
+\subsubsection{石墨$0001$表面恒高\textrm{STM}模拟}
+完成石墨表面静态计算达到电荷收敛，将得到的\textrm{WAVECAR}文件作为后处理的输入文件，计算\textrm{Fermi}能附近的能带电荷密度并绘制模拟的\textrm{STM}图。
 
+扫描隧道显微镜\textrm{(Scanning Tunneling Microscope, STM)}利用量子隧穿效应，在原子尺度对清洁(半)导体表面进行成像。用户可以通过恒定高度的探针测试隧穿电流(恒高模式)或通过调节探针位置，确保测量过程中隧穿电流恒定(恒流模式)。无论采取哪种工作模式，测量的数据都是探针探测位置、偏压和局域态密度的函数。因此，成像的亮与暗并不直接与表面性质有关。模拟\textrm{STM}成像是解释\textrm{STM}实验结果的有效途径，能够给出很多表面结构、重构\upcite{JPCC125-48_2021}和动力学过程的\upcite{NM15-450_2016}细节信息。
 
+\textrm{Tersoff-Hamann}方法\upcite{PRL50-1983_1998}实现\textrm{DFT}计算模拟\textrm{STM}成像的简单而有效。该方法基于\textrm{Bardeen}的隧穿理论\upcite{PRL6-57_1961}，将探针作为几何学上的点来对待，模拟类$s$电子波函数，这样的处理，可以忽略来自表面对探针的隧穿电流的贡献。特别是应用\textrm{Py4vasp}模块，而探针与表面距离较远时，这种近似对很多表面是非常合理的。其余方法，比如对于有些精确的结果\upcite{JPCC125-26711_2021}必须满足的\textrm{Chen}氏推导法则\upcite{PRB42-8841_1990}，需要对探针进行必要的处理。
 
+这里完成的是在偏压为\textrm{-250mV}恒高模式的石墨\textrm{STM}成像模拟，可以表面以上固定高度的平滑分波\textrm{DOS}。
 
+结构文件\textrm{POSCAR}，包含10个\ch{C}原子。
 
+计算控制参数文件\textrm{INCAR}
+
+分波\textrm{DOS}计算的\textrm{partial\_charge/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+\textrm{POSCAR}文件中采用实验的晶格参数和层间距确定的五层石墨原子模型。
+
+\textrm{INCAR}文件用于简单的非自旋极化静态计算，为了提高\textrm{DOS}和分波\textrm{DOS}计算的计算精度，采用了严格的能量收敛标准，\textrm{DOS}数据的能量步长也显著缩短。
+
+一般地，对于\textrm{STM}模拟，推荐甚至计算控制参数\texttt{PREC}=\textrm{Single}，这样的处理，使得\textrm{VASP}计算中采用密网格\textrm{FFT}处理电荷密度时不存在线性插值，因为此时满足\texttt{NGX}=\texttt{NGXF}(\texttt{NGY}与\texttt{NGZ}也同样处理)。在真空区域，如有存在插值，电荷密度会存在高频震荡。而\textrm{Py4vasp}在模拟\textrm{STM}成像时，需要使用\textrm{Gaussian}展宽去除可能的震荡部分。如果采用默认的\texttt{PREC}=\textrm{Normal}，则\textrm{STM}成像的分辨率会从$\mathtt{NGX}\times\mathtt{NGY}$变到$\mathtt{NGXF}\times\mathtt{NGYF}$。
+
+第二个\textrm{INCAR}文件用于后处理计算分波\textrm{DOS}，注意计算控制参数
+\texttt{LPARD}:~用于分波电荷密度后处理的开关;
+
+\texttt{LPARDH5}:~将写入一个或多个\textrm{PARCHG}文件的数据重定向到\textrm{vaspout.h5}的\textrm{hdf5}文件中;
+
+\texttt{LSEPK}和\texttt{LSEPB}都被设置为\textrm{.FALSE.}，以便将所有$\vec k$点的结果求和后输出，而非分别输出。
+
+\texttt{EINT}定义分波\textrm{DOS}的输出能量区间;~\texttt{NBMOD}=-3，明确该区间是相对于\textrm{Fermi}能级的数值。
+
+本次计算设定的是全部$\vec k$点中能量本征值在$\varepsilon_{\mathrm F}-0.25\mathrm{eV}$到\textrm{Fermi}能级$\varepsilon_{\mathrm F}$的电荷密度，对应于偏压为\textrm{-0.25eV}。
+
+执行\textrm{Bash}脚本，采用\textrm{Py4vasp}可视化接近\textrm{Fermi}能级处的\textrm{DOS}，这也是为模拟\textrm{STM}成像所需提取分波\textrm{DOS}的区间。
+
+由于\textrm{DOS}计算的能量范围是$\sim\varepsilon_{\mathrm F}\pm0.5\mathrm{eV}$，此时\textrm{DOS}基本关于\textrm{Fermi}能级对称，所以施加正或负的偏压，得到的模拟\textrm{STM}成像基本相同。不过总的\textrm{DOS}无法给出任何局域轨道在实空间中的贡献，因此为了确定垂直石墨表面的电荷密度贡献，必须给出$p_z$轨道的贡献。在指定的能量范围内，该分波\textrm{DOS}也是关于\textrm{Fermi}能级对称的。要给出这部分分波\textrm{DOS}的图，只要在脚本中添加命令
+\texttt{selection=``pz''}关键词。
+
+一般地，负偏压测量的是电子占据态，而正偏压给出的是非占据态。
+
+将|\textrm{WAVECAR}文件复制到\texttt{partial\_charges}目录，重新使用\textrm{Bash}命令，运行\textrm{VASP}计算。%(这是快速后处理步，无需并行，所以无需\textrm{MPI}版本，虽然\textrm{MPI}版本依然可以执行。)
+
+给定窄的能量窗口内，只有2个能带(第18/19能带)总的$\vec k$点贡献和第33$\vec k$点的贡献。
+
+使用\textrm{Py4vasp}绘制模拟的\textrm{STM}成像，与石墨烯的\textrm{STM}成像图相比，实验中是在常温常压下(室温，空气环境)测量的。%由慕尼黑大学\textrm{(LMU)}地球与环境科学系\textrm{(Department for Earth and Environmental Science)}和纳米科学中心\textrm{(Center for NanoScience, CeNS)}。
+在低温和真空条件下成像会更清晰，噪音也少。这里的成像也能看清楚原子分辨，有一个个清楚的密堆积三角形空隙。
+
+恒高为\textrm{3.00\AA}的无自旋的10个\ch{C}原子\textrm{STM}成像。
+
+考虑旋转对称，模拟成像形成的三角形网格点与实际成像的网格点符合得很好。表面原子中直接坐标为(0.0 0.0 0.5)是成像中的亮格点，而其余的位于(0.333 0.666 0.5)坐标只有一个小的信号。模拟中，在后处理中，使用计算控制参数可以很方便的改动和调整\texttt{EINT}探针和偏压，以便观察模拟成像的变化。
+
+如果使用更大的负偏压，可以看到更多的能带对\textrm{DOS}的贡献，位于次表面层的、在表面三角形之下第二石墨表面原子也会暴露出来，三角形晶格也会变成六方型晶格。
+
+\subsubsection{石墨烯的恒流\rm{STM}模拟}
+对单层石墨烯完成静态计算，使电荷密度达到收敛。将计算的到的\textrm{WAVECAR}文件作为后处理的输出文件，计算\textrm{Fermi}面附近小的能量区间内电荷密度，绘制恒流的模拟\textrm{STM}成像。
+
+在恒流模式，\textrm{STM}探针的高度会随着横向扫描而随时调节，以保持隧穿电流的恒定。每个激光位点的高度将会成像。这也是\textrm{STM}数据采集中最常见的模式。
+
+在\textrm{Py4vasp}模块中，在\textrm{partial\_charge}类的\textrm{to\_stm}中,默认的是恒高模式(\texttt{``constant\_high''})，要设置\texttt{selection=``constant\_current''}开启恒流模式。可以选择的电流为\textrm{nA}量级，默认是\textrm{1~na}。模拟\textrm{STM}成像时，对每个横向网格点，从真空层的中间向下扫描到表面，直到平滑的分波电荷密度达到选定的电流。
+
+石墨烯的结构文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在\textrm{POSCAR}文件中，只有一层\ch{C}原子，晶格参数与石墨算例中相同。
+
+\textrm{KPOINTS}文件和\textrm{INCAR}文件与石墨计算相同。%注意\textrm{INCAR}文件中计算控制参数的注释。
+在\textrm{INCAR}文件中，计算控制参数\texttt{LSEPK}和\texttt{LSEPB}都没有设置，因为\texttt{LSEPK}和\texttt{LSEPB}的默认值都是\textrm{.FALSE.}，所以没有必要专门设置，不过设置了可以避免歧义。如果\texttt{LSEPK}和\texttt{LSEPB}其中之一未被设置为\textrm{.TRUE.}，\textrm{Py4vasp}就可以完成\textrm{STM}成像模拟。
+
+在\textrm{Bash}环境下运行\textrm{VASP}
+
+静态计算最小化电子结构并生成后处理所需要的\textrm{WAVECAR}文件。通过\textrm{Py4vasp}可视化石墨烯的\textrm{DOS}，并与之前计算的石墨\textrm{Slab}的顶层\textrm{DOS}对比。%注意可以通过点击图表右侧的图例标签，来取消选中(隐藏)两类计算的总\textrm{DOS}曲线，还可以缩放\textrm{Fermi}能附近的\textrm{DOS}。在这个算例中，由于$\vec k$空间网格剖分点不够密集，所以有名的石墨烯零带隙电子结构\texrm{(Zero Gap Electronic Structure)}未能再现。
+
+\textrm{Py4vasp}模块绘制石墨烯和石墨的态密度。在单层石墨烯中，在与石墨\textrm{Slab}的原子9和原子10的\textrm{DOS}位置之间，两个原子有相同的\textrm{DOS}。
+
+在计算中，有名的石墨烯零带隙电子结构\texrm{(Zero Gap Electronic Structure)}未能再现。因为该计算需要更多的$\vec k$点，得到差不多\textrm{1eV}的带隙。而在\textrm{STM}模拟中，这并不重要。
+
+对比石墨烯\textrm{Fermi}面附近$(\varepsilon_{\mathrm{F}}\pm0.1\mathrm{eV})$的分波\textrm{DOS}。
+
+将\textrm{WAVECAR}文件复制到\textrm{partial\_charge}子目录，再次在\textrm{Bash}环境下运行\textrm{VASP}。
+
+通过\textrm{Py4vasp}模拟绘制恒流\textrm{STM}成像，为了和前面计算对比，再次使用负偏压\textrm{250meV}。对独立石墨烯\textrm{Freestanding Graphene}\footnote{没有衬底支撑的石墨烯称为独立石墨烯。}，小的偏压会使悬空的石墨烯膜被针尖的吸引力明显拉动。\upcite{JVSTB31-04D103_2013}
+
+\textrm{Py4vasp}模块的支持自旋选择(包括\texttt{``up''}，\texttt{``down''}，\texttt{``total''})，因此可以显示磁性表面，因为这里不考虑自旋极化，只显示总电荷密度。\textrm{Python}脚本为
+
+非自旋的单层石墨烯\textrm{C2}在恒流\textrm{8.00nA}的\textrm{STM}模拟。
+
+模拟得到的\textrm{STM}具有六方对称，因为单层石墨烯的两个\ch{C}原子具有相同的化学环境。探针在两个\textrm{Top}位上的高度是相同的。
