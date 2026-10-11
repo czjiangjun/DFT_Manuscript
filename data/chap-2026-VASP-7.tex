@@ -306,5 +306,68 @@ y应用\textrm{ASE}工具确定\textrm{Slab}-吸附体系的质量和合理的\t
 
 上述\ch{CO}-金属表面成键描述，就是\textrm{Blyholder}模型\upcite{JPC68-2772_1964}。对分波\textrm{DOS}的模拟来观察电荷转移。
 
+此前已经计算过\ch{Ni}的$(111)$表面吸附\ch{CO}的弛豫。由此结构和电荷密度开始重启计算，不过增加的$\vec k$空间布点，得到分波\textrm{DOS}。
+
+执行\textrm{Bash}脚本，将\textrm{CONTCAR}文件复制到\textrm{POSCAR}文件。
+
+\textrm{INCAR}文件
+
+\textrm{KPOINTS}文件
+
+%结构文件\textrm{POSCAR}源于写入的结构弛豫文件\textrm{CONTCAR}。
+
+$\vec k$空间剖分网格加密，以产生更光滑的\textrm{DOS}。
+
+在\textrm{INCAR}文件中，引入计算控制参数\texttt{LORBIT}和\texttt{ISMEAR}。\texttt{LORBIT}=11，采用\textrm{PAW}投影子将\textrm{Kohn-Sham}轨道投影到量子数$l$，这样可以比较好的估计在位投影\textrm{DOS}的特征。\textrm{ISMEAR}=-5选择\textrm{Bl\"ochl}校正的四面体方法来计算部分占据的\textrm{Kohn-Sham}轨道。这是计算高精度总能和\textrm{DOS}的推荐设置。
+
+采用\textrm{Bash}脚本，执行\textrm{VASP}计算。
+
+简单地设置计算控制参数\texttt{LORBIT}=11，也无法直接绘制分子轨道。不过采用分子轨道理论中的采用线性轨道组合\textrm{(Linear combination of Atomic Orbitals, LCAO)}构建分子轨道分波\textrm{DOS}图，理解哪些原子轨道对哪些能带有贡献。采用\textrm{Py4vasp}模块，绘制\ch{CO}的分子轨道的分波\textrm{DOS}图，并绘制\ch{CO}$5\sigma$轨道的\textrm{DOS}。
+
+不难看出，$5\sigma$轨道裂分并对\textrm{Fermi}面附近形成成键和反键轨道两部分都有贡献。在\textrm{Fermi}面上存在一个尖锐的峰，这来自于\ch{CO}吸附在表面形成的未完全占据的$5\sigma$轨道的贡献。这个峰就是存在电荷\ch{CO}向表面转移的标志。
+
+在计算表面\textrm{DOS}时使用了平滑函数，为了得到平滑的\textrm{DOS}，$\vec k$空间网格剖分必须很细密。这里采用的是\textcolor{red}{简单卷积}，这样可以快速提取\textrm{DOS}的结构特征，但需要注意的是，这样也在\textrm{DOS}中引入了展宽并降低了峰值。因此，实施卷积并非是\textrm{DOS}后处理的标准过程，而是要根据实际情况慎重选择。
+
+类似地，作出\ch{CO}的$\pi$轨道贡献的分波\textrm{DOS}。其中$1\pi$主要来自于\ch{O}y原子，而$2\pi^{\ast}$则主要是\ch{C}原子。
+
+此外，对比表面和体相\ch{Ni}的$d$轨道部分，表面的$d$轨道对占据态\textrm{-8.5eV}、\textrm{-6.2eV}和未占据态的\textrm{1eV}附近分别有贡献。而在表面的\textrm{Fermi}面附近则没有\ch{Ni}的$d$轨道贡献；而表面的\textrm{Fermi}面以上的轨道主要来自\ch{CO}的$2\pi^{\ast}$轨道，主要是\ch{C}元素电子的反馈键部分；表面的\textrm{Fermi}面以下的轨道主要来自\ch{CO}的$1\sigma$轨道，主要是\ch{O}元素的贡献。所以表面的\textrm{Fermi}面附近，主要由\ch{CO}的成键和反键部分确定，而\ch{Ni}的$d$轨道则离开\textrm{Fermi}面较远。
+
+最后，考虑形成表面-吸附后对\ch{Ni}的$d$轨道的影响。\ch{Ni}的$d_{3x^2-y^2}$态与\ch{CO}的轨道杂化，而$d_{xy}$轨道在\textrm{Slab}的平面内，因此基本不受影响。
+
+而\textrm{Py4vasp}模块完成表面-吸附体系的功函数计算。由于\textrm{Slab}的一侧真空层吸附\ch{CO}侧引起\textrm{Fermi}能的改变，与功函数的极小值发生的变化基本属于同等大小。
+
+在五层$(111)$方向堆积的\ch{Ni}和\ch{C}与\ch{O}构成的体系中，势函数有七个极小值。考虑偶极校正后，可以区分两侧表面的不同真空势函数。将偶极参数\texttt{DIPOL}设置在质心位置上，使得势函数的突越发生在真空区域的中间。相反，如果计算控制参数\texttt{LDIPOL}=\textrm{.FALSE.}，势函数将会线性平滑与另一个晶胞的势函数衔接，不再存在真空势函数的合理定义。\textrm{OUTPUT}中会提示晶胞中缺少真空场的警示信息。
+
+\subsubsection{\ch{CO}在\ch{Ni}的$(111)表面的振动频率$}
+对分子采用有限差分方法\textrm{(finite differences method)}并选择自由度计算声子。
+
+晶格振动是表面热激发最重要的贡献。因此振动光谱对于理解表面的热力学性质非常关键。表面声子计算联合实验技术，包括高分辨电子能量损失谱\textrm{(High-resolution Electron-energy-loss Spectroscopy)}和\textrm{Raman}光谱等，可以对吸附位点的成键状况有深入细致的理解。具体可以参见综述文献\cite{APA53-377_1991}。
+
+%关于声子计算更详细的介绍
+%作为理论计算方法的示例
+
+结构文件\textrm{POSCAR}中，除了\ch{C}和\ch{O}元素允许沿$z$方向活动，其余元素全部固定。
+
+计算控制文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在\textrm{INCAR}文件中最重要的计算控制参数是\texttt{IBRION}、\texttt{NFREE}和\texttt{POTIM}。为了将原子受力计算准确，\texttt{EDIFF}设置得比默认值$10^{-4}\mathrm{eV}$更小，而且建议使用\texttt{PREC}=\textrm{Accurate}。
+
+考虑到\textrm{POSCAR}中\texttt{selective dynamics}控制\ch{C}和\ch{O}两个原子沿着$z$方向活动，意味着\ch{C}和\ch{O}可以在垂直吸附表面的方向上作上下运动(表示\ch{CO}的伸缩振动的两种模式)，因此计算中会有两个振动频率。而\textrm{INCAR}中计算控制参数\texttt{NFREE}=2，因此每个原子允许在\textrm{Cartesian}坐标系中的$z$方向有两个方向的位移。包括弛豫计算在内，振动频率计算共需完成五步计算。
+
+\textrm{INCAR}文件中，\texttt{POTIM}表示以\textrm{\AA}为单位的原子位移。在振动频率计算中，假设满足谐振子近似，如果原子位移太大，会破坏谐振子近似的基础，振子回复力与位移偏移量不再成正比，因此\texttt{POTIM}的值不宜太大。
+
+执行\textrm{Bash}脚本，完成\textrm{VASP}计算。
+
+在\textrm{OUTCAR}文件中，检索关键词字符串\texttt{Eigenvector and eigenvalues of the dynamical matrix}，确定\ch{CO}的振动频率。
+
+修改\textrm{POSCAR}，取消\ch{C}和\ch{O}元素的全部活动限制，重新计算并增加振动模式。
+
+计算结果会发现有额外的振动模式，沿着平行于吸附表面，\ch{C}和\ch{O}相向运动有两个振动模，使得整个\ch{CO}分子倒向和远离\textrm{Cartesian}坐标的$x-y$平面。这些振动模式比已经计算得到的垂直表面的群体运动频率略高。另外两个沿$x$和$y$方向的振动模式，比这它小约10\%。
+
+
+
+
 
 
