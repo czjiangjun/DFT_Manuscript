@@ -41,4 +41,36 @@
 
 $\vec k$空间网格剖分文件\textrm{KPOINTS}文件
 
+\textrm{INCAR.sp}用于单点计算，而\textrm{INCAR.neb}用于\textrm{NEB}计算，两者的内容相同。
 
+前四个计算控制参数用于电子步的最小化:~\texttt{ENCUT}确定平面波基组的数量；\texttt{PREC}确定计算对应的精度；\texttt{EDIFF}定义电子步自洽迭代的收敛标准，负值表示采用力收敛，单位是$\mathrm{eV\AA^{-1}}$，正值表示采用能量收敛。这里推荐力收敛。\textrm{Fermi}能积分展宽的计算控制参数是\texttt{ISMEAR}和\texttt{SIGMA}
+
+其余计算控制参数用于离子弛豫设置。\texttt{NSW}是许可的最大离子步，对于单点能计算，该值为0；\texttt{EDIFFG}是离子弛豫收敛标准。当\texttt{IBRION}=1，结构弛豫采用准\textrm{Newton}算法。\texttt{POTIM}是离子弛豫的离子步长；\texttt{ISIF}=2只允许离子内坐标弛豫，但晶胞承诺书和晶格形状固定。计算过程中，可能会出现提示\textcolor{red}{\textbf ``BRIONS problem: POTIM should be increased''}，这表明收敛困难，建议增加\texttt{POTIM}的值或者改变\textrm{IBRION}的算法。
+
+最后两个计算控制参数确定\textrm{NEB}，\texttt{IMAGES}设定采用\textrm{NEB}计算的影像(反应中间结构)的数目，本算例中数值为4\footnote{请注意:~并行计算时，\textrm{MPI}的数目必须影像的倍数。}\texttt{SPRING}=5是对\textrm{NEB}的弹性带设定弹簧倔强系数。
+
+$\vec k$空间网格布点只有$\Gamma$点。
+
+本算例中，有这些参数足以快速完成模拟计算，要获得更高质量的计算结果，可以增加$\vec k$空间网格剖分点和超晶胞的大小，直到最后的结果，如形成能收敛。离子步的收敛标准\texttt{EDIFFG}也要提升，如$-0.01\mathrm{eV\AA^{-1}}$。
+
+在\textrm{NEB}计算中，共有六个计算目录，包括初始态(00)，依次四个影像态(01,02,03,04)和终了态(05)，在对应目录给出对应的\textrm{POSCAR}文件。\textrm{INCAR}文件中，影像数目用\texttt{IMAGES}来标记。
+
+\textrm{NEB}计算所执行的\textrm{VASP}命令，在各态目录的上层父目录进行，然后\textrm{VASP}在各子目录执行相应的计算。完成准备工作后，执行\textrm{Bash}脚本，进行\textrm{VASP}计算。
+
+直到\textrm{NEB}计算完成，获得了\ch{Si}原子扩散到临近空位的\textrm{NEB}影像的而能量。在讨论反应路径的时候，同样还需要起始态和终了态的结构信息，不过\textrm{NEB}计算中，起始态和终了态是按照静态处理的。这两个计算需要单独执行\textrm{Bash}环境下的\textrm{VASP}M命令。
+
+为了节省计算开销，这里得到的能量与实验结果不匹配。如果要提升计算精度，有必要增加$\vec k$空间网格剖分密度，如$4\times4\times4$。推荐最终的单点计算采用四面体积分方案以得到好的计算精度，这里给出修改后的\textrm{INCAR}文件供参考。
+
+计算结束，可以通过\textrm{Py4vasp}可视化原子结构的变化。
+
+\ch{Si}原子大体上是沿着直线扩散的，考虑\ch{Si}超晶胞的交叉截面\textrm{(Cross-section)}，在反应通道上对应结构的变化，\ch{Si}原子由起始态位置向缺陷位置的扩散过程可以很容易地可视化。
+
+以下是完成在二维平面上在反应通道标注影像结构的\textrm{Pyton}脚本。
+
+对于这些影像，绝大多数原子留在原来的位置，扩散的\ch{Si}原子由起始位置向着空位移动的过程非常显眼。在此过程中，超晶胞结构也会发生变化，每个影像间隔差不多距离。采用\textrm{Py4vasp}可以看到反应通道中不同影像的能量变化。
+
+得到的反应通道有一定的对称结构，峰位大约在$\sim0.7\mathrm{eV}$。如果要进一步研究过渡态，则需要在原有四个影像的基础上，继续增加影像，逼近完整的过渡态。需要说明的是，影像越少，计算的收敛性质会更好。而且如果选择太多影像，计算开销也很大。
+
+通过这个\ch{Si}原子扩散到空位的例子，可以看到，对于过渡态的计算是复杂的。计算中有时候选择反应中间体影像作为寻找过渡态的试探结构。下面介绍如何优化试探结构。
+
+\subsubsection{改进双粒子方法}
