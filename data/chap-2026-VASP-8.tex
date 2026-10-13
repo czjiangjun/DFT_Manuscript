@@ -267,5 +267,41 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 	\item \ch{CH3OH}+\ch{CH3CO-Z}$\longrightarrow$\ch{CH3COOCH3}+\ch{H-Z}
 	\item \ch{CH3COOCH3}+2\ch{H2}$\longrightarrow$\ch{CH3CH2OH}+\ch{CH3OH}
 \end{enumerate}
-该反应的决速步\textrm{(rate-determining step, RDS)}是第三步，甲基化沸石\ch{CH3-Z}的羰基化\upcite{PCCP13-2603_2011}。在决速步，产物是乙酰基\ch{CH3-C=O+}自由基。
+该反应的决速步\textrm{(rate-determining step, RDS)}是第三步，甲基化沸石\ch{CH3-Z}的羰基化\upcite{PCCP13-2603_2011}。在决速步，产物是乙酰基\ch{CH3-C=O+}自由基离子。在不同的热力学条件下，乙酰基自由基离子可以靠近沸石骨架并形成\ch{CH3-C=O-Z}，也可以经过沸石质子化而成\ch{CH2-C=O+}自由基阳离子\upcite{JC390-166_2021}。这里讨论决速步的活化自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$的计算，而羰基化后的反应产物可以忽略。这里$\ddagger$标示过渡态。
 
+首先，羰基化步骤的过渡态的初猜结构由反应物和期待的产物的结构来构建。假设平面化的甲基\ch{CH3}位于沸石上的\ch{O}和\ch{CO}分子的\ch{C}原子之间，两个原子到\ch{CH3}的距离可以是任意的，这里都设为\textrm{2.1\AA}。如果初猜结构接近鞍点，它只有一个虚频。如果初猜结构有多个虚频，则可以选择\textrm{IDM}模拟的最强虚频作为尝试方向。
+
+过渡态结构文件\textrm{POSCAR}文件
+
+振动分析的计算控制文件\textrm{INCAR}w文件
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+在\textrm{INCAR}文件中，前四个计算控制参数是计算振动频率的。\texttt{IBRION}=5，表示计算采用有限差分计算振动频率，原子位移是\texttt{POTIM}，而\texttt{NFREE}是位移的数目。\texttt{NSW}设置的是离子步的数目。%对\texttt{IBRION}=5，\textrm{VASP}会自动将离子步的数目自动扩展到原来的三倍(因为有限差分方法需要考虑$x$，$y$，$z$方向的移动)
+
+其余两个计算控制参数是关于\textrm{MLFF}。因为采用\textrm{MLFF}，所以无须考虑电子结构的计算。\texttt{ML\_LMLFF}表示许可使用\textrm{MLFF}，而\texttt{ML\_MODE}=\textrm{run}表示只使用\textrm{MLFF}模拟离子步计算，而不进行额外的训练。
+
+\textrm{KPOINTS}文件设为$\Gamma$点。\textrm{POSCAR}文件中包含的是位于\textrm{Z}型沸石中的过渡态。
+
+算例中的计算和控制参数是为了在有限时间内尽快得到结果。如果想要高精度的计算结果，就应该考虑第一原理计算，当然这将使得计算非常耗时。
+
+应用\textrm{Bash}命令，开启\textrm{VASP}计算。
+
+计算在几秒内就快速结束，如果选择第一原理分子动力学计算，同样的模型，至少要几个小时。
+
+采用\textrm{Python}脚本\textrm{vibFreq.py}提取振动频率数据，写入文件\textrm{freq.dat}，并准备可视化这些振动模式，运行\textrm{Python}脚本：
+
+计算共得到126个不同振动模式，通过\textrm{Bash}命令\textrm{grep}查找前八个振动频率。
+
+也可以通过\textrm{Py4vasp}模块得到类似的结果。相应的\textrm{Pyton}脚本为
+
+以\textbf{f/i}引领的前五个振动模式，表明存在虚频，即当前的结构的能量不是极小值。该结构选定的是接近过渡态，但依然含有多个虚频。
+
+为了通过\textrm{JMol}或\textrm{molden}软件可视化振动模式，采用\textrm{Py4vasp}模块或由\textrm{Python}脚本\textrm{vibFreq.py}产生的\textrm{hesseModes\_shifted.molden}文件。\textrm{Py4vasp}模块的\textrm{Python}脚本为
+
+下面将使用该频率计算的结果来弛豫过渡态，将虚频的数目由五个将为一个。
+
+\subsubsection{优化过渡态}
+通过\textrm{IDM}计算甲基化菱沸石的羰基化过渡态结构沿着最强虚频弛豫。
+
+应用\textrm{IDM}沿着最强虚频振动模式的方向优化过渡态\upcite{JCP111-7010_1999}。\textrm{IDM}是通过力搜索局域鞍点算法，避免采用更大计算量的\textrm{Hessian}矩阵方法。%这里简单回顾该方法，
