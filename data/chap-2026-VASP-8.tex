@@ -74,3 +74,198 @@ $\vec k$空间网格布点只有$\Gamma$点。
 通过这个\ch{Si}原子扩散到空位的例子，可以看到，对于过渡态的计算是复杂的。计算中有时候选择反应中间体影像作为寻找过渡态的试探结构。下面介绍如何优化试探结构。
 
 \subsubsection{改进双粒子方法}
+应用改进双粒子\textrm{(Improved Dimer Method, IDM)}方法，优化\ch{H2}在\ch{Cu}的$(111)$表面解离的过渡态，其中\ch{Cu}表面采用3层$(2\times2)$超晶胞构建。
+
+\textrm{NEB}方法可用于反应通道的搜索。而搜索过渡态则必须采用别的方法。沿着反应通道搜索鞍点的能量极大值，如果该结构只有一个虚频，那一般就是过渡态。这样的一类方法有一种称为\textrm{IDM}\upcite{JCP111-7010_1999}。本质上，\textrm{IDM}是采用力作为优化对象的局域鞍点搜索算法，与能量优化算法的\textrm{Hessian}矩阵搜索不同，前者只考虑了能量对位置的一阶导数，后者则考虑到二阶。关于\textrm{IDM}的四步处理过程，如下图所示。
+
+\textrm{IDM}通过四个离子步完成势能面上的弛豫，实线箭头表示双粒子连线轴$\mu_{\xi}$，实心点是在当前步需要计算力的结构，带虚线的空心点是前一步的结构和双粒子连线轴向，虚线箭头\textrm{d}表示$\mu_{\xi}$旋转$\phi_{\mathrm{min}}$。
+(a) 试探结构位于势能面上的点$\mathbf{q}$，初始方向$\mu_{\xi}$由确定振动频率为最大负值的振动模确定；
+(b) 在势能能上沿着初始方向近邻位置，确定点$\mathbf{q}+\mu_{\xi}$，这两个点连线表示一个双粒子体系。
+(c) 双粒子在势能面上绕点$\mathbf{q}$旋转，角度为$\phi_1$，到$\tilde{\mathbf{q}}$。
+(d) 将$\mu_{\xi}$旋转$\phi_{\mathrm{min}}$，最小化势能面$\lambda$的负曲率，由此确定新的方向。应用优化算法确定搜索方向$\bar{N}$，随后确定的过渡态方向为$\mathbf{q}+\epsilon\bar{N}$，其中$\epsilon$是步长。
+
+在搜索得到势能面上新的位置$\mathbf{q}+\epsilon\bar{N}$有新的能量，因此可以认为确定了新的双粒子体系，重复上述步骤(a)-(d)，伴随着体系不断地平移和旋转，最大到达能量鞍点。在鞍点处，双粒子体系将会仅有一个负的振动模式，这就是过渡态。
+
+一个简单的吸附活化例子就是\ch{H2}在\ch{Cu}的$(111)$表面的解离。实验和理论上对于\ch{H2}解离已经有了深入的研究\upcite{JCTC13-3208_2017}。这里将采用\textrm{IDM}弛豫来模拟该体系的过渡态。
+
+准备哦结构文件\textrm{POSCAR.idm}，这里\textrm{POSCAR}文件中原子位置之后的额外若干行，表示的是原子的初速度。
+
+初始频率计算的结构文件\textrm{freq1/POSCAR}
+
+两种不同频率的计算控制文件\textrm{feq1/INCAR}和\textrm{freq2/INCAR}。
+
+\textrm{INDM}模拟的计算控制文件\textrm{idm/INCAR}
+
+$\vec k$空间网格剖分方案\textrm{KPOINTS}
+
+\textrm{INCAR}文件与\textrm{NEB}计算类似，频率计算由\textrm{freq1/IINCAR}确定，\texttt{IBRION}=5，表示频率采用有限差分方法计算，\texttt{NFREE}确定频率计算中原子的位移数量。设置\texttt{ML\_LMLFF}=\textrm{T}和\texttt{L\_MODE}=\textrm{run}，允许使用之前训练的机器学习力场\textrm{(MLFF)}。在\textrm{idm/INCAR}文件中设置\texttt{IBRION}=44，完成\textrm{IDM}模拟。此外\texttt{NELMIN}确定最少的电子步计算的最少迭代次数。
+
+\textrm{KPOINTS}文件中制定了二维$\vec k$空间网格剖分形式。在垂直表面方向只有一个$\Gamma$点。因为是表面模拟，为了周期性的影像间没有相互作用，因此使用了足够大的真空，最少的$\vec k$点。
+
+作为示例，这样的计算控制参数设置为了保证足够快。如果需要高质量的结果，如吸附能的收敛，就要考虑$\vec k$空间网格布点、真空层厚度，模拟表面的层数(在量子化学计算中，标准坐标一般是四层起)等参数的影响。对于\textrm{IDM}模拟，设置离子步计算控制参数\texttt{NSW}=20，这样做主要是因为实际计算中仅有一个虚频，所以从速完成模拟。实际模拟中往往需要成百到上千步的模拟。
+
+尝试结构的振动频率分析
+
+第一步，首先选择$\mathrm{H}_2/\mathrm{Cu}(111)$结构文件\textrm{freq1/POSCAR}完成振动频率分析。采用机器学习力场，计算将给出声子振动频率和相关的力。计算使用的\textrm{Bash}命令为：
+
+一旦计算完成，采用如下的\textrm{Bash}命令，检索振动模。
+
+计算得到的振动频率将会以不同单位形式给出
+
+初始尝试结构有两个虚频振动模，而实际过渡态，只允许有一个虚频。\textrm{IDM}模拟将会弛豫结构，去除低的虚频振动模，仅保留振动频率大的虚频振动模。
+
+\textrm{Python}脚本\textrm{vibFeq.py}由脚本\textrm{hesseModes\_shifted.molden}文件产生虚频振动模。\textcolor{red}{该脚本在\textrm{JMol}或\textrm{molden}下载}。也可以通过\textrm{Py4vasp}模块得到。相应的\textrm{Python}脚本为
+
+然后就可以应用\textrm\left\{Py4vasp \right\}模块，对每个振动模式构建\textrm{molden}文件，用\textrm{molden}软件实现振动模式分子的可视化。对应的\textrm{Python}脚本为：
+
+下图给出\ch{H2}分子在\ch{Cu}表面具有最强振动频率时的结构影像，\ch{H2}分子的振动频率用双箭头标出。
+
+\ch{H2}分子在\ch{Cu}$(111)$表面的桥位吸附，橙色双箭头标示最强的振动模。注意到在俯视图中，\ch{H2}分子在桥位上发生小的偏转。
+
+这里计算的振动是\textrm{H-H}键的伸缩振动。在\ch{H2}分子解离过程中，\ch{H-H}键将发生断裂。因此\textrm{IDM}模拟将从这个不稳定的振动频率出发，搜索\ch{H2}分子在表面解离所经历的过渡态。
+
+在\textrm{IDM}模拟中，首先弛豫最不稳定的虚频(最大频率的振动模)，使体系靠近过渡态。根据上述计算，确定不稳定声子振动给定的方向。由于模拟的结构接近弛豫，所以只存在少量不稳定振动模。通过以下脚本得到最大振动频率。%(在\textrm{INCAR.idm}中设置相应的值)
+
+使用以下\textrm{Bash}脚本，可以从频率分析计算中确定不稳定振动方向，生成\textrm{IDM}计算所需的\textrm{POSCARj文件}\footnote{当然这里是给出了\textrm{POSCAR.ibm}。}，脚本如下:
+
+确定了\textrm{POSCAR.idm}给出的尝试不稳定方向，执行\textrm{IDM}就万事俱备，因此可以通过以下\textrm{Bash}脚本执行\textrm{IDM}模拟。
+
+经过20个离子步(由于计算控制参数\texttt{NSW}的限定)的弛豫，体系并未达到完全收敛。不过下一节还会再进行二次频率计算，确保弛豫结构只存在一个虚频。
+
+通过\textrm{Py4vasp}模块查看结构。
+
+优化过渡态的振动频率分析
+
+\textrm{IDM}弛豫结束后，应用机器学习力场，再用\textrm{VASP}计算获得仅有一个虚频的鞍点\textrm{(freq2)}，脚本如下：
+
+振动频率分析结束后，再次通过\textrm{Bash}脚本检索振动频率。
+
+可以看到，此时只存在一个虚频。类似地，这个虚频的振动结构可以通过\textrm{Python}脚本\textrm{vibFreq.py}查看。
+
+到这里，就成功地找到\ch{H2}分子在\ch{Cu}$(111)$表面解离的过渡态。最后一个虚频可以通过\textrm{Python}脚本\textrm{vibFreq.py}可视化，产生的\textrm{hesseModes\_shifted.molden}文件，含有\textrm{molden}软件格式的振动数据。通过\textrm{JMol}或\textrm{molden}软件可以可视化。或者直接通过\textrm{Py4vasp}模块，也可以获得振动频率数据并生成\textrm\{molden}文件，脚本如下：
+
+通过\textrm{Py4vasp}绘图，可以看到优化过程中能量随弛豫步长变化的过程。
+
+虽然只是弛豫了很少几步，但是在能量方向有了快速的下降。
+
+为了对照，可以应用\textrm{Py4vasp}模块对该体系完成一个更多\textrm{IDM}弛豫步数的计算，脚本如下
+
+为了完成更长的计算，在相应的\textrm{POSCAR.idm}文件中，弛豫步数取为$\sim600$步，前期能量下降的趋势放缓，在大约600步左右，能量快速下降，最后达到平台期，能量最后的下跌就是额外的虚频被去除的标志。
+
+当\textrm{IDM}完成过渡态优化，由此就可以开始内禀反应坐标\textrm{(Intrinsic Reaction Coordinate, IRC)}计算，得到反应物-产物反应曲线，可以与实验结果对照的反应势垒高度。
+
+\subsubsection{$\mathrm{H}_2/\mathrm{Cu}(111)$\textrm{elbow}作图}
+
+模拟\ch{H2}分子在三层$2\times2$超晶胞构建的\ch{Cu}$(111)$表面的解离，绘制\textrm{elbow}图。
+
+\textrm{IDM}模拟确定了过渡态的弛豫结构，在反应物-产物的反应通道中，过渡态位于\textrm{NEB}计算的反应通道中间态。对于双原子分子，还可以采用另一项技术，因为双原子分子共有六个自由度，\textcolor{red}{可以构成有意义的子集。}根据分子动力学理论，如果把表面固定在平面内，双原子分子在势能面，可以通过双原子分子的质心高度$z$和键长$r$两个自由度来描述。这种二维的势能面称为\textrm{elbow}图，势能面上不同的能量由等高线标出。\upcite{PRL73-1400_1994,PRB62-8295_2000}。
+
+\ch{H2}分子垂直表面法线放置在\ch{Cu}$(111)$面的桥位。\ch{H2}的键长$r$和距离表面的高度$z$的变化，构成势函数表示的两个坐标，计算\ch{H2}分子解离的势能函数变化并绘制等高线图，就得到了势能面。
+
+根据前面的计算数据，可以给出\ch{H2}分子吸附在\ch{Cu}$(111)$表面的解离\textrm{elbow}图。
+
+\ch{Cu}$(111)$表面结构\textrm{POSCAR.surf}文件
+
+\textrm{INCAR}文件
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+在\textrm{INCAR}文件中%设置计算控制参数\texttt{LCHARG}和\texttt{LWAVE}，这两个参数分别确定是否输出数据到\textrm{CHGCAR}、\textrm{CHG}和\textrm{WAVECAR}文件。因为本次计算是测试，为了节约存储空间，以上参数全部设为\textrm{.FALSE.}。
+设置计算控制参数\texttt{NSW}=0，因此只完成单点静态计算。
+
+$\vec k$空间网格剖分仅含有$\Gamma$点，这里$\vec k$点数目太少，仅仅是为了作业示例才这样做。
+
+用于绘制\textrm{elbow}图的\ch{Cu}$(111)$面结构为\textrm{POSCAR.surf}。在表面吸附\ch{H2}后，\ch{H2}距离表面的高度为$z$，键长为$r$。该建模过程由\textrm{ASE}软件实现，\textrm{Python}脚本为：
+
+由此产生一系列表面构型，每个结构存入一个计算目录，对应的\textrm{Bash}脚本为：
+
+为绘制\textrm{elbow}图，在$z$方向另取6个点，在$r$方向也另取6个点，再考虑两个顶点，合计各7个点因此共有$7^2$即49个数据采样点。
+
+对每个采样点执行\textrm{VASP}计算的\textrm{Bash}脚本\textrm{run.sh}为
+
+%因为$\vec k$空间只有$\Gamma$点，脚本中采用\textrm{vasp\_gam}。
+
+完成计算就可得到绘制\textrm{elbow}图的必要数据，在此基础上绘制等高线图。采用\textrm{Python}脚本依次提取每个结构的$z$和$r$坐标，以及能量数据。脚本遍历全部$z$和$r$数值，然后采用\textrm{Py4vasp}模块提取每个计算的能量值。能量值在$z-r$网格点上做出等高线图。
+
+运行该脚本可以得到\textrm{elbow}图。
+
+绘制出势能面的\textrm{elbow}图。还可以尝试更密的$z-r$网格点，并用如下脚本绘制\textrm{elbow}图，注意两个的区别。
+
+不难看出，两个图看起来很相似，但是第二张图的网格点密度为$11^2$，因此共有121个采样点。更多的采样点意味着绘制的等高线更平滑，对势能面的描述也更准确。此外，因为$\vec k$网格布点采用$3\times3\times1$而非仅有$\Gamma$点，后者的能量等高线值也比前者更低。为了得到完全收敛的计算结果，还会需要更密集的采样网格点，不过计算结果的区别与这里的对比类似。
+
+在\textrm{elbow}图中，存在两个极小值，这与吸附在桥位的\ch{H2}解离为\ch{H}原子，并分别吸附在\textrm{fcc}孔位点和\textrm{hpc}孔位点对应，也就是解离后的吸附分子在表面的位置。
+
+\subsubsection{内禀反应坐标:~$S_N2$取代反应}
+应用机器学习力场\textrm{MLFF}，模拟在$12\times12\times12\mathrm{\AA}^3$超晶胞中，\ch{Cl-}取代\ch{CH3Cl}的$S_N2$取代 反应的过渡态，并推导其内禀反应坐标\textrm{(IRC)}。
+
+最后介绍的一种过渡态方法称为内禀反应坐标\textrm{(IRC)}\upcite{JPCA106-165_2002}。由势能面的过渡态出发，沿着质量加权\textrm{Cartensian}坐标\textrm{(Mass-weighted Cartensian coordinates)}下的最陡下降路径即为\textrm{IRC}，沿着该坐标就可以获得反应通道。由于化学反应的可逆性，从过渡态出发，采用速度阻尼\textrm{Verlet}\textrm{(damped-velocity Verlet , DVV)}算法，沿着过渡态的虚频振动$\mu_{\xi}$方向，既可以向产物\textrm{P}的方向演进，也可以回退到反应物\textrm{R}。注意，这里的过渡态结构必须是经过\textrm{IDM}优化后的结构。
+
+在\ch{Cl-}取代\ch{CH3Cl}反应中，在过渡态时，\ch{CH3}时平面结构，两个\ch{Cl}元素位于\ch{CH3}平面两侧的等距位置。当\ch{Cl-}离子从一侧进攻\ch{C}原子，另一侧的\ch{Cl}以离子形式远离，同时伴随\ch{CH3}的构像翻转。过渡态有一个虚频振动$\mu_{\xi}$，它可以朝产物\textrm{P}方向演进，也可以回退到反应物\textrm{R}。图中\ch{Cl}元素、\ch{C}元素和\ch{H}元素分别采用绿色、棕色和淡粉色表示。箭头表示原子运动的方向。在\textrm{ICR}图中，箭头表示虚频振动模$\mu_{\xi}$在反应通道里既可以向产物物方向演进，也可以向反应物方向回退。
+
+采用\textrm{MLFF}可以加速\textrm{IRC}推导\ch{Cl-}-\ch{CH3Cl}$S_{\mathrm{N}2}$取代反应，计算时间大约只需要几分钟。
+
+取代反应过渡态结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+这里\textrm{POSCAR}文件%与之前的略有差别，不是\textrm{Cartesian}坐标$(xyz)$，而是\textrm{Direct}坐标(分数坐标)。此外，在原子/离子坐标之后，还给出各原子/离子的\textrm{IRC}的不确定方向，该方向由\textrm{IDM}模拟计算得到。
+
+在\textrm{INCAR}文件中，%绝大部分计算控制参数在前面已经说明。
+计算控制参数\texttt{ML\_LMLFF}和\texttt{ML\_MODE}表示计算中使用预先构造好的机器学习力场\textrm{(MLFF)}。
+
+\textrm{IRC}计算由计算控制参数\texttt{IBRION}=40确定。设置计算控制参数\texttt{IRC\_DIRECTION}，确定过渡态结构沿着不稳定方向初始位移：
+\begin{itemize}
+	\item 1~表示平行于不稳定方向，朝产物方向演进；
+	\item -1~表示于不稳定方向反向平行，朝反应物方向回退。
+\end{itemize}
+设置\texttt{IRC\_STOP}=20，表明在\textrm{IRC}计算结束前，一定的恒定能量步数；\texttt{IRC\_VNORM0}设定恒定速度矢量。
+
+此外，还有一个计算控制参数\texttt{IELECT}=22。表示计算对象是带电体系，存在额外电子(\ch{Cl-}带一个单位负电荷)。
+
+因为模拟的是气相反应。$\vec k$空间网格剖分方案仅取$\Gamma$点。
+
+计算中，选自已有的机器学习势\textrm{(MLFF)}，\textrm{ML\_FF}文件中有可供本次计算的训练集数据(二进制表示)。因为\textrm{IRC}需要计算很多步，因此采用\textrm{MLFF}可以显著降低计算开销。%如果训练集数据很大，推荐采用软链接\textrm{ln -s}，节约存储空间。
+
+\textrm{IRC}计算需要在两个目录下分别完成计算，一个朝正\textrm{(+)}方，一个朝反\textrm{(-)}方。其中朝正方的计算的\textrm{Bash}脚本如下
+
+反方计算的脚本与正方相同，除了\textrm{INCAR}文件中的计算控制参数\texttt{IRC\_DIRECTION}由\textrm{1}改为\textrm{-1}。
+
+\textrm{VASP}计算执行完毕，就完成了\textrm{IRC}计算。因为选用了\textrm{MLFF}，因此本次\textrm{IRC}计算仅耗时约若干秒，执行计算$\sim 450$步。如果选择完整的第一原理计算，本次计算也将耗时数小时。
+
+为了分析计算数据，执行\textrm{Bash}脚本\textrm{ircShift.sh}提取所需的计算数据：
+
+\textrm{ircShift}将提取能量和每一步的\textrm{IRC}坐标:
+
+应用\textrm{Py4vasp}可以将得到的数据结果可视化：
+
+得到的基\textrm{IRC}图近似完全对称的曲线。\ch{Cl-}离子沿\ch{CH3Cl}中的\ch{C}-\ch{Cl}键方向从背后进攻\ch{Cl}原子，伴随\ch{CH3}基团的翻转，\ch{CH3Cl}中的元素\ch{Cl}以离子形式远离。如果该反应反向进行，反应物、产物和反应能垒相同，因此\textrm{IRC}是对称的曲线。
+
+为了对该反应有更清晰的认知，可以通过\textrm{Py4vasp}将反应物、产物的结构分别可视化，相应的\textrm{Python}脚本为：
+
+通过\textrm{Python}脚本可以创建该模拟该反应过程的视频，脚本分别为\textrm{pos2xyzAnim\_rev.py}和\textrm{pos2xyzAnim\_for。py}。这两个脚本分别每隔10步提取正方向的反应的\textrm{IRC}坐标，通过以下\textrm{Bash}脚本，分别通过\textrm{Python}执行后，得到完整的动画数据\textrm{anim.xyz}。
+
+将得到的\textrm{anim.xyz}数据导入软件\textrm{JMOl}，就可以得到反应过程的动画
+
+可以看到反应物向产物演变的流畅的动力学过程。这里模拟的是一个对称的简单化学反应，后面还会学习更复杂和有趣的化学反应。
+
+\subsection{静态方法}
+\subsubsection{振动分析}
+完成甲基化酸性菱沸石合成气制备乙醇反应中的尝试羰基化过渡态振动分析。
+
+前面分别针对不同的反应介绍了\textrm{NEB}、\textrm{IDM}和\textrm{IRC}模拟。但是一个真实的反应过程，比如研究沸石分子筛催化反应\textrm{zeolite-catalyzed reaction}\upcite{NRM6-1156_2021}就用到了上述各种模拟方法的结合。这里介绍一个模型反应，合成气\textrm{\ch{CO}和\ch{H2}}经由菱沸石\textrm{(Chabazite)}分子筛催化得到乙醇(\ch{CH3CH2OH})。菱沸石属于\textrm{Z}型沸石分子筛。
+
+菱沸石分子筛的结构，棕色是\ch{O}原子，蓝色是\ch{Si}原子，\ch{Al}是青色。沸石有大量的孔道，因此其巨大的内表面为化学反应的发生提供了位点。
+
+由合成气制备乙醇\ch{CH3CH2OH}需要经过六步基元反应\textrm{(elementary reaction)}：
+\begin{enumerate}
+	\item \ch{CO}+2\ch{H2}$\longrightarrow$\ch{CH3OH}
+	\item \ch{CH3OH}+\ch{H-Z}$\longrightarrow$\ch{H2O}+\ch{CH3-Z}
+	\item \ch{CO}+\ch{CH3-Z}$\longrightarrow$\ch{CH3CO+}+\ch{Z-}
+	\item \ch{CH3CO+}+\ch{Z-}$\longrightarrow$\ch{CH3CO-Z}
+	\item \ch{CH3OH}+\ch{CH3CO-Z}$\longrightarrow$\ch{CH3COOCH3}+\ch{H-Z}
+	\item \ch{CH3COOCH3}+2\ch{H2}$\longrightarrow$\ch{CH3CH2OH}+\ch{CH3OH}
+\end{enumerate}
+该反应的决速步\textrm{(rate-determining step, RDS)}是第三步，甲基化沸石\ch{CH3-Z}的羰基化\upcite{PCCP13-2603_2011}。在决速步，产物是乙酰基\ch{CH3-C=O+}自由基。
+
