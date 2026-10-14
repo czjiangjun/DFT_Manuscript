@@ -304,4 +304,154 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 \subsubsection{优化过渡态}
 通过\textrm{IDM}计算甲基化菱沸石的羰基化过渡态结构沿着最强虚频弛豫。
 
-应用\textrm{IDM}沿着最强虚频振动模式的方向优化过渡态\upcite{JCP111-7010_1999}。\textrm{IDM}是通过力搜索局域鞍点算法，避免采用更大计算量的\textrm{Hessian}矩阵方法。%这里简单回顾该方法，
+应用\textrm{IDM}沿着最强虚频振动模式的方向优化过渡态\upcite{JCP111-7010_1999}。\textrm{IDM}是通过力搜索局域鞍点算法，避免采用更大计算量的\textrm{Hessian}矩阵方法。
+\textcolor{red}{这里简单回顾该方法，根据过渡态初始尝试结构，沿着演进和回退的两个方向的近邻结构构成双粒子，双粒子轴用$\mathbf{N}$表示。双粒子体系在势能面上的中点位置附近，通过旋转搜索势能面的最低能量曲率$\lamda$，双粒子旋转后，计算沿双粒子轴的力$f$，同时双粒子轴的中点沿着与鞍点相反方向平移。}
+一个\textrm{IDM}模拟步接近四个离子步。迭代重复执行\textrm{IDM}模拟直到收敛，即可得到过渡态。
+
+%之前已经学习过\textrm{IDM}方法。
+这里使用\textrm{IDM}学习优化决速步(菱沸石中甲基的羰基化)的过渡态。
+
+初始尝试结构的\textrm{POSCAR.init}
+
+计算控制参数文件\textrm{INCARj}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+\textrm{POSCAR.init}与前一个示例相同，但额外还有最强虚频的回复力信息，由此将得到过渡态。在上一个算例中，该力的数据保存在\textrm{hesseMode.dat}文件中，可由\textrm{virFreq.py}脚本构建。
+
+\textrm{INCAR}文件的绝大部分与前一个示例相同，在\textrm{IDM}模拟中，\texttt{NSW}指定结构弛豫的离子步数目，但\texttt{IBRION}=44，表示采用的是\textrm{IMD}。计算控制参数\texttt{EDIFFG}确定结构弛豫的收敛标准，该值为负值，表示采用力收敛标准，单位是$\mathrm{eV}\AA^{-1}$。
+
+构建过渡态初始结构，将之前计算振动模搜索最强虚频的结构文件作为过渡态弛豫的初始尝试结构，初始原子受力取最强虚频的力，数据源于\textrm{Python}脚本\textrm{vubFreq.py}产生的\textrm{hesseMode.dat}文件。相关力的信息补充在\textrm{POSCAR}文件的最后。\textcolor{red}{也可以通过\textrm{Py4vasp}模块实现。}
+
+相关脚本
+
+完成\textrm{VASP}的\textrm{IDM}计算。
+
+在过渡态弛豫期间，\textcolor{red}{最大的虚频振动模一直都存在。}为了分析弛豫过程中，势能面的梯度的最大值如何变化。首先通过\textrm{Bash}命令提取\textrm{OUTCAR}中的梯度数据：
+
+在绝大部分结构弛豫中，通过力(也就是能量对位置的梯度)的优化来判断收敛。应用\textrm{Python}脚本，绘制力随着离子弛豫步骤的收敛图。脚本为
+
+前100个离子步能量梯度(力)快速收敛，随后在趋于收敛过程中出现震荡，200个离子步后，能量梯度不再发生显著变化，一直延续到800个离子步。采用如下\textrm{Bash}命令和\textrm{Python}脚本，可以看到势能面曲率$\lambda$的变化趋势。每经过四个离子步计算一次曲率，\textcolor{red}{其梯度变化也很明显。}到达过渡态时，势能面的曲率应该达到极小值。首先，利用\textrm{Bash}命令提取\textrm{OUTCAR}中的曲率数据
+
+再应用\textrm{Python}脚本绘制势能面曲率图。
+
+与势能面的梯度相比，势能面的曲率在最初的弛豫中，随着离子步有所增大。曲率的震荡与梯度 震荡同步。但是梯度随弛豫的离子步快速下降，而曲率的下降则要经过更多离子步。曲率收敛所需要的离子步也说明了为什么即使力在$\sim200$步左右已经达到收敛，但\textrm{IDM}弛豫要持续$\sim600$步，势能面曲率就是一个制约因素。最后势能面曲率达到平台区，计算收敛。
+
+达到过渡态收敛后，可以\textrm{Py4vasp}模块分析，并与初始猜想结构对比。
+
+过渡态结构收敛到稳定结构，与初始猜想结构对比，可以确认初始猜想结构是比较合理的。如果采用\textrm{Hessian}矩阵计算，而不是\textrm{IDM}计算，则每一个离子步都需要完成一次频率计算，显著增加计算开销。另一方面，\textrm{IDM}的每个离子步只需要单点计算，效率更高。
+
+一般地，初始猜想结构和收敛结构之间差别不大。通过\ch{C}-\ch{C}和\ch{C}-\ch{O}键的键长对比，可以更显著地看出两种结构的差别。相应的\textrm{Python}脚本如下:
+
+两类键长都从$\sim2.1\AA$收缩至$\sim2.0\AA$。键的收缩使得在过渡态时，反应物之间更为接近。
+
+%下面将确认达到收敛的结构是过渡态(只有一个虚频振动模)，所以还要进行一次频率计算。
+
+\subsubsection{鞍点}
+对弛豫后的过渡态(甲基酸性菱沸石羰基)进行频率分析，检验其一阶鞍点并计算过渡态在\textrm{440K}时的自由能。
+
+一阶鞍点排除极弱的平移模式后，只含有一个虚频振动模。 该虚频振动模是搜索\textrm{IRC}的初始不稳定方向，最后还要完成振动频率分析。此外，为了和实验结果对照，计算包含振动贡献的总能的非常重要。零点振动能$E_{\mathrm{ZPV}}$作为重要的动力学性质，可以表示为
+\begin{displaymath}
+	E_{\mathrm{ZPV}}=\sum_i\dfrac{\hbar}2\nu_i
+\end{displaymath}
+这里$\nu_i$是振动模式$i$的振动频率。
+
+另一个需要计算的重要振动属性是温度$T$时的振动焓$H_{\mathrm{vib}}$和振动自由能$A_{\mathrm{vib}}$。有必要指出的是，这里的振动自由能是\textrm{Helmholtz}自由能，而非\textrm{Gibbs}自由能，因为计算模拟时采用的是正则系综\textrm{(NVT)}，体系温度保持不变。%正则系综要求体系的粒子数$N$、体积$V$和温度$T$均保持不变。
+为了得到过渡态的总\textrm{Helmholtz}自由能$A_{\mathrm{tot}}$，除了计算过渡态的体系总能$E_{\mathrm{tot}}$，还需要计算体系的上述热力学性质。在后续的反应速率常数计算中，体系的自由能将保持不变。
+
+这里将通过计算检验\textrm{IDM}计算得到的优化过渡态结构是否为真实的过渡态，检验方法仍然是频率分析。作为真实过渡态，将只有一个虚频振动模，该振动模将用于化学反应坐标\textrm{IRC}的计算。此外，还将计算包括\textrm{Helmholtz}自由能在内的多种热力学性质。
+
+初始的结构文件\textrm{POSCAR.init}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+\textrm{POSCAR.init}来自\textrm{IDM}计算得到的弛豫结构。
+
+执行\textrm{Bash}命令，准备计算所需要的各类文件。
+
+\textrm{VASP}振动频率的计算与本部分开始的计算相同，计算控制参数\texttt{IBRION}=5。
+
+计算结束后，类似地，执行\textrm{Python}脚本\textrm{vinFreq.py}，将从\textrm{OUTCAR}文件中提取振动频率数据，并确定\textrm{Hessian}矩阵和动力学矩阵。与\textrm{Hessian}矩阵和动力学矩阵对应的本征值和本征态波函数分别以各种形式写入输出文件。提取频率数据的命令为
+
+分别提取\textrm{IDM}计算前后的\textrm{freq.dat}中前八个数据并对照：
+
+对照看出虚频振动模少了一些。在\textrm{IDM}计算前，高于$100\mathrm{cm}^{-1}$的虚频振动模共有三个，此外，还有两个更小的；\textrm{IDM}之后，高于$100\mathrm{cm}^{-1}$的虚频振动模只有一个，以及一些低于$10\mathrm{cm}^{-1}$的虚频振动。后面剩下几个都来自平移部分的贡献。在考虑振动热力学贡献时，平移部分的对振动部分的影响将全部忽略。不过在此之前，先看一下保留的振动模式。\textrm{Python}脚本\textrm{vibFreq.py}同样可以提取振动频率并将结果存入\textrm{hesseModes\_shifted.molden}文件，并且可以通过\textrm{JMod}和\textrm{Molden}软件可视化。当然，可以同过\textrm{Py4vasp}模块查看振动频率数据并生成\textrm{molden}文件。
+
+可以通过\textrm{JMol}或\textrm{molden}软件实现振动模式结构的可视化。通过\textrm{hessenModes\_shift.molden.xyz}，可以看到沿着\ch{O}-\ch{C}-\ch{C}轴的振动模式可视化的图像。
+
+考虑热力学性质的计算：通过\textrm{Python}脚本\textrm{vibpartition\_eV.py}去除平移模的贡献，并计算\textrm{400K}时(接近实验条件)时简谐振动对焓、熵和自由能的贡献，命令为
+
+结果存于热力学数据文件\textrm{thermo.dat}，在\textrm{thermo.dat}文件中保存了计算得到的热力学数据。\textrm{thermo.dat}文件中热力学数据依次为：
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}
+        \toprule
+	名称 &含义\\
+\midrule
+\texttt{nDOF} & 自由度:~$3\times$粒子数目 \\
+\texttt{nVIB} & 振动模数量~\textcolor{red}{一旦有虚频振动会被去除} \\
+\texttt{line beneath nVIB} & 没有任何标注，是科学计数法表示的振动分波函数\textrm{Q\_vib} \\
+\texttt{T} & 模拟温度(\textrm{K}为单位) \\
+\texttt{ZVP} & 零点振动能\\
+\texttt{Hvib-ZPV} & 热运动对振动能的贡献\footnote{考虑温度的影响后，引起的基态以上的振动模的能量改变。}\\
+\texttt{Hvib} & 振动焓\\
+\texttt{Svib} & 振动熵\\
+\texttt{Gvib} & 振动\textrm{Helmholtz}自由能\\
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{thermo.dat}文件中热力学数据}}
+\label{Tab:Hyperparameter-Tag}
+\end{table}
+
+这部分热力学性质的贡献，也可以由\textrm{ASE}软件的\textrm{thermohemisty}模块计算。对应的\textrm{Python}脚本为：
+
+同样地，\texttt{Gvib}是振动自由能。结合振动自由能和\textrm{OUTCAR}中的体系总能，可以通过以下\textrm{Python}脚本给出过渡态\textrm{Helmholtz}自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}^{\prime}}^{ddagger}$
+
+到此完成了过渡态自由能的计算。孤立体系的自由能很有用，但无法通过实验结果直接来对照。而过渡态自由能是计算能量差，即活化自由能\textrm{(Free energy of Activation)}的必要数据，而活化自由能是可以与实验数据对比的。
+
+\subsubsection{反应通道}
+由决速步菱沸石内羰基化过程的过渡态虚频振动模，分别向反应物和产物方向构建\textrm{IRC}。
+
+过渡态位于反应物和产物之间，鞍点仅含有一个虚频，即一个不稳定振动模。由过渡态的非稳定结构出发，可以向反应物和产物演进，形成\textrm{IRC}。%由不稳定结构向前演进，可以得到产物，回退则可以得到反应物。据此可以有效地检验是否该过渡态是否管理期望的反应物和产物。
+用于计算非稳定振动模的是速度阻尼\textrm{Verlet}算法\upcite{JCPA106-165_2002}。
+
+这个算例中，构建菱沸石内的糖基化反应的\textrm{IRC}，通过检验得到的反应物和产物，确认该过渡态关联的是乙酰阳离子\cj{CH3CO+}和\textrm{Z}-型沸石阴离子\ch{Z-}及\ch{CO}和\ch{CH3-Z}。
+
+初始结构文件\textrm{POSCAR.init}
+
+计算控制输入文件\textrm{INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+\textrm{POSCAR.init}由\textrm{IDM}弛豫结构给出。\textrm{INCAR}文件也与\textrm{IDM}弛豫类似，不过设置计算控制参数\texttt{IBRION}=40，表示将采用\textrm{DVV}算法，从过渡态出发，计算反应的\textrm{IRC}，得到反应通道的能量曲线。
+
+在\textrm{INCAR}中，还有一个件控制参数\texttt{IRC\_VNORM0}，表示因为存在阻尼，初粒子的速度矢量标定为常数。计算控制参数\texttt{IRC\_DIRECTION}的值规定了不稳定虚频振动模的演化方向，\texttt{IRC\_DIRECTION}=1表示演进为产物，\texttt{IRC\_DIRECTION}=-1表示回退到反应物。
+
+准备计算用的结构文件。
+
+\textrm{IRC}模拟由过渡态出发，反应通道，以\textrm{IDM}弛豫后的结构作为过渡态的不稳定虚频振动模。不稳定振动模可以朝两个方向演变，向前演进到产物(+，在\textrm{p}目录下)，向后回退到反应物(-，在\textrm{m}目录下)。首先通过\textrm{Bash}命令，完成反应物方向的计算。
+
+再按照同样的方法完成产物方向的计算。
+
+由此可以得到\textrm{IRC}，通过\textrm{Bash}脚本\textrm{ircShift.sh}脚本提取能量数据，脚本还将分别从\textrm{m}和\textrm{p}目录的\textrm{OUTCAR}文件中提取并合并构成完整的\textrm{IRC}坐标(\textrm{\AA}为单位)\textbf{IRC(A)}。\textrm{ircShift.sh}脚本提取\textrm{IRC}数据命令如下
+
+\textrm{ircShif.sh}执行完毕，提取的能量和对应的\textrm{IRC}坐标的数据写入\textrm{ircShift.dat}文件，通过\textrm{Py4vasp}可以绘制反应通道图。
+
+在反应通道中，初始位置表示反应物，大约位于$\sim-3.0\mathrm{\AA}$，对应\ch{CO}和\ch{CH3-Z}，随着\ch{CO}的接近，\ch{CH3}基团翻转，能量达到最大值，对应横坐标为$0\mathrm{\AA}$，此时为过渡态。在形成自由乙酰阳离子后，能量快速相降形成产物，对应横坐标$\sim4\mathrm{\AA}$。
+
+对照反应物、过渡态和产物的结构，可以将反应通道的信息看的更清楚。通过\textrm{Py4VASP}模块，呈现每个反应阶段的结构。
+
+\textrm{Python}脚本\textrm{pos2xyzAnim\_rev.py}和\textrm{pos2xyzAnim\_for.py}可以分别每隔10步提取回退和演进的反应过程中的化学结构，通过该脚本可以创建反应过程的动力学视频。通过分别运行这两个\textrm{Python}脚本后，将得到的数据合并存入\textrm{anim.xyz}文件。
+
+可以通过\textrm{JMol}软件对\textrm{anim.xyz}实现反应动力学过程的可视化。
+
+对于反应物向和产物向模拟中，一旦计算的能量单调上升超过计算控制参数\texttt{IRC\_STOP}设备的步数，\textrm{IRC}计算将会终止。默认的\texttt{IRC\_STOP}是20，所以，最后的20步计算应该接近当前模拟的势能面极小值。可以通过\textrm{Bash}脚本\textrm{pickMin\_irc.sh}，从\textrm{XDATCAR}文件中提取势能数据。
+
+在\textrm{m}和\textrm{p}目录下，分别生成的数据文件\textrm{POSCAR.pick}文件数据。因为本次计算设置的控制参数\texttt{IRC\_VNORM0}为$0.005\mathrm{eV/AA}^{-1}$，该值非常接近极小值，因此不必再进一步弛豫。
+%在后续示例中，会计算反应态的自由能和反应的活化自由能。
+
+\subsubsection{静态反应动力学}
+对反应物(CO和甲基化菱沸石)计算相应的活化自由能和羰基化反应的反应速率。
