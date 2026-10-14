@@ -455,3 +455,63 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 
 \subsubsection{静态反应动力学}
 对反应物(CO和甲基化菱沸石)计算相应的活化自由能和羰基化反应的反应速率。
+
+总能可以通过第一原理计算得到，自由能或者其它热力学性质则是通过实验测量得到。对比这两类数据，则需要包含一些不同的可以通过振动频率计算的热力学项。热力学项包含零点振动能，热贡献的振动能和必须考虑的熵的贡献。反应物和过渡态的自由能之差，即反应自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$，是通常测量的热力学性质。如果将$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$代入\textrm{Eyring}方程，将得到反应的通用描述，速率常数$k_{\mathrm{R}\rightarrow\mathrm{P}}$：
+\begin{displaymath}
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{k_{\mathrm{B}}T}{\hbar}\mathrm{e}^{-\bigg(\Delta_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}/k_{\mathrm{B}}T\bigg)}
+\end{displaymath}
+这里$_{\mathrm{B}}$是\textrm{Boltzmann}常数，$\hbar$是\textrm{Planck}常数，$T$是温度。
+
+在本算例中，根据回退进程的最终结构进行虚频振动模的频率分析。如果没有虚部振动模，最终的能量位于极小处，因此对应的结构是反应物。一旦反应物得到确认，就可以计算反应的热力学性质，包括活化自由能和速度常数。
+
+初始结构文件\textrm{POSCAR.init}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+这里的\textrm{POSCAR.init}文件源自前面计算产生的\textrm{m/POSCAR.pick}数据。相关的\textrm{Bash}命令为
+
+计算文件准备好后，\textrm{VASP}计算检查是否能量极小
+
+一旦计算结束，应用\textrm{Python}脚本\textrm{vibFreq.py}从输出文件\textrm{OUTCAR}中提取频率，然后确定\textrm{Hessian}矩阵和动力学矩阵。与这些矩阵对应的本征值和本征态以多种格式输出。提取并示例振动频率的\textrm{Bash}命令如下
+
+除了由于平移引起的虚频振动，只有正的频率，所以此时体系处于能量极小值位置，表明已经找到反应物。
+
+采用\textrm{IRC}计算中的相同的能量提取过程，应用\textrm{Python}脚本\textrm{vibpartition\_eV.py}计算简谐振动对焓、熵和自由能的贡献。这里计算了接近实验条件的\textrm{400K}的热力学性质，对应的\textrm{Bash}命令为
+
+热力学贡献也可以采用\textrm{ASE}的\textrm{thermochemistry}模块计算，数据存入\textrm{thermo.dat}文件。对应的\textrm{Python}脚本为
+
+根据热力学理论，\textrm{Helmholtz}自由能$A$可以通过配分函数\textrm{(Partition function)}$Q$表示：
+\begin{displaymath}
+	A=-k_{\mathrm{B}}T\ln Q
+\end{displaymath}
+量子力学振动配分函数的定义
+\begin{displaymath}
+	Q_{\mu,\mathrm{vib}}=\Pi_{i=a}^{N_{\mathrm{vib}}}\dfrac{\mathrm{e}^{\bigg(-h\nu_i\bigg)/\bigg(2k_{\mathrm{B}}T\bigg)}}{1-\mathrm{e}^{\bigg(-h\nu_i\bigg)/\bigg(k_{\mathrm{B}}T\bigg)}}
+\end{displaymath}
+采用\textrm{Py4vasp}模块，根据振动自由能和\textrm{OUTCAR}文件中的总能，可以得到过渡态\textrm{Helmholtz}自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$。具体\textrm{Python}脚本为
+
+由反应物到过渡态的反应活化自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$可以通过过渡态自由能和反应物自由能之差$A_{\mathrm{TS}}-A_{mathrm{R}}$计算：
+
+由此到甲基化菱沸石的羰基化的活化自由能。
+
+$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$是基于简谐振子的量子行为计算得到的。根据半经验振动配分函数的定义
+\begin{displaymath}
+	Q_{\mu,\mathrm{vib}}^{\mathrm{SC}}=\Pi_{i=a}^{N_{\mathrm{vib}}}\dfra{\hbar\nu_i}{2k_{\mathrm{B}}T}
+\end{displaymath}
+将$Q_{\mu,\mathrm{vib}}^{\mathrm{SC}}$带入$A=-k_{\mathrm{B}}T\lnQ$，每个结构的半经典的振动自由能都需要计算。确定反应的自由能差，量子而半经典的贡献也可以计算。应用\textrm{Python}脚本\textrm{vibpartitionClassic\_eV.py}可以计算上述方程的半经典振动自由能，得到\textrm{thermo2.dat}文件。
+
+将得到的热力学项后，应用\textrm{Python}脚本计算由量子和半经典近似计算的$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$
+
+而半经典和量子\textrm{Helmholtz}自由能的差$\sim\setm1\mathrm{eV}$。由此得到半经典和量子$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$的量子$\sim0.02\mathrm{eV}$，两者的差别是很小的。
+
+计算得到$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$后，根据\textrm{Eyring}方程可以计算速率常数。相应的\textrm{Python}脚本为
+
+得到速度常数。不难看出，振动能部分的贡献，将反应速率常数降低$\sim40\%$，虽然能量差很小，但是因出现在指数上，对于速率性质的影响很大。
+
+还可以由产物出发，通过计算产物的振动频率来计算反应速率常数。
+
+\subsection{动态化学反应性质}
+\subsubsection{确定定反应坐标}
+通过\textrm{440K}、\textrm{CSVR}恒温条件下\textrm{50ps}的\textrm{MD}模拟，确定甲基菱沸石羰基化反应的反应坐标。
