@@ -515,3 +515,156 @@ $\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$是基于简谐振子的�
 \subsection{动态化学反应性质}
 \subsubsection{确定定反应坐标}
 通过\textrm{440K}、\textrm{CSVR}恒温条件下\textrm{50ps}的\textrm{MD}模拟，确定甲基菱沸石羰基化反应的反应坐标。
+
+前面的算例说明，静态计算模拟过渡态取得了很大的成功。但静态计算有其局限性。因为势能面上有很多局域极小值。对于绝大部分体系来说，不大可能仅靠单一的静态来描述体系的演变过程。静态模拟方法对于反应物、过渡态和产物都存在这种局限性。但是对宏观物理量的模拟，必须引入系综。系综计算的物理量与微观计算会有很大的量级差别。如酸型菱沸石上烯烃异构化的能垒$\\sim20\mathrm{kJmol}^{-1}$\upcite{JC373-361_2019}。考虑到熵的影响后，化学反应的机理，还可能随温度发生变化。\upcite{JCP131-214508_2009}而微观的静态计算无法考虑熵的影响。这种情况下，应用微观静态方法而忽略系综的熵的贡献，很难实现正确的反应机理模拟。
+
+标准的动态学方法是基于分子动力学\textrm{Molecular Dynamics, MD}计算基础上考虑系综的影响。本算例采用系综平均，计算反应物\textrm{R}到产物\textrm{P}的活化自由能计算，也就是甲基菱沸石的羰基化研究过程的$\Delta A_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}$。为了模拟该反应，首先需要确定反应坐标$\xi$。选定的$\xi$是位置$\mathbf{q}$的连续函数，并且通过$\xi$描述反应的能量变化足够缓慢，因而保持完全可逆\upcite{ARPC67-669_2016}。就本算例来说，所选择的$\xi$是描述\ch{CO}与甲基的\ch{C}原子间\ch{C}-\ch{C}间距离$r_1$和甲基与沸石的\ch{O}原理最初成键的\ch{C}-\ch{O}间距离$r_2$的差值，
+\begin{displaymath}
+	\xi=r_2-r_1
+\end{displaymath}
+
+在\textrm{ICONST}文件中，$\xi$被定义为绘制反应通道曲线的横坐标，也是作为描述化学反应的重要参数。其中过渡态的反应坐标表示为$\xi^{\ast}$。应用\textrm{MD}，系综中包含的诸多不同的结构都可以通过反应做包表示。对于需要长程\textrm{MD}模拟的体系，从系综内选择概率密度为$P(\xi)$的最可几结构\textrm{(the most probable structure)}作为备选的反应物结构$\xi_{\mathrm{ref},\mathrm{R}}$。%后续将施加\textrm{MD}模拟的初值条件约束。
+
+在这个算例中，将针对测试结构$\xi$，通过\textrm{MD}模拟确定其概率密度$P(\xi)$。
+
+初始结构文件\textrm{POSCAR.init}
+
+初始计算控制参数文件\textrm{INCAR.init}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+反应坐标文件\textrm{ICONST}
+
+在\textrm{INCAR}文件中，第一类参数主要是\textrm{MD}模拟中计算控制参数，依次设置为:~\texttt{IBRION}=0表示\textrm{MD}计算。%参数\texttt{ISYM}=0表示不考虑体系对称性；\texttt{NPAR}确定并行计算中，每个\textrm{CPU}核上处理的能带数目，但真两个参数并非针对\textrm{MD}的。
+\texttt{NSW}指定一次\textrm{MD}的离子步数目，\texttt{POTIM}是对应的时间步长，时间单位是\textrm{fs}。\texttt{MDALGO}=5，设定\textrm{MD}模拟中的恒温(热浴)方式，这里指定的是通过速度重标定的正则系综采样\textrm{(Canonical sampling through velocity-rescaling, CSVR)}热浴。\texttt{CSVR\_PERIOD}确定\textrm{CSVR}热浴中的时间步长，同样是\textrm{fs}为时间单位。\texttt{TEBEG}设置的是\textrm{MD}模拟的起始温度，以及热浴的目标温度。
+
+另一类设置确定的是\textrm{MD}模拟中所需的机器学习势函数\textrm{MLFF}。\texttt{MD\_LMLFF}=\textrm{T}表示开启\textrm{MLFF}，且\texttt{ML\_MODE}=\textrm{run}表示采用之前训练的\textrm{MLFF}。设置\texttt{ML\_OUTPUT\_MODE}减少具体文件输出，以提升采用\textrm{MLFF}的\textrm{MD}模拟的计算效能。\texttt{ML\_OUTBLOCJ}指定使用\textrm{MLFF}时，每$n$步输出\textrm{MD}计算的数据。最后，通过\textrn{Bash}脚本引入\texttt{RADOM\_SEED}，该计算控制参数通过一个随机数生成确定模拟体系内粒子的初始速度，确保最初几步的\textrm{MD}模拟可以重现。
+
+\textrm{ICONST}以反应坐标$\xi$记录\textrm{MD}模拟过程中化学键变化信息。\textcolor{red}{字符\textrm{R}对应的是原子\ch{C}(3)和\ch{O}(25)，以及\ch{C}(2)和\ch{C}(3)的原子间距离关系；字符\textrm{S}对应的是两组\textrm{R}行间的差别。\textrm{R}起头行的行末的数值0表示该坐标是受限的，而\textrm{S}起头行的行末数值7表示查看对象}。
+
+\textrm{POSCAR}则是由前面\textrm{IRC}的弛豫计算得到的\textrm{CONTCAR}给出。
+
+根据\textrm{Bash}命令，准备各类计算所需的输入文件。
+
+\textctolor{red}{如果没有执行\textrm{part2.ipynb}脚本，则不可以使用前面计算的\textrm{CONTCAR}作为当前的\textrm{POSCAR}；这种情况下，直接使用这里的\textrm{POSCAR.init}作为计算用的\textrm{POSCAR}。相应的命令}
+
+到此为止，用于化学反应的\textrm{MD}模拟所需的文件都准备好了，使用以下的\textrm{Bash}脚本，分成5组，每组10000步，共计完成50000步\textrm{MD}模拟。
+
+计算耗时约8-10\textrm{min}。
+
+%如果还想节约计算耗时，可以仅完成一组\textrm{MD}模拟，然后采用现有算例数据，直接完成后续\textrm{MD}模拟，\textrm{Bash}脚本变动为
+
+%如果计算模拟耗时过程，可以在计算进行过程中分析本算例提供的\textrm{refdata}目录下已经提供的参考数据。一旦\textrm{MD}模拟结束，查找对应的计算目录\textrm{./e10\_*}，将会发现有五个文件\textrm{report.1}到\textrm{report.5}，是\textrm{VASP}的输出文件\textrm{REPORT}的副本。在\textrm{REPORT}文件的开头，记录了初始\textrm{MD}模拟的条件与参数，然后是每个10步输出的必要模拟数据。
+
+\textrm{REPORT}输出的参数与数据说明见下表:
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}
+        \toprule
+	名称 &含义\\
+\midrule
+\texttt{MDALGO} & 设置的\textrm{MD}热浴，这里\texttt{MDALGO}=5，是\textrm{CSVR}热浴 \\
+\texttt{CSVR\_PERIOD} & 根据\textrm{MD}模拟的步数，确定\textrm{CSVR}热浴的时间尺度 \\
+\texttt{SCALING} & 与标定粒子速度有关，本次计算未涉及 \\
+\texttt{CNEXP} & 对\textrm{ICONST}中含有字符\textrm{D}开头的行有效，本次计算未涉及 \\
+\texttt{RAMDON\_SEED} & 定义初始速度的随机数发生器\\
+\texttt{DOF} & 粒子自由度 \\
+\texttt{mc>} & 关注的反应坐标标志 \\
+\texttt{e\_b>} & \textrm{MD}模拟的能量:~\texttt{E\_tot}是总能，\texttt{E\_pot}是势能，\texttt{E\_kin}是动能，\texttt{EPS}是\textrm{Nos\'e-mass}的势能(本次计算未涉及)，\texttt{ES}是\textrm{Nos\'e-mass}的动能(本次计算未涉及)\\
+\texttt{tmprt>} & \textrm{T\_sim}是初始和目标模拟的问题，而\textrm{T\_inst}则是当前\textrm{MD}模拟步的温度 \\
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{REPORT}文件中的参数与数据}}
+\label{Tab:Hyperparameter-Tag}
+\end{table}
+在\textrm{REPORT}文件中，最重要的是\texttt{mc>}标记的关注反应坐标。采用\textrm{Bash}脚本\textrm{moitorVal.sh}可以提取\textrm{mc>}数据，存入文件\textrm{mc.dat}。数量\textrm{MD}模拟的全部\textrm{mc>}数据，就可以得到全部反应坐标$\xi$。
+
+文件\textrm{mc.dat}包括\textrm{MD}模拟的全部反应坐标\textrm{\xi}。由此可以得到每个反应坐标$\xi$的概率密度分布的直方图表示。\textrm{Python}脚本\texrm{normalizedHistogram.py}通过读取\textrm{mc.dat}，计算指定区段(本算例中给的是100)结构的概率密度分布，结果存在\textrm{mc.dat.hist}文件中。通过\textrm{Python}脚本，将\textrm{mc.dat.hist}数据绘制成直方图。
+
+反应物的结构选定为具有最高概率密度的结构。\textrm{Python}脚本\textrm{normalizedHistogram.py}绘制的直方图并不平滑，但是可以看出各种结构的分布概况。要想更精确地确定过渡态的位置，必须采用脚本\textrm{normalizedKDE.py}，该脚本采用核密度估计\textrm{(Kernel density estimation, KDE)}将直方图平滑化。脚本通过用户指定的绘图的单位步长(本算例中为\textrm{0.05\AA})和能量区间划分数量(本算例仍为100)，完成直方图的平滑化。
+
+根据计算结果，最大概率密度$P(\xi)=1.05\mathrm{\AA}^{-1}$(有参考数据计算得到)基本位于最佳采样区间位置($\xi=2.4\mathrm{\AA}$)，该结构就是反应物的结构。在最佳采样区间选择参照反应物，为的是使得概率密度$P(\xi)$的相对误差尽可能小一些。
+
+注意，在前面的计算中，初始反应物结构\textrm{POSCAR.1}是由静态方法得到的，所以$\xi_{\mathrm{ref},\mathrn{R}}$由第一个\textrm{MD}计算步给出的\textrm{mc> S}得到，根据\textrm{CONTCAR}的结果，该值为\textrm{1.95\AA}。对比动态$\xi_{\mathrm{ref},\mathrn{R}}$的值为\textrm{2.40\AA}。两者的数值差异达\textrm{0.45\AA}，表明两种方法存在明显的差别。静态计算中，对反应物只考虑了单个结构，而早动态的\textrm{MD}模拟中，反应物系综覆盖到了多种不同的结构。
+
+这样选定的$\xi_{\mathrm{ref},\mathrn{R}}$，取决于概率密度的分布。对每个\textrm{POSCAR.*}文件检验$\xi$，是否已经接近计算期待的值。保存的\textrm{POSCAR}文件可以在计算目录内找到\textrm{POSCAR.。*}。为了确定五步的$\xi$值，\textrm{Python}脚本，
+
+最后得到\textrm{POSCAR.6}就是最后需要的\textrm{CONTCAR}。
+
+\textcolor{red}{对照参考数据(存于\textrm{refdata}文件)，不难看出，与最大概率密度最接近的结构是第一组运行得到\textrm{CONTCAR}，即\textrm{POSCAR.2}，并有$\xi=\sim2.32\AA$，并有$P(\xi)=\sum0.87\mathrm{\AA}^{-1}$。注意，如果选定一个特定\textrm{POSCAR}研究化学反应而非\textrm{POSCAR.2}，可以编辑脚本来修正这种偏差}
+
+到这里，通过\textrm{MD}方法得到反应物的好的近似，下一部分，可以使用该结构测试反应坐标的可逆性。
+
+\subsubsection{反应坐标的验证}
+通过``蓝月亮系综''\textrm{(Blue Moon Ensemble)}方法，在\textrm{440K}\textrm{CSVR}热浴条件下，完成\textrm{24ps}的\textrm{MD}模拟甲基菱沸石的羰基化反应，扫描反应物到过渡态的反应坐标的自由能梯度，
+
+在反应坐标系中，反应物\textrm{R}对应坐标$\xi_{\mathrm{ref},\mathrm{R}}$，过渡态\textrm{TS}对应坐标$\xi^{\ast}$，由反应物向过渡态的能量变化。通过反应坐标的自由能梯度$(\partial A/\partial\xi_k)_{\xi^{\ast}}$改变，可以验证反应坐标$\xi$的合理性。在\textrm{MD}模拟中，反应物\textrm{(R)}和过渡态\textrm{(TS)}通过系综表示，而非单个分子结构。体系的活化能由体系的自由能梯度确定。\textcolor{red}{可以采用约束分子动力学\textrm{(Constrained Molecular Dynamics)}产生的偏差统计平均来确定。}
+
+\textcolor{red}{一个合适的方法是``蓝月亮系综''。在自由能梯度计算中，该方法可以给出定量的平均值。``蓝月亮系统''相对简单易用，统计误差的估计也方便便于推断解决有关$\xi$选择的问题。采用缓慢生长方法\textrm{(slow-growth approach)}，可以扫描沿着$\xi$结构，从反应物到产物，确定自由能梯度。}定义反应速度的变化速度，即，每个时间步长下的$\xi$为$\dot{\xi}$，因此过渡态\textrm{(TS)}位于自由能曲线的最高点。
+
+为了确保从反应物\textrm{(R)}向过渡态\textrm{(TS)}转变，必须选择一个足够小的$\dot{\xi}$，以保证自由能梯度的变化是连续的。按照反应物\textrm{(R)}向过渡态\textrm{(TS)}($\xi_{\mathrm{ref},\mathrm{R}}\rightarrow\xi^{\ast}$)的\textrm{MD}模拟的步数，将所涵盖的反应坐标进行分割，就可以计算\dot{\xi}$。如果反应物\textrm{(R)}向过渡态\textrm{(TS)}的自由能是连续的，那么就可以确定反应坐标$\xi$。最后检验$\xi$描述的反应是可逆的，该过程就是由过渡态\textrm{TS}向反应物\textrm{R}变换的过程。
+
+在本算例中，采用约束\textrm{MD}沿着反应坐标从反应物和过渡态扫描得到能量梯度。%如果时间允许，将上述过程反转过来，检查反应的可逆。}
+
+初始的结构文件\textrm{POSCAR.init}
+
+计算控制参数文件\textrm{INCAR.init}
+
+$\vec k$空间网格剖分\textrm{KPOINTS}
+
+反应坐标文件\textrm{ICONST}
+
+准备的计算文件与前面的参数大致相同。在\textrm{INCAR}文件中，包含计算控制参数\texttt{INCREM}，\texttt{LBLUEOUT}，\texttt{INCREM}采用缓慢累计模拟控制速度变化。负值表示反应坐标$\xi$由反应物朝向过渡态。\texttt{LBLUEOUT}=\textrm{T}指定``蓝月亮系综''完成约束\textrm{MD}模拟。产生的自由能梯度写入文件\textrm{REPORT}。
+
+采用\textrm{Bash}脚本，选定\textrm{MD}模拟的初始\textrm{POSCAR}文件。
+
+%如果有困难，就将\textrm{POSCAR.init}替换\textrm{POSCAR}，执行\textrm{Bash}脚本完成计算文件的准备。
+
+%忽略后三行\textrm{Bash}命令(\textrm{cd}、\textrm{ln}和\textrm{cp})。
+
+一切完成后，进入目录，注意要将\textrm{POSCAR.2}用最仅仅反应物的坐标$\xi$的结构\textrm{POSCAR.*}替代。
+
+在反应坐标$\xi$中由反应物向产物变化，用``蓝月亮模拟''方法来计算自由能梯度。检查自由能梯度的连续性。\textrm{MD}模拟分成6组计算，每一组完成4000\textrm{MD}离子步(参见\textrm{INCAR}和\textrm{Bash}脚本\textrm{run}。)\textrm{MD}模拟需要将初始结构当作7个反应坐标$\xi$的一个规范点。七个反应坐标点的结构分别为\textrm{POSCAR.1}到\textrm{POSCAR.6}和最终的\textrm{CONTCAR}文件，分别应用\textrm{VASP}计算。一旦模拟结束，有必要对反应坐标$\xi$中的结构变化仔细检查，确保得到的反应坐标是想要的机理。执行以下\textrm{Bash}脚本，大约\textrm{5min}左右完成\textrm{VASP}计算。
+
+完成``蓝月亮系综''模拟，\textcolor{red}{注意:}如果计算中出现错误提示\\
+\textrm{Error: SHAKE algorithm did not converge! err= in your stdout}\\
+就表明有问题。
+
+可能是选择的初始结构很差，即\textrm{POSCAR.*}离反应物态太远。尝试选择初始\textrm{POSCAR}的原则是，尽量使反应坐标$\xi$尽可能接近之前计算的最可几概率密度。
+
+得到了多个结构文件(\textrm{POSCAR.1}到\textrm{POSCAR.6}以及最终的\textrm{CONTCAR})来推测反应坐标$\xi$，最多可以穿透全部反应。\textrm{Python}脚本\textrm{pos2xyzStatic.py}选定七个结构文件，并数据合并得到反应的结构变化的动画。对应的\textrm{Bash}命令
+
+脚本\textrm{pos2xyzStatic.py}将用于计算的结构文件转换为\textrm{xyz}坐标，写入数据文件\textrm{anim.xyz}，应用\textrm{JMol}软件，可以可视化。
+
+由\textrm{anim.xyz}文件得到的动画，简单说就是由7个影像构成。初始影像甲基\ch{CH3}依然与菱沸石-\ch{O}\textrm{(ZO)}成键，而\ch{CO}在晶格的别处。随着反应向前两步，\ch{CO}和\ch{CH3}越来越靠近，伴随着\ch{ZO-CH3}中键的断裂和\ch{CH3}反转。到最后的影像中，\ch{CH3}和\ch{CO}之间成键，构成乙酰基阳离子\ch{H3C-CO+}\textrm{(CONTCAR)}。这正是期待的反应物出发经历过渡态到达产物可能的过程。注意，这7个独立的影像结构是由各自的系综内模拟得到的，每一个影像都是由由一个系综的多个结构中选出来的代表性结构。
+
+确认反应物到过渡态的转变是期望的反应过程之后，可以进一步确认用于自由能梯度估计得猜测的反应坐标$\xi$是合理的。在文件\textrm{report.*}文件中保存了计算的每一个\textrm{MD}模拟的反应坐标$\xi$和自由能梯度。由\textrm{cc>}和\textrm{b\_m>}标志。\textrm{report.*}文件保存了每一步\textrm{VASP}计算的\textrm{REPORT}的内容。\textrm{REPORT}文件包含了系综模拟的每隔10步的\textrm{MD}模拟。
+
+``蓝月亮系综''计算采用\textrm{SHAKE}算法。
+
+\textrm{Bash}脚本\textrm{fgrad.sh}从文件\textrm{report.*}文件中提取反应坐标数据$\xi$和能量梯度，并将结果输出到\textrm{grad.dat}文件。
+
+对\textrm{grad.dat}文件，通过\textrm{Python}脚本可以实现反应通道的可视化。
+
+从图中不难看出，自由能梯度没有明显的不连续。而反应物向过渡态转化过程自由能梯度连续性，也验证了沿着$\xi$构成的反应坐标的正确性。%如果继续完成反应通道的另一半，也可以验证反应坐标选择的合理性。
+
+将反应坐标$\xi$计算逆向，确认$\xi$反应坐标的可逆性。类似的计算也将耗时约\textrm{5min}。由最终的\textrm{TS}结构出发，进行反向反应，在\textrm{INCAR}文件中将计算控制参数\texttt{INCREM}由\textrm{-1.1e-4}变化为\textrm{1.1e-4}。逆向过程导出的反应坐标也是反的。可逆反应意味着逆向自由能梯度曲线与正向曲线定量相似。在目录\textrm{./optional}目录中，逆向的缓慢生长\textrm{(slow growth)}转换，准备相关文件的\textrm{Bash}脚本
+
+再次完成\textrm{VASP}计算。
+
+一旦计算完成，使用脚本\textrm{fgrad.sh}得到自由能梯度数据
+
+再通过\textrm{Python}脚本实现可视化，并与之前的结果对比其类似性。
+
+正向和反向的平均自由能梯度的变化趋势非常相似，表明反应是可逆的。
+
+至此，完成反应坐标$\xi$验证两次/三次。以下将确定反应物向过渡态的自由能垒，并确定对应的活化自由能。
+
+\subsubsection{动态反应动力学}
+在\textrm{440K}条件下，采用\textrm{CSVR}热浴，完成持续\textrm{140ps}的约束\textrm{MD}模拟，通过对甲基菱沸石羰基化反应的反应坐标上多个结构，应用``蓝月亮模拟''计算自由能梯度。
+
+由反应物\textrm{(R)}向过渡态\textrm{(TS)}转变消耗的功为活化自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}$。该转变过程可以应用``蓝月亮系综''，通过序列\textrm{MD}模拟，其中每个都是由不同反应物的不同反应坐标$\xi$，活化自由能的计算公式为
+\begin{displaymath}
+	\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}=\Delta A_{\mathrm{ref},\mathrm{f}\rightarrow{\xi}^{\ast}}-k_{\mathrm{B}}T\ln\bigg[\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle\dot{\xi}^{\ast}}2P(\xi_{\mathrm{ref},\mathrm{R}})\bigg]
+\end{displaymath}
+这里$\Delta A_{\mathrm{ref},\mathrm{f}\rightarrow{\xi}^{\ast}}$是可逆功
