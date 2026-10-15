@@ -665,6 +665,87 @@ $\vec k$空间网格剖分\textrm{KPOINTS}
 
 由反应物\textrm{(R)}向过渡态\textrm{(TS)}转变消耗的功为活化自由能$\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}$。该转变过程可以应用``蓝月亮系综''，通过序列\textrm{MD}模拟，其中每个都是由不同反应物的不同反应坐标$\xi$，活化自由能的计算公式为
 \begin{displaymath}
-	\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}=\Delta A_{\mathrm{ref},\mathrm{f}\rightarrow{\xi}^{\ast}}-k_{\mathrm{B}}T\ln\bigg[\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle\dot{\xi}^{\ast}}2P(\xi_{\mathrm{ref},\mathrm{R}})\bigg]
+	\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}=\Delta A_{\xi_{\mathrm{ref},\mathrm{f}}\rightarrow{\xi}^{\ast}}-k_{\mathrm{B}}T\ln\bigg[\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle\dot{\xi}^{\ast}}2P(\xi_{\mathrm{ref},\mathrm{R}})\bigg]
 \end{displaymath}
-这里$\Delta A_{\mathrm{ref},\mathrm{f}\rightarrow{\xi}^{\ast}}$是可逆功
+这里$\Delta A_{\mathrm{ref},\mathrm{f}\rightarrow{\xi}^{\ast}}$是反应坐标由$\xi_{\mathrm{ref},\mathrm{f}}$(反应物\textrm{R}构型中的参考点$\xi$的值)向$\xi^{\ast}$(过渡态\textrm{TS}构型中的参考点$\xi$的值)移动的可逆功。$\langle\codts\rangle$表示对全部反应构型的系综平均。$\dot{\xi}^{\ast}$是过渡态\textrm{TS}构型的反应坐标关联的速度。$P$是反应物构型的系综的概率密度。
+
+计算的可逆功的计算公式
+\begin{displaymath}
+	\Delta A_{\xi_{\mathrm{ref},\mathrm{f}}\rightarrow{\xi}^{\ast}}=\int_{\xi_{\mathrm{ref},\mathrm{f}}}^{\xi^{\ast}}\bigger(\dfrac{\partial A}{\partial\xi}\bigg)_{\xi^{\ast}}\mathrm{d}\xi
+\end{displaymath}
+这里$(\partial A/\partial\xi)_{\xi^{\ast}}$是自由能梯度，可以由系综平均定义
+\begin{displaymath}
+	\bigger(\dfrac{\partial A}{\partial\xi}\bigg)_{\xi^{\ast}}=\dfrac1{\langle|Z|^{-1/2}\rangle_{\xi^{\ast}}}\langle|Z|^{-1/2}[\lambda+Gk_{\mathrm{B}}T]\rangle_{\xi^{\ast}}
+\end{displaymath}
+这里$\langle\cdots\rangle_{\xi^{\ast}}$表示约束系综平均，这里$\xi=\xi^{\ast}$，$Z$是质量度规张量\textrm{(mass metric tensor)}，$\lambda$是\textrm{SHAKE}方程中与$\xi$有关的\textrm{Lagrange}乘子，$G$由$|Z|$，$Z^{-1}$，$\nabla\xi$和$\nabla|Z|$导出。
+
+应用自由能梯度，反应速度常数$k$则可以根据\textrm{Eyring}方程表示：
+\begin{displaymath}
+	k_{\mathrm{R}\rightarrow\mathrm{P}}=\dfrac{k_{\mathrm{B}}T}h-\mathrm{e}^{-\DeltaA_{\mathrm{R}\rightarrow\mathrm{P}}^{\ddagger}/k_{\mathrm{B}}T}
+\end{displaymath}
+在本算例中，使用约束\textrm{MD}，模拟沿着反应坐标$\xi$中\textrm{R}和\textrm{TS}之间自由能梯度。对甲基菱沸石羰基化反应，通过动力学近似计算反应自由能和速度常数。
+
+初始结构文件\textrm{POSCAR.1\_init}
+
+初始结构文件\textrm{POSCAR.2\_init}
+
+初始结构文件\textrm{POSCAR.3\_init}
+
+初始结构文件\textrm{POSCAR.4\_init}
+
+初始结构文件\textrm{POSCAR.5\_init}
+
+初始结构文件\textrm{POSCAR.6\_init}
+
+初始结构文件\textrm{POSCAR.7\_init}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+反应坐标文件\textrm{ICONST}
+
+\textrm{KPOINTS}，\textrm{ICONST}文件与之前相同，\textrm{POSCAR}文件采用前面计算产生的结构。\textrm{INCAR}文件与前面计算相似，但是将计算控制参数\texttt{NSW}由4000增加到10000。
+
+针对反应坐标$\xi$上七个构型，完成七个约束的\textrm{MD}计算。注意全部计算\textrm{25min}。或者也可以采用参考结构\textrm{POSCAR.1\_init}完成一个\textrm{MD}计算，然后根据其提供的参考数据，完成剩下的六个计算。新建目录\textrm{1}，然后根据\textrm{Bash}命令完成第一个\textrm{MD}计算。
+
+第一个构型的结算结束后，应用\textrm{Bash}脚本提取计算数据。再用\textrm{Bash}脚本，将之前计算的\textrm{POSCAR}写入各个目录。
+
+再应用\textrm{Bash}脚本，完成模拟反应的约束\textrm{MD}计算。
+
+如果计算完成，如果只完成第一步，就要从\textrm{refdata}目录中的剩余结果到到上级目录。执行\textrm{Bash}命令
+
+根据七个全部计算结果，可以分析整个反应的\textrm{MD}模拟。对于每个约束\textrm{MD}步，\textrm{REPORT}文件又保持称\textrm{report.*}，并且包含关于模拟的信息：
+
+
+对于给定的反应坐标$\xi$值，为了得到自由能梯度，第四列系综平均\textrm{|z|\^(-1/2)*(lambda+GkT)}必须被第三项\textrm{|z|\^(-1/2)}的系综平均除。%有关前言的方程
+\begin{displaymath}
+	\bigger(\dfrac{\partial A}{\partial\xi}\bigg)_{\xi^{\ast}}=\dfrac1{\langle|Z|^{-1/2}\rangle_{\xi^{\ast}}}\langle|Z|^{-1/2}[\lambda+Gk_{\mathrm{B}}T]\rangle_{\xi^{\ast}}
+\end{displaymath}
+对所有的反应坐标$\xi$点，\textrm{Bash}脚本\textrm{figradBM.sh}计算上述自由能梯度，结果保存在\textrm{grad.dat}文件中。采用\textrm{Python}脚本绘制\textrm{grad.dat}文件的反应坐标图。$\xi$轴上选$\mathrm{R}\rightarrow\mathrm{TS}$。
+
+在坐标图中，$\xi\sim2.5$和$1.5\mathrm{\AA}$位置的自由能梯度基本上是恒定的。$\xi$范围对应于参考态\textrm{POSCAR.1}，\textrm{POSCAR.2}，\textrm{POSCAR.3}文件和系综。自由能梯度在快速增加到\textrm{POSCAR.7}前，下降到\textrm{0.5\AA}，过渡态\textrm{TS}位于反应坐标$\xi\approx0.0\mathrm{\AA}$。
+
+计算活化自由能，%在当前步重复
+\begin{displaymath}
+	\Delta A_{\xi_{\mathrm{ref},\mathrm{f}}\rightarrow{\xi}^{\ast}}=\int_{\xi_{\mathrm{ref},\mathrm{f}}}^{\xi^{\ast}}\bigger(\dfrac{\partial A}{\partial\xi}\bigg)_{\xi^{\ast}}\mathrm{d}\xi
+\end{displaymath}
+由$\mathrm{R}\rightarrow\mathrm{TS}$的自由能变化要对反应坐标$\xi$的上每个点上自由能梯度进行积分。采用\textrm{Simpson}算法求上述方程的积分。沿$\xi$对\textrm{grad.dat}完成\textrm{simpson}算法完成积分的\textrm{Python}脚本\textrm{simpsonI\_non\_cum.py}
+
+得到的结果为\textrm{dA.dat}。应用\textrm{Python}脚本\textrm{splineCubic.py}对\textrm{dA.dat}进行三次样条插值\textrm{(cubic splines)}。得到\textrm{dA\_splines.dat}文件。通过\textrm{Python}脚本绘制\textrm{dA.dat}和\textrm{dA\_splines.dat}的曲线。
+
+对自由能梯度对反应坐标积分给出自由能$A$。自由能$A$由$\sim2.4\AA$处(反应物坐标$\xi_{\mathrm{ref},\mathrm{R}}$)增大到$\xi=0.043\AA$达到极大值。样条插值将结果平滑，自由能反应坐标曲线$A$对应于过渡态，即$\xi^{\ast}$。过渡态的$\xi^{\ast}$接近\textrm{(0.01\AA)}，表明由动力学方法得到的结果类似，因此两者模拟化学反应等价。对于反应物侧的反应坐标很相似。
+
+模拟反应的关键是反应和过渡态的差。$\Delta A_{\xi_{\mathrm{ref}\rightarrow\xi^{\ast}}}$由反应过渡态\textrm{TS}的自由能和反应物\textrm{R}(即初始态)的自由能之差$A$，大小为\textrm{1.11eV}。
+
+最后部分计算的活化自由能，是与反应坐标的速度项，定义为
+\begin{displaymath}
+	\langle|\dot{\xi}^{\ast}|\rangle=\sqrt{\dfrac{2k_{\mathrm{B}}T}{\pi}}\dfrac1{\langle|Z|^{-1/2}\rangle_{\xi^{\ast}}}
+\end{displaymath}
+该速度完全由计算过渡态的约束\textrm{MD}系综平均\textrm{|z|\^(-1/2)}。因为过渡态\textrm{TS}对应$\xi=0.043\mathrm{\AA}$，该点不是``蓝月亮模拟''的积分点，因此无法对过渡态直接得到\textrm{|z|\^(-1/2)}。
+
+反之，外推约束\textrm{MD}计算需要计算该点的值或由最紧邻积分点的值计算，可以估计平均值\textrm{|z|\^(-1/2)}。通过\textrm{Bash}脚本\textrm{zetBM.sh}提取由七个\textrm{MD}计算的每一个中的\textrm{|z|\^(-1/2)}数据。
+
+从$\langle|Z|^{-1/2}\rangle$看，除了前面少数点，这些数值很少变化。通过\textrm{Python}脚本，可以看的非常清楚，
+
+本算例中，\textrm{|z|\^(-1/2)}在临近过渡态($\xi\approx0.0\mathrm{\AA}$)接近常数。
