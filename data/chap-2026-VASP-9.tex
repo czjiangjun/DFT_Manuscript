@@ -45,4 +45,70 @@ $\vec k$空间网格剖分是$\Gamma$点为中心的等空间网格。
 
 将\textrm{PBE}计算得到的\textrm{WAVECAR}复制到\textrm{PBE0}目录中，再次执行\textrm{Bash}命令完成\textrm{VASP}计算
 
+%计算过程中，标准输出会在每个电子步迭代过程中，输出阻尼算法的额外的一些信息。
+
+原则上，直接对比\textrm{PBE}和\textrm{PBE0}计算的总能是没有意义的，因为两者采用的是不同的交换-相关泛函。只有类似带隙这样的物理两才能对比。
+
+通过\textrm{Python}脚本，对比两者计算的带隙。
+
+\textrm{PBE0}计算得到的带隙(\textrm{1.84eV})比\textrm{PBE}的带隙(\textrm{0.62eV})明显大。在很多材料的电子计算中，和\textrm{GGA}泛函相比，杂化泛函得到更大的带隙，因为杂化泛函部分地校正了\textrm{GGA}泛函对带隙的低估。
+
+为了直观地显示\textrm{PBE0}的带隙，还需要计算\textrm{DOS}。在\textrm{PBE0}计算的\textrm{INCAR}文件中，设置计算控制参数\texttt{ISMEAR}=-5，\texttt{ALGO}=\textrm{None}，\texttt{LORBIT}=11。此外还可以移除\texttt{SIGMA}和\texttt{TIME}参数。然后根据当前的\textrm{WAVECAR}，执行\textrm{Bash}命令，重启计算，并用\textrm{Py4vasp}模块绘制\textrm{DOS}曲线。
+
+\textrm{PBE0}的\textrm{DOS}与\textrm{PBE}的不同，不只是带隙被扩大了，而且能带的相对位置和带宽都有差别。电子结构的这些微小改变，会对材料的性质产生很大的影响。
+
+\subsection{\rm{PBE}、\rm{B3LYP}泛函和\rm{Hartree-Fock}计算的\ch{Ar}的带隙}
+分别采用\textrm{PBE}、\textrm{B3LYP}泛函和\textrm{Hartree-Fock}方法计算\ch{Ar}的带隙。
+
+\textrm{B3LYP}泛函最初是针对分子性质计算提出的半经验杂化泛函\textrm{(Semiempirical hybrid functional)}。所谓半经验，意味着其中有些参数是依据实验结果拟合的，如作为测试数据集的原子化能，电子-质子的亲和力，原子和分子的离子化能等。这些经验参数构成\textrm{B3LYP}泛函各组成部分的权重：
+\begin{displaymath}
+	\begin{aligned}
+		E_{xc}^{\mathrm{B3LYP}}=&E_{x}^{\mathrm{B3LYP}}+E_{c}^{\mathrm{B3LYP}}\\
+		E_{x}^{\mathrm{B3LYP}}=&0.8E_{x}^{\mathrm{LDA}}+E_{x}^{\mathrm{HF}}+0.72\Delta E_x^{\mathrm{B88}}\\
+		E_{c}^{\mathrm{B3LYP}}=&0.19E_{c}^{\mathrm{VWN3}}+0.81E_{c}^{\mathrm{LYP}}
+	\end{aligned}
+\end{displaymath}
+在\textrm{Hartree-Fock}计算中，交换项完全采用\textrm{Fock}交换形式(\texttt{AEXX}=1)，但完全不考虑相关能的贡献($E_c=0$)。
+
+\textrm{B3LYP}和其余未屏蔽的泛函遗留了\textrm{Hartree-Fock}方法的一个致命缺陷，它没法在极限情况下满足均匀电子气模型。这个缺陷的根源是位于$\mathbf{q}=0$处的\textrm{Fock}势函数的\textrm{Fouriler}变换存在奇点\textrm{(singularity)}，即
+\begin{displaymath}
+	V_x^{\mathrm{HF}}(\mathbf{q})=-\dfrac{4\pi e^2}2\sum_{n\vec k}f_{n\vec k}\dfrac{\psi_{n\vec k}^{\ast}(\vec r^{\prime})\psi_{n\vec k}(\vec r)}{\mathbf{q}}
+\end{displaymath}
+即\textrm{Fock}势函数将完全压制巡游态电子。换言之，当处理具有显著巡游特征的体系，如金属和窄带半导体材料，不推荐\textrm{Hartree-Fock}方法和杂化泛函。\upciteP{Paier_2007}
+
+本算例中，我们将计算\ch{Ar}的带隙，其带隙的实验值高达\textrm{14.4eV}。
+
+计算的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{Hartree-Fock}方法的计算控制参数文件\textrm{HF/INCAR}
+
+\textrm{B3LYP}泛函的计算控制参数文件\textrm{B3LYP/INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+\textrm{POSCAR}文件给出的是\textrm{FCC}\ch{Ar}晶体
+
+\textrm{INCAR}文件用于\textrm{PBE}计算
+
+\textrm{HF/INCAR}，设置计算控制参数\texttt{LHFCAL}，开启\textrm{Fock}交换势贡献的计算，贡献权重由计算控制参数\texttt{AEXX}确定。因此这里当仅有\textrm{Fock}交换势贡献，完全没有半经验交换-相关泛函的贡献。因为\texttt{AEXX}=1，即使默认\texttt{GGA}=\textrm{PE}，其权重\texttt{AGGAX}=1-\texttt{AEXX}=0；而且\texttt{AGGAC}和\texttt{ALDAC}也将自动置0。
+
+\textrm{B3LYP/INCAR}中，通过\textrm{GGA}泛函和各类交换-相关组分的系数的合理调节，可以设置多种半经验的泛函。
+
+执行\textrm{Bash}命令完成\textrm{VASP}计算，并通过\textrm{Py4vasp}绘制\textrm{DOS}曲线。
+
+将\textrm{PBE}计算得到的\textrm{WAVECAR}复制到\textrm{Hartree-Fock}计算和\textrm{B3LYP}计算目录下，并执行\textrm{Bash}命令完成\textrm{VASP}计算，通过\textrm{Py4vasp}得到三种方法的不同带隙，
+
+计算结果显示，虽然\textrm{PBE}泛函得到的带隙是\textrm{8.5eV}，远小于实验值\textrm{14.4eV}，但是，\textrm{Hartree-Fock}方法的\textrm{17.6eV}和\textrm{B3LYP}泛函的\textrm{10.3eV}，两者的偏差也分别高达\textrm{3eV}以上。
+
+\subsection{屏蔽杂化泛函计算\ch{MgO}的带隙}
+为了得到与实验结果一致的\textrm{MgO}带隙，使用屏蔽杂化泛函并优化\textrm{Fock}势函数的系数。
+
+屏蔽杂化泛函通过引入屏蔽参数$\mu$，将\textrm{Fock}势函数的长程衰减形式$1/r$拆解为短程部分\textrm{(short-range, SR)}和长程部分\textrm{(lon-range, LR)}两部分的贡献。
+\begin{displaymath}
+	E_{xc}^{\mathrm{screened}}=\dfrac14E_{x}^{\mathrm{HF,SR}}(\mu)+\dfrac34E_{x}^{\mathrm{PBE,SR}}(\mu)+E_{x}^{\mathrm{PBE,LR}}(\mu)+E_c^{\mathrm{PBE}}
+\end{displaymath}
+短程部分的极限回归到\textrm{PBE0}泛函形式。
+
 
