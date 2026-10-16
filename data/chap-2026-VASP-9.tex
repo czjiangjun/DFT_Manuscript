@@ -1,0 +1,48 @@
+\section{杂化泛函}
+杂化泛函是一类特殊的交换-相关泛函，该泛函中部分地考虑了\textrm{Hartree-Fock}方法中\textrm{Fock}交换形式的贡献。
+
+\subsection{\rm{PBE}和\rm{PBE0}得到的\ch{Si}的带隙}
+分别采用\textrm{PBE}和\textrm{PBE0}泛函计算金刚石结构的\ch{Si}的带隙。
+
+\textrm{DFT}计算中  最有效的泛函包括\textrm{LDA}、\textrm{GGA}和\textrm{meta-GGA}泛函。\textrm{GGA}和\textrm{meta-GGA}属于半局域泛函泛函，具体的泛函形式有多种多样。\textrm{VASP}中常用的\textrm{GGA}是\textrm{PBE}泛函，也是各类固体物理计算中使用得最普遍的泛函之一。有必要指出的是，\textrm{LDA}和\textrm{GGA}对于固体能带的带隙估计往往偏低，因为\textrm{Kohn-Sham}方程得到的本征态的优劣与采用的交换-相关泛函息息相关。如果采用\textrm{meta-GGA}和杂化泛函，得到的带隙往往会理想一些。
+
+受\textrm{Hartree-Fock}方法的启发，杂化泛函是在原有的半局域泛函基础上混入了一部分\textrm{Fock}交换项的贡献，因为\textrm{Hartree-Fock}方法精确描述了体系的交换作用。对于周期体系，引入杂化泛函主要为了修正\textrm{LDA}和\textrm{GGA}泛函低估带隙的问题。非局域的\textrm{Fock}势函数可以表示为
+\begin{displaymath}
+	V_{\mathrm{x}}^{\mathrm{HF}}(\vec r,\vec r^{\prime})=-\dfrac{e^2}2\sum_{n\vec k}f_{n\vec k}\dfrac{\psi^{\ast}(\vec r^{\prime})\psi_{n\vec k}(|vec r)}{|\vec r-\vec r^{\prime}|}
+\end{displaymath}
+这里$f_{n\vec k}$是指定$\vec k$点上能带$n$上的电子占据数。$\vec r$是电子位置，$e$是电子电荷。因为\textrm{Fock}势函数依赖粒子波函数而非粒子密度，所以严格地讲，引入杂化泛函实际上破坏了密度泛函理论的基本假设。
+
+\textrm{PBE0}是\textrm{VASP}常用的杂化泛函，其构成为
+\begin{displaymath}
+	E_{xc}^{\mathrm{PBE0}}=\dfrac14E_{x}^{\mathrn{HF}}+\dfrac34E_x^{\mathrm{PBE}}+E_c^{\mathrm{PBE}}
+\end{displaymath}
+这里$E_{x}^{\mathrn{HF}}$是\textrm{Fock}交换能(源自\textrm{Fock}交换势函数),而$E_x^{\mathrm{PBE}}$和$E_c^{\mathrm{PBE}}$是\textrm{PBE}的交换和相关能贡献。相比于其余杂化泛函，\textrm{PBE0}形式简洁，不含有任何拟合参数。
+
+计算结构\textrm{POSCAR}文件
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{PBE0}计算的控制参数文件\textrm{PBE0/INCAR}
+
+\textrm{POSCAR}采用的是金刚石结构的\textrm{Si}。
+
+\textrm{INCAR}文件中指定了计算所使用的交换-相关泛函。%默认的\textrm{GGA}泛函无须指定。
+设置计算控制参数\texttt{LHFCALC}来使用杂化泛函\textrm{PBE0}。而相关的计算控制参数\texttt{AEXX}，\texttt{AGGAC}和\texttt{ALDAC}将使用默认值。\footnote{因为\textrm{POTCAR}文件中已经确认原子数据集是采用\textrm{PBE}泛函计算得到的，因此原则上交换-相关泛函不必显式指定，而参数\texttt{AEXX}，\texttt{AGGAC}和\texttt{ALDAC}就是杂化泛函的系数。}
+
+在\textrm{PBE}计算中，设置计算控制参数\texttt{ISMEAR}=-5，表示对\textrm{Fermi}能级的积分采用\textrm{Bl\"ochl}校正的四面体方法。可以这样得到最平滑的\textrm{DOS}曲线。取\texttt{LORBIT}=11，\textrm{VASP}会把投影的\textrm{DOS}写道\textrm{DOSCAR}和\textrm{vaspout.hf}文件中。
+
+在\textrm{PBE0}计算中，电子弛豫采用阻尼算法，因此计算的能量要求必须是可变分的。直接优化算法比四面体方法更稳健。对于很多体系，如果采用杂化泛函，迭代收敛时对方法的稳健要求性更高。鉴于四面体方法的\textrm{Bl\'ochl}校正得到的能量是不可变分的，因此\textrm{Fermi}能级的积分采用\textrm{Gaussian}展宽方法，即设置计算控制参数\texttt{ISMEAR}=0，\texttt{SIGMA}=0.01。对阻尼算法来说，\textrm{Gaussian}展开得到的能量是可变分的。当体系达到收敛，再通过四面体方法(\textrm{ISMEAR}&=-5)完成非迭代(\texttt{ALGO}=\textrm{None})计算得到\textrm{DOS}和轨道投影(\texttt{LORBIT}=11)。
+
+$\vec k$空间网格剖分是$\Gamma$点为中心的等空间网格。
+
+通过该参数设置，带隙的计算精度预计会达到\textrm{0.1eV}以内。注意计算时，不要忘记对计算截断能和$\vec k$空间网格密度必须进行收敛测试。
+
+执行\textrm{Bash}命令完成\textrm{VASP}计算
+
+采用\textrm{Py4vasp}检查\textrm{PBE}计算的\textrm{DOS}曲线。
+
+在\textrm{DOS}图中，带隙对应价带顶和导带底的能量差。在\textrmP{DOS}图中，\textrm{Fermi}能对应能量零点，带隙处没有任何电子态。
+
+将\textrm{PBE}计算得到的\textrm{WAVECAR}复制到\textrm{PBE0}目录中，再次执行\textrm{Bash}命令完成\textrm{VASP}计算
+
+
