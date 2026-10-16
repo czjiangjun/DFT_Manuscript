@@ -717,7 +717,6 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 根据七个全部计算结果，可以分析整个反应的\textrm{MD}模拟。对于每个约束\textrm{MD}步，\textrm{REPORT}文件又保持称\textrm{report.*}，并且包含关于模拟的信息：
 
-
 对于给定的反应坐标$\xi$值，为了得到自由能梯度，第四列系综平均\textrm{|z|\^(-1/2)*(lambda+GkT)}必须被第三项\textrm{|z|\^(-1/2)}的系综平均除。%有关前言的方程
 \begin{displaymath}
 	\bigger(\dfrac{\partial A}{\partial\xi}\bigg)_{\xi^{\ast}}=\dfrac1{\langle|Z|^{-1/2}\rangle_{\xi^{\ast}}}\langle|Z|^{-1/2}[\lambda+Gk_{\mathrm{B}}T]\rangle_{\xi^{\ast}}
@@ -744,8 +743,22 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \end{displaymath}
 该速度完全由计算过渡态的约束\textrm{MD}系综平均\textrm{|z|\^(-1/2)}。因为过渡态\textrm{TS}对应$\xi=0.043\mathrm{\AA}$，该点不是``蓝月亮模拟''的积分点，因此无法对过渡态直接得到\textrm{|z|\^(-1/2)}。
 
-反之，外推约束\textrm{MD}计算需要计算该点的值或由最紧邻积分点的值计算，可以估计平均值\textrm{|z|\^(-1/2)}。通过\textrm{Bash}脚本\textrm{zetBM.sh}提取由七个\textrm{MD}计算的每一个中的\textrm{|z|\^(-1/2)}数据。
+反之，由最紧邻积分点的值出发，可以计算该点另外的约束\textrm{MD}计算的值，以及估计\textrm{|z|\^(-1/2)}平均值。通过\textrm{Bash}脚本\textrm{zetBM.sh}提取由七个\textrm{MD}计算的每一个中的\textrm{|z|\^(-1/2)}数据。
 
 从$\langle|Z|^{-1/2}\rangle$看，除了前面少数点，这些数值很少变化。通过\textrm{Python}脚本，可以看的非常清楚，
 
-本算例中，\textrm{|z|\^(-1/2)}在临近过渡态($\xi\approx0.0\mathrm{\AA}$)接近常数。
+本算例中，\textrm{|z|\^(-1/2)}在临近过渡态($\xi\approx0.0\mathrm{\AA}$)接近常数。对反应坐标上3-7的每个点(图中由$\xi_n$标记的\textrm{POSCAR.n}结构)，由\texrrm{|z|\^{-1/2}}平均值几乎没有变化。因此点6(即\textrm{POSCAR.6})就可以是过渡态\textrm{TS}的极好近似。剩下的任务是计算$\dot{\xi}$的平均值。通过\textrm{Bash}脚本\textrm{aux\_vel.sh}用于提取$\dot{\xi}$。\textcolor{red}{注意}，实际操作中，需要将在脚本中的\textrm{POSCAR.6}文件变成真实的最接近过渡态\textrm{TS}的反应坐标\textrm{POSCAR.*}(即$\xi\approx0.0\mathrm{\AA}$)。通过该脚本提取$\dot{\xi}$的数据，存入\textrm{xi.dat}文件。
+
+这样得到的$\dot{\xi}$是$1.05285e+13\mathrm{\AA}s^{-1}$，也就是计算$\Delta_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}$的最后一项。根据$\Delta_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}$的计算公式：
+\begin{displaymath}
+	\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}=\Delta A_{\xi_{\mathrm{ref},\mathrm{f}}\rightarrow{\xi}^{\ast}}-k_{\mathrm{B}}T\ln\bigg[\dfrac{h}{k_{\mathrm{B}}T}\dfrac{\langle\dot{\xi}^{\ast}}2P(\xi_{\mathrm{ref},\mathrm{R}})\bigg]
+\end{displaymath}
+这里$\Delta A_{\xi_{\mathrm{ref},\mathrm{f}}\rightarrow{\xi}^{\ast}}$是过渡态和反应物的自由能之差$A_{\mathrm{TS}}-A_{\mathrm{R}}$。因为已经有了$\dot{\xi}^{\ast}$，而上述表达式中最后的$P(\xi_{\mathrm{ref},\mathrm{R}})$是反应物的概率密度。该值前面已经得到。通过\textrm{Python}脚本可以提取自由能并从样条差值数据\textrm{dA\_splines.dat}提取能量差$(A_{\mathrm{TS}}-A_{\mathrm{R}})$的值，并从\textrm{xi\_dot.dat}文件中读取$\dot{\xi}^{\ast}$。此外还可以从\textrm{xi.dat}文件中确定第一个结构的值$\xi_{\mathrm{ref},\mathrm{R}}$及其概率密度$P(\xi_{\mathrm{ref},\mathrm{R}})$。最终脚本可将各项汇集并根据公式得到$\Delta A_{\xi_{\mathrm{ref},\mathrm{f}}\rightarrow{\xi}^{\ast}}$的能量。
+
+在脚本中代入\textrm{part2}的静态和半经典$\Delta A_{\mathrm{R}\rightarrow\mathrm{TS}}^{\ddagger}$的值\textrm{delta\_A\_stat}和\textrm{delta\_A\_SC}，
+
+最后得到的值为\textrm{1.14eV}，比静态的值高\textrm{0.1eV}，而静态和半经典方法的差值是\textrm{0.02eV}，因为动态计算包含了系综平均，而非通过单个态得到的，因此结果的差别更显著。
+
+根据\textrm{Python}脚本，由\textrm{Eyring}方程，计算反应速度常数
+
+不难看出，反应活化自由能$\sim0.1\mathrm{eV}$的差别，引起的速度常数的差别就放大很多，有一个数量级大小。
