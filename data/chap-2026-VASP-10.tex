@@ -2,5 +2,106 @@
 \textrm{VASP}除了计算基态性质，还能计算系统对外界扰动的响应。如果扰动很小，响应位于线性响应区域，则适用线性响应理论。
 
 \subsection{有限差分响应}
-对\ch{SiC}，施加静态电场、应力和离子位移，采用不同的有限差分方法，计算体系响应
+对\ch{SiC}，施加静态电场、应力和离子偏移，采用不同的有限差分方法，计算体系响应
 
+根据微扰理论，受扰动体系的总能$E$可以在总能为$E_0$的未扰动体系的附近展开到两阶的电场\textcolor{red}{$\varepsilon$}、应力$\eta$和离子偏移$\mu$:
+\begin{displaymath}
+	\begin{aligned}
+		E(\vec u, \varepsilon \varepsilon,\eta)=&E^0+\dfrac{\partial E}{\partial\mu_i}\mu_i+\dfrac{\partial E}{\partial\varepsilon_i}\varepsilon_i+\dfrac{\partial E}{\partial\eta_{ij}}\eta_{ij}\\
+		+&\dfrac12\dfrac{\partial^2E}{\partial\mu_i\partial\mu_j}\mu_i\mu_j+\dfrac12\dfrac{\partial^2E}{\partial\varepsilon_i\partial\varepsilon_j}\varepsilon_i\varepsilon_j+\dfrac12\dfrac{\partial^2E}{\partial\eta_{ij}\partial\eta_{km}}\eta_{ij}\eta_{km}\\
+		+&\dfrac{\partial^2E}{\partial\mu_i\partial\varepsilon_j}\mu_i\varepsilon_j+\dfrac{\partial^2E}{\partial\mu_i\partial\eta_{jk}\mu_i\eta_{jk}+\dfrac{\partial^2E}{\partial\varepsilon_i\partial\eta_{jk}}\varepsilon_i\eta_{jk}	
+	\end{aligned}
+\end{displaymath}
+隐含了对下标的求和。注意，考虑到带电体系，对于外加电场，线性响应也会出现到另两个扰动项上的两阶上。
+
+微扰的变分系数由其物理意义表示，即力$F$，电场极化$P$和应力$\sigma$写成
+\begin{displaymath}
+	\begin{aligned}
+		F_i=&-\Omega_0\dfrac{\partial E}{\partial\mu_i}\bigg|_{\varepsilon,\eta}
+		P_i=&-\dfrac{\partial E}{\partial\varepsilon_i}\bigg|_{\mu,\eta}=-\dfrac{fe}{(2\pi)^3}\sum_n\int_{\mathrm{BZ}}\mathrm{d}\vec k\langle \mu_{n\vec k}^{(\varepsilon_i)}|\mathrm{i}\nabla_{\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}\rangle\\
+		\sigma_{ij}=&\dfrac{\partial E}{\partial\eta_{ij}}\bigg|_{\mu,\varepsilon}
+	\end{aligned}
+\end{displaymath}
+这里$\Omega_0$是未扰动体系的晶胞体积，$f=2$是未扰动计算的自旋多重度。$|\mu_{n,\vec k}^{(\varepsilon_i)}\rangle$是周期的场极化的\textrm{Kohn-Sham}轨道径向波函数。力常数矩阵$K$，冻结离子介电响应\textrm{(frozen ion dielectric susceptibility)}和离子钳位极化率\textrm{(ion-clamped polarizability)}\footnote{钳位\textrm{(clamped)}表示固定离子的边界条件。在\textrm{DFPT}计算中，这是计算介电张量的基本步骤，得到高频介电常数。}$\chi$，零外场弹性模量$C$表示为
+\begin{displaymath}
+	\begin{aligned}
+		K_{ij}=&\Omega_0\dfrac{\partial^2E}{\partial\mu_i\partial\mu_j}\bigg|_{\varepsilon,\eta}\\
+		\chi_{ij}=&-\dfrac{\partial^2E}{\partial\varepsilon_i\partial\varepsilon_j}\bigg|_{\mu,\eta}=\dfrac{\partial P_i}{\partial\varepsilon_j}\bigg|_{\mu,\eta}\\
+		C_{ijkm}=&\Omega_0\dfrac{\partial^2E}{\partial\eta_{ij}\partial\eta_{km}\bigg|_{\mu,\varepsilon}
+	\end{aligned}
+\end{displaymath}
+最终\textrm{Born}动力学有效电荷$Z^{\ast}$，(力响应)的内-应力张量$\Lambda$与离子钳位压电张量$e^{(0)}$可以写成
+\begin{displaymath}
+	\begin{aligned}
+		Z_{ij}^{\ast}=&-\dfrac{\Omega_0}{e}\dfrac{\partial^2E}{\partial\mu_i\partial\varepsilon_j}a\bigg|_{\eta}=\dfrac{\Omega_0}{e}\dfrac{\partial F_i}{\partial\varepsilon_j}\bigg|_{\eta}\\
+		\Lambda_{ijk}=&-\Omega_0\dfrac{\partial^2E}{\partial\mu_i\partial\varepsilon_{jk}}\bigg|_{\varepsilon}=\Omega_0\dfrac{\partial\sigma_{jk}}{\partial\mu_i}\bigg|_{\varepsilon}\\
+		e_{ijk}^{(0)}=&-\dfrac{\partial^2E}{\partial\varepsilon_i\partial\eta_{jk}}\bigg|_{\mu}=\dfrac{\partial\sigma_{jk}}{\partial\varepsilon_i}\bigg|_{\mu}
+\end{aligned}
+\end{displaymath}
+\textrm{VASP}中有两类不同层面的有限差分方法可供选择
+\begin{itemize}
+	\item 设置计算控制参数\texttt{IBRION}=5与6来完成离子偏移和应力计算
+	\item 设置计算控制参数\texttt{LPEAD}来实施离散后扰动\textrm{(Perturbation Expression after discretization, PEAD)}方法，设置\texttt{LCALCEPS}来加外电场
+\end{itemize}
+注意:~该方法只能用于带隙体系，即不可以是导体或金属。通过离散型的\textrm{Sternheimer}方程计算与$\vec k$对应的\textrm{Kohn-Sham}轨道周期波函数的导数$\nabla_{\vec k}|\mu_{n\vec k}^{\varepsilon_i}\rangle$。这里的求和不包含空态。
+
+\textrm{FCC}结构\ch{SiC}文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+电场极化计算控制参数文件\textrm{electric/INCAR}
+
+电场极化-离子偏移计算控制参数文件\textrm{electric-ionic/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+能带计算高对称性$\vec k$点路径文件\textrm{KPOINTS}
+
+第一个\textrm{POSCAR}文件表明计算采用默认的\textrm{PBE}泛函，计算控制参数\texttt{ISMEAR}和\texttt{SIGMA}指定\textrm{Gaussian}展宽方法处理\textrm{Fermi}面积分。计算中的能量截断设置得比较高以避免\textrm{Pulay}应力。当体系总能的能量差低于\texttt{EDIFF}则电子步弛豫收敛。
+
+在电场极化计算\textrm{electric/INCAR}文件中，通过设置计算控制参数\texttt{LCALCPOL}=\textrm{T}，在\textrm{DFT}计算之初引入静态电场$\varepsilon_i$以计算电场极化。周期体系的电场极化的计算表达式为$-fe/(2\pi)^3$乘上对所有占据态的\textrm{Berry}相位$\int_{\mathrm{BZ}}\mathrm{d}\vec k\langle\mu_{n\vec k}^{(\varepsilon_i)}|\mathrm{i}\nabla|\mu_{n\vec k}^{(\varepsilon_i)}$的求和。
+
+因为计算控制参数\texttt{LCALCEPS}=\textrm{T}，采用\textrm{PEAD}方法，因此对每个$\vec k$点的电场极化的\textrm{Kohn-Sham}轨道的径向部分有如下的有限差分来求导
+\begin{displaymath}
+	\dfrac{\partial|\mu_{n\vec k_j}^{(\varepsilon_i)}}{\partial k}=\dfrac1{2\Delta k}\sum_{m=1}^{N}\bigg[|\mu_{n\vec k_{j+1}}^{(\varepsilon_i)}\rangleS_{mn}^{-1}(\vec k_j,\vec k_{j+1})-|\mu_{n\vec k_{j-1}}^{(\varepsilon_i)}\rangleS_{mn}^{-1}(\vec k_j,\vec k_{j-1})\bigg]
+\end{displaymath}
+这里$S(\vec k_j,\vec k_{j+1})=\langle\mu_{n\vec k_j}^{(\varepsilon_i)}|\mu_{n\vec k_{j+1}}^{(\varepsilon_i)}\rangle$是重叠矩阵。
+
+在电场极化-离子偏移计算控制参数\textrm{electric-ionic/INCAR}文件中，通过计算控制参数\texttt{IBROIN}额外增加离子偏移的有限差分计算。\texttt{NFREE}和\texttt{POTIM}分别表示离子步数和步长。\texttt{ISIF}=3允许晶胞体积和形状变化。这些都是弹性模量计算必须要的设置。
+
+\textrm{KPOINTS}文件给出以$\Gamma$点为中心的均匀$\vec k$空间网格剖分，而\textrm{KPOINTS\_OPT}是用于能带计算的高对称性$\vec k$点路径布点。
+
+应用\textrm{Bash}命令开始\textrm{VASP}计算\textrm{DFT}基态，通过\textrm{py4vasp}模块绘制能带图。
+
+下一步，通过静态电场扰动基态体系。通过\textrm{Bash}命令，基于基态计算开始电场极化计算。
+
+\textrm{VASP}计算会输出警示信息``The Electric field is too strong such that Zener tunneling can occur''。用户可以减少$\vec k$点或设置计算控制参数\texttt{EFIELD\_PEAD}来降低电场。下面的计算中，\texttt{EFIELD\_PEAD}会设置小一个数量级。
+
+下一个计算中，加入可观的离子偏移量以改变晶胞体积和形状，以满足所有的静态线性响应性质计算。由基态\textrm{DFT}计算的\textrm{WAVECAR}出发，完成\textrm{Bash}名令执行的\textrm{VASP}计算。
+
+然后通过\textrm{Py4vasp}模块提取线性响应的性质数据
+
+将离子钳位极化率，弹性模量和压电张量与实验数据对比，这就是离子弛豫方法计算
+\begin{displaymath}
+	\begin{aligned}
+		\chi_{ij}|_{\eta}=&\chi_{ij}|_{\mu,\eta}+\Omega_0^{(-1)}Z_{mi}(K^{-1})_{mn}Z_{nj}\\
+		C_{ijkm}|_{\varepsilon}=&C_{ijkm}|_{\mu,\varepsilon}-\Omega_0^{(-1)}\Lambda_{nij}(K^{-1})_{no}\Lambda_{okm}\\
+		e_{ijk}^{(0)}=&e_{ijk}^{(0)}|_{\mu}+\Omega_0^{(-1)}Z_{mi}(K^{-1})_{mn}\Lambda_{njk}
+		\end{aligned}
+\end{displaymath}
+上述表达式隐含了对下标的求和。注意这里没有显式地给出极化率，因为\textrm{VASP}用极化率直接计算介电张量。%在实际计算中这样更方便，下一节会详细讨论。
+
+在\textrm{OUTCAR}文件的末尾中可以找到相同的极化响应信息。
+
+\subsection{密度泛函微扰理论与静态响应}
+应用密度泛函微扰理论\textrm{(Density-Functional Perturbation Theory, DFPT)}计算忽略局域效应的长波极限下的\textrm{AIP}的静态介电常数。
+
+外加电场$\varepsilon_{\mathrm{ext},i}(\vec r^{\prime},\omega)$与介电常数作用，得到材料的内电场$\varepsilon_i(\vec r ,\omega)$，
+\begin{displaymath}
+	\varepsilon_i(\vec r,\omega)=\int\mathrm{d}\vec r^{\prime}\epsilon_{ij}^{-1}(\vec r,\vec r^{\prime},\omega)\varepsilon_{\mathrm{ext},j}(\vec r^{\prime,\omega})
+\end{displaymath}
+在动量空间内有
+\begin{displaymath}
+	\varepsilon_i(\vec q+\vec G,\omega)=\sum_{\vec G^{\prime}}\epsilon_{\vec G\vec G^{\prime}}^{(-1)}(\vec q,\omega)\varepsilon_{\mathrm{ext},j}(\vec q+\vec G^{\prime},\omega)
+\end{displaymath}
+如果忽略在$\vec r$和$\vec r^{\prime}$的细节区别，材料就是均匀的，外加电场的变化波长比原子尺度大很多。这就是长波近似\textrm{Long-wave length approximation}。
