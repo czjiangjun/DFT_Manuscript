@@ -74,7 +74,7 @@ $\vec k$空间网格剖分是$\Gamma$点为中心的等空间网格。
 \begin{displaymath}
 	V_x^{\mathrm{HF}}(\mathbf{q})=-\dfrac{4\pi e^2}2\sum_{n\vec k}f_{n\vec k}\dfrac{\psi_{n\vec k}^{\ast}(\vec r^{\prime})\psi_{n\vec k}(\vec r)}{\mathbf{q}}
 \end{displaymath}
-即\textrm{Fock}势函数将完全压制巡游态电子。换言之，当处理具有显著巡游特征的体系，如金属和窄带半导体材料，不推荐\textrm{Hartree-Fock}方法和杂化泛函。\upciteP{Paier_2007}
+即奇点的存在使\textrm{Fock}势函数完全压制点则的巡游属性。换言之，当处理具有显著巡游特征的体系，如金属和窄带半导体材料，不推荐\textrm{Hartree-Fock}方法和杂化泛函。\upciteP{Paier_2007}
 
 本算例中，我们将计算\ch{Ar}的带隙，其带隙的实验值高达\textrm{14.4eV}。
 
@@ -109,6 +109,80 @@ $\vec k$空间剖分网格文件\textrm{KPOINTS}
 \begin{displaymath}
 	E_{xc}^{\mathrm{screened}}=\dfrac14E_{x}^{\mathrm{HF,SR}}(\mu)+\dfrac34E_{x}^{\mathrm{PBE,SR}}(\mu)+E_{x}^{\mathrm{PBE,LR}}(\mu)+E_c^{\mathrm{PBE}}
 \end{displaymath}
-短程部分的极限回归到\textrm{PBE0}泛函形式。
+短程部分的极限回归到\textrm{PBE0}泛函形式。杂化泛函通过屏蔽参数阻断了长程部分的贡献，避免了\textrm{Fock}交换作用的奇点。而奇点的存在，是对各类导体属性压制的根源。此外，屏蔽杂化泛函通过误差函数，减少了计算开销。
 
+固体物理中，常使用的泛函是\textrm{HSE06}。在该泛函中，优化的屏蔽参数取$\mu=0.2\mathrm{\AA}^{-1}$，对应的粒子间相互作用范围是$2/\mu\approx10\mathrm{\AA}$，基本上就是最近邻原子间相互作用的数倍。在\textrm{VASP}中，计算控制参数\texttt{HFSCREEN}来设置屏蔽长度。
 
+带隙与选择的\textrm{Fock}交换势系数非常有关系。%这里采取实际的算例展示优化杂化系数，得到\textrm{MgO}的能带和实验结果接近的\textrm{7.7eV}。注意，这里牺牲了第一原理方法的预测能力。相反，该方法却又能更定量地描述模拟的物理。引用该泛函时，不要写成\textrm{HSE}，虽然文献里偶尔还这么写。
+\textrm{HSE06}泛函表示\texttt{ASE}=0.25和\texttt{HFSCREEN}=0.2。
+
+计算结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+与屏蔽杂化泛函有关的计算控制参数是\texttt{HFRCUT}和\texttt{HFAPHA}参数，分别表示屏蔽中的截断半径和衰减常数。
+
+执行\textrm{Bash}命令执行\textrm{VASP}计算
+
+并用\textrm{Py4vasp}绘制\textrm{DOS}曲线。
+
+在屏蔽杂化目录下，执行\textrm{Bash}脚本修改杂化泛函中\textrm{Hartree-Fock}交换势系数\texttt{AEXX}，并完成\textrm{VASP}计算，
+
+根据不同的\texttt{AEXX}的值，以实验的带隙\textrm{7.7eV}为参照，执行\textrm{Python}脚本，得到优化的\texttt{AEXX}的值。
+
+优化的\texttt{AEXX}的值为$0.45\sim0.50$之间。
+
+选择接近优化的\texttt{AEXX}的值，再改变屏蔽系数\texttt{HFSCREEN}，再进行计算，观察带隙是否对屏蔽参数的改变敏感。
+
+短的屏蔽长度会增大\textrm{Fock}交换势的比例，进而影响带隙。
+
+\subsection{采用\rm{PBE}和\rm{HSE06}泛函计算\ch{CaS}的能带}
+对\ch{CaS}采用\textrm{HSE06}泛函，分别计算能带和带隙。
+
+绘制能带图时，$\vec k$空间布点需要沿着第一\textrm{Brillouin}区的高对称性点的连线。由于对称性能意味着简并，所以这些高对称性的点和线特别需要注意。本算例中，确定最高占据带和最低未占据带的$\vec k$点(分别称为\textrm{HOMO}也称\textrm{LUMO})。如果两者对应同一$\vec k$点，则称为直接带隙，否则称为间接带隙。
+
+确定绘制能带所需的高对称性$\vec k$点路径有两个软件，一个是\textrm{SeeK-path}软件，以\textrm{POSCAR}为输入，在\textrm{web}界面上选择高对称性$\vec k$点路径。%可以下载本算例的\textrm{POSCAR}，尝试能带路径\textrm{KPOINTS}文件。
+
+\ch{CaS}的结构文件\textrm{POSCAR}
+
+计算设置控制文件\textrm{INCAR}
+
+\textrm{HSE06}计算控制参数文件\textrm{HSE06/INCAR}
+
+\textrm{HSE06}能带计算控制参数文件\textrm{HSE06/band/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+能带绘制的高对称$\vec k$点路径\textrm{KPOINTS}
+
+类似地，\textrm{HSE06}计算$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+类似地，\textrm{HSE06}能带绘制高对称性$\vec k$点路径\textrm{KPOINTS}:~16个\textrm{IBZKPT}$\vec k$点和37个$\vec k$点绘制能带
+
+\textrm{FCC}结构的\ch{CaS}的结构文件\textrm{POSCAR}
+
+在\textrm{PBE}和\textrm{HSE06}泛函的自洽计算中，选用均匀$\vec k$空间网格剖分。\textrm{PBE}能带计算是线性格式，形成$\vec k$点路径。
+
+杂化泛函的能带计算，既需要沿高对称性方向的$\vec k$点路径，还需要均匀网格剖分$\vec k$点来计算\textrm{Fock}交换势，因此\textrm{HSE06/band/KPOINTS}由16个\textrm{IBZ}$\vec k$点和37个高对称性$\vec k$点能带路径。
+
+根据\textrm{Bash}命令完成\textrm{VASP}计算
+
+进而完成\textrm{PBE}的能带计算
+
+\textcolor{red}{采用\textrm{Py4vasp}模块绘制能带图}
+
+在\textrm{HSE06}目录，通过\textrm{Bash}命令完成\textrm{VASP}计算
+
+当\textrm{HSE06}计算过程中，对照\textrm{HSE06/band/KPOINTS}文件和\textrm{PBE}计算的\textrm{band/OUTCAR}文件中倒空间坐标。两者的$\vec k$空间能带路径相同，对于杂化泛函，为了计算\textrm{Fock}势，在能带计算过程中再次引入$\vec k$空间均匀布点。所以\textrm{KPOINTS}文件中，既有带权重的均匀$\vec k$空间网格剖分点，也有全部的绘制能带用的完整线性$\vec k$点。
+
+通过\textrm{Bash}命令完成\textrm{HSE06}的能带计算
+
+该计算会耗费一点时间，因为计算是由现有的\textrm{WAVECAR}文件开始的，体系总能已经达到收敛，因此\textrm{VASP}计算在达到控制参数\textrm{NELMIN}指定的迭代次数后就停止。为了得到体系的本征值，\textrm{Kohn-Sham}方程是在当前基组下对角化的，在额外的这些$\vec k$点上，波函数未经充分收敛，所以当前基组对能带计算的本征态未必足够。如果绘制的能带结构存在跳跃，为避免出现这种情况，至少应该让电子步在当前$\vec k$空间布点方案下至少迭代四次。
+
+通过杂化泛函计算得到的能带图，包含均匀网格点和线性网格点，通过\textrm{Py4vasp}模块，得到两部分曲线的能带图。%采用活动模式缩放$L$点标记的能带部分。
+
+仔细辨析导带，仍然存在微小的扭结。这种情况可以通过增加更多的迭代次数\textrm{(NELMIN)}或更多的能带\textrm{(NBANDS)}。
+
+最后计算带隙，并通过\textrm{Py4vasp}绘制能带图。对比能带结构并得到带隙值。该带隙为间接带隙，因为\textrm{LUMO}位于$X$点，而\textrm{HOMO}位于$\Gamma$。
