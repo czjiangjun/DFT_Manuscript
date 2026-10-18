@@ -104,4 +104,13 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \begin{displaymath}
 	\varepsilon_i(\vec q+\vec G,\omega)=\sum_{\vec G^{\prime}}\epsilon_{\vec G\vec G^{\prime}}^{(-1)}(\vec q,\omega)\varepsilon_{\mathrm{ext},j}(\vec q+\vec G^{\prime},\omega)
 \end{displaymath}
-如果忽略在$\vec r$和$\vec r^{\prime}$的细节区别，材料就是均匀的，外加电场的变化波长比原子尺度大很多。这就是长波近似\textrm{Long-wave length approximation}。
+如果忽略在$\vec r$和$\vec r^{\prime}$的细节区别，材料就是均匀的，外加电场的变化波长比原子尺度大很多。这就是长波近似\textrm{Long-wave length approximation}，此时$\epsilon_{ij}(\vec r-\vec r^{\prime,\omega})$仅与距离$\vec r-\vec r^{\prime}$有关。因此上式可以表示为
+\begin{displaymath}
+	\varepsilon_i(\vec q,\omega)=\epsilon_{(00),ij}^{-1}(\vec q,\omega)\varepsilon_{\mathrm{ext},j}(\vec q,\omega)
+\end{displaymath}
+换言之，当非局域场效应可以忽略时，$\vec G\neq\vec G^{\prime}$的非对角元为0。
+
+离子钳位介电常数与离子钳位极化率密切关联，可有关系式
+\begin{displaymath}
+	\varepsilon_{ij}^{\infty}=\delat_{ij}+\dfrac{4\pi}{\varepsilon_0}\chi_{ij}
+\end{displaymath}
