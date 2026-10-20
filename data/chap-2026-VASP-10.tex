@@ -183,4 +183,91 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \begin{displaymath}
 	\nabla_{\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}\rangle=\sum_{n^{\prime}\neq n}\dfrac{|\mu_{n^{\prime}\vec k}^{(\varepsilon_i)}\rangle\langle\mu_{n^{\prime}\vec k}^{(\varepsilon_i)}|\dfrac{\partial H(\vec k)-\epsilon_{n\vec k}S(\vec k)}{\partial\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}}{\epsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k}}
 \end{displaymath}
-这里$H(\vec k)$是\textrm{Kohn-Sham}方程的径向波函数的\textrm{Hamiltonian}，能量是$\epsilon_{n\vec k}$，而$S(\vec k)$
+这里$H(\vec k)$是\textrm{Kohn-Sham}方程的径向波函数的\textrm{Hamiltonian}，能量是$\epsilon_{n\vec k}$，而$S(\vec k)$是重叠矩阵。计算控制参数\texttt{LOPTICS}=\textrm{T}时采用该表达式计算导数，这里的求和包含所有未占据态的求和。因此\texttt{NBANDS}必须包括足够多的未占据态。换言之，随着\texttt{NBANDS}数值的增加，极化将会趋于收敛。
+
+这里采用的原子数据集选择适用于\textrm{GW}计算的，因为标准\textrm{DFT}计算中，未占据态的能带对基态性质，如体系总能的计算没有贡献。对于\textrm{GW}计算，原子数据集中，构造赝势时考虑了对激发态的贡献。因此当增加\texttt{NBANDS}时，应该对赝势适当优化，所以选择适用于\textrm{GW}计算的版本。
+
+执行标准的\textrm{Bash}命令完成\textrm{VASP}计算，并通过\textrm{Py4vasp}计算\ch{NaCl}的带隙并绘制\textrm{DOS}曲线。
+
+计算电子部分对频率相关的介电函数，将计算的\textrm{WAVECAR}复制到子目录\textrm{electron}，再次执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Bash}脚本\textrm{get\_dielectric\_function.sh}从\textrm{vasprun.xml}文件中提取介电函数数据，存入文件\textrm{dielectric\_function.dat}。通过\textrm{Py4vasp}绘制介电函数的曲线(包括实部与虚部)
+
+当然，也可以直接通过\textrm{Py4vasp}绘制介电函数曲线。
+
+离子部分对介电函数的贡献，可以选择采用\textrm{DFPT}方法或有限差分方法计算。分别在两个\textrm{INCAR}文件对应的目录下，通过\textrm{Bash}命令完成\textrm{VASP}计算，可以将两种计算的结果进行对比。
+
+同样执行\textrm{Bash}脚本\textrm{get\_dielectric\_function.sh}，得到介电函数数据\textrm{dielectric\_function.dat}，然后通过\textrm{Py4vasp}模块绘制介电函数曲线。
+
+有限差分方法计算耗时更长。
+
+考虑到离子偏移，可以得到振动频率的计算表达式
+\begin{displaymath}
+	m_{\mathrm{ion}}\omega^2\mathbf{u}=\bigg(\dfrac{\partial^2E}{\partial u_i\partial u_j}\bigg)\mathbf{u}
+\end{displaymath}
+这里$\omega$是声子频率，$m_{\mathrm{ion}}$是离子质量，$\mathbf{u}$是离子偏移量，对应的\textrm{Hessian}矩阵与前面的相同。在\textrm{OUTCAR}文件中有声子频率的字符串提示：
+\textsc{Eigenvectors and eigenvalues of the dynamical matrix}
+
+声子频率与离子对介电函数的贡献的关系:~如果声子振动模具有偶极活性\textrm{(dipole-active)}\footnote{如果一个重复单元内，全部离子的电偶极矩对振动模有影响，那么该声子模就是偶极活性的。}，则该特征会出现在拼频率相关的介电函数中。这种情况出现在动力学矩阵的本征矢中。
+
+除了三个偶极活性振动模，还有三个虚频率的声子模$(f/i)$。这里这些虚频振动模并不意味着结构是动力学不稳定的体系。采用不同的有限平面波基计算得到的体系总能略有不同，这些能量差别与晶胞和离子质心的相对位置有关。
+
+对每个声子模，列出离子位置、质量权重和离子偏移。
+
+两个矢量是平行的。但模量长度不同，这源于本征矢的质量权重导致的。这是离子质量出现在\textcolor{red}{方程(3.2)的后果。}离子质量选取\textrm{POTCAR}的计算控制参数\texttt{POMASS}。因此计算质量比
+\begin{displaymath}
+	\sqrt{\dfrac{m_{\mathrm{Na}}}{m_{\mathrm{Cl}}}}
+\end{displaymath}
+质量比与两个偏移矢量的比例相同。
+
+给出的声子频率有各种单位。实际上，在这个算例中，离子和电子介电函数的频率轴也没有按照相同单位给出。
+
+根据方程(3.2)，计算中频率的量纲单位是
+\begin{displaymath}
+	[\omega]=\sqrt{\dfrac1{[m_{\mathrm{ion}}]}\bigg[\dfrac{\partial^2E}{\partial u_i\partial u_j}\bigg]}
+\end{displaymath}
+\texttt{POMASS}按照原子单位\textrm{(atomic mass unit, a.m.u)}表示，有
+\begin{displaymath}
+	[m_{\mathrm{ion}}]=1.660599\cdot10^{-27}\mathrm{kg}
+\end{displaymath}
+能量单位是\textrm{eV}，离子偏移量的单位是\textrm{\AA}。所以频率单位可以写成\textrm{SI}
+\begin{displaymath}
+	1[\omega]=\sqrt{\dfrac{\mathrm{eV}/\AA^2}{\mathrm{a.m.u.}}}=9.822517\cdot10^{13}s^{-1}
+\end{displaymath}
+为了将计算的频率单位转换称\textrm{SI}单位，完成以下换算
+\begin{displaymath}
+\begin{aligned}
+	\sqrt{\dfrac{\mathrm{eV}/\AA^2}{\mathrm{a.m.u.}}}=&\sqrt{\dfrac{1.602176487\cdot10^{-19}\mathrm{J}/(10^{-20}\mathrm{m}^2)}{1.660599\cdot10^{-27}\mathrm{kg}}}=\sqrt{\dfrac{16.02176487\mathrm{J/m^2}}{1.660599\cdot10^{-27}\mathrm{kg}}}\\
+	=&9.822517\cdot10^{13}\mathrm{s}^{-1}
+\end{aligned}
+\end{displaymath}
+对于另外的频率单位，如\textrm{eV}、\textrm{THz}和$\mathrm{cm}^{-1}$，也可以采用类似的换算。
+
+为了得到\textrm{eV}，采用$E_{\mathrm{phonon}}=\hbar\omega$，因此有
+\begin{displaymath}
+	\begin{aligned}
+	x[E_{\mathrm{phonon}}]=&1[\omega]\cdot\hbar=9.822517\cdot10^{13}\mathrm{s}^{-1}\times1.054572\cdot10^{-34}\mathrm{Js}=1.035855\codt10^{-20}\mathrm{J}\\
+	=&0.064652976\mathrm{eV}
+	\end{aligned}
+\end{displaymath}
+然后，角频率通过$\nu=\omeg/2\pi$换算
+\begin{displaymath}
+	x[\nv]=1[\omega]/2\pi=98.22517/(2\pi)\cdot10^{12}\mathrm{Hz}=15.6330214~\mathrm{THz}
+\end{displaymath}
+最终波长的倒数$\lambda^{-1}=\nv/c$，这里$c$是光速。由此得到
+\begin{displaymath}
+	x[\lambda^{-1}]=1[\nu]/c=\dfrac{15.6330214\cdot10^{12}\mathrm{s}^{-1}{29979245800\mathrm{cm/s}}}=521.46146389\mathrm{cm}^{-1}
+\end{displaymath}
+总之，频率单位的换算关系为
+\begin{displaymath}
+	\begin{algined}
+		1\mathrm{THz}=&4.1357\mathrm{meV}=&33.356\mathrm{cm}^{-1}\\
+		1\mathrm{meV}=&0.242\mathrm{THz}=&8.066\mathrm{cm}^{-1}\\
+		1\mathrm{cm}^{-1}=&0.030\mathrm{THz}=&0.124\mathrm{meV}
+	\end{algined}
+\end{displaymath}
+通过\textrm{Py4vasp}模块绘制\textrm{DFPT}方法计算离子对总的介电函数的贡献，频率单位是\textrm{meV}。
+
+注意体系的总的最大频率来自离子的贡献。基于声子频率，离子的介电函数可以自动计算。具体到本算例，该值为$1.2\times\omega_{\mathrm{max}}$。
+
+同样可以采用\textrm{Py4vasp}来绘制曲线。
