@@ -94,7 +94,7 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 在\textrm{OUTCAR}文件的末尾中可以找到相同的极化响应信息。
 
 \subsection{密度泛函微扰理论与静态响应}
-应用密度泛函微扰理论\textrm{(Density-Functional Perturbation Theory, DFPT)}计算忽略局域效应的长波极限下的\textrm{AIP}的静态介电常数。
+应用密度泛函微扰理论\textrm{(Density-Functional Perturbation Theory, DFPT)}计算忽略局域效应的长波极限下的\ch{AlP}的静态介电常数。
 
 外加电场$\varepsilon_{\mathrm{ext},i}(\vec r^{\prime},\omega)$与介电常数作用，得到材料的内电场$\varepsilon_i(\vec r ,\omega)$，
 \begin{displaymath}
@@ -114,3 +114,73 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \begin{displaymath}
 	\varepsilon_{ij}^{\infty}=\delat_{ij}+\dfrac{4\pi}{\varepsilon_0}\chi_{ij}
 \end{displaymath}
+这里$\delta_{ij}$时\textrm{Kronecker}符号，这里$\chi_{ij}$由上式确定，$\epsilon_0$时真空介电常数，$\epsilon^{\infty}$是对交变电流\textrm{(Alternating Current ,AC)}响应的介电函数，也可以是高于声子频率范围的光的电磁场频率。该频率对应于极限$\vec q\rightarrow0$，因此上标为$\infty$，在极化子研究中这是同行的标注方式。
+
+\ch{AlP}的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{IINCAR}
+
+电场极化计算控制参数文件\textrm{electric-ionic/INCAR}
+
+$\vec k$空间剖分网格文件\textrm{KPOINTS}
+
+第一个计算的\textrm{INCAR}文件指定基本的\textrm{PBE}计算，而电场极化计算\textrm{electric-ionic/INCAR}文件中，采用\textrm{DFPT}计算，包括设置计算控制参数\texttt{LEPSILON}=\textrm{T}计算介电响应，设置\texttt{IBRION}=8计算离子偏移。
+
+在\textrm{DFPT}理论中，径向周期\textrm{Kohn-Sham}波函数对电场$|\xi_{n\vec k}$的线性响应，可以由求解非微扰体系的线性\textrm{Sternheimer}方程确定
+\begin{displaymath}
+	[H(\vec k)-\epsilon_{n\vec k}S(\vec k)]|\xi_{n\vec k}=-\Delta H_{\mathrm{SCF}}(\veec k)|\mu_{n\vec k}\rangle-\hat{\mathbf q}\nabla_{\vec k}\mu_{n\vec k}
+\end{displaymath}
+这里$\Delta H_{\mathrm{SCF}}(\vec k)$是局域场效应，即因为\textrm{Kohn-Sham}波函数的变化，引起的微观周期体系的\textrm{Kohn-Sham}的\textrm{Hamiltonian}的改变。如果计算控制参数\texttt{LRPA}=\textrm{F}，那么$\Delta H_{\mathrm{SCF}}=0$。
+
+在此基础上，基于\textrm{DFPT}，应用\textcolor{red}{两阶线性\textrm{Sternheimer}方程}
+\begin{displaymath}
+	[H(\vec k)-\epsilon_{n\vec k}S(\vec k)]|\nabla_{\vec k}\mu_{n\vec k}\rangle=\dfrac{\partial[H(\vec k)-\epsilon_{n\vec k}S(\vec k)]}{\partial\vec k}|\mu_{n\vec k}\rangle
+\end{displaymath}
+由此可以确定\textrm{Kohn-Sham}波函数对$\vec k$的导数。
+
+最终静态宏观介电函数矩阵可以表示为
+\begin{displaymath}
+	\hat{\mathbf q}\cdot\epsilon^{\infty}\cdot\hat{\mathbf q}=1-\dfrac{f8\pi e^2}{\Omega_0}\sum_{n\vec k}w_{\vec k}\langle\hat{\mathbf q}\nabla_{\vec k}\mu_{n\vec k}|\xi_{n\vec k}\rangle
+\end{displaymath}
+\textcolor{red}{该表示式本质上与最初的表达式相同}，但是没有通过计算控制参数\texttt{LCALCEPS}选择有限差分方法来实现，而是通过\texttt{LEPSILON}选择了\textrm{DFPT}来计算得到响应函数。与\texttt{LCALCEPS}不同，\texttt{LEPSILON}是可以适用于导体和金属等周期体系的。两种计算方法都没有对未占据态的求和。目前\texttt{LEPSILON}还不能使用杂化泛函进行计算。%含有\textrm{Hartree-Fock}类
+
+首先通过\textrm{Bash}命令完成基态的\textrm{VASP}计算。
+
+在子目录\textrm{electric-ionic}下执行\textrm{Bash}命令完成介电响应计算。
+
+在长波极限近似下，忽略局域场效应，宏观交变电场的介电响应函数$\epsilon^{\infty}$可以表示为:
+\begin{displaymath}
+	\epsilon_{ij}^{\infty}(\hat{\mathbf{q}},\omega)\approx\lim_{\mathbf{q}\rightarrow0}\epsilon_{00ij}(\mathbf{q},\omega)
+\end{displaymath}
+另一方面，如果局域场效应不能忽略，宏观交变电场的介电函数的倒数与$\mathbf{q}=0$极限的微观介电常数的关系为：
+\begin{displaymath}
+	\dfrac1{\epsilon_{ij}^{\infty}(\hat{\mathbf{q}},\omega)}\define\lim_{\mathbf{q}\rightarrow0}\epsilon_{00ij}^{-1}(\mathbf{q},\omega)
+\end{displaymath}
+应用\textrm{Py4vasp}模块给出静态介电响应函数，包括宏观静态介电张量、\textrm{Born}有效电荷和压电张量。
+
+\subsection{频率相关的介电响应}
+计算在独立粒子近似下\ch{NaCl}的频率相关介电函数。
+
+完整的频率相关介电函数包括电子部分的和离子部分的贡献。在\textrm{DFT}计算中，这两部分分别计算后再加和
+\begin{displaymath}
+	\varepsilon(\omega)=\varepsilon_{\mathrm{elec}}(\omega)+\varepsilon_{\mathrm{ion}}(\omega)
+\end{displaymath}
+介电函数的虚部和实部满足\textrm{Kramer-Kronig}关系。从频率相关的介电函数出发，可以计算各类光学函数，如光反射率、光吸收率和光电导率等。
+
+\textrm{FCC}结构的\ch{NaCl}文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+电子介电函数计算控制文件\textrm{electron/INCAR}
+
+离子介电函数\textrm{DFPT}计算控制文件\textrm{ion-dfpt/INCAR}
+
+离子介电函数有限差分计算控制文件\textrm{ion-finite-differences/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+周期体系的电子极化计算，是系数$-fe/(2\pi)^3$乘上\textrm{Berry}相位$\int_{\mathrm{BZ}}\mathrm{d}\vec k\langle\mu_{n\vec k}^{(\varepsilon_i)}|\mathrm{i}\nabla_{\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}\rangle$对所有占据态的求和。电场极化的\textrm{Kohn-Sham}轨道波函数的径向部分对$\vec k$的导数$\nabla_{\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}\rangle$，可以由两阶微扰理论计算：
+\begin{displaymath}
+	\nabla_{\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}\rangle=\sum_{n^{\prime}\neq n}\dfrac{|\mu_{n^{\prime}\vec k}^{(\varepsilon_i)}\rangle\langle\mu_{n^{\prime}\vec k}^{(\varepsilon_i)}|\dfrac{\partial H(\vec k)-\epsilon_{n\vec k}S(\vec k)}{\partial\vec k}|\mu_{n\vec k}^{(\varepsilon_i)}}{\epsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k}}
+\end{displaymath}
+这里$H(\vec k)$是\textrm{Kohn-Sham}方程的径向波函数的\textrm{Hamiltonian}，能量是$\epsilon_{n\vec k}$，而$S(\vec k)$
