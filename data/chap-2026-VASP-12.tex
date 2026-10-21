@@ -1,0 +1,109 @@
+\section{\rm{Bethe-Salpeter}方程}
+\textrm{VASP}可以基于\textrm{Bethe-Salpeter}方程计算包含激子效应的频率相关的介电函数。该计算采用杂化泛函或$GW$近似，在\textrm{DFT}电子基态的基础上开始进行的。
+
+\textrm{Bethe-Salpeter}方程\textrm{(Bethe-Salpeter Equation, BSE)}可以在计算介电函数时考虑激子效应\textrm{(Excitonic Effects)}。激发态能量是以下线性方程组
+\begin{displaymath}
+\begin{pmatrix}
+	A &B\\
+	B^{\ast} &A^{\ast}
+\end{pmatrix}
+\begin{pmatrix}
+	X_{\lambda}\\
+	Y_{\lambda}
+\end{pmatrix}=\omega
+\begin{pmatrix}
+	-1 &0\\
+	0 &1
+\end{pmatrix}
+\begin{pmatrix}
+	X_{\lambda}\\
+	Y_{\lambda}
+\end{pmatrix}
+\end{displaymath}
+本征值$\omega_{\lambda}$
+
+这里矩阵$A$的矩阵元为
+\begin{displaymath}
+	A_{vc}^{v^{\prime}c^{\prime}}=(\varepsilon_v-\varepsilon_v)\delta_{vv^{\prime}}\delta_{cc^{\prime}}+\langle cv^{\prime}|V|vc^{\prime}\rangle-\langle cv^{\prime}|W|c^{\prime}v\rangle
+\end{displaymath}
+而矩阵$B$的矩阵元
+\begin{displaymath}
+	B_{vc}^{v^{\prime}c^{\prime}}=\langle vv^{\prime}|V|cc^{\prime}\rangle-\langle vv^{\prime}|W|c^{\prime}c\rangle
+\end{displaymath}
+描述占据态的$v$，$v^{\prime}$和未占据态的$c$，$c^{\prime}$的跃迁。
+
+在\textrm{BSE}的\textrm{Hamiltonian}中，有两项用于描述相互作用:~净的\textrm{Coulomb}相互作用$V$和屏蔽相互作用$W$。能量和轨道选择$GW$计算的结果。
+
+在倒空间里，矩阵$A$可以写成
+\begin{displaymath}
+	\begin{aligned}
+		A_{vc\vec k}^{v^{\prime}c^{\prime}\vec k^{\prime}}=&(\varepsilon_v-\varepsilon_v)\delta_{vv^{\prime}}\delta_{cc^{\prime}}\delta_{\vec k\vec k^{\prime}}+\dfrac2{\Omega}\sum_{\vec G\neq0}\bar{V}_{\vec G}(\vec q)\langle c\vec k|\mathrm{e}^{\mathrm{i}\vec G\cdot\vec r}|v\vec k\rangle\langle v^{\prime}\vec k^{\prime}|\mathrm{e}^{-\mathrm{i}\vec G\cdot\vec r}|c^{\prime}\vec k^{\prime}\rangle\\
+		-&\dfrac2{\Omega}\sum_{\vec G\vec G^{\prime}}W_{\vec G,\vec G^{\prime}}(\vec q,\omega)\delta_{\vec q,\vec k-\vec k^{\prime}}\langle c\vec k|\mathrm{e}^{\mathrm{i}\vec G\cdot\vec r}|c^{\prime}\vec k^{\prime}\rangle\langle v^{\prime}\vec k^{\prime}|\mathrm{e}^{-\mathrm{i}\vec G\cdot\vec r}|v\vec k\rangle
+	\end{aligned}
+\end{displaymath}
+这里$\Omega$是晶胞体积，$\bar{V}$是净的\textrm{Coulomb}势，不包括长程相互作用部分
+\begin{displaymath}
+	\bar{V}_{\vec G}(\vec q)=\left\{
+		\begin{aligned}
+			0 &G=0\\
+			V_{\vec G}(\vec q)=\dfrac{4\pi}{|\vec q+\vec G|^2} G\neq0
+		\end{aligned}\righ.
+\end{displaymath}
+屏蔽\textrm{Coulomb}势
+\begin{displaymath}
+	W_{\vec G,\vec G^{\prime}}(\vec q,\omega)=\dfrac{4\pi\epsilon_{\vec G,\vec G^{\prime}}^{-1}(\vec q,\omega)}{|\vec q+\vec G||\vec q+\vec G^{\prime}|}
+\end{displaymath}
+这里介电函数$\epsilon_{\vec G,\vec G^{\prime}}(\vec q)$表述无轨相近似的屏蔽相互作用$W$
+\begin{displaymath}
+	\epsilon_{\vec G,\vec G^{\prime}}^{-1}(\vec q,\omega)=\delta_{\vec G,\vec G^{\prime}}+\dfrac{4\pi}{|\vec q+\vec G|^2}\chi_{\vec G,\vec G^{\prime}}^{\mathrm{RPA}}(\vec q,\omega)
+\end{displaymath}
+尽管介电函数是频率相关的，静态近似$W_{\vec G,\vec G^{\prime}}(\vec q,\omega=0)$可以看作\textrm{BSE}计算的标准化结果。通过简化记号，将$A$的第一项成为对角元$D$，第二项称为$K^{\mathrm x}$，第三项是直接的$K^D$的贡献，对$B$的矩阵元$B_{vc\vec k}^{v^{\prime}c^{\prime}\vec k^{\prime}}$\textcolor{red}{表达式类似式(4)}，替换对应的下标。
+
+在\textrm{Tamm-Dancoff}近似\textrm{(Tamm-Dancoff Approximation, TDA)}忽略了激发和退激发的耦合，及$B$和$B^{\ast}$的非对角元。因此\textrm{TDA}将\texcolor{red}{式(1)}简化为
+\begin{displaymath}
+	AX_{\lambda}=\omega_{\lambda}X_{\lambda}
+\end{displaymath}
+通过\textrm{BSE}方程，由本征值$\omega_{\lambda}$和本征矢$X_{\lambda}$得到宏观介电函数
+\begin{displaymath}
+	\epsilon_M(\vec q,\omega)=1+\lim_{\vec q\rightarrow0}v(q)\sum_{\lambda}\bigg|\sum_{c,v,k}\langle c\vec k|\mathrm{e}^{\mathrm{i}\vec q\cdot\vec r}|v\vec k\rangle X_{\lambd}^{cv\vec k}\bigg|^2\times\bigg\dfrac1{\omega_{\lambda}-\omega-\mathrm{i}\omega}+\dfrac1{\omega_{\lambda}+\omega+\mathrm{i}\omega}\bigg)
+\end{displaymath}
+在光学极限下($q\rightarrow0$)，结合\textrm{Taylor}展开$\mathrm{e}^{\mathrm{i}\vec q\cdot\vec r}\approx1+\mathrm{i}\vec q\cdot\vec q+O(\vec q^2)$因此有
+$\langle c\vec k|\mathrm{e}^{\mathrm{i}\vec q\cdot\vec r}|v\vec k\rangle\approx\mathrm{i}\vec q\langle c\vec k|\vec r|v\vec k\rangle\para\vec q\langle c\vec k|\nabla|v\vec k\rangle$
+
+时间相关的密度泛函理论\textrm{(Time-dependent Density Functional Theory, TDDFT)}提供了另一个方法计算介电函数。在\textrm{Casida}理论中，\textrm{TDDFT}理论得到和\textcolor{red}{方程(1)}相同的线性问题。但是交换-相关核心项$f_{\mathrm{xc}}$描述电子和孔之间的相互作用。
+\begin{displaymath}
+	\begin{aligned}
+		A_{vc}^{v^{\prime}c^{\prime}}=&(\varepsilon_v-\varepsilon_v)\delta_{vv^{\prime}}\delta_{cc^{\prime}}+\langle cv^{\prime}|V|vc^{\prime}\rangle-\langle cv^{\prime}|f_{\mathrm{xc}}|c^{\prime}v\rangle\\
+		B_{vc}^{v^{\prime}c^{\prime}}=&\langle vv^{\prime}|V|cc^{\prime}\rangle-\langle vv^{\prime}|f_{\mathrm{xc}}|c^{\prime}c\rangle
+	\end{aligned}
+\end{displaymath}
+交换-相关核心项$f_{\mathrm{xc}}$由交换-相关泛函定义
+\begin{displaymath}
+	f_{\mathrm{xc}(\vec r,\vec r^{\prime})=\dfrac{\partial v_{\mathrm{xc}}(\vec r)}{\partial\rho(\vec r^{\prime})}
+\end{displaymath}
+因此，\textcolor{red}{式(10)}的电子-孔相互作用写作
+\begin{displaymath}
+	\langle cv^{\prime}|f_{\mathrm{xc}}|c^{\prime}v\rangle=\gamma\langle cv^{\prime}|V|c^{\prime}v\rangle+(1-\gamma)\langle cv^{\prime}|f_{\mathrm{x}}^{\mathrm{ALDA}}|vc^{\prime}\rangle+\langle cv^{\prime}|f_{\mathrm{c}}^{\mathrm{ALDA}}|vc^{\prime}\rangle
+\end{displaymath}
+这里$\gamma$描述屏蔽吸引相互作用，由杂化交换-相互作用的\textrm{Fock}交换的权重确定。根据近似的不同，这一项可以是常数或一个函数。$f_{\mathrm{x}^{\mathrm{ALDA}}}$和$f_{\mathrm{c}^{\mathrm{ALDA}}}$是局域的绝热交换-相关的核心项。
+
+为了完成\textrm{BSE/TDHF}计算，需要知道准粒子本征态轨道$\psi_{n,k}$，导数$\nabla_{\vec k}\psi_{n,\vec k}$和之前基态计算得到的本征值能量$\varepsilon_{n,k}$。在\textrm{VASP}中，这些量保存在\textrm{WAVECAR}文件和\textrm{WAVEDER}文件中。\textrm{BSE}要求额外的屏蔽\textrm{Coulomb}势$W_{\vec G,\vec G^{\prime}}(\omega=0)$由$GW$计算提供。\textrm{VASP}将$W$写入\textrm{WFULxxxx.tmp}和\textrm{Wxxxx.tmp}文件中。
+
+\subsection{金刚石\ch{C}的光学吸收}
+\subsubsection{基态的$G_0W_0$计算}
+基于\textrm{PBE}泛函的基态金刚石\ch{C}的$G_0W_0$计算
+
+为了准粒子能量收敛，典型的$GW$计算需要大量的未占据态。对应于态的数目、$\vec k$点数和频率的横向点的收敛性都要测试。对于相对小的晶胞，以本算例为例，对\textrm{Hamiltonian}采用精确对角化计算更快。
+
+本算例中，$G_0W_0$近似是\textrm{BSE}计算的起点，$GW$计算分为三步
+\begin{itemize}
+	\item \textrm{DFT}计算基态
+	\item \textrm{DFT}精确对角化来处理增加的未占据能级
+	\item $G_0W_0$计算
+\end{itemize}
+
+金刚石结构文件\textrm{POSCAR}
+
+采用相对少的$\vec k$点，但对于当前计算体系，足以使得能带带隙收敛到$0.1~\mathrm{eV}$。
+
+\textrm{ground-state/INCAR}文件
