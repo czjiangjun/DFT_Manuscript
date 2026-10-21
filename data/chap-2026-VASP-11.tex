@@ -115,7 +115,7 @@ $G_0W_0$近似下，准粒子能带的带隙：
 \end{itemize}
 
 \subsection{通过\rm{Wannier90}完成金刚石结构\ch{Si}的$GW_0$近似计算}
-在绘制能带图时，每个电子态的本征值$\epsilon_{n\veck}$都与\textrm{Bloch}矢量$\vec k$对应。(亦即能带表示的是体系能量在$\vec k$空间中的色散关系)。一般地，绘制能带图都是沿晶格倒空间的第一\textrm{Brillouin}区某些高对称性的连线绘制的。$GW$近似下，在\textrm{VASP}计算中可以通过部分规范网格点准粒子能量计算，而不必沿着特定高对称性连线方向逐个$\vec k$点计算能量本征值。这种$GW$能带的计算，采用\textrm{Wannier90}近似计算完成。
+在绘制能带图时，每个电子态的本征值$\epsilon_{n\veck}$都与\textrm{Bloch}矢量$\vec k$对应。(亦即能带表示的是体系能量在$\vec k$空间中的色散关系)。一般地，绘制能带图都是沿晶格倒空间的第一\textrm{Brillouin}区某些高对称性的连线绘制的。$GW$近似下，在\textrm{VASP}计算中可以通过部分规范网格点准粒子能量计算，而不必沿着特定高对称性连线方向逐个$\vec k$点计算能量本征值。这种$GW$能带的计算，采用\textrm{Wannier90}软件完成近似计算。
 
 注意，该方法实际上是一种近似的能带计算。本质上这是在一套以$Gamma$点为中心的$\vec k$空间网格剖分基础上，完成$GW_0$准粒子能量计算，通过\textrm{Fourier}插值方法，获取任意$\vec k$点的准粒子能量$E_{n\vec k}$。
 
@@ -123,4 +123,18 @@ $G_0W_0$近似下，准粒子能带的带隙：
 
 计算控制文件\textrm{INCAR}
 
-通过计算控制参数\texttt{ALGO}=\textrm{NONE}和\texttt{NELM}=1，\textrm{VASP}读取输入文件后，跳过计算步骤，进入后处理阶段(这就是计算控制参数\textrm{``NONE''}的含义)。如果\texttt{LWANNIER90}=\textrm{T}，
+通过计算控制参数\texttt{ALGO}=\textrm{NONE}和\texttt{NELM}=1，\textrm{VASP}读取输入文件后，跳过计算步骤，进入后处理阶段(这就是计算控制参数\textrm{``NONE''}的含义)。如果\texttt{LWANNIER90}=\textrm{T}，\textrm{VASP}将在后处理阶段输出\textrm{Wannier90}软件所需的输入文件。\texttt{NUM\_WANN}为\textrm{Wannier90}构造\textrm{Wannier}函数的数目，而计算控制参数\texttt{WANNIER\_WIN}的内容将会原封不动地复制到\textrm{Wannier90}的输入文件\textsc{wannier90.win}文件中。
+
+由于当前计算是在在已经完成的$GW_0$计算基础上进行的，$GW_0$计算产生的\textrm{WAVECAR}将作被为新计算的起点，注意计算控制参数\texttt{NBANDS}的数目与\textrm{WAVECAR}和\textrm{WAVEDER}的值相同。
+
+执行\textrm{Bash}命令完成\textrm{VASP}计算，会产生\textrm{Wannier90}软件所需要的输入文件(\textsc{wannier90.*})。然后执行\textrm{Bash}命令，使用\textrm{Wannier90}软件构建局域的\textrm{Wannier}函数。
+
+在\textrm{Wannier90}执行结束后，查看输出文件\textrm{wannier90.wout}，看是否有\textrm{Wannier}函数生成。
+
+最后执行\textrm{Bash}命令，用\textrm{gnuplot}软件绘制$GW_0$的能带图，能带图保存到文件\textrm{band.png}文件中。
+
+假设有\textrm{e01\_Si-G0W0/vaspout.h5}文件存在，可以将\textrm{DFT}计算的能带叠加到$GW_0$的能带图中。首先执行\textrm{Python}脚本，绘制能带图，并通过\textrm{Py4vasp}模块获取\textrm{Fermi}能级和能带结构。
+
+再通过\textrm{Bash}命令叠加能带，并通过\textrm{gnuplot}软件绘制能带图。
+
+最后通过\textrm{Python}脚本绘制对比能带图，保存到文件\textrm{band\_DFT\_vs\_GW.png}中。
