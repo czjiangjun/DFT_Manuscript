@@ -2,4 +2,125 @@
 \textrm{GW}近似是多体微扰理论下，择取某些屏蔽\textrm{Coulomb}相互作用的图像贡献。体系的自能\textrm{(Self-energy)}用\textrm{Green function}(用\textrm{G}表示)，乘上屏蔽\textrm{Coulomb}相互做用(用\textrm{W}表示)。\textrm{GW}方法通过计算屏蔽相互作用体系的准粒子\textrm{(quasi-particles)}而能量，进而得到体系的特定性质，目前\textrm{GW}方法也是计算带隙最精确的多体方法之一。
 
 \subsection{\rm{GW}方法简介}
-\textrm{GW}方法是电子结构计算中，可以考虑电子体系相关作用的先进方法。
+\textrm{GW}方法是电子结构计算中，可以考虑电子体系相关作用的先进方法。在\textrm{GW}近似中，电子不再按照独立粒子处理，电子在物质中的运动和其它电子存在相互作用，而且电子会让周围近处的电荷产生极化。这时电子可以看作被周围因诱导而发生极化的电子云(电荷密度)包所裹。这种被包裹的电子称为准粒子\textrm{(quasiparticles)}。
+
+求解如下单电子方程，可以得到准粒子的本征态和本征值
+\begin{displaymath}
+	(T+V_{\mathrm{ext}}+V_{\mathrm{H}})\Psi_{n\vec k}(\vec r)+\int\mathrm{d}\vec r\Sigma(\vec r,\vec r^{\prime},E_{n\vec k})\Psi_{n\vec k}(\vec r^{\prime})=E_{n\vec k}\Psi_{n\vec k}(\vec r)
+\end{displaymath}
+对照通常\textrm{DFT}的\textrm{Kohn-Sham}方程，不难看出，如果交换-相关能项扩展到包含自能的贡献，则该方程就是准粒子方程，因为自能项$\Sigma(\vec r,\vec r^{\prime},E_{n\vec k})$包含非局域特征和能量相关的影响。
+
+在\textrm{GW}中，自能$\Sigma$，可以近似表示为$\Sigma=GW$，即\textrm{Green}函数$\mathrm{G}$和屏蔽\textrm{Coulomb}相互作用$\mathrm{W}$的积。这也是\textrm{GW}名字的来历。\textrm{Coulomb}相互作用的介电屏蔽，通常采用无规相近似\textrm{(Random Phase Approximation, RPA)}\footnote{在\textrm{RPA}近似下，电子在介质中穿行时彼此发生相互作用，而相互作用主要的贡献严格限于电子极化的贡献。}
+
+此外值得注意的是，原则上\textrm{G}和\textrm{W}与准粒子的本征态$(\Psi_{n\vec k})$和本征值$E\_{n\vec k}$有关。因此，自洽迭代求解准粒子方程是存在病态的。实践上，几乎无法通过完全自洽迭代来求解准粒子方程，相反，绝大部分\textrm{GW}计算按以下近似处理。
+\begin{itemize}
+	\item $G_0W_0$：单次\textrm{GW}校正\\
+		通过\textrm{Kohn-Sham}方程的本征态和本征值计算\textrm{Green}函数和屏蔽\textrm{Coulomb}相互作用，将求得的自能项代入准粒子方程，仅求解一次，不要求自洽迭代。
+	\item $GW_0$：~部分自洽的\textrm{GW}(仅在\textrm{Green} 函数条件下成立。)\\
+		通过迭代求解的本征态波函数来计算每一次的\textrm{Green}函数，除了初次$G_0W_0$的\textrm{Green}函数是通过\textrm{Kohn-Sham}方程的本征态和本征值计算得到的，后续每一次迭代的\textrm{Green}函数是通过准粒子方程的本征能量和\textrm{Kohn-Sham}方程本征态波函数得到的。更新后的\textrm{Green}函数用于构建新的准粒子方程，进而得到新的准粒子本征态能量。该过程迭代多次。
+\end{itemize}
+
+\subsection{$G_0W_9$近似下的\ch{Si}的能带}
+通过$G_0W_0$计算准粒子能量，重整化因子\textrm{(Renornalization factor)}和\ch{Si}的带隙。
+
+单次$GW$($G_0W_0$)计算主要由三步完成
+\begin{enumerate}
+	\item \textrm{DFT}基态计算
+	\item 由(1)的自洽本征态波函数(\texttt{WAVECAR})出发，计算包含更多未占据电子的本征态波函数和本征值。这里更多未占据本征态计算采用对\textrm{Hamiltonian}矩阵的单次精确对角化完成。其中额外增加的未占据态\textrm{Kohn-Sham}本征态用于计算介电屏蔽函数。此外还计算周期体系径向\textrm{Kohn-Sham}波函数对\textrm{Bloch}波矢$\vec k$的导数(数据保存在\textrm{WAVEDER}文件中)。
+	\item 由\textrm{WAVECAR}数据和\textrm{WAVEDER}数据出发，开始具体的$G_0W_0$计算。
+\end{enumerate}
+
+\subsubsection{确定\rm{DFT}基态}
+完成\textrm{DFT}基态计算
+
+金刚石结构的\ch{Si}的结构文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+默认采用\textrm{PBE}泛函。\texttt{ISMEAR}=-5，将\textrm{Fermi}能级的积分方案设置为\textrm{Bl\"ochl}校正的四面体积分方案，确保得到的\textrm{DOS}曲线更平滑。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}，采用$\Gamma$点为中心的$6\times6\times6$的网格密度分布。
+
+绘制\ch{Si}的能带的高对称性$\vec k$点路径文件\textrm{KPOINTS\_OPT}
+
+对于$GW$计算，\textrm{POTCAR}文件的组成元素的原子数据集必须选择元素名带\textrm{\_GW}的。相比于传统数据集中的势函数，这里构造的势函数还考虑了在较大能量范围内的散射性质。对于需要计算包含大量未占据电子态体系时，这是非常必要的。
+
+通过\textrm{Bash}命令，完成基态\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块得到带隙并绘制\textrm{DOS}曲线，
+
+并根据\textrm{KPOINTS\_OPT}文件确定的$\vec k$点路径，绘制能带图。
+
+注意，\textrm{Py4vasp}确定的带隙是根据\textrm{KPOINTS}文件中$\vec k$空间网格均匀剖分计算得到的\textrm{HOMO}与\textrm{LUMO}的能量差(或\textrm{DOS})确定的；而绘制能带图时的$\vec k$点路径由$KPOINTS\_OPT$文件给定，这里包含了$\Gamma-X$方向更多的$\vec k$点。具体到\ch{Si}的能带，其\textrm{HOMO}位于$\Gamma$点，而\textrm{LUMO}则在$\Gamma-X$方向上略偏离$X$点位置，该点并未出现在\textrm{KPOINTS}文件指定的$\vec k$空间均匀剖分网格点中。因此通过\textrm{DOS}和能带计算分别得到的带隙会略有差异。
+
+\subsubsection{计算附加的未占据r\rm{Kohn-Sham}轨道}
+计算未占据\textrm{Kohn-Sham}轨道和独立粒子图像下的频率相关的介电函数。计算的未占据轨道的数量大约是\textrm{VASP}计算\textrm{Kohn-Sham}基态时默认波函数数目(见计算控制参数\texttt{NBANDS})的$3\sim4$倍，因此在\textrm{unoccpied-states/INCAR}文件中，\texttt{NBANDS}的值必须要指定得足够大一些。计算中采用单次精确对角化\textrm{Hamiltonian}(\texttt{ALGO}=\textrm{Exact}和\texttt{NELM}=1)，设置\texttt{LOPITC}计算\textrm{Blochl}波函数对对\textrm{Blochl}波矢$\vec k$的导数，并将结果写入\textrm{WAVEDER}文件。文件\textrm{WAVECAR}和\textrm{WAVEDER}是实际$GW$计算的初始数据。
+
+同样，执行\textrm{Bash}命令完成\textrm{VASP}计算。
+
+相应地，可以通过\textrm{Py4vasp}模块绘制介电函数曲线。
+
+注意，这里得到的是独立粒子近似的介电函数，并未包含任何的局域场效应。
+
+\subsubsection{$G_0W_0$计算}
+在\textrm{single-shot/INCAR}文件中，$GW$计算的计算控制参数是\texttt{ALGO}=\textrm{EVGW0}和单次电子态的计算\texttt{NELMGW}=1。注意这里设置\texttt{NBANDS}与生成\textrm{WAVECAR}和\textrm{WAVEDER}文件的数值一致。
+
+执行\textrm{Bash}命令完成\textrm{VASP}计算。
+
+在输出文件\textrm{OUTCAR}中，可以看到每个$\vec k$点和能带的准粒子能量\textsc{QP-energies}和重整化因子\textsc{Z}。
+
+第三列就是准粒子能量$E_{n\vec k}$。
+
+第二、四、五和七列分别是\textrm{Kohn-Sham}方程解的能量$E_{n\vec k}^{(0)}$，自能矩阵对角元$\langle\Psi_{n\vec k}^{(0)}|\Sigma(\omega=E_{n\vec k}^{(0)})|\Psi_{n\vec k}^{(0)}$，交换-相关势和重整化因子$Z_{n\veck}$。
+
+$G_0W_0$近似下，准粒子能带的带隙：
+
+\textrm{HOMO}位于$\Gamma$点(第一个$\vec k$点),\textrm{LUMO}位于$X$点(第13个点)，$E_{\mathrm{LUMO}}-E_{\mathrm{HOMO}}=6.2826-5.1235=1.1591~\mathrm{eV}$
+
+对比由无相互作用\textrm{(Independent Particle Approximation, IPA)}粒子近似的介电函数和无规相\textrm{(RPA)}近似的介电函数，后者考虑了电子通过介质时引起对周围的相互作用(极化)。\textrm{VASP}完成的$GW$计算，就是考虑了\textrm{RPA}下屏蔽\textrm{Coulomb}相互作用。
+
+为了绘制两类介电函数曲线，首先执行\textrm{Bash}脚本\textrm{get\_dielectric\_function.sh}获得介电函数数据，分别存入\textrm{eielectric\_function\_IPA.dat}和\textrm{eielectric\_function\_RPA.dat}文件中。再通过\textrm{Py4vasp}模块绘制曲线
+
+还可以从介电函数曲线对比两类介电函数曲线的变化，比如通过\textrm{Py4vasp}对比$\omega=0\mathrm{eV}$，介电函数的实部的变化
+
+以及相应的$\omega=0\mathrm{eV}$时，介电函数虚部的变化。
+
+\subsection{$GW_0$计算\ch{Si}的能带结构}
+通过部分自洽迭代的$GW_0$近似，计算金刚石结构的\ch{Si}的能带结构。
+
+本算例中，学习部分自洽(仅\textrm{Green}函数部分自洽迭代)的$GW_0$计算。在$GW_0$近似中，\textrm{Green}函数只是相对粒子的能量本征值迭代更新，即在初始的$G_0W_0$计算后。重新构造\textrm{Green}函数时，选择准粒子的能量本征值，但是本征态波函数还是选择\textrm{Kohn-Sham}轨道的本征态。更新后的\textrm{Green}函数代入准粒子方程，将会得到新的一套准粒子能量本征值。该过程迭代若干次，直到准粒子能量收敛或达到指定的迭代次数，迭代结束。
+
+相应的计算文件\textrm{POSCAR}、\textrm{KPOINTS}、\textrm{POTCAR}与$G_0W_0$计算相同。只有\textrm{INCAR}文件略有差别。
+
+计算控制文件\textrm{INCAR}
+
+为了完成部分自洽迭代的$GW_0$计算，指定计算控制参数\texttt{ALGO}=\textrm{EVGW0}，并指定电子步迭代次数(\texttt{NELMGW}>1)。同时不要忘记\texttt{NBANDS}的数目也还是要与\textrm{WAVECAR}和\textrm{WAVEDER}确定的数值一样。这些文件是$GW_0$计算的初始出发点。
+
+此外，还要增加计算的准粒子态的数目，设置计算控制参数\texttt{NBANDSGW}=16。该设置是为了辅助能带图画图。
+
+为了得到必要的\textrm{WAVECAR}和\textrm{WAVEDER}文件，按照$G_0W_0$的结果完成类似的基本\textrm{DFT}计算和无相互作用的介电函数计算。或直接利用之前的计算结果。通过\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+同样地，可以在\textrm{OUTCAR}文件中找到每次迭代更新\textrm{Green}函数后，相对每个$\vec k$点和每个能级，\textsc{QP-energies}和重整化因子\textsc{Z}。
+
+与$G_0W_0$类似，第一列是\textrm{Kohn-Sham}轨道的能带指标，第三列是准粒子能量$E_{n\vec k}$。
+
+注意，在第一次迭代中，第二列列出的是\textrm{Kohn-Sham}的能量本征值，而此后的迭代中，这里列出的是前一次迭代的准粒子能量本征值。
+
+类似地，$GW_0$计算中的带隙计算
+
+\textrm{HOMO}轨道位于$\Gamma$点(第一个$\vec k$点)，\textrm{LUMO}轨道位于$X$点(第十三个$\vec k$点)。相应的带隙：
+\begin{itemize}
+	\item 第一次迭代($G_0W_0$)后：$E_{\mathrm{LUMO}}-E_{\mathrm{HOMO}}=6.2826-5.1235=1.1591~\mathrm{eV}$
+	\item 三次迭代($GW_0$)后：$E_{\mathrm{LUMO}}-E_{\mathrm{HOMO}}=6.2999-5.0779=1.2220~\mathrm{eV}$
+\end{itemize}
+
+\subsection{通过\rm{Wannier90}完成金刚石结构\ch{Si}的$GW_0$近似计算}
+在绘制能带图时，每个电子态的本征值$\epsilon_{n\veck}$都与\textrm{Bloch}矢量$\vec k$对应。(亦即能带表示的是体系能量在$\vec k$空间中的色散关系)。一般地，绘制能带图都是沿晶格倒空间的第一\textrm{Brillouin}区某些高对称性的连线绘制的。$GW$近似下，在\textrm{VASP}计算中可以通过部分规范网格点准粒子能量计算，而不必沿着特定高对称性连线方向逐个$\vec k$点计算能量本征值。这种$GW$能带的计算，采用\textrm{Wannier90}近似计算完成。
+
+注意，该方法实际上是一种近似的能带计算。本质上这是在一套以$Gamma$点为中心的$\vec k$空间网格剖分基础上，完成$GW_0$准粒子能量计算，通过\textrm{Fourier}插值方法，获取任意$\vec k$点的准粒子能量$E_{n\vec k}$。
+
+类似的，计算文件\textrm{POSCAR}、\textrm{KPOINTS}、\textrm{POTCAR}与$G_0W_0$计算相同。只有\textrm{INCAR}文件略有差别。
+
+计算控制文件\textrm{INCAR}
+
+通过计算控制参数\texttt{ALGO}=\textrm{NONE}和\texttt{NELM}=1，\textrm{VASP}读取输入文件后，跳过计算步骤，进入后处理阶段(这就是计算控制参数\textrm{``NONE''}的含义)。如果\texttt{LWANNIER90}=\textrm{T}，
