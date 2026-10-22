@@ -102,8 +102,133 @@ $\langle c\vec k|\mathrm{e}^{\mathrm{i}\vec q\cdot\vec r}|v\vec k\rangle\approx\
 	\item $G_0W_0$计算
 \end{itemize}
 
+金刚石的结构文件\textrm{POSCAR}
+
+在$\vec k$空间网格剖分文件\textrm{KPOINS}，采用相对少的$\vec k$点，但对于当前计算体系，足以使得能带带隙收敛到$0.1~\mathrm{eV}$。
+
+
+采用默认的\textrm{PBE}泛函计算体系的基态能量，计算控制参数\textrm{ground-state/INCAR}文件。
+
+为了使带隙收敛到$0.1~\mathrm{eV}$，再计算包含60个空轨道的体系。
+
+针对未占据轨道的\textrm{PBE}计算，\textrm{uniccupied-states/INCAR}
+
+
+选择50个频率点，比默认值小，但已经满足带隙到$0.1~\mathrm{eV}$的收敛标准。
+
+$G_0W_0$计算的\textrm{INCAR}文件
+
+在\textrm{grand-state}目录下，执行\textrm{Bash}命令完成\textrm{VASP}计算
+
+通过\textrm{Py4vasp}模块得到直接带隙\footnote{直接带隙是在同一个$\vec k$点最高占据能带和最低未占据能带的能量差。}和基本带隙\footnote{体系最高价电子能带\textrm{(Valence Band Maximum, VBM)}和最低未占据能带\textrm{(Conduction Band Minimum, CBM)}的能量差。两者不一定在同一$\vec k$点上。}
+
+实验上金刚石结构的带隙是5.85\textrm{eV}\upcite{PRM2-073803_2018}表明\textrm{PBE}泛函严重低估金刚石的带隙。
+
+文献给出的带隙实验值必须经过零声子重整化\textrm{(Zero-Phonon Renormalization, ZPR)}，这样才能给出的是有效实验带隙。这些声子影响是实验中天然存在的，但计算中并未考虑。因此校正实验带隙为的是可以做出有意义的对比。
+
+在目录\textrm{unoccupied-states}下，复制计算的\textrm{WAVECAR}文件，通过\textrm{Bash}命令执行\textrm{VASP}计算未占据态的能带。
+
+在输出文件\textrm{OUTCAR}中，有相关能带和本征值计算结果。并且有\textrm{WAVEDER}文件存在。
+
+由于在\textrm{INCAR}文件中，计算控制参数\texttt{LOPTICS}是入选的，\textrm{VASP}计算独立粒子近似下的介电函数，通过\textrm{Py4vasp}模块可以提取相关数据
+
+根据已有的\textrm{WAVECAR}和\textrm{WAVEDER}文件，应用\textrm{Bash}命令执行\textrm{VASP}计算。
+
+在\textrm{OUTCAR}文件中有准粒子本征值。
+
+这样得到的直接带隙是7.40\textrm{eV}，基本带隙是5.58\textrm{eV}，与实验值5.85\textrm{eV}非常接近。
+
+通过\textrm{Py4vasp}模块绘制\textrm{RPA}的介电函数
+
+\subsubsection{\rm{BSE}的光学吸收}
+通过前一步计算的准粒子和屏蔽势，计算光学吸收谱。
+
+根据现有\textrm{WAVECAR}、\textrm{WAVEDER}和\textrm{W*.tmp}文件，可以在\textrm{Tamn-Dancoff}近似来完成\textrm{BSE}计算。在\textrm{BSE}计算中，首先采用准粒子轨道和\textrm{RPA}近似的屏蔽势函数来构造\textrm{Hamiltonian}，\textcolor{red}{然后根据等式(8)得到本征值和本征态。最后根据方程(9)得到\textrm{BSE}介电函数。}
+
+在计算控制文件\textrm{INCAR}中，\textrm{BSE}计算是通过计算控制参数\texttt{ALGO}=\textrm{BSE}实现的。计算中针对所有的四个占据态和四个未占据态来构造\textrm{BSE}的\textrm{Hamiltonian}，这些占据态和未占据态之间的最高跃迁范围位于$\sim37\mathrm{eV}$。\texttt{NBANDS}设置的值与之前$GW$计算和\textrm{WAVECAR}、\textrm{WAVEDER}文件计算的值相同。
+
 金刚石结构文件\textrm{POSCAR}
 
-采用相对少的$\vec k$点，但对于当前计算体系，足以使得能带带隙收敛到$0.1~\mathrm{eV}$。
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
 
-\textrm{ground-state/INCAR}文件
+通过\textrm{Bash}命令执行\textrm{VASP}计算
+
+在\textrm{vasprun.xml}文件中，可以找打计算得到的与光学跃迁对应的振子强度。
+
+同样，\textrm{vasprun.xml}中还有\textrm{BSE}的介电函数
+
+通过\textrm{Bash}的\textrm{AWK}脚本，可以得到平均介电函数
+
+有必要检查\textrm{OUTCAR}文件确保得到的是想要的结果。\textrm{BSE}的\textrm{Hamiltonian}计算的能带，紧随字符串\\
+\textsc{Band included in the BSE spin= 1 VB(min)=1 VB(max)= 4 CB(min)= 5 CB(max)= 8}
+
+\textrm{BSE}矩阵的阶数，紧随字符串\\
+\textsc{BSE (scalAPACK) attempting allocation of 0.048 Gbyte rank=3456}
+
+注意:~如果所有的\textrm{BSE}的介电函数都是零，检查\textrm{WAVECAR}和\textrm{WAVEDER}文件是否已经成功读取。即有标准输出字符串\\
+\textsc{the WAVECAR file was read successfully}
+
+通过\textrm{Py4vasp}模块对比\textrm{BSE}的介电函数
+
+\subsubsection{通过\rm{TDDDH}计算金刚石的光学吸收}
+计算用于模拟介电函数的参数，并通过\textrm{TDDFT}计算光学吸收谱
+
+$GW$计算是非常消耗计算资源的，实际上有可能通过使用杂化泛函方法得到与$GW$计算相似的结果，从而达到回避$GW$计算的目的。
+
+通过介电函数相关的杂化泛函方法\textrm{(Dielectric-Dependent Hybrid Functional. DDH)}，屏蔽的\textrm{Fock}交换作用可以通过以下函数描述
+\begin{displaymath}
+	\epsilon^{(-1)}(|\vec q+\vec G|)=1-(1-\epsilon_{\infty}^{-1})\mathrm{e}^{-(|\vec q+\vec G|)^2/4\mu^2}
+\end{displaymath}
+对于电子和空穴的吸引\textrm{Coulomb}相互作用的屏蔽效果，同样可以采用该函数，这一近似称为\textrm{TDDDH}。\upcite{PRR2-032019_2020}
+
+本算例中，采用介电相关的杂化泛函完成基态模拟。
+
+\textrm{DDH}计算分两步
+\begin{enumerate}
+	\item \textrm{DDH}基态计算
+	\item \textrm{DDH}精确对角化计算未占据能带
+\end{enumerate}
+
+应用\textrm{Bash}命令的\textrm{AWK}脚本，提取在$GW$计算得到的\textrm{vasprun.xml}文件中确定拟合模拟\textrm{RPA}介电函数的参数。
+
+利用参数$\varepsilon=5.7$和$\mu=1.79$，通过\textrm{Python}脚本，采用\textrm{Py4vasp}模块绘制\textrm{RPA}介电函数。
+
+金刚石结构文件\textrm{POSCAR}
+
+基态计算的计算控制文件\textrm{ground-state/INCAR}
+
+未占据态计算控制文件\textrm{unoccupied-states/INCAR}
+
+\textrm{DDH}计算的计算控制文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+基态目录\textrm{ground-state}下，选择基态\textrm{DFT}计算的波函数，通过\textrm{Bash}命令完成\textrm{VASP}杂化泛函计算。
+
+得到\textrm{DDH}基态。
+
+计算结束后，在\textrm{OUTCAR}文件中，\textrm{DDH}得到的直接带隙是7.5\textrm{eV}，基本带隙是\textrm{5.6}\textrm{eV}。
+
+与\textrm{PBE}计算类似，通过精确对角化算法计算包含未占据态。
+
+复制前面的\textrm{DDH}计算得到\textrm{WAVECAR}到当前目录\textrm{(unoccupied-state/)}
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算
+
+计算结束，得到\textrm{WAVECAR}和\textrm{WAVEDER}文件，到这里准备好了全部\textrm{TD-DDH}计算的文件。
+
+在\textrm{TDHF/}目录下，复制\textrm{DDH}计算所需的\textrm{WAVECAR}和\textrm{WAVEDER}文件。
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。\textcolor{red}{确保\textrm{OUTCAR}文件中的\textrm{BSE}的\textrm{Hamiltonian}的矩阵阶数与\textrm{BSE}计算相同。}
+
+通过\textrm{Py4vasp}模块绘制介电函数。
+
+对比\textrm{TD-DDH}和\textrm{BSE}的光谱。不难看出\textrm{BSE}的结果与\textrm{TDDDH}的结果吻合得极好。由于$\vec k$点空间剖分密度较为稀疏，计算结果无法分辨\textrm{RPA}激发谱和\textrm{e-h}相互作用屏蔽激发谱得区别。%不过，在文献\cite{PRL107=186401_2011}的图2，可以看到激子效应。
+
+金刚石中的介电屏蔽非常强(介电常数$\sim5.7$)，因此激子受到的束缚非常弱，这一类激子称为\textrm{Wannier-Mott}激子。%后续将学习弱屏蔽强束缚的\textrm{Frenkel}激子\ch{LiF}。
+
+\subsection{\ch{LiF}的光学吸收}
+\subsubsection{$G_0W_0$计算的基态}
+基于\textrm{PBE}泛函，采用$G_0W_0$对\ch{LiF}晶胞计算能带结构和屏蔽\textrm{Coulomb}相互作用势。
+
+
