@@ -231,4 +231,53 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \subsubsection{$G_0W_0$计算的基态}
 基于\textrm{PBE}泛函，采用$G_0W_0$对\ch{LiF}晶胞计算能带结构和屏蔽\textrm{Coulomb}相互作用势。
 
+与金刚石不同，\ch{LiF}的电子间屏蔽相互作用很弱，因此其中激发的电子-空穴是紧束缚\textrm{Frenkel}激子。
 
+与金刚石计算类似，这里以$G_0W_0$计算作为起点完成\textrm{BSE}计算。标准的$GW$计算主要是三步
+\begin{enumerate}
+	\item \textrm{DFT}基态计算
+	\item \textrm{DFT}精确对角化计算未占据能带
+	\item $g_0w_0$计算
+\end{enumerate}
+
+\ch{LiF}的结构文件\textrm{POSCAR}
+
+基态计算控制文件\textrm{ground-state/INCAR}
+
+未占据能带精确对角化计算控制文件\textrm{unoccupied-state/INCAR}
+
+$G_0W_0$计算控制文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+与金刚石的$G_0W_0$计算类似，\textrm{DFT}计算的基态，由\textrm{Bash}命令，完成\textrm{VASP}计算
+
+将基态的\textrm{WAVECAR}复制到未占据能带目录下，由\textrm{Bash}命令，完成\textrm{VASP}计算
+
+根据\textrm{DFT}精确对角化计算未占据能带得到的\textrm{WAVECAR}和\textrm{WAVEDER}文件，由\textrm{Bash}命令，完成$G_0W_0$计算
+
+在\textrm{OUTCAR}文件，计算\ch{LiF}的直接带隙为$\sim13.44\mathrm{eV}$。
+
+\subsubsection{独立粒子近似\rm{BSE-IP}的光学吸收}
+基于$G_0W_0$的准粒子，计算\ch{LiF}的独立粒子光谱。
+
+在独立粒子近似下，计算控制参数\texttt{LHARTREE}=\textrm{.FALSE.}和\texttt{LADDER}=\textrm{.FALSE.}，因此\textrm{BSE}的\textrm{Hamiltonian}的矩阵只有对角元项\textrm{(A=D)}，即粒子间相互作用是完全被忽略了。对于很多体系，这种情况下屏蔽很强时，电子-空穴的成键能很小，该近似为光学吸收提供了合理的描述。
+
+输入文件\textrm{INCAR}
+
+\textrm{BSE}的\textrm{Hamiltonian}中直接项的交换项并未考虑。即计算控制参数\texttt{LHARTREE}=\textrm{.FALSE.}和\texttt{LADDER}=\textrm{.FALSE.}
+
+将$G_0W_0$计算的\textrm{WAVECAR}、\textrm{WAVEDER}和\textrm{W.tmp}文件复制到当前文件夹，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块绘制独立粒子介电函数曲线
+
+计算的结果与实验光谱温和得并不好，最重要的是，在吸收边上，并不存在强激发峰。吸收边在13.4\textrm{eV}，这表明电子-空穴并未形成束缚态。如果形成束缚态则会降低跃迁能。
+
+如果\texttt{LOPTIC}=\textrm{.TRUE.}，该光谱将与具有相同本征态轨道和能量本征值体系得到的光谱等价。
+
+\subsubsection{\rm{BSE-RPA}的光学吸收}
+基于$G_0W_0$准粒子计算的\ch{LiF}的\textrm{RPA}光谱
+
+在\textrm{RPA}近似中，不计算梯形图，即\texttt{LADDER}=\textrm{.FALSE.}，而\textrm{Hamiltonian}中只计算了\textrm{.LHARTREE.}=\textrm{.TRUE.}$\mathrm{A}=\mathrm{D}+\mathrm{K}^x$
+
+计算输入文件\textrm{INCAR}
