@@ -271,7 +271,7 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 通过\textrm{Py4vasp}模块绘制独立粒子介电函数曲线
 
-计算的结果与实验光谱温和得并不好，最重要的是，在吸收边上，并不存在强激发峰。吸收边在13.4\textrm{eV}，这表明电子-空穴并未形成束缚态。如果形成束缚态则会降低跃迁能。
+计算的结果与实验光谱吻合得并不好，最重要的是，在吸收边上，并不存在强激发峰。吸收边在13.4\textrm{eV}，这表明电子-空穴并未形成束缚态。如果形成束缚态则会降低跃迁能。
 
 如果\texttt{LOPTIC}=\textrm{.TRUE.}，该光谱将与具有相同本征态轨道和能量本征值体系得到的光谱等价。
 
@@ -281,3 +281,51 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 在\textrm{RPA}近似中，不计算梯形图，即\texttt{LADDER}=\textrm{.FALSE.}，而\textrm{Hamiltonian}中只计算了\textrm{.LHARTREE.}=\textrm{.TRUE.}$\mathrm{A}=\mathrm{D}+\mathrm{K}^x$
 
 计算输入文件\textrm{INCAR}
+
+将$G_0W_0$计算的\textrm{WAVECAR}、\textrm{WAVEDER}和\textrm{W.tmp}文件复制到当前文件夹，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块绘制\textrm{RPA}介电函数曲线
+
+与实验光谱对比，计算的结果并没有提升，因为存在排斥的交换相互作用，光谱还发生了微小的蓝移。
+
+这里\textrm{RPA}中，在\textrm{Tamm-Dancoff}近似，只包含了环形图(气泡图)，即\textcolor{red}{式(1)中$\mathrm{B}$和$\mathrm{B}^{\ast}$都被忽略}。因为缺乏激发和退激发的环形(气泡)耦合，计算的光谱并不等价于\texttt{ALGO}=\textrm{CHI}。
+
+与独立粒子类似，\textrm{RPA}近似也有不足，即缺少激发态。但是考虑到与等离激发的相互作用，一般对\textrm{EELS}谱是好的描述。
+
+\subsubsection{\rm{BSE-TDA}的光学吸收}
+基于$G_0W_0$准粒子计算，在\textrm{Tamm-Dancoff}近似下计算\ch{LiF}的\textrm{RPA}光谱
+
+\ch{LiF}是宽带隙半导体，介电常数很小$\varepsilon_{\infty}=1.9$，因此是弱屏蔽体系。由于弱屏蔽，电子-空穴间的吸引相互作用很大，使得激子表现出很强的局域化，激子束缚能$0.1\sim1\mathrm{eV}$。对于碱金属卤化物和有机分子体系，都存在典型的强电子-空穴相互作用。
+
+在\textrm{Tamm-Dancoff}近似中，环形和梯形图都纳入计算范围，即\texttt{LHARTREE}=\textrm{.TRUE.}，\texttt{LADDER}=\textrm{.TRUE.}，\footnote{而忽略矩阵$\mathrm{B}$和矩阵$\mathrm{B}^{\ast}$得到式(8)}，这里\textrm{Hamiltonian}由三项构成:$\mathrm{A}=\mathrm{D}+\mathrm{K}^x+\mathrm{K}^D$
+
+计算输入文件\textrm{INCAR}
+
+将$G_0W_0$计算的\textrm{WAVECAR}、\textrm{WAVEDER}和\textrm{W.tmp}文件复制到当前文件夹，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块绘制\textrm{RPA}介电函数曲线
+
+与实验光谱对比，计算的结果得到明显的改善，第一个强激发峰的位置合理了。尽管有些峰的特征强度与实验结果不匹配。%在下一章节，会看到，这个问题会随着加密的$\vec k$布点而得到解决
+
+\subsubsection{超越\rm{TDA}的\rm{BSE}计算的光学吸收}
+基于$G_0W_0$准粒子计算，在超越\textrm{Tamm-Dancoff}近似条件下计算\ch{LiF}的吸收光谱
+
+最后求解完全的\textrm{BSE}方程，即包括了共振和反共振的耦合的\textrm{BSE}方程:
+\begin{displaymath}
+	H^{\mathrm{BSE}}=
+	\begin{pmatrix}
+		A &B\\
+		B^{\ast} &A^{\ast}
+	\end{pmatrix}
+\end{displaymath}
+如果计算控制参数\texttt{ANTIRES}=2，则矩阵$\mathrm{B}$和矩阵$\mathrm{B}^{\ast}$也纳入计算，原则上这意味着要对角化的矩阵维度是$2\times N_c\times N_v\times N_k$，但是\textrm{VASP}利用时间反演对称性将矩阵分别为两个阶数为$N_c\times N_v\times N_k$的方程，所以完全的\textrm{BS}计算只是\textrm{TDA}计算开销。
+
+计算输入文件\textrm{INCAR}
+
+将$G_0W_0$计算的\textrm{WAVECAR}、\textrm{WAVEDER}和\textrm{W.tmp}文件复制到当前文件夹，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块绘制\textrm{RPA}介电函数曲线
+
+\subsection{有效\rm{Brillouin}区采样和激发分析}
+\subsubsection{有效\rm{Brillouin}区采样}
+对\ch{LiF}，$\vec k$空间网格剖分为以$\Gamma$点为中心$4\times4\times4$网格点，完成标准的\textrm{PBE}计算。
