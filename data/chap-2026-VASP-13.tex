@@ -33,7 +33,7 @@
 
 \ch{LiCl}超晶胞的结构文件\textrm{POSCAR.$4\times4\times4$}
 
-对于芯电子-空穴计算，发生芯电子-空穴跃迁的原子需要作为单独的一类原子处理。为了尽可能减低近邻重复单元中芯电子-空穴的相互作用，超晶胞应该选的足够大。为了定性地说明晶胞大小的影响，这里对相互作用随晶胞大小的变化做收敛测试。
+对于芯电子-空穴计算，发生芯电子-空穴跃迁的原子需要作为单独的一类原子处理。为了尽可能减低近邻重复单元中芯电子-空穴对激子的相互作用，超晶胞应该选的足够大。为了定性地说明晶胞大小的影响，这里对相互作用随晶胞大小的变化做收敛测试。
 
 超晶胞计算控制参数文件\textrm{INCAR.$2\times2\times2$}
 
@@ -51,7 +51,7 @@
 
 计算控制参数文件\textrm{INCAR.step2\_noCH\_PARCHG}
 
-这里采用计算控制参数\texttt{ICORELEVEL}=2的终态近似\textrm{(Final-state approximation)}\upcite{PRB63-205419_2001}。\texttt{CLNT}指定作为芯电子-空穴计算的原子类型，本算例中，所有晶胞中都只对一种原子完成芯电子-空穴计算，所以超晶胞中都只有一个芯电子-空穴对。计算控制参数\texttt{CLN}，\texttt{CLL}和\texttt{CLZ}分别表示被激发芯电子原子的主量子数、角动量量子数和核电荷数。\texttt{CH\_NEDOS}选择计算芯电子-空穴体系介电函数后，绘图横坐标频率(能量)的网格点数。\texttt{CH\_AMPLIFICATION}用于标定吸收谱的纵坐标，本算例中，该值选择超晶胞中\ch{Li}原子的数目。计算能带数目\texttt{NBANDS}的值要包含足够多的未占据能带，确保芯电子激发后可以存在。
+这里采用计算控制参数\texttt{ICORELEVEL}=2的终态近似\textrm{(Final-state approximation)}\upcite{PRB63-205419_2001}。\texttt{CLNT}指定作为芯电子-空穴计算的原子类型，本算例中，所有晶胞中都只对一种原子完成芯电子-空穴计算，所以超晶胞中都只有一个芯电子-空穴对激子。计算控制参数\texttt{CLN}，\texttt{CLL}和\texttt{CLZ}分别表示被激发芯电子原子的主量子数、角动量量子数和减少的芯电子电荷数。\texttt{CH\_NEDOS}选择计算芯电子-空穴体系介电函数后，绘图横坐标频率(能量)的网格点数。\texttt{CH\_AMPLIFICATION}用于标定吸收谱的纵坐标，本算例中，该值选择超晶胞中\ch{Li}原子的数目。计算能带数目\texttt{NBANDS}的值要包含足够多的未占据能带，确保芯电子激发后可以存在。
 
 $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
@@ -66,3 +66,34 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \textrm{run\_conv.sh}脚本用于吸收光谱对应晶胞尺度的收敛研究。该脚本面向尺度依次增大的超晶胞($2\times2\times2$，$3\times3\times3$和$4\times4\times4$，分别对应16，54和128个原子)，完成三次计算。各组的\textrm{POSCAR}和\textrm{INCAR}都已经给出。\texttt{NBANDS}设置为各晶胞下占据轨道的两倍。\texttt{CH\_AMPLICATION}选择为通过晶胞中原子数标定光谱纵坐标。光谱纵坐标标度不是必要步骤，但这里是为得到的光谱具有可比性。为了使得谱函数对比更合理，不至于剧烈的增衰，将谱函数除以原子数。
 
 采用\textrm{Py4vasp}绘制光谱曲线图
+
+不难看出吸收谱的裂分和相对强度随着晶胞的增大而发生改变，为了使得芯电子-空穴对激子与重复单元中的影像的相互作用尽可能小，适当大小的超晶胞是必要的。
+
+晶胞尺度的增大的额外功效是提高了\textrm{Brillouin}区单个$\vec k$点的代表性。不过这并非采用超晶胞的根本原因，因为如果单纯$\vec k$点原因，显然可以通过增加$\vec k$点达到同样的效果。一旦芯电荷-空穴对激子的相互作用达到最小化，增加$\vec k$点才是比增大晶胞尺度更有效的计算方案。
+
+为了评估在\textrm{XAS}中激子效应有多强，对比在终态近似(\texttt{ICORELEVEL}=2)计算和初态近似(\texttt{ICORELEVEL}=1)计算的芯电子-空穴对激发，与终态近似相反，初态近似计算中，价电子并未随着芯电子-空穴激发而发生弛豫，因此计算中没有包含激子效应。
+
+初态近似的\textrm{Bash}脚本是\textrm{run\_noCH.sh}，运行该脚本，对应的输入文件\textrm{INCAR.noCH}与之前的\textrm{INCAR}文件类似，只是\texttt{ICORELEVEL}=1而不是2。
+
+通过\textrm{Py4vasp}模块绘制终态近似和初态近似介电函数曲线
+
+这里，特别是第一个峰，不仅看到介电函数曲线向更低能量方向移动，而且存在更强的态的局域。所有的这些都归结于芯电子-空穴对相互作用(激子效应)。
+
+为了进一步验证芯电子-空穴对效应，讨论当前最低导带的分波电荷密度和没有芯电子-空穴对情况的分波电荷密度。然后执行\textrm{Bash}脚本\textrm{run\_parchg.sh}
+
+为了绘制完全弛豫的芯电子-空穴对体系的第一未占据态的\textrm{3D}电荷密度，执行\textrm{Python}脚本
+
+可以看到电荷密度位于包含芯电子-空穴对的原子位置\textsc{(0.5 0.5 0.5)}
+
+为了绘制没有芯电子-空穴对的电荷密度，执行\textrm{Python}脚本
+
+这里第一未占据态是完全非局域的，通过降低等值面的数值，可以更显著地观察到电子的离域现象。
+
+\subsubsection{完全芯电子-空穴计算}
+通过完全芯电荷-空穴方法\textrm{(Full core-hold method, FCH)}和激发态芯电荷-空穴方法计算\textrm{XAS}谱。
+
+在前一部分的超晶胞芯电荷-空穴方法中，一个电子由芯电子层移除，放入导带中。如果\texttt{ICORELEVEL}=2且\texttt{CLZ}=1，该过程将会自动完成。该方法也被称为激发电子和芯电子-空穴\textrm{(Excited electron and core-hole, XCH)}方法。\cite{PRL96-215502_2006}。同样，激发的电子也可能返回到背景电荷中去。如果自洽计算中，忽略了激发的电子分布，这种方法称为完全芯电荷-空穴\textrm{(Full core-hole, FCH)}方法\upcite{JCP120-8632_2004}。在很多情况下， 与实验结果对比，\textrm{FCH}比\textrm{XCH}给出更好的结果。%在文献\cite{PRB106-155133_2022}，\textrm{Unzog}等在第五部分详细讨论了为什么\textrm{FCH}优于\textrm{XCH}的理由。
+
+\textrm{VASP}在当前目录下的四个基本文件\textrm{POSCAR}，\textrm{INCAR},\textrm{KPOINTS}和\textrm{POTCAR}。
+
+完全芯电荷-空穴计算的输入文件\textrm{INCAR.FCH}
