@@ -97,3 +97,24 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \textrm{VASP}在当前目录下的四个基本文件\textrm{POSCAR}，\textrm{INCAR},\textrm{KPOINTS}和\textrm{POTCAR}。
 
 完全芯电荷-空穴计算的输入文件\textrm{INCAR.FCH}
+
+激发芯电荷-空穴计算的输入文件\textrm{INCAR.XCH}
+
+\ch{LiCl}的$4\times4\times4$超晶胞结构文件\textrm{POSCAR}
+
+$\vec k$空间网格文件\textrm{KPOINTS}
+
+对于\textrm{FCH}计算，将激发电子作为均匀的背景电荷处理，对于带电的晶胞，因为\textrm{VASP}会依据计算控制参数\texttt{NELECT}确定实际电子数，通过引入背景电荷补偿，形成电中性体系。
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。并在输出文件\textrm{OUTCAR}中，确定总电子数\\
+\textsc{NELECT = 513.0000 total number of electron}
+
+因此在\textrm{INCAR.FCH}中引入一行\\
+\texttt{NELECT}=512
+
+执行\textrm{Bash}脚本\textrm{run\_job.sh}
+
+脚本执行后完成$4\times4\times4$超晶胞单个$\vec k$点的\textrm{FCH}和\textrm{XCH}计算。
+
+计算结束后，不仅要将两组计算结果对比，还要和实验结果比照。
+
