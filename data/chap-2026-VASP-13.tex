@@ -244,4 +244,80 @@ $G_0W_0$计算的准粒子的基本带隙是\textrm{8.9eV}。
 \end{displaymath}
 尽管介电函数与频率相关，通过\textrm{BSE}的标准计算，静态近似$W_{\vec G,\vec G^{\prime}}(\vec q,\omega=0)$。
 
-计算\ch{licl}的\textrm{XAS}谱的$K$-边。完成$G_0W_0$计算，可以求解\textrm{BSE}。
+为了计算\ch{LiCl}的\ch{Li}的\textrm{K}边\textrm{XAS}谱。
+
+完成$G_0W_0$计算后，求解\textrm{Bethe-Salpeter}方程。为了完成对芯电子态的\textrm{BSE}计算，除了通常$G_0W_0$计算所必须的\textrm{POTCAR}、\textrm{KPOINTS}和\textrm{POSCAR}文件，还需要以下文件
+\begin{itemize}
+	\item 在$G_0W_0$计算中生成的\textrm{WAVECAR}文件，包含了准粒子的本征值和本征态波函数
+	\item \textrm{WFULLxxxx.tmp}包含\textrm{RPA}的介电张量，是由$G_0W_0$计算产生的
+	\item 如果包含价电子轨道，则还需要保存在\textrm{WAVEDER}文件中的轨道导数数据
+\end{itemize}
+%计算\ch{licl}的\textrm{XAS}谱的$K$-边。完成$G_0W_0$计算，可以求解\textrm{BSE}。
+在\textrm{BSE}计算中，首先构建\textrm{Hamiltonian}量，即计算由准粒子和屏蔽\textrm{Coulomb}势$W$构成的矩阵元，然后求解\textrm{TDA}近似下的\textrm{Dyson}方程，确定本征值和本征矢。最终计算\textrm{BSE}介电函数。
+
+为了完成\textrm{BSE}计算，在计算控制文件\textrm{INCAR}文件中，设置算法控制参数\texttt{ALGO}=\texttt{BSE}。在光学性质计算的\textrm{BSE}计算时，指定了价带和导带的数目，相比之下，在当前的\textrm{BSE}芯电子态计算中，则只需要指定导带数目，价带的数目设置为0，即设置\texttt{NBANDSO}=0。为了执行计算关注的芯电子态，采用$\Delta\mathrm{SCF}$近似中相同的计算控制参数，即设置\texttt{ICORELEVEL}、\texttt{CLNT}、\texttt{CLN}、\texttt{CLL}。
+
+计算控制参数文件\textrm{INCAR}
+
+在指定目录下，设置执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+计算结束后，在\textrm{OUTCAR}文件中检查相关输出数据和字符串，确保计算结果完整且正确。在\textrm{OUTCAR}文件中，\textrm{BSE}计算的\textrm{Hamiltonian}矩阵的阶数\textsc{rank}=3456，该结果与$N_c\times N_vtimes N_k$的值一致，即芯态数目、导带数目和完整\textrm{Brillouin}区的$\vec k$点数目的乘积相同。
+
+分析计算结果时，在\textrm{vasprun.xml}文件中，确定振子强度\textrm{(Oscillator Stengths)}。
+
+本算例中，第一个跃迁时灰激发\footnote{与选律冲突的跃迁时非光学活性的，称为灰激发，其振子强度为0；相反，服从选律的跃迁时光学活性的，称为亮激发。}，而更改能量的激发时亮激子，即具有非零振子强度。振子强度是在考虑偶极近似和对应的选律条件下计算的。跃迁2，3和4时兼并的，能量相同。在\textrm{vasprun.xml}中还包含\textrm{BAE}介电函数，可以在\\
+\textsc{<dielectricfun>}\\
+\textsc{</dielectricfun>}
+
+如果计算得到的介电函数虚部为零，则要检查\textrm{WAVECAR}是否正确读入，或者从标准输出检查是否有\\
+\textsc{the WAVECAR file was read successfully} \\
+的字符串提示。
+
+检查结束后，通过\textrm{Py4vasp}模块绘制\textrm{BSE}介电函数曲线。
+
+对比实验结果\upcite{JESRP579-137_2004}，计算得到的\textrm{BSE}谱与之符合得较好。计算结果能够复现最主要的谱图结构特点，且谱峰的相对位置也与实验结果吻合 得较好。在\textrm{BSE}计算的\textrm{XAS}谱图的绝对的峰位置与实验结果有出入，因为用于\textrm{PAW}计算中的\textrm{POTCAR}原子数据中，芯层电荷采用的是冻结近似。而且$GW$计算的准粒子\textrm{(QP)}的移动仅适用于价电子态和导带，而芯层电子仅按照\textrm{DFT}层次的计算。
+
+有必要指出的是，\textrm{BSE}谱图计算对$\vec k$空间网格剖分密度$6\times6\times6$并没有很好收敛，原则上应该增加$\vec k$空间网格布点密度。收敛的计算结果参见文献\cite{PRB106-155133_2022,PRB79-041192R_2009}。
+
+此外，介电函数对于当前计算的导带数目已经收敛。在\textrm{XAS}中，激子是局域的。为了得到合理的光谱，确实需要大量的导带轨道数。
+
+对照$\Delta\mathrm{SCF}$和\textrm{BSE}计算\upcite{PRB106-155133_2022}得到的谱图，正如文献中给出的，两种方法的结果都和实验结果吻合得较好，但总体上\textrm{BSE}的谱图与实验结构吻合得更好。
+
+\textrm{RPA}近似下，计算\ch{LiCl}的\ch{Li}的\textrm{K}边\textrm{XAS}谱。
+
+\textrm{VASP}中的\textrm{BSE}方法，可以在各种近似下计算介电函数。为了强调\textrm{XAS}中激子效应的重要性，通过\textrm{RPA}计算介电函数，并与\textrm{BSE}计算的介电函数对比。
+
+为了选用\textrm{RPA}近似，将设置计算控制参数\texttt{LADDER}=\textrm{.FALSE.}，目的是关闭\textcolor{red}{体型图}计算或者说不考虑双粒子\textrm{Hamiltonian}中的屏蔽\textrm{Coulomb}相互作用。但是计算中考虑净的\textrm{Coulomb}相互作用，即\texttt{LHARTREE}=\textrm{.TRUE.}。
+
+计算控制参数文件\textrm{INCAR}
+
+在指定目录下，设置执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+当计算结束，应用\textrm{Py4vasp}模块绘制\textrm{BSE}和考虑\textrm{RPA}分别计算得到的芯电子态激发的介电函数虚部。
+
+两种介电函数曲线唯一的差别是激子效应。介电函数曲线的对比，清楚地说明了在\textrm{XAS}中，芯电子-空穴激子态和电子态之间的相互作用的重要性。第一个亮激发的对应的能量，可以看成是考虑\textrm{RPA}和\textrm{BSE}近似的能量本征值的差别。
+
+第一个亮激发的能量差是$59.08-57.37=1.71\mathrm{eV}$
+
+应用\textrm{Py4vasp}模块绘制介电函数曲线实部
+
+如果对比\textrm{BSE}方法考虑\textrm{RPA}的介电函数实部与$G_0W_0$计算考虑\textrm{RPA}的结果，可以看到更大的差别。这种本质的差别源于只有\textrm{BSE}方法中考虑了芯层电子。在\textrm{BSE}计算中节点函数接近1，表明体系中$1s$芯层电子对屏蔽作用贡献极小。
+
+另一方面，与$G_0W_0$计算考虑\textrm{RPA}不同，当前计算的介电函数是包含\textrm{TDA}近似的，这一点在数值上看，远没有概念上重要。换言之，在\textrm{BSE}计算中，\textrm{RPA}的介电函数是考虑\textrm{TDA}近似的，而$G_0W_0$计算中，则完全没有考虑\textrm{TDA}近似。
+
+计算\ch{LiCl}的\ch{Li}的\textrm{K}边\textrm{XAS}谱中的激子波函数。
+
+对于激子波函数或电荷密度的可视化，对于分析体系中的激子局域性和对称性很有用。
+
+激子波函数可以表示电子-空穴两部分粒子的坐标的函数，$\Psi_{\lambda}(\vec r_e,\mathbf{r}_h)=\sum_\limits{vc}X_{vc}^{\lambda}\chi_v^{\ast}(\mathbf{r}_h)\chi_c(\vec r_e)$。为了在\textrm{3D}空间中可视化波函数，则需要固定一组坐标，在\textrm{XAS}中，芯电荷是非常局域的，因此建议规定空穴坐标。
+
+为了计算激子波函数，计算中必须给定本征矢的数目。习惯上通过将计算控制参数\texttt{BSEHOLE}指定为激发原子的坐标，来完成芯电子-空穴位置的固定，再通过计算控制参数\texttt{NBSEEIG}指定分析的波函数的数量。
+
+在指定目录下，设置执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+计算结束后，通过\textrm{Py4vasp}模块，绘制第一个亮激发的电荷密度图。第一个亮激发时三重简并的，为了绘制对应的波函数图，要将三部分加和。
+
+可视化激子电荷密度，可以看到激子位于两个最近邻的\ch{Li}原子之间，而中心在一个\ch{Li}原子上。
+
+如果想看第一个暗激发，可以改变\textrm{Python}中方法\textsc{to\_ngl}的第一个变量\\
+\textsc{bse.exciton.density.to\_ngl(``1'',isolevel=1,center=True)}
