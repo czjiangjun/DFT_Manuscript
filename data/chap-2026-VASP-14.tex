@@ -1,8 +1,93 @@
 \section{强关联体系}
-强管理材料是体系中电子-电子相互作用非常重要，因而不能用独立粒子近似(如\textrm{DFT})来近似地合理描述地体系。这些体系中往往包含有局域地部分填充电子的元素。而电子相关效应导致了金属-绝缘体转变，磁性和非常规超导等。为了模拟这一类体系，人么发展了一套超越\textrm{DFT}的计算理论和方法，如\textrm{DFT}+$U$，约束无规相近似\textrm{(constrained Random-Phase Approximation, cRPA)}和动力学平均场理论\textrm{(Dynamical Mean-Field Theory, DMFT)}
+强管理材料是体系中电子-电子相互作用非常重要，因而不能用独立粒子近似(如\textrm{DFT})来近似地合理描述地体系。这些体系中往往包含有局域地部分填充电子的元素。而电子相关效应导致了金属-绝缘体转变，磁性和非常规超导等。为了模拟这一类体系，人们发展了一套超越\textrm{DFT}的计算理论和方法，如\textrm{DFT}+$U$，约束无规相近似\textrm{(constrained Random-Phase Approximation, cRPA)}和动力学平均场理论\textrm{(Dynamical Mean-Field Theory, DMFT)}
 
 \subsection{约束无规相近似}
 \subsubsection{能带结构}
 通过计算\ch{NiO}的初基原胞计算基态波函数和未占据态，并在$12\times12\times12$的$\vec k$点网格上计算$p$和$d$电子态的投影\textrm{DOS}。
 
-强管理材料是体系中电子-电子相互作用非常重要，因而不能用独立粒子近似(如\textrm{DFT})来近似地合理描述地体系。这些体系中往往包含有局域的部分填充$d$电子和$f$电子的元素。
+强管理材料是体系中电子-电子相互作用非常重要，因而不能用独立粒子近似(如\textrm{DFT})来近似地合理描述地体系。这些体系中往往包含有局域的部分填充$d$电子和$f$电子的元素。电子相关效应引起的现象包括金属-绝缘体转变，磁性和非常规超导。为了模拟这一类体系，人们发展了若干超越\textrm{DFT}的模型，如\textrm{cRPA}，\textrm{DFT+}$U$和\textrm{DMFT}。%第一部分涉及\textrm{cRPA}，第二部分涉及\textrm{DFT+}$U$和\textrm{DMFT}
+
+\textrm{cRPA}是可以计算模型\textrm{Hamiltonian}的有效相互作参数$U$，$J$和$J^{\prime}$。\upcite{PRB77-085122_2008, PRB112-254102_2025}。其主要思想是忽略$GW$方法中特定目标电子态的屏蔽\textrm{Coulomb}相互作用$W$的屏蔽效应，\textcolor{red}{结果某些屏蔽\textrm{Coulomb}相互作用可以通过由模型\textrm{Hamiltonian}描述的局域基函数张开的目标空间来计算}。通常目标空间的维度较低(一般包括5个电子态波函数)，因此也可以适用于高精度的计算，如\textrm{DMFT}。
+
+一个\textrm{cRPA}计算包含如下几步:
+\begin{enumerate}
+	\item \textrm{DFT}基态计算\textrm{(e01)}
+	\item 未占据轨道的\textrm{Kohn-Sham}本征态计算\textrm{(e01)}
+	\item \textrm{DOS}投影(包括胖能带)\textrm{(e01)}
+	\item 本征态的\textrm{Wannier}函数投影\textrm{(e02中\ch{Ni}的$d$和\ch{O}的$p$轨道)}
+	\item \textrm{cRPA}计算\textrm{(e03)}
+\end{enumerate}
+本算例中，首先将计算\ch{NiO}的基态，并产生用于能带分析的未占据本征态。
+
+\ch{NiO}结构文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+采用默认的\textrm{PBE}泛函完成基态的\textrm{DFT}计算，因此\textrm{INCAR}参数就是标准的\textrm{DFT}计算:
+
+\texttt{SYSTEM}是计算对象的名称；\texttt{NBANDS}指定计算中总的\textrm{Kohn-Sham}轨道的数目；\texttt{ISMEAR}=-1表示\textrm{Fermi}附近采用\textrm{Fermi}函数积分方案(后续\texttt{LFINITE\_TEMPERATURE}所必须的)；\texttt{SIGMA}是展宽参数；\texttt{EDIFF}是电子步自洽迭代收敛标准。
+
+$\vec k$空间网格剖分方案是以$\Gamma$点为中心的$12\times12\times12$网格文件\textrm{KPOINTS}
+
+对于\textrm{cRPA}计算，采用带\textrm{\_GW}名称版本的原子数据集。相比于传统的赝势，这样的原子数据集的势函数可以在更大的能量范围内符合原子散射性质。用户可以通过各元素的\textrm{POTCAR}中\texttt{TITEL}参数确定元素的原子数据集版本。
+
+执行\textrm{Bash}命名，完成\textrm{VASP}计算。
+
+计算结束后得到\textrm{DFT}基态，通过\textrm{Py4vasp}模块可以得到\textrm{HOMO}和\textrm{LUMO}的能量本征值差，并绘制\textrm{DOS}曲线。
+
+\textrm{PBE}计算的带隙是\textrm{0.0505356060869957}
+
+小的带隙表明\ch{NiO}很可能是金属，但是因为其中存在强相关的电子，它实际上是\textrm{Mott}绝缘体。
+
+通过计算，得到产生未占据态轨道所必须的\textrm{WAVECAR}文件。
+
+第二步，增加未占据的数目确定长波极限下的极化率(数据保存在\textrm{WAVEDER}文件中)。
+
+计算控制参数文件\textrm{unoccupied/INCAR}
+
+增加\texttt{NBANDS}的数目，完成\textrm{Hamiltonian}的单次精确对角化\textrm{\texttt{ALGO}=Exact}。增加\texttt{NBANDS}的数目，因此计算的能带不仅包括占据轨道，而且包括\textrm{cRPA}计算必须的未占据轨道。本次计算的\textrm{WAVECAR}和\textrm{WAVEDER}文件是实际\textrm{cRPA}是计算的输入文件。设置\texttt{LOPTICS}=\textrm{T}来计算频率相关的介电函数矩阵，设置\texttt{LFINITE\_TEMPERATURE}=\textrm{T}来计算光学矩阵元。
+
+执行\textrm{Bash}命令，复制\textrm{DFT}计算的\textrm{WAVECAR}，完成\textrm{VASP}计算。
+
+由于\texttt{NBANDS}增加，因此计算的不仅包括占据轨道也包括未占据轨道。未占据轨道是后续\textrm{cRPA}计算所必须的，首先选定相关的能带来构建局域的\textrm{Wannier}函数基组。
+
+第三步计算\ch{NiO}的\textrm{DOS}并确定$p$-和$d$-轨道为主的能带。
+
+计算控制文件\textrm{fatband/INCAR}
+
+\texttt{EMIN}和\texttt{EMAX}定义了绘制\textrm{pDOS}的能量下限与上限，而\texttt{NEDOS}确定绘制\textrm{DOS}曲线的横轴网格点数。
+
+执行\textrm{Bash}命令，复制上一步计算的\textrm{WAVECAR}和\textrm{CHGCAR}文件，完成\textrm{VASP}计算。
+
+检查哪些能带分别具有\ch{NiO}中\ch{Ni}的$d$轨道和\ch{O}的$p$轨道的特征。读者将会在\textrm{Fermi}面附近8个能带具有上述轨道的特征，这些能带的编号依次为2-9，覆盖的能量范围是-8到\textrm{2eV}的范围。
+
+从这部分电子态中，可以确定目标空间，选择上述-8到\textrm{2eV}的8个能带，混合了$s$-，$p$-和$d$-轨道的特征(在文件\textrm{PROCAR}中，包含$spd$-和每个轨道的位点的角动量投影波函数)。也可以只选局域在\ch{Ni}原子的5个$d$-电子态，不过这样构建，可利用的局域基函数也会更少。相反，当\ch{O}的$p$-电子态(其在\ch{O}原子周围离域)参与混合后，得到的\textrm{Wannier}函数能够更好地描述\textrm{Fermi}能附近的轨道。当然，也可在构建\textrm{Wannier}时包含$s$-电子态，不过$s$-电子态与近邻的$p$-电子态纠缠(位于$\sim\mathrm{eV}$附近)，因此如果选择了$s$-态，就很难保证不带入$p$-电子态。而且即便包含了$s$-电子态，其对\textrm{Fermi}能\textrm{(0eV)}附近的5个能带的贡献极小，基本可以忽略。
+
+应用\textrm{Py4vasp}模块可以考察$p$-和$d$-电子态对\textrm{DOS}贡献的情况。
+
+通过\textrm{Python}脚本中改变\textsc{NiO\_band.dos.plot(``d'')}或\textsc{NiO\_band.dos.plot(``p'')}变成\textsc{NiO\_band.dos.plot(``Ni'')}或\textsc{NiO\_band.dos.plot(``O'')}来检查\textrm{DOS}中哪些位置是局域电子态。
+
+在\textrm{DOS}中，在\textrm{Fermi}能级\textrm{(0eV)}附近的某些位置的贡献由$p$电子态渐变为$d$电子态为主，在\textrm{-5eV}附近则是由$d$电子态渐渐为$p$电子态为主，说明选择的基函数中包含$p$电子态的重要性。此外，在$\sim7\mathrm{eV}$附近，主要也是来自$d$-电子态的贡献，而在\textrm{0eV}附近则基本没有$s$-电子态的贡献，因此无须包含$s$-电子态。由8个\textrm{Blochl}能带可以构建8个\textrm{Wannier}轨道。%下一步将会学习生成用于\textrm{cRPA}计算的\textrm{Wannier}基函数。
+
+\subsubsection{\rm{Wannier}投影}
+对\ch{NiO}通过$12\times12\times12$$\vec k$空间网格，通过\textrm{Wannier90}选项产生\textrm{Wannier}函数。
+
+\textrm{Wannier}函数是构建小的局域基组的重要工具\upcite{PRB56-12847_1997,PRB75-195121_2007}。\textrm{Blochl}轨道$\Psi_{n\vec k}^{\sigma}(\vec r)$与平移的周期函数$\mu_{n\vec k}^{\sigma}(r)$的关系是
+\begin{displaymath}
+	\Psi_{n\vec k}^{\sigma}(\vec r)=\mathrm{e}^{\mathrm{i}\vec k\cdot\vec r}\mu_{n\vec k}^{\sigma}(r)
+\end{displaymath}
+这里$n$是能带指标，$\vec k$是晶体动量，$\sigma$是自旋。而\textrm{Blochl}轨道的线性组合可以得到\textrm{Wannier}函数$|w_{i\vec R}^{\sigma}\rangle$
+\begin{displaymath}
+	|w_{i\vec R}^{\sigma}\rangle=\dfrac1{N_k}\sum_{n\vec k}\mathrm{e}^{-\mathrm{i}\vec k\cdot\vec R}T_{in}^{\sigma(\vec k)}|\Psi_{n\vec k}^{\sigma}\rangle
+\end{displaymath}
+这里$N_k$是$\vec k$点数目，而$T_{in}^{\sigma(\vec k)}$是平移矩阵。这里使用$T$也因为\textrm{DFT+}$U$计算中使用了$U$(即一直使用的$U$-标志:$U_{nm\vec k}$)
+
+通常这样构造的基函数是局域的，而如果周期性影像间的相互作用则可以忽略，因此可以由位于$\vec R=0$的元胞中的\textrm{Wannier}函数来计算
+\begin{displaymath}
+	|w_{i\vec R}^{\sigma}\rangle=\dfrac1{N_k}\sum_{n\vec k}T_{in}^{\sigma(\vec k)}|\Psi_{n\vec k}^{\sigma}\rangle
+\end{displaymath}
+由类似\textrm{cRPA}的模型\textrm{Hamiltonian}，可以使用少量\textrm{Bloch}波函数构建小的子空间，而目标电子态主要集中在以化学势(或\textrm{Fermi}能)为中心的能级附近，而且空间上局域在某些原子/离子附近。模型\textrm{Hamiltonian}可以通过\textrm{Wannier}基函数表示目标电子态，方便地求解。
+
+%本算例中通过\textrm{Wannier90}投影出\textrm{Wannier}轨道，并绘制出波函数并可视化其各部分。
+
+\ch{NiO}结构文件\textrm{POSCAR}
