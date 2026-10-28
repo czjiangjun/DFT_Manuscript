@@ -140,4 +140,108 @@ $\vec k$空间网格文件\textrm{KPOINTS}
 
 通过\textrm{Py4vasp}模块绘制谱图，计算结果与实验结果非常相似，通过计算中合理的参数，可以很好地提升谱峰的相对位置和峰强度。\textcolor{red}{当然，关于计算参数的反复筛选和计算耗时的问题已经超出本讲义的讨论范围。建议参考文献\cite{PRB106-155133_2022}}
 
-\subsection{}
+\subsection{由\rm{Bethe-Salpeter}方程求解\ch{LiCl}的\rm{XAS}的\rm{K}-边}
+这部分讲义采用多体微扰理论\textrm{(Many-Body Perturbation Theory, MBPT)}来模拟岩盐结构的\ch{LiCl}中的\textrm{X}-射线吸收。在\textrm{MBPT}，光谱中电子-空穴相互作用或激子效应可以通过\textrm{BSE}方程求解。
+
+第一步，需要计算$GW$近似的准粒子和介电张量，在$GW$近似中，粒子并非独立，相反，电子在介质中传播过程中彼此相互作用，诱导产生电荷极化。电子也被周围的极化电子云包裹。这种被包裹的电子成为准粒子。
+
+求解以下近似单电子方程，可以得到准粒子(本征态和本征值)信息
+\begin{displaymath}
+	(T+V_{\mathrm{ext}}+V_{\mathrm{h}})\Psi_{n\vec k}(\vec r)+\int\mathrm{d}\vec r\Sigma(\vec r,\vec r^{\prime},E_{n\vec k})\Psi_{n\vec k}(\vec r^{\prime})=E_{n\vec k}\Psi_{n\vec k}(\vec r)
+\end{displaymath}
+该方程中通过自能$\Sigma(\vec r,\vec r^{\prime},E_{n\vec k})$引入多体效应，自能$\Sigma(\vec r,\vec r^{\prime},E_{n\vec k})$是非局域的，且与能量相关的势函数。在$GW$中，自能$\Sigma$可以近似地表示为$\Sigma=GW$，亦即\textrm{Green}函数$G$和屏蔽\textrm{Coulomb}相互作用$W$的乘积。$GW$方法由此得名。\textrm{Coulomb}相互作用的介电屏蔽一般由无相规近似\textrm{(Random-Phase Approximation, RPA)}计算。
+
+原则上，准粒子方程可以自洽求解。不过最常用的方法是经过一次迭代就停止，这称为$G_0W_0$近似。在$G_0W_0$近似中，由\textrm{Kohn-Sham}本征态和本征值出发，计算得到\textrm{Green}函数和屏蔽\textrm{Coulomb}相互作用，然后就求解一次准粒子方程，而不进行自洽迭代。
+
+\subsubsection{$G_0W_0$近似计算的\ch{LiCl}的带隙}
+通过$G_0W_0$计算\ch{LiCl}的准粒子能量，并确定带隙。
+
+$G_0W_0$计算主要包括以下三步
+\begin{enumerate}
+	\item 第一步，\textrm{DFT}的基态计算
+	\item 第二步，由自洽求解的波函数\textrm{(WAVECAR)}出发，计算额外的未占据轨道的\textrm{Kohn-Sham}本征态，这一步采用\textrm{Hamiltonian}矩阵的精确对角化方法计算完成。计算介电屏蔽函数性质时，需要考虑这些额外的未占据\textrm{Kohn-Sham}本征态。接着计算周期边界条件的径向\textrm{Kohn-Sham}函数对应\textrm{Bloch}适量$\vec k$的改变(计算结果存储在\textrm{WAVEDER}文件中)。
+	\item 第三步也是最后一步才是真正的$G_0W_0$计算，这一步需要以\textrm{WAVECAR}和\textrm{WAVEDER}文件中的数据作为起点。
+\end{enumerate}
+
+\textrm{DFT}基态计算的输入文件
+
+立方结构的\ch{LiCl}的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}，采用默认计算
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+原子数据集文件\textrm{POTCAR}\\
+对于$GW$计算，应该采用的原子数据集来自\textrm{\_GW}的版本。构造这类势函数时，要比传统的赝势能够在更大的能量范围内模拟原子散射性质，这需要计算包括更多的未占据态。注意每个元素的\textrm{POTCAR}的\texttt{TITEL}的信息。
+
+执行\textrm{Bash}命令完成\textrm{VASP}计算。
+
+\textrm{DFT}基态计算，在\textrm{OUTCAR}文件中查找\textsc{fundamental gap}
+
+基本带隙是\textrm{6.4eV}
+
+第二步在独立粒子图像下，计算未占据态的\textrm{Kohn-Sham}轨道和频率相关的介电函数。计算中差不多要$3\sim4$倍的\textrm{VASP}默认的\textrm{Kohn-Sham}轨道数目，先确定\textrm{OUTCAR}中\textrm{NBANDS}的值，并对比\textrm{unoccpied-states/INCAR}中的计算控制参数\texttt{NBANDS}。
+
+类似地，复制前面计算的\textrm{WAVECAR}，执行\textrm{Bash}命令完成\textrm{VASP}计算。
+
+应用\textrm{Py4vasp}模块，绘制介电函数曲线
+
+%介电函数中是否包含激子效应
+
+最后一步，完成真正的$G_0W_0$计算，
+
+对应的输入文件位于\textrm{gw/INCAR}
+
+为了完成单次$GW$计算，设置计算控制参数\texttt{ALGO}=\textrm{EVGW0(``eigenvalue GW'')}并要求单次电子计算\texttt{NELMGW}=1。注意计算控制参数\texttt{NBANDS}的值与产生\textrm{WAVECA}和\textrm{WAVEDER}的数目一致。
+
+类似地，复制前面计算的\textrm{WAVECAR}，\textrm{WAVEDER}，然后执行\textrm{Bash}命令完成\textrm{VASP}计算。
+
+在\textrm{OUTCAR}文件中，对每个$\vec k$点的能带，确定准粒子能量\textsc{QP-energies}和重整化因子\textsc{Z}。查找对应的位置，
+
+$G_0W_0$计算的准粒子的基本带隙是\textrm{8.9eV}。
+
+根据\textrm{Py4vasp}模块，对比由独立粒子近似的介电函数和\textrm{RPA}的介电函数，后者考虑了电子穿越介质时与周围环境(极化)相互作用。
+
+实验中确定的介电常数是2.7，与\textrm{DFT}计算类似，$GW$计算要求彻底的收敛分析。除了一般的\textrm{DFT}参数，$GW$计算要对空能带计算控制参数\texttt{NBANDS}和频率数\texttt{NOMEGA}的收敛测试。%本算例中仅陷于相对低的收敛要求。
+
+\subsubsection{由\rm{BSE}确定\ch{licl}的\rm{x}-射线吸收谱}
+在介电函数中，可以通过\textrm{Bethe-Salpeter}方程理论说明电子-空穴相互作用(激子效应)。\textrm{BSE}方程可以写成双粒子极化率$L$的\textrm{Dyson}方程形式
+\begin{displaymath}
+	L=L_0+L_0(v-W)L
+\end{displaymath}
+式中描述相互作用的有两项，净的\textrm{Coulomb}相互作用$V$和屏蔽相互作用$W$。求解该方程的本征值，可以确定激发能$\omega_{\lambda}$。在\textrm{Tamm-Dancoff}近似\textrm{(Tamm-Dancoff Approximation, TDA)}下，该方程可以写成
+\begin{displaymath}
+	AX_{\lambda}=\omega_{\lambda}X_{\lambda}
+\end{displaymath}
+这里的$A$是双粒子\textrm{Hamiltonian}是
+\begin{displaymath}
+	A_{vc}^{v^{\prime}c^{\prime}}=(\varepsilon_v-\varepsilon_c)\detla_{vv^{\prime}}\delta_{cc^{\prime}}+\langle cv^{\prime}|V|vc^{\prime}\rangle-\langle cv^{\prime}|W|vc^{\prime}\rangle
+\end{displaymath}
+这里$v$，$v^{\prime}$和$c$，$c^{\prime}$分别对应占据态和未占据态。在一般的光学区域，占据态$v$，$v^{\prime}$只包括价层态，而在\textrm{X}-射线吸收谱\textrm{(X-ray Absorption Spectra, XAS)}中，$v$和$v^{\prime}$还包含激发的芯层态，对应的是$GW$准粒子的能量和轨道波函数。
+
+在倒空间总，矩阵$A$可以写成
+\begin{displaymath}
+	\begin{aligned}
+		A_{vx\vec k}^{v^{\prime}c^{\prime}\vec k^{\prime}}=&(\varepsilon_v-\varepsilon_c)\delta_{vv^{\prime}\delta_{cc^{\prime}\delta_{\vec k\vec k^{\prime}+\dfrac2{\Omega}\sum_{\vec G\neq0}\bar{V}_{\vec G}(\vec q)\langle c\vec k|\mathrm{e}^{\mathrm{i}\vec G\cdot\vec r}|v\vec k\rangle\langle v^{\prime}\vec k^{\prime}|\mathrm{e}^{-\mathrm{i}\vec G\cdot\vec r}|c^{\prime}\vec k^{\prime}\rangle\\
+		&-\dfrac2{\Omega}\sum_{\vec G\vec G^{\prime}}W_{\vec G,\vec G^{\prime}}(\vec q,\omega)\delta_{\vec q,\vec k-\vec k^{\prime}}\langle v\vec k|\mathrm{e}^{\mathrm{i}(\vec q+\vec G)|v^{\prime}\vec k^{\prime}\rangle\langle v^{\prime}\vec k^{\prime}|\mathrm{e}^{-\mathrm{i}(\vec q+\vec G)}|v\vec k\rangle
+	\end{aligned}
+\end{displaymath}
+这里下标$v$和$v^{\prime}$遍历全部占据态，即包括芯层电子和价层电子，$\Omega$是晶胞体积，$\bar{V}$不考虑长程部分的净的\textrm{Coulomb}势
+\begin{displaymath}
+	\bar{V}_{\vec G}(\vec q)=\left\{
+		\begin{aligned}
+			0 & \mbox{若} G=0\\
+			\dfrac{4\pi}{|\vec q+\vec G|^2} &\mbox{其余G}
+		\end{aligned} \right.
+\end{displaymath}
+而屏蔽\textrm{Coulomb}势
+\begin{displaymath}
+	W_{\vec G,\vec G^{\prime}}(\vec q,\omega)=\dfrac{4\pi\epsilon_{\vec G\vec G^{\prime}}^{-1}(\vec q,\omega)}{|\vec q+\vec G||\vec q+\vec G^{\prime}|}
+\end{displaymath}
+这里介电函数$\epsilon_{\vec G,\vec G^{\prime}}(\vec q)$描述\textrm{RPA}下的屏蔽相互作用$W$。
+\begin{displaymath}
+	\epsilon_{\vec G,\vec G^{\prime}}^{-1}(\vec q,\omega)=\delta_{\vec G,\vec G^{\prime}}\dfrac{4\pi}{|\vec q+\vec G|^2}\xi_{\vec G,\vec G^{\prime}}^{\mathrm{RPA}}(\vec q,\omega)
+\end{displaymath}
+尽管介电函数与频率相关，通过\textrm{BSE}的标准计算，静态近似$W_{\vec G,\vec G^{\prime}}(\vec q,\omega=0)$。
+
+计算\ch{licl}的\textrm{XAS}谱的$K$-边。完成$G_0W_0$计算，可以求解\textrm{BSE}。
