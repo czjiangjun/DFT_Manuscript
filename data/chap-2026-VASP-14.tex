@@ -67,7 +67,7 @@ $\vec k$空间网格剖分方案是以$\Gamma$点为中心的$12\times12\times12
 
 通过\textrm{Python}脚本中改变\textsc{NiO\_band.dos.plot(``d'')}或\textsc{NiO\_band.dos.plot(``p'')}变成\textsc{NiO\_band.dos.plot(``Ni'')}或\textsc{NiO\_band.dos.plot(``O'')}来检查\textrm{DOS}中哪些位置是局域电子态。
 
-在\textrm{DOS}中，在\textrm{Fermi}能级\textrm{(0eV)}附近的某些位置的贡献由$p$电子态渐变为$d$电子态为主，在\textrm{-5eV}附近则是由$d$电子态渐渐为$p$电子态为主，说明选择的基函数中包含$p$电子态的重要性。此外，在$\sim7\mathrm{eV}$附近，主要也是来自$d$-电子态的贡献，而在\textrm{0eV}附近则基本没有$s$-电子态的贡献，因此无须包含$s$-电子态。由8个\textrm{Blochl}能带可以构建8个\textrm{Wannier}轨道。%下一步将会学习生成用于\textrm{cRPA}计算的\textrm{Wannier}基函数。
+在\textrm{DOS}中，在\textrm{Fermi}能级\textrm{(0eV)}附近的某些位置的贡献由$p$电子态渐变为$d$电子态为主，在\textrm{-5eV}附近则是由$d$电子态渐渐为$p$电子态为主，说明选择的基函数中包含$p$电子态的重要性。此外，在$\sim-7\mathrm{eV}$附近，主要也是来自$d$-电子态的贡献，而在\textrm{0eV}附近则基本没有$s$-电子态的贡献，因此无须包含$s$-电子态。由8个\textrm{Blochl}能带可以构建8个\textrm{Wannier}轨道。%下一步将会学习生成用于\textrm{cRPA}计算的\textrm{Wannier}基函数。
 
 \subsubsection{\rm{Wannier}投影}
 对\ch{NiO}通过$12\times12\times12$$\vec k$空间网格，通过\textrm{Wannier90}选项产生\textrm{Wannier}函数。
@@ -91,3 +91,35 @@ $\vec k$空间网格剖分方案是以$\Gamma$点为中心的$12\times12\times12
 %本算例中通过\textrm{Wannier90}投影出\textrm{Wannier}轨道，并绘制出波函数并可视化其各部分。
 
 \ch{NiO}结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+计算控制参数\texttt{LWRITE\_WANPROJ}确定是否将\textrm{Wannier}投影函数写入文件\textrm{WANPROJ}，该文件中包含每个$\vec k$点上指定投影的能带的\textrm{Wannier}投影矩阵\textbf{T}。\texttt{NUM\_WANN}控制须构建的\textrm{Wannier}函数的数目，\texttt{WANNIER90\_WIN}指定\textrm{wannier90.win}文件的内容，\textrm{LWANNIER90\_RUN}让\textrm{VASP}调用\textrm{wannier90}库函数。注意，由于计算控制参数\texttt{exclude\_bands}的规定，\textrm{Wannier}投影函数只包括8个能带。此外的\textrm{Wannier90}相关的计算控制参数选项确定了\textrm{Wannier}函数的数目，用于投影的能带数目和被投影的能带中的轨道类型。最后通过\textrm{gnuplot}文件绘制对应的胖能带图。设置计算控制参数\texttt{ALGO}=\textrm{NONE}，确保波函数不变，因为这是后处理步骤，波函数也不应该再有变化。
+
+$\vec k$空间网格剖分方案是以$\Gamma$点为中心的$12\times12\times12$网格文件\textrm{KPOINTS}
+
+执行\textrm{Bash}命令，复制上一步计算的\textrm{WAVECAR}文件，完成\textrm{VASP}计算。
+
+由此会依据前面产生的8个\textrm{Bloch}轨道，产生8\textrm{Wannier}轨道(数据写入\textrm{WANPROJ})。在\textrm{INCAR}文件中，通过计算控制参数\texttt{NUM\_WANN}=8来确定8个电子态，\textcolor{red}{对于\textrm{Wannier90}处理的计算控制参数，包括：}
+
+这些参数指定了参与\textrm{Wannier}投影的只限于\ch{Ni}的5$d$轨道和\ch{O}的3$p$为主的8个能带。
+
+应用\textrm{gnuplot}可以根据数据绘制源于$d$和$p$电子态的分析图文件。
+
+然后采用\textrm{Python}命令得到能带组分的分析图。
+
+如果选择了\textrm{Wannier}电子态，采用\textrm{Wannier}基组得到的能带结构，将和前面采用\textrm{Blochl}基组的结果类似。
+
+上述能带结构为\textrm{cRPA}计算很重要的内容。能带图中颜色的搭配反映了每个能带的原子轨道的特点。图中\ch{Ni}的$d$电子态标注为\textcolor{red}{红色}，而\ch{O}的$p$电子态标注为\textcolor{blue}{蓝色}。而\textrm{Fermi}能级附近($\sim0\mathrm{eV}$)的5个\textrm{Wannier}能带主要是$d$-电子特征，也有明显的$p$-电子态的贡献，而在更低能量($\sim-7\mathrm{eV}$)附近的\textrm{Wannier}能带，最重要的贡献来自$p$电子态，但也有明显的贡献来自$d$-电子态。
+
+作为\textrm{cRPA}计算的对象，本算例选择的是\textrm{Fermi}能附近的$5d$-电子态，这里这些$d$电子态通过模型\textrm{Hamiltonian}描述，在\textrm{wannmerf90.wout}文件中看到\textrm{Wannier90}的输出结果。
+
+从计算数据来看，前五个\textrm{Wannier}函数局域在位于\textsc{(0.0,0.0,0.0)}位置的\ch{Ni}原子附近，后三个\textrm{Wannier}函数局域在位于\textsc{(2.0855,2.0855,2.0855)}的\ch{O}原子附近。这些电子态对应与5$d$轨道和3$p$轨道。\textcolor{red}{如果想要选定最局域的轨道，即位于$\sim0.45$的\ch{Ni}为中心的$d$轨道和位于$\sim0.87$的\ch{O}为中心的$p$轨道。}%关于能带展宽，参见文献\cite{PRB56-12847_1997}。
+
+如果对于仅含有$d$-电子轨道的效果有兴趣，可以单独完成\textsc{d-only}目录下的计算。
+
+产生一个不同的\textrm{WANPROJ}文件，后续应用\textrm{cRPA}计算
+
+执行\textrm{Bash}命令，复制考虑未占据体系的计算的\textrm{WAVECAR}文件，完成\textrm{VASP}计算。
+
+在\textrm{VASP}计算过程中，对照两种不同的计算控制参数文件\textrm{INCAR}
