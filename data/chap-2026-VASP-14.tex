@@ -122,4 +122,15 @@ $\vec k$空间网格剖分方案是以$\Gamma$点为中心的$12\times12\times12
 
 执行\textrm{Bash}命令，复制考虑未占据体系的计算的\textrm{WAVECAR}文件，完成\textrm{VASP}计算。
 
-在\textrm{VASP}计算过程中，对照两种不同的计算控制参数文件\textrm{INCAR}
+\textcolor{red}{在\textrm{VASP}计算过程中，对照两种不同的计算控制参数文件\textrm{INCAR}}
+
+构建的\textrm{Wannier}电子态数目由8降为5，不再包括3$p$能带，(即能带2-4，\texttt{exclude\_bands=1-4})，没有包括\ch{O}的$p$电子态的投影(\textsc{O:p}已去除)。
+
+计算结束后，同样应用\textrm{Bash}命令在\textrm{wannier90.wout}文件中检查\textrm{Wannier}轨道的裂分扩展情况。
+
+结果显示，$d$-轨道裂分的$t_{2g}(0.95788)$和$e_g(1.6914)$扩展有明显的区别。两者都比包含$p$-轨道特征时分别有了大2-4倍的扩展\textcolor{red}{(见上面:0.45)}。这也表明了为了生成\textrm{Wannier}基函数，包含$p$-轨道的必要性和重要性。
+
+\subsubsection{约束无规相近似}
+针对\ch{NiO}初基原胞，采用\textrm{cRPA}针对8个\textrm{Wannier}函数计算\textrm{Hubbard}$U$，$U^{\prime}$和$J$参数，对比$4\times4\times4$和$6\times6\times6$两套$\vec k$空间网格剖分方案和两类频率采样点条件下对\textrm{Coulomb}势函数的影响。
+
+
