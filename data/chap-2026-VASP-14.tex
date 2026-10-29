@@ -133,4 +133,96 @@ $\vec k$空间网格剖分方案是以$\Gamma$点为中心的$12\times12\times12
 \subsubsection{约束无规相近似}
 针对\ch{NiO}初基原胞，采用\textrm{cRPA}针对8个\textrm{Wannier}函数计算\textrm{Hubbard}$U$，$U^{\prime}$和$J$参数，对比$4\times4\times4$和$6\times6\times6$两套$\vec k$空间网格剖分方案和两类频率采样点条件下对\textrm{Coulomb}势函数的影响。
 
+通过仔细选择\textrm{Wannier}轨道$w_a^{\sigma}(\vec r)$，可以计算\textrm{cRPA}相互作用。通过保存在\textrm{WANPROJ}文件中的\textrm{Wannier}基函数，可以给出有效相互作用矩阵$U_{ijkl}$。
+\begin{displaymath}
+	U_{ijklj}^{\sigma\sigma^{\prime}}=\int\mathrm{d}\vec r\mathrm{d}\vec r^{\prime}w_i^{\ast\sigma}(\vec r)w_j^{\sigma}(\vec r)U(\vec r,\vec r^{\prime},\omega)w_k^{\ast\sigma^{\prime}}(\vec r^{\prime})w_l^{\sigma^{\prime}}(\vec r^{\prime})
+\end{displaymath}
+这里$U(\vec r,\vec r^{\prime},\omega)$是频率$\omega$空间的\textrm{Coulomb}相互作用势。
+
+实际上，\textrm{Hubbard-Kanamori}相互作用可以写成
+\begin{displaymath}
+	\begin{aligned}
+		U^{\sigma\sigma^{\prime}}=&\dfrac1N\sum_{i\in T}U_{iiii}^{\sigma\sigma^{\prime}}\\
+		U^{\prime\sigma\sigma^{\prime}}=&\dfrac1{N(N+1)}\sum_{i,j\in T,i\neq j}U_{ijji}^{\sigma\sigma^{\prime}}\\
+		J^{\sigma\sigma^{\prime}}=&\dfrac1{N(N-1)}\sum_{i,j\in T,i\neq j}U_{ijij}^{\sigma\sigma^{\prime}}
+	\end{aligned}
+\end{displaymath}
+该表达式中的求和限于单个晶胞(即$\vec R=0$; $V_{ijkl}$，$U_{ijkl}$)。对于扩展体系(即$R>0$)，对应的是\textrm{Cooulomb}相互作用的积分。
+
+对于实际的\textrm{DFT+}$U$计算\upcite{PRB44-943_1991, PRB57-1505_1998}，采用的是一种特殊的平均方式，将在\textrm{DFT_DMFT}中讨论。
+
+计算\ch{NiO}的结构文件\textrm{POSCAR}
+
+计算控制参数文件分别在\textrm{./INCAR}文件和\textrm{fine\_grid/INCAR}文件中
+
+为了完成\textrm{cRPA}计算，设置计算控制参数\texttt{ALGO}=\textrm{CRPA}。该计算要使用局域基，这一点可通过设置\texttt{LOCALIZED\_BASIS}来指定。如果计算目录下存在\textrm{WANPROJ}文件，\textrm{VASP}会使用该文件中的数据作为对应的局域基。在本算例中，使用前面计算得到的\textrm{Wannier}投影函数。\texttt{NTARGET\_STATES}确定\textrm{cRPA}计算中不考虑的\textrm{Wannier}态波函数。\textrm{LFINITE\_TEMPERATURE}将会在\textrm{cRPA}计算中考虑有限温度的影响(要求采用\textrm{Fermi}展宽，\texttt{ISMEAR}=-1)，这对于零带隙或纠缠体系是必要的。另外不要忘记的是，\texttt{NBANDS}必须与产生的\textrm{WAVECAR}文件时设置的值相同。
+
+等离震荡计算的计算控制参数\textrm{plasmons/INCAR}
+
+$\vec k$空间网格剖分形式，在\textrm{./KPOINTS}文件和\textrm{plasmons/KPOINTS}文件中，都采用以$\Gamma$点为中心，$4\times4\times4$的粗网格方案
+
+密网格布点，在\textrm{fine\_grid/KPOINTS}文件中，是以$\Gamma$点为中心，$6\times6\times6$的方案
+
+在粗网格布点目录下，执行\textrm{Bash}命令，复制包含未占据态的\textrm{WAVECAR}文件和\textrm{Wannier}投影计算中的\textrm{WANPROJ}文件，完成\textrm{VASP}计算。
+
+在\textrm{OUTCAR}文件中，查找\textsc{Hubbard U}字符串。
+
+注意，更详尽的数据在\textrm{vasprun.h5}文件中。
+
+应用\textrm{Py4vasp}模块，分析各类相互作用$U$,$U^{\prime}$，$J$参数。
+
+增加$\vec k$空间网格点数目，考察网格点数目对计算的影响。在密网格目录下，$6\times6\timrs6$网格比$4\times4\times4$网格更密。(注意，这里计算的网格必须是能被\textrm{DFT}计算使用网格数整除，如之前使用的是$12\times12\timrs12$，这里使用$8\times8\timrs8$的网格就不可以。)
+
+类似地，在密网格目录下，执行\textrm{Bash}命令，复制包含未占据态的\textrm{WAVECAR}和\textrm{WAVEDER}文件，以及\textrm{Wannier}投影计算中的\textrm{WANPROJ}文件，完成\textrm{VASP}计算。
+
+一旦计算结束，同样应用\textrm{Py4vasp}模块，分析各类相互作用$U$,$U^{\prime}$，$J$参数。
+
+通过增加$\vec k$空间网格剖分点，净的\textrm{Coulomb}相互作用几乎没有变化，表明该相互作用随$\vec k$点网格已经收敛。后续的\textrm{DMFT}计算中，需要屏蔽\textrm{Hubbard}相互作用$U$，$U^{\prime}$和$J$的数值，所以这里要重点注意这些数据。类似地可以看到，计算中$J$也已经收敛，几乎不随着$\vec k$点增加发生变化。而$U$和$U^{\prime}$的变化(差不多有\textrm{0.1 eV})，看起来还没有收敛，所以后续计算采用密网格。
+
+在\textrm{cRPA}计算中设置\texttt{LTWO\_CENTER}，该参数指定非单中心的\textrm{Coulomb}积分，因此在文件\textrm{vaspout.h5}文件中数据集\textsc{uijkl}包含\textrm{Wannier}函数中心\textsc{R}之外的维度。
+
+该数据集存储如下积分(表达式中的$R$是描述\textrm{Coulomb}势在两个元胞之间的衰减形式)
+\begin{displaymath}
+	U_{ijkl}(R)=\int\mathrm{d}r\int\mathrm{d}r^{\prime}w_i(\vec r-\vec R)w_j(\vec r-\vec R)U(\vec r,\vec r^{\prime},\omega=0)w_k(\vec r^{\prime})w_l(\vec r^{\prime})
+\end{displaymath}
+
+\textrm{Hubbard-Kanamori}$U$函数的空间衰减通常采用\textrm{Ohno}势函数研究，即
+\begin{displaymath}
+	\dfrac{U(R)}{U(0)}=\sqrt{\dfrac{\delta}{R+\delta}}
+\end{displaymath}
+应用\textrm{Bash}命令查找\textrm{vaspout.h5}文件中的数据结构
+
+通过\textrm{Py4vasp}模块可以绘制模拟\textrm{Coulomb}势函数曲线。调节$delta$达到给定数据。尝试改变\textsc{radius\_max}参数，使得曲线与各离散点尽可能一致。
+
+图中每个点是晶体中\ch{Ni}原子的最近邻相互作用，但完全没有考虑\ch{O}原子，因为这里的\textrm{cRPA}计算仅考虑了5$d$轨道的贡献。
+
+\textrm{Ohno}势主要是由\textrm{Hubbard}$U$势导出的，但\textrm{Ohno}势被长程的噪声数据点严重地扭曲。\upcite{TCA2-219_1964, NPJCM10-286_2024}。这里的噪声主要源自采样的$\vec k$点不够，因此噪声可以通过增加采样$\vec k$点得到压制。此外，拟合中扣除噪声数据，也会提升两者的一致性。按照新的步骤重新计算
+\begin{enumerate}
+	\item 由上述绘图曲线中提取数据
+	\item 扣除异常值(比如上图中超过10\AA处的\textrm{0.74eV})
+	\item 绘制滤除数据并拟合\textrm{Ohno}势函数
+\end{enumerate}
+
+优化的\textrm{Ohno}参数为0.09749
+
+注意，在本算例中，为了说明拟合曲线如何完善，移除的点都是源自噪声。实际应用中，应该增加$\vec k$空间网格剖分点和平面波截断能，因为过于稀疏的\textrm{FFT}网格会产生噪声数据。
+
+对于大的晶胞，可以通过\textrm{Euclidean}空间-时间算法\upcite{CPC117-21100174-X_1999, PRB94-165109_2016}来评估\textrm{cRPA}计算。该方法在虚时间轴上执行所有内部计算。从这个角度说，一般的\textrm{Minkowski}时空度规$\eta=(-+-+)$就变换成$\eta=(++++)$，因此变成\textrm{Euclidean}空间$R^4$，有效\textrm{Coulomb}内核由此得以稀疏表示。
+
+相比于传统的在\textrm{Minkowski}时空域内的\textrm{cRPA}计算，该方法可以让用户使用更多内存研究大体系有效相互作用参数。
+
+相比于\textrm{Minkowski}算法，这种计算非常吃内存，而且对小体系计算更耗时，但对于大体系计算则快得多。使用4阶\textrm{MPI}并行和$4\times4\times4$网格点的计算，要大约\textrm{8GB}的\textrm{RAM}。
+
+注意，在计算过程中，屏幕输出\textsc{estimated memory requirement per rank ****.* MB, per node ****.* MB}后，会有较长时间的没有响应，也没有输出。但此次程序仍然在执行。
+
+类似地，在等离态计算目录下，执行\textrm{Bash}命令，复制包含未占据态的\textrm{WAVECAR}和\textrm{WAVEDER}文件，以及\textrm{Wannier}投影计算中的\textrm{WANPROJ}文件，完成\textrm{VASP}计算。
+
+对\textrm{vaspout.h5}文件检查，看看其保存了哪些结果。
+
+计算确定了位于\texttt{NOMEGA}虚频点的\textrm{Hubbard}相互作用，并将结果保存在\textsc{uijkl}数据集中。这些数据在实际使用中几乎没有用处，真正感兴趣的结果是作为实频函数的\textrm{Hubbard}相互作用，实频依赖的\textrm{Hubbard}相互作用可以通过拟合虚频数据形成\textrm{Pad\'e}表达式的解析延拓得到。\textrm{Pad\'e}表达式形式为
+\begin{displaymath}
+	U(z)=\dfrac{(z-u_1)(z-u_2)\cdots(z-u_N)}{(z-v_1)(z-v_2)\cdots(z-v_M)} \quad u_1,v_1,\cdots,u_N,v_M\in C
+\end{displaymath}
+应用\textrm{Py4vasp}模块，采用\textrm{AAA}算法可分别确定表达式分子和分母中多项式的根$u_1,v_1,\cdots,u_N,v_M$\upcite{SC20-A1494_2018}。不过在分子和分母上可能会有相同的根，在实际计算中两式则相互抵消。这种现象就是\textrm{Froissart}二重态。因为数值噪声，因为这些值留存在表达式中，破坏了解析延拓。可以使用参数\textsc{clean\_up\_tol}清除这些二重态。
+
 
