@@ -225,4 +225,26 @@ $\vec k$空间网格剖分形式，在\textrm{./KPOINTS}文件和\textrm{plasmon
 \end{displaymath}
 应用\textrm{Py4vasp}模块，采用\textrm{AAA}算法可分别确定表达式分子和分母中多项式的根$u_1,v_1,\cdots,u_N,v_M$\upcite{SC20-A1494_2018}。不过在分子和分母上可能会有相同的根，在实际计算中两式则相互抵消。这种现象就是\textrm{Froissart}二重态。因为数值噪声，因为这些值留存在表达式中，破坏了解析延拓。可以使用参数\textsc{clean\_up\_tol}清除这些二重态。
 
+采用\textrm{Py4vasp}模块绘制\textrm{Coulomb}相互作用曲线。
 
+图中的屏蔽相互作用$U$存在存在多个尖峰和起伏的结构。第一个峰(位于约$\mathrm{5,5eV}$处)差不多对应于\textrm{Fermi}能级附近的$p$-和$d$-电子态质心的距离(参照\textrm{DOS}和\textrm{Wannier}函数)，在较低能量激发饰，这是最容易出现的激发。即使改变计算控制参数\texttt{clean\_up\_tol}参数并未显著改变该峰的位置，表明这是一个真正的等离振荡峰，而并非源于\textrm{Froissart}二重态。在该峰出现之前\textrm{(<\textrm{5eV})}，有效\textrm{Coulomb}相互作用基本保持常数不变，说明对于\ch{NiO}来说，采用类\textrm{Hubbard}模型近似描述\textrm{Coulomb}相互作用势是一个合理的近似。
+
+在高频部分，屏蔽\textrm{Coulomb}相互作用势$U$开始逼近净的\textrm{Coulomb}势，为了解析更高频率势函数的演化趋势，需要计算更多的采样点。
+
+如果将\texttt{NOMEGA}的是指由12增大到24，可以看到该参数的增加对高频区势函数的数值解析的影响。%为了节约时间，这里并未完成该计算，读者可以自行尝试完成。
+
+该计算大约费时\textrm{10min}作用，通过\textrm{Bash}命令复制相关文件并通过\textrm{sed}命令，修改\textrm{INCAR}中的文件，然后执行\textrm{VASP}计算。
+
+计算结束后，应用\textrm{Python}脚本绘制势函数曲线图。
+
+使用24个虚频点，\textrm{AAA}拟合在高频区域给出更多的势能曲线变化的信息。不难看出，在低频区，\textrm{50eV}以上位置，\texttt{clean\_up\_tol}参数的变化，使得势函数曲线的起伏程度表现得更显著，这表明\textrm{Froissart}二重态的真实存在。随着数据点的增加，数值噪音得到显著压制。鉴于极小极大等距法\textrm{(Minimax isometry method)}选定的虚频点已经足够好\upcite{PRB101-205145_2020}，所以这是增加\texttt{NOMEGA}的值并未显著提升计算结果。相反，增加$\vec k$点数目有助于\textrm{Coulomb}势曲线在高频区的稳定性(注意这里计算用的虚频采用点数为24而不是12)，可以将\texttt{clean\_up\_tol}设置成更小的值。%用4核\textrm{MPI}、12\textrm{GB}内存的配置，计算需要较长的时间。
+
+可以忽略这些计算过程，重点关注结果分析，因为结果在对应的目录中。
+
+增加虚频采样点使得两个等离振荡峰更加明显，在高频区的\textrm{Coulomb}相互作用势曲线也更稳定。两个等离振荡峰对应两个不同的跃迁。第一个峰位于\textrm{5.5eV}，基本对应$d$-电子态和$p$-电子态的中心的距离，而位于\textrm{50eV}附近的等离振荡的主峰对应的是$GW$近似(典型的如\textrm{cRPA})下的群体激发。在更高频率下，可以看到屏蔽\textrm{Coulomb}势$U$开始逼近净\textrm{Coulomb}势$V$。只有在高密的$\vec k$空间网格剖分点和更多虚频网格采样点条件下，可以更好地解析相互作用函数。
+
+上述分析最重要的结论是解析连续不是一个黑盒，可以看得出，当改变$\vec k$点网格和频率采样点，第一等离振荡峰并未发生显著改变，说明该峰是可靠的。在模型\textrm{Hamiltonian}方法中，绝大部分关心的物理现象都发生在低频区。而高频区$(\sim50\mathrm{eV})$的峰是更难收敛。该峰基本对应于$\Gamma$-辐射，因此对我们没有太多的意义。更高频率更难收敛，所以结果是不可靠的。当用户完成此类计算时，不要纠结于这些。应该关注的重点放在低频区有清晰物理意义的峰上。
+
+如果用户有时间，推荐使用仅有$d$电子特征的\textrm{Wannier}函数轨道重新完成上述计算。首先完成\textsc{d-only}目录下的计算，然后重新计算\textrm{WANPROJ}文件。
+
+仅考虑$d$电子态时，在$4\times4\times4$$\vec k$点网格密度下，计算净的\textrm{Hubbard}相互作用势$U$值，由26.3724变为22.8494。而屏蔽\textrm{Hubbard}势$U$将由7.0806变为6.118。这意味着有一些相互作用遗失了。
