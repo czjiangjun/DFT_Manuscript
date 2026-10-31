@@ -248,3 +248,77 @@ $\vec k$空间网格剖分形式，在\textrm{./KPOINTS}文件和\textrm{plasmon
 如果用户有时间，推荐使用仅有$d$电子特征的\textrm{Wannier}函数轨道重新完成上述计算。首先完成\textsc{d-only}目录下的计算，然后重新计算\textrm{WANPROJ}文件。
 
 仅考虑$d$电子态时，在$4\times4\times4$$\vec k$点网格密度下，计算净的\textrm{Hubbard}相互作用势$U$值，由26.3724变为22.8494。而屏蔽\textrm{Hubbard}势$U$将由7.0806变为6.118。这意味着有一些相互作用遗失了。
+\subsection{\rm{DFT+}$U$和\rm{DFT+DMFT}}
+%这部分讲义按照当前库中\textrm{Workshop}的结构编次。
+用\textrm{VASP}完成\textrm{DFT}和\textrm{DFT+}$U$计算，再用\textsc{solild\_dmft}软件\textrm{TRIQS}采用\textrm{VASP}投影的函数\textrm{(PLOs)}完成\textrm{DFT+DMFT}计算。关于\textsc{TRIQS}软件如何在本机上安装，见安装说明文件\textsc{install\_triqs.txt}文本。
+
+\subsubsection{\rm{DFT}自洽计算和准备\rm{DMFT}准备}
+对反铁磁态\textrm{(AFM)}晶胞\ch{NiO}完成非铁磁\textrm{DFT}计算；将局域轨道转换称投影局域轨道\textrm{(Projected Local orbitals, PLOs)}，产生动力学平均场理论\textrm{(DMFT)}计算所需要的输入文件；并从之前的\textrm{cRPA}计算中提取$U$和$J$的值。
+
+\textrm{DFT+}$U$是在标准\textrm{DFT}基础上，不用增加很大计算量就可以较好地校正局域轨道(典型的$d$和$f$轨道)中强关联电子的唯相计算策略。标准的(半)局域交换-相关泛函无法很好地描述自相互作用，局域电子，以至于低估\textrm{Mott}绝缘体和某些导体的带隙。\textrm{DFT+}$U$通过引入类\textrm{Hubbard}的在位\textrm{Coulomb}修正$U$修正了局域轨道存在双电子占据轨道的此类问题。根据\textrm{Dudarev}等提出的旋转不变性表示\upcite{PRB57-1505_1998}，体系总能量可以表示为
+\begin{displaymath}
+	E=E_{\mathrm{DFT}}+\sum_I\left[\dfrac{U^I}2\sum_{m,\sigma\neq m^{\prime},\sigma^{\prime}}n_m^{I\sigma}n_{m^{\prime}}^{I\sigma^{\prime}}-\dfrac{U^I}2n^I(n^I-1)\right]
+\end{displaymath}
+这里$n_m^{I\sigma}$是位于$I$格点处轨道$m$，自旋为$\sigma$的占据电子数。第二项$\dfrac{U^I}2n^I(n^I-1)$是重复计算校正，这一项扣除了包含在$E_{\mathrm{DFT}}$计算中估算的相互作用能，防止该项被重复计算两次。
+
+对于完全占据，方括号中的各项彼此抵消。因此在原子极限下，体系总能仍然保持$E_{\mathrm{DFT}}$不变，但是考虑到$U$值的贡献，对于分数占据的情况，体系变得更为局域，更符合真是占据的结果。虽然\textrm{DFT+}$U$简单且定性正确，但参数$U$的选择必须很审慎(如可以通过\textrm{cRPA}或线性响应)得到，但是该方法不能描述动态相关效应或\textrm{Kondo}效应的物理本质。所以必须采用\textrm{DFT+DMFT}才能描述这种情况。
+
+本算例中，先对反铁磁\ch{NiO}的非自旋极化\textrm{DFT}计算，准备局域轨道，完成\textrm{DFT+}$U$计算，提取$U$值和$J$值。
+
+反铁磁\ch{NiO}的结构文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}中各参数的含义
+\begin{itemize}
+	\item \texttt{SYSTEM}:~计算体系的名字
+	\item \texttt{NCORE}:~设置每个能带计算中，有多少个核参与\textrm{FFT}计算
+	\item \texttt{KPAR}:~设置$\vec k$点并行，即并行计算中，一次处理多少个$\vec k$点
+	\item \texttt{ISMEAR}:~设置展宽参数。在四面体方法及其\textrm{Bl\"ochl}校正时，不需要设置展宽参数
+	\item \texttt{KSPACING}:~指定$\vec k$空间网格剖分方案，给的是$\vec k$点的距离
+	\item \texttt{EDIFF}:~指定电子步收敛的条件。为了达到波函数和本征值的严格收敛条件，该值可以设得比较小(对应\textrm{OSZICAR}中残量\textsc{rms}的模)
+	\item \texttt{NELMIN}:~指定完成电子步自洽迭代的最少步数
+	\item \texttt{NBANDS}:~指定计算的\textrm{Kohn-Sham}轨道的数目
+	\item \texttt{LORBIT}:~指定轨道在原子球上的投影方法
+	\item \texttt{EMIN}:~指定\textrm{DOS}计算的能量下限
+	\item \texttt{EMAX}:~指定\textrm{DOS}计算的能量上限
+	\item \texttt{NEDOS}:~指定\textrm{DOS}计算的采样网格点
+	\item \texttt{LMAXMIN}:~指定写入\textrm{CHGCAR}文件中的\textrm{PAW}基函数中参与电荷密度混合并计算电荷密度的最大角动量量子数$l$
+	\item \texttt{LOCPROJ}指定原子轨道中进行投影的局域轨道
+\end{itemize}
+
+$\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}参数指定方法实现
+
+计算中对\ch{Ni}采用原子数据集是\textsc{Ni\_pv}，包括了与$d$电子有弱的杂化的重要的$p$价电子态。数据集的选择显著影响能带结构和晶格参数，所以选择正确的原子数据集非常重要。理论上，这里应该采用\textsc{Ni\_sv\_GW}原子数据集，但这并非是因为计算时间的缘故。
+
+在计算目录下，采用\textrm{Bash}命令完成\textrm{VASP}计算。
+
+该计算是非磁性的标准的\textrm{DFT}计算。
+
+讨论\textrm{INCAR}文件中的重要计算控制参数。通过\textsc{LOCPROJ}参数指定对\ch{Ni}-$d$轨道的投影。此外，指定\texttt{LORBIT}=14，在能量\texttt{EMIN}到\texttt{EMAX}范围内优化投影函数。对\textrm{PAW}投影函数的投影，留给用户的选择权是，可以选择向哪个\textrm{PAW}投影子轨道投影，通过该选项可以在指定能量范围内自动优化投影轨道选择。计算中的能带数目略有增加，为了保证\textrm{Kohn-Sham}波函数的收敛，收敛标准也更严格。
+
+在\textrm{OSZICAR}文件的最后，对于较小的晶胞，相关数据的形式为
+
+\textrm{Py4vasp}模块绘制\ch{NiO}的结构文件
+
+完成该标准\textrm{DFT}计算，在当前目录\textsc{e04\_scf}目录下，得到输出文件\textrm{vaspout.h5}和投影数据文件\textrm{LOCPROJ}和\textrm{PROJCAR}，由该计算可以构造\textrm{DMFT}计算所需要的输入文件\textrm{TRIQS/solid\_dmft}。
+
+\subsubsection{\rm{PLO}的构建和转换}
+在\textrm{DFT+DMFT}计算中，需要确定相关的子空间(本算例中是\ch{Ni}的$3d$轨道)。这里称为投影局域轨道\textrm{(PLOs)}。在\textrm{VASP}计算中，\textrm{PLOs}的构建方式与计算控制参数\texttt{LDAU}指定的将\textrm{Kohn-Sham}电子态波函数$|\Psi_{\nv\vec k}\rangle$投影到\textrm{PAW}提供的局域轨道上的方案相同:
+\begin{displaymath}
+	P_{L,\nv}^{\mathbf{R}}(\vec k)=\sum_i\langle\chi_L^{\mathbf{R}}|\phi_i\rangle\langle\tilde p_i|\tilde{\Psi}_{\nv\vec k}\rangle
+\end{displaymath}
+这里$|\chi_L^{\mathbf{R}\rangle}$是与关联的位置$\mathbf{R}$有关的局域基函数，$|\phi_i\rangle$是全电子波函数，$\tilde p_i$是标准\textrm{PAW}投影子函数。$L$是复合的局域量子数。最初的投影子函数是正交的，在$\vec k$空间点$\vec k$，通过局域轨道数$m$与\textrm{Kohn-Sham}基函数$\nv$相关联:~$P_{m,\nv}^{\mathbf{R}}(\vec k)$。
+
+局域投影函数有计算控制参数\texttt{LOCPROJ}选定，写入文件\textrm{LOCPROJ}(这些数据将会转换称\textrm{PLOs})和\textrm{PROJCAR}文件(该文件中包括格式输出数据)。通过\textrm{TRIQS/dft\_tools}处理初始的投影函数。\textsc{plo.cfg}定义了哪一个离子的哪个轨道作为关联轨道，而\textrm{Kohn-Sham}的轨道/能量范围将会投影到这些关联轨道上。\textcolor{red}{\textrm{plo}转换说明，有详细说明。}\textrm{Python}脚本\textrm{converter.py}(在\textrm{TRIQS/dft\_tools})读取\textrm{VASP}计算输出文件，并构建\textrm{vasp.h5}(这是\textrm{DFT+DMFT}软件\textrm{TRIQS/solid\_dmft}的输入文件。)
+
+通读\textrm{plo.cfg}代码，在代码中该文件完成的工作是\textrm{TRIQS/DMFT}建立局域投影子向\textrm{PLOs}的转换信息。在本算例的\textrm{plo.cfg}文件中，关键的计算控制参数是
+\begin{itemize}
+	\item \textsc{EWINDOW}:~找到与\textrm{Kohn-Sham}电子态相关的能量范围
+	\item \textsc{BANDS}:~用于投影的\textrm{VASP}计算的能量范围内的能量下标，\textcolor{red}{\textrm{VASP}中原始投影子是对全部能带的}
+	\item \textsc{LSHELL}=2:~表示$d$-壳层
+	\item \textsc{IONS}:~指定哪些原子带有强关联的$d$-壳层(两个反铁磁的\ch{Ni})
+	\item \textsc{CORR}=\textrm{TRUE}，确保该壳层是正确的(即，由\textrm{DMFT}要处理的轨道)
+\end{itemize}
+
+在当前计算目录下，%执行\textrm{Bash}命令，
+
+执行\textrm{Python}脚本\textrm{converter.py}
