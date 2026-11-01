@@ -401,8 +401,61 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 因此引入$+U$，电子交换的劈裂作用驱动了高的总自旋量子态$S=1$构型:~$e_g$电子的自旋向上完全占据，而相应的自旋向下全空。\textrm{DFT+}$U$将$e_g$轨道的自旋向上占据轨道推向能量更低的位置，而将自旋向下的未占据轨道推向能量更高的位置，从而在其彼此间拉开带隙。因此在\textrm{DOS}中在\textrm{2.5eV}附近看到很强的$e_g$峰。对于$t_{2g}$电子态，因为是完全占据的，所以基本不受影响。最终得到的带隙则来着电荷转移特征$(\mathrm{O}-2p\rightarrow\mathrm{Ni}-e_g)$而不是仅仅来自\textrm{Mott-Hubbard}相互作用。但无论如何，\textrm{DFT+}$U$很好地得到与实验结果($\sim4\mathrm{eV}$)接近的带隙。\upcite{PRL53-2339_1984}
 
 \subsubsection{单次\rm{DFT+DMFT}\textrm{(Hartree)}}
-对反铁磁\ch{NiO}完成\textrm{DFT+DMFT@Hartree}计算特殊函数。
+对反铁磁\ch{NiO}完成\textrm{DFT+DMFT@Hartree}计算谱函数。
 
-在\textrm{DFT}计算中，自洽迭代关注的是能量和电荷的收敛，而\textrm{DFT+DMFT}重点关注的是\textrm{Green}函数和自能的收敛。单粒子\textrm{Green}函数$G(\vec k,\omega)$
+在\textrm{DFT}计算中，自洽迭代关注的是能量和电荷的收敛，而\textrm{DFT+DMFT}重点关注的是\textrm{Green}函数和自能的收敛。在多体理论中，单粒子\textrm{Green}函数$G(\vec k,\omega)$是核心概念，它的定义是相互作用体系中加入或移除一个动量为$\vec k$能量为$\omega$的电子的概率振幅。对\textrm{DMFT}来说，\textrm{Green}函数是最好的描述工具，因为\textrm{Green}函数包含了实验观测的所需要的所有信息。谱函数$A(\vec k,\omega=-\dfrac1{\pi})\Im G(\vec k,\omega+\mathrm{i}0^+)$直接和角分辨光电子发射谱\textrm{(Angle-Resolved Photoemission Spectroscopy， ARPES)}的峰强度，而谱函数的$\vec k$空间积分就变称\textrm{0K}时，当相互作用消失时，无相互作用体系的\textrm{DOS}。不过通过角度积分的光电子发射谱还包括有准离子寿命，和\textrm{Hubbard}卫星峰等信息。
 
+为了完成这些计算，有必要指出的关键是由局域投影函数\textrm{(PLOs)}和\textrm{Kohn-Sham}本征值$\epsilon_k$计算得到的\textrm{Green}函数。进而由此计算\textrm{PLO}基函数表示的局域\textrm{Green}函数在$\vec k$空间积分的$G_{\mathrm{loc}}$。结合局域相互作用\textrm{Hamiltonian}，确定\textrm{DMFT}下的杂质问题\textrm{(impurity problem)}。求解杂质问题会得到新的自能，该自能代入\textrm{Green}函数并由此确定迭代循环。本算例中，采用近似杂质求解器，在杂质问题中仅计算\textrm{Hartree}势函数。
 
+以下内容属于深入讨论的细节，作为初学者，建议跳过理论部分，直接进行算例部分。
+
+在前面的步骤中，已经完成了所有的准备工作，开始单次\textrm{DMFT}计算。这里采用\textsc{triqs/hartree\_fock}杂质求解器(静态自能)。对密度-密度相互作用，会得到类似\textrm{DFT+}$U$的静态平均场相似的结果，不过这不需要进一步的参数设置。
+
+鉴于当前资源的有限性，这里只完成5步的\textrm{DMFT}迭代
+\begin{itemize}
+	\item 检查\textsc{dmft\_config.toml}并验证$U$和$J$和求解器的设置是否正确
+	\item 在指定目录下执行\textsc{solid\_dmft}计算，并通过文件\textsc{obervables\_imp0\_up.dat}检查收敛情况
+	\item 检查化学势，杂质占据和自洽度量的收敛
+	\item 运行后处理脚本得到\ch{Ni}的$d$电子的谱函数，并与\textrm{DFT+}$U$的\textrm{DOS}的数据对比
+\end{itemize}
+以下是复杂的理论部分，%因为计算要花费的时间很长，所以建议先提交计算再阅读理论部分
+
+粒子间相互作用的效果体现在自能$\Sigma(\vec k,\omega)$，写成\textrm{Dyson}方程就是
+\begin{displaymath}
+	G(\vec k,\omega)^{-1}=G_0(\vec k,\omega)^{-1}-\Sigma(\vec k,\omega)
+\end{displaymath}
+这里$G_0$是无相互作用的\textrm{Green}函数。$\Sigma$的实部移动并重整化(ง •̀_•́)ง准粒子能量，而$\Sigma$的虚部确定了准粒子的有限寿命，这两个因素在\textrm{DFT+}$U$中是无法体现的，只能由\textrm{DMFT}来表达。
+
+前面讨论的\textrm{DFT+}$U$，可以视为对\textrm{Hubbard}相互作用的静态平均场近似\textrm{(Static mean-field application)}，即自能是与频率无关的。\textrm{DMFT}将这种情形作了推广，引入了频率相关的自能$\Sigma(\omega)$，因此得到了动态相关效应，如准粒子重整化，\textrm{Hubbard}卫星峰和\textrm{DFT+}$U$中未曾涉及的\textrm{Kondo}效应等。形式上，\textrm{DMFT}将晶格问题映射到单个位点的\textrm{Anderson}杂质模型(在该模型中，关联的杂质与自洽的无相互作用体系的环境发生耦合)。而无相互作用体系的杂化函数又用\textrm{Weiss}场\textcolor{red}{$G_0$}来表示，用来描述杂质和环境间的有效相互作用。\upcite{RMP78-865_2006}
+
+在单次\textrm{DFT+DMFT}(不带电荷的自洽计算)，是在固定\textrm{DFT}电荷密度的基础上完成\textrm{DMFT}的杂质求解的。\upcite{RMP78-865_2006}。格点自能可由杂质自能近似表示，自洽条件要求杂质\textrm{Green}函数$G_{\mathrm{imp}}$与局域($\vec k$空间求和)的晶格\textrm{Green}函数$G_{\mathrm{loc}}$相等，即
+\begin{displaymath}
+	G_{\mathrm{imp}}=G_{\mathrm{loc}}
+\end{displaymath}
+对所有$\vec k$点上的格点\textrm{Green}函数、非相互作用色散关系$\epsilon_k$(即\textrm{DFT}态的本征值)以及当前杂质自能$\Sigma_{\mathrm{imp}}$的求和，就得到$G_{\mathrm{loc}}$:
+\begin{displaymath}
+	G_{\mathrm{loc}}=\sum_k\dfrac1{\mathrm{i}w_n+\mu-\epsilon_k-\Sigma_{\mathrm{imp}}}
+\end{displaymath}
+这里$\mu$是化学势，在每次迭代中，化学式都会自动调节，确保总的电子数守恒(即杂质占据数$\sum_{\limits\sigma}\langle n_{\sigma}\rangle$满足对应的电子填充)。在实际的迭代循环则这样处理:~由初始的杂质自能(一般设为零)出发，计算$G_{\mathrm{loc}}$，然后通过\textrm{Dyson}方程得到\textrm{Weiss}场，即环境的净的\textrm{Green}函数
+\begin{displaymath}
+	(G_0^{\mathrm{new}})^{-1}=\left( \sum_k\dfrac1{\mathrm{i}w_n+\mu-\epsilon_k-\Sigma_{\mathrm{imp}}} \right)^{-1}+\Sigma_{\mathrm{imp}}
+\end{displaymath}
+\textrm{Weiss}场$G_0$确定了杂质的环境:~告知杂质求解器在哪个指定能量的关联轨道与体系的其余部分(环境)发生杂化，以及杂化程度有多强。然后杂质问题由该$G_0$出发求解，得到新的$\Sigma_{\mathrm{imp}}$，反复迭代直至收敛。
+
+\textrm{DFT+DMFT@Hartree}表示在上述讨论基础上做了进一步的近似，杂质求解器仅限于面向\textrm{Hartree}相互作用的层次，即自能仅保留其来自静态(与频率无关)的\textrm{Hartree}项的贡献。在计算中，这样处理使得计算简单。该类型的计算也是对\textrm{DFT+}$U$结果的合理性检查:~收敛的\textrm{DFT+DMFT@Hartree}解将会重现\textrm{DFT+}$U$的\textrm{DOS}，因为两者都对应于同一类相互作用的静态平均场处理。重复计算的校正则被放入$\Sigma_{\mathrm{imp}}$项中，但处理的方式与\textrm{DFT+}$U$中相同。
+
+\textrm{DFT+DMFT}计算所需的输入文件在\textsc{strongly\_correlated/e06\_dmft\_os}目录，请仔细检查
+
+文件\textsc{dmft\_config.toml}:~计算软件\textrm{solid\_dmft}的计算配置文件，整个计算仅需要这一个配置参数文件。
+
+进入到计算目录下，执行\textrm{Bash}命令，复制之前计算得到的\textrm{VASP}输出文件\textrm{vasp.h5}，再执行\textrm{TRIQS}软件的计算命令\textrm{solid\_dmft}
+
+%如果不复制\textrm{vasp.h5}文件，也可以采用\textrm{link -s}命令，通过符号链接在计算目录下准备该文件，以节约存储空间。在4核服务器上，计算大约需要6$\sim$10\textrm{min}。用户可以通过\textrm{dmft\_config.toml}文件检查\textrm{solid\_dmft}的配置文件。
+
+整个\textrm{solid\_dmft}程序的计算过程由配置文件控制，该配置文件一般默认为\textrm{dmft\_config.toml}，不过这个配置文件也可以是别的文件名，此时文件名必须作为变量提交给\textrm{solid\dmft}。该文件的内容大致分为通用配置\textsc{(general)}，求解器配置\textsc{(solver)}，\textrm{DFT}配置\textsc{(dft)}，高级配置\textsc{(advanced)}，基本遵照典型的\textrm{toml}文件格式划分：
+
+在\textrm{dmft\_config.toml}文件中，最重要的计算参数是$U$(与\textrm{DFT+}$U$的$U$含义类似)；指定求解器类型(当前算例中，计算控制参数为\textrm{Hartree})，\textrm{DMFT}的计算迭代次数为\textrm{n\_iter\_dmft}。计算的任务名称参数为\textrm{jobname}。如果考虑重复计算校正，则计算控制参数为\textrm{dc\_type}(与\textrm{DFT+}$U$类似)。到这里主要的计算参数都不用改动，再检查一下这里设置的$U$和$J$的值，应该与之前计算得到的数值相同。
+
+在计算过程中，用户可以通过\textrm{Bash}命令，\textsc{tail -f e06\_dmft/out}检查当前目录下的计算进展。
+
+计算过程中会建立目录\textrm{beta20-hartree-afm}，所有的计算文件会保存为\textrm{h5}格式和文本格式的文件。
