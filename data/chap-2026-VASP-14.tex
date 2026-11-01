@@ -458,4 +458,43 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 
 在计算过程中，用户可以通过\textrm{Bash}命令，\textsc{tail -f e06\_dmft/out}检查当前目录下的计算进展。
 
-计算过程中会建立目录\textrm{beta20-hartree-afm}，所有的计算文件会保存为\textrm{h5}格式和文本格式的文件。
+计算过程中会建立目录\textrm{beta20-hartree-afm}，所有的计算文件会保存为\textrm{h5}格式和文本格式的文件。通览各生成文件，确保所有的重要的\textrm{DMFT}计算步骤(如提取局域\textrm{Green}函数，杂质求解，杂质占据数)都完成。特别要注意在杂质求解执行前后，给出的杂质密度矩阵的变化，这是计算执行是否正常的一个重要参考。当输入输出的密度矩相同，计算才会达到收敛。
+
+计算过程中，还可以检查\textsc{observables\_imp0\_up.dat}文件(每一个杂质的每个自旋有一个输出文件)。该文件存在\textsc{jobname}目录(本算例中就是\textrm{beta20-hartree-afm}目录)下，该文件汇总了每个迭代的重要的信息。计算过程中，要确保化学势\textsc{mu}收敛到确定的值。
+
+一旦计算结束，可以绘制\textrm{DOS}曲线，检查最重要的可观测量，确保计算正确收敛。主要可观测量包括
+\begin{itemize}
+	\item 化学势$\mu$(\textsc{mu})
+	\item 每个自旋的杂质占据数(\textsc{impurity occ up})
+	\item \textrm{Weiss}场的收敛$\delta G^0(\mathrm{i}w_n)$
+	\item \textrm{DMFT}的自洽迭代收敛条件 $\delta G_{\mathrm{imp}}=||G^{\mathrm{loc}}-G^{\mathrm{imp}}||$
+\end{itemize}
+也可以通过\textrm{Python}脚本，在\textsc{conv\_imp0.dat}文件中检查上述度规量，判断体系的收敛情况。
+
+所有的度规量在前几次迭代后，都表现出了好的收敛趋势。后两个图表明\textrm{DMFT}计算中最重要的度规量:~\textrm{Weiss}场$G^0(\mathrm{i}\omega)$和\textrm{DMFT}的自洽收敛条件$||G^{\mathrm{loc}}-G^{\mathrm{imp}}||$
+
+后处理:~\textrm{DOS}和谱函数计算
+
+谱函数可以首先通过晶格\textrm{Green}函数$\hat{G}(k,\omega)$构建，其结果可以与光电子发射\textrm{(Photoemission, PES)}实验对比。
+\begin{displaymath}
+	\hat{G}(k,\omega)=\left[ \omega+\mu-\hat{\epsilon}(k)-\left( \hat{\Sigma}(\omega)^{\mathrm{imp}}-\hat{\Sigma}^{\mathrm{dc}} \right) \right]^{-1}
+\end{displaymath}
+这里$\omega$是离散\textrm{Matsubara}频率，$\mu$是化学势，$\hat{\epsilon}(k)$是\textrm{DFT}计算的位于$\vec k$点的\textrm{Kohn-Sham}本征值，$\hat{\Sigma}(\omega)^{\mathrm{imp}}$是\textrm{DMFT}计算的自能，而$\hat{\Sigma}^{\mathrm{dc}}$是自能的重复计算校正。
+
+%采用\textrm{DMFT}自能，非相互作用的\textrm{Hamiltonian}$\epsilon(k)$(\textrm{Kohn-Sham}本征值)和得到的化学势
+谱函数$A(k,\omega)$可以如下计算
+\begin{displaymath}
+	A(k,\omega)=-\dfrac1{\pi}\Im G(k,\omega)
+\end{displaymath}
+而\textrm{PES}实验可测量的结果，对应的是$\vec k$空间积分谱函数
+\begin{displaymath}
+	A(\omega)=-\dfrac1{\pi}\sum_k\Im G(k,\omega)
+\end{displaymath}
+为了计算该值，需要读取由\textsc{solid\_dmft}计算得到的\textrm{Hartree}自能，将起提交到后处理程序\textrm{TRIQS/dft\_tools}中。所有的步骤都在可\textrm{MPI}并行的\textrm{Python}脚本\textrm{calc\_Aw\_hartree.py}(内容如下)中执行，该脚本主要包括
+\begin{itemize}
+	\item \textrm{h5}读取数据($\Sigma(\omegaa)^{\mathrm{imp}}$，$\mu$，$\hat{\Sigma}^{\mathrm{dc}}$，\textsc{dc\_energy}和\textsc{block\_structure})
+	\item \textrm{create empty SumK object on the same mesh as Sigma\_w}
+	\item \textrm{pass self-energies, chemical\_potential, and DC}
+	\item \textrm{calculate the k-integrated spectral function/DOS} 
+\end{itemize}
+执行脚本，会有提示
