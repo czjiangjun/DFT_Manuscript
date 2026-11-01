@@ -321,4 +321,88 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 
 在当前计算目录下，%执行\textrm{Bash}命令，
 
-执行\textrm{Python}脚本\textrm{converter.py}
+执行\textrm{Python}脚本\textrm{converter.py}，会产生\textrm{vasp.h5}文件，在\textrm{PLO}步骤，产生数据文件\textrm{pdos\_*.dat}，其中包括投影函数的\textrm{DOS}。
+%用\textrm{Bash}命令\textrm{vim}检查\textrm{log.converter}文件内容，也可以通过\textrm{grep}命令检查\textrm{Generating 1 shell}及以后的内容。
+
+注意，这里的\textsc{impurity density}的值会略有差别。
+
+这里的输出表明，会产生一个\textrm{DMFT}需要处理的杂质位点(与\textrm{DFT+}$U$的处理类似，只是\textrm{DFT+}$U$中确定的是位点和轨道)。由\textrm{PLOs}:~$n_m^{I\sigma}$产生$(5\times5)$占据矩阵。
+
+通过\textrm{Py4vasp}模块，绘制\textrm{DOS}曲线，对比\textrm{VASP}投影的\textrm{DOS}(在\textrm{vaspout.h5}文件中)和\textrm{PLO}投影的\textrm{DOS}(在\textrm{pdos\_*.dat})数据。这是一个快速全面的检查\ch{Ni}的$d$-的电子态特征的投影窗口的方法。
+
+在\textrm{DOS}图中，\textrm{VASP}局域投影的$d$电子态用蓝色标注，\textrm{PLOs}投影的是$d$电子态用湖蓝色标注。可以看出由\textrm{VASP}和\textrm{PLOs}的局域投影对应得非常好。所以在这里的计算中\textrm{PLOs}可以成功地提取\ch{Ni}的$d$-电子特征。
+
+注意:~由于\textrm{VASP}和\textrm{TRIQS}方法的局域投影的正交化过程不同，因此两者在$\sim-5\mathrm{eV}$处的峰有差别。
+
+前面计算了\ch{Ni}的$d$电子轨道相互作用的屏蔽\textrm{Coulomb}相互作用，相关的数据存储在\textrm{UIJKL}文件中，存储的部分屏蔽\textrm{Coulomb}相互作用张量包含四个下标，当$\omega=0$时，有
+\begin{displaymath}
+	U_{ijkl}^{\sigma\sigma^{\prime}}=\int\mathrm{d}\vec r\int\mathrm{d}\vec r^{\prime}w_i^{\ast\sigma}(\vec r)w_j^{\sigma}(\vec r)U(\vec r,\vec r^{\prime},\omega)w_k^{\ast\sigma^{\prime}}(\vec r^{\prime})w_l^{\sigma^{\prime}}(\vec r^{\prime})
+\end{displaymath}
+这里$w_a^{\ast\sigma}(\vec r)$是\textrm{Wannier}电子态，$U(\vec r,\vec r^{\prime},\omega)$是部分屏蔽的\textrm{Coulomb}势函数。
+
+用户可以将之间计算得到的\textrm{UIJKL}文件直接拿来用，但为了能更接近收敛，算例提供了一个参考文件\textrm{ref/UIJKL\_cRPA\_ref}，这个参考文件在后续学习中，用于\textrm{DFT+}$U$计算。当然，用户使用之前得到的\textrm{UIJKL}或者\textrm{UIJKL\_cRPA}得到的结果会不同。
+
+采用以下\textrm{Python}脚本，用户可以导入部分屏蔽\textrm{Coulomb}相互作用张量，然后该四下标的张量可以通过\textrm{Slater}参数化的相互作用\textrm{Hamiltonian}，提取\ch{Ni}-$d$电子态的有效\textrm{Hubbard}相互作用$U$和\textrm{Hund}的耦合作用$J$的值来拟合得到。最终的$U$和$J$值用于随后的\textrm{DFT+}$U$和\textrm{DFT+DMFT}计算中。
+
+拟合得到的结果: \textsc{U=8.181 eV, J=1.134 eV\\优化误差为 0.23520238822355868}
+
+对于\ch{Ni}的$d$电子态，可以通过\textrm{TRIQS}软件中的辅助函数计算平均相互作用参数。该辅助函数\textsc{fit\_slater\_fulid}的功能是，可以为\textrm{Slater}参数化相互作用\textrm{Hamiltonian}拟合通用\textrm{Coulomb}相互作用张量$U_{ijkl}$。步骤如下
+\begin{enumerate}
+	\item 生成\textrm{Slater}相互作用张量:~通过\textrm{Python}模块\textsc{triqs.operatior.util.U\_matrix\_slater}，由$d$-电子态的试探\textrm{Slater}参数($U$，$J$或$F^0$，$F^2$和$F^4$)构造旋转不变的\textrm{Coulomb}张量
+	\item 将张量约化为双下标的相互作用矩阵:~通过\textsc{reduce\_4index\_to\_2index}模块，将四下标张量，变换为相互作用作用矩阵。
+		\begin{itemize}
+			\item $U_{iijj}$(密度-密度相互作用)
+			\item $U_ijij$(交换相互作用)
+		\end{itemize}
+	\item 最小二乘拟合:~通过\textrm{scipy.optimize.minimize}模块，将输入张量和约化矩阵中的\textrm{Slater}生成张量的方差最小化，来优化\textrm{Slater}参数。
+		\begin{displaymath}
+			min_{U,J}\sum_{i,j}\left[ (U_{iijj}^{\mathrm{cRPA}}-U_{iijj}^{\mathrm{Slater}})^2+ (U_{ijij}^{\mathrm{cRPA}}-U_{ijij}^{\mathrm{Slater}})^2\right]
+		\end{displaymath}
+\end{enumerate}
+结果得到的有效\textrm{Hubbard}$U$和\textrm{Hunt}耦合$J$是在\textrm{Slater}相互作用表达式中与原始$U_{ijkl}$最吻合的形式。在后续计算中，把得到的$(U,J)$作为后续\textrm{DFT}计算和\textrm{DMFT}计算中。
+
+后续算例中，会针对反铁磁\ch{NiO}，采用这里得到的$(u,J)$参数和前面得到的数据，完成\textrm{DFT+}$U$计算。
+
+\subsubsection{反铁磁\rm{DFT+}$U$和\textrm{DOS}}
+对\textrm{AFM}的\ch{NiO}，采用\textrm{DFT+}$U$($U=6.181$且$J=1.134$)计算\textrm{DOS}，并分析结果。这里是对\textrm{AFM}的\ch{NiO}的应用\textrm{DFT+}$U$计算带隙。
+
+反铁磁\ch{NiO}的结构文件
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{DFT}完成\textrm{DFT+}$U$计算，有必要强调以下专属计算控制参数
+\begin{itemize}
+	\item \texttt{EFERMI}:~设置\textrm{Fermi}能级的计算方法，\texttt{MIDGAP}参数设置带隙的中心位置
+	\item \texttt{LASPH}:~对于磁性计算属于基本设置。在\textrm{PAW}球中，要求在梯度校正中包含非球形部分的贡献
+	\item \texttt{ISPIN}=2:~为了磁性计算，要求设置自旋极化
+	\item \texttt{MAGMOM}:~设置每个原子的初始磁矩
+	\item \texttt{LDAU}:~指定采用\textrm{DFT+}$U$方法计算
+	\item \texttt{LDAUTYPE}=1:~采用\textrm{Liechtenstein}的\textrm{DFT+}$U$方法
+	\item \texttt{LDAUL}:~对于加入在位相互作用计算的体系指定角动量$l$的量子数
+	\item \texttt{LDAUU}:~指定有效的在位\textrm{Coulomb}相互作用$U$的值
+	\item \texttt{LDAUJ}:~指定有效的在位交换相互作用$J$的值
+	\item \texttt{LDAUPRINT}:~控制\textrm{DFU+}$U$的计算输出的详略
+\end{itemize}
+
+$\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}参数指定方法实现
+
+在所在目录中，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+计算中\textrm{INCAR}文件中的$U$和$J$值来此\textrm{cRPA}计算确定的值。
+
+这样的设置对\ch{Ni}的$d	电子态引入了额外的$\textrm{Coulomb}相互作用，并考虑了自旋极化和磁矩。%可与磁性计算的\textrm{DFT+U}计算对照
+
+\ch{NiO}是\textrm{DFT+}$U$方法最好的试金石。\ch{NiO}是\textrm{Mott}绝缘体，其中\ch{Ni}带两个单位正电荷，\ch{Ni2+}($d^8$)。在正八面体晶体场中，\ch{Ni}的$d$轨道劈裂为能量较低的$t_{2g}$三重态和能量较高的$e_g$的二重态。随着8个$d$电子的填入，能量较低的$t_{2g}$轨道首先完全被填满(两种自旋共填入6个电子)，而剩下的两个电子分别填充入两个$e_g$轨道中。
+
+计算结束后，通过\textrm{Py4vasp}模块绘制由\textrm{DFT}和\textrm{DFT+}$U$得到的\textrm{DOS}图。
+
+图中\textrm{DFT}计算得到的\textrm{DOS}图是灰色虚线表示的，并且没有带隙存在；而\textrm{DFT+}$U$计算的结果(紫色实线)，可以看到出现带隙。价带顶\textrm{VBM}和导带底\textrm{CBM}用绿色标记出来。不难看出，带隙大约是\textrm{3eV}，属于绝缘体带隙。紫色曲线表示的是\textrm{DFT+}$U$的两种自旋的总\textrm{DOS}，导带中，位于$\sim2.5\mathrm{eV}$附近，有一个显著峰。相比于\textrm{DFT}计算，价带明显地向更低能量位置移动。
+
+因此引入$+U$，电子交换的劈裂作用驱动了高的总自旋量子态$S=1$构型:~$e_g$电子的自旋向上完全占据，而相应的自旋向下全空。\textrm{DFT+}$U$将$e_g$轨道的自旋向上占据轨道推向能量更低的位置，而将自旋向下的未占据轨道推向能量更高的位置，从而在其彼此间拉开带隙。因此在\textrm{DOS}中在\textrm{2.5eV}附近看到很强的$e_g$峰。对于$t_{2g}$电子态，因为是完全占据的，所以基本不受影响。最终得到的带隙则来着电荷转移特征$(\mathrm{O}-2p\rightarrow\mathrm{Ni}-e_g)$而不是仅仅来自\textrm{Mott-Hubbard}相互作用。但无论如何，\textrm{DFT+}$U$很好地得到与实验结果($\sim4\mathrm{eV}$)接近的带隙。\upcite{PRL53-2339_1984}
+
+\subsubsection{单次\rm{DFT+DMFT}\textrm{(Hartree)}}
+对反铁磁\ch{NiO}完成\textrm{DFT+DMFT@Hartree}计算特殊函数。
+
+在\textrm{DFT}计算中，自洽迭代关注的是能量和电荷的收敛，而\textrm{DFT+DMFT}重点关注的是\textrm{Green}函数和自能的收敛。单粒子\textrm{Green}函数$G(\vec k,\omega)$
+
+
