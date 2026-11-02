@@ -522,4 +522,23 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 
 与静态的\textrm{DFT+DMFT@Hartree}计算类似，\textrm{DMFT}计算配置文件位于计算目录下的\textrm{dmft\_config}.toml}文件中。
 
+反铁磁\ch{NiO}的结构文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+\textrm{DFT+}$U$方法完成\textrm{DFT}计算，强调某些计算控制参数
+\begin{itemize}
+	\item \texttt{EFERMI}:~设置\textrm{Fermi}能级的计算方法，\texttt{MIDGAP}参数设置带隙的中心位置
+	\item \texttt{LASPH}:~对于磁性计算属于基本设置。在\textrm{PAW}球中，要求在梯度校正中包含非球形部分的贡献
+	\item \texttt{ISPIN}=2:~为了磁性计算，要求设置自旋极化
+	\item \texttt{MAGMOM}:~设置每个原子的初始磁矩
+	\item \texttt{LDAU}:~指定采用\textrm{DFT+}$U$方法计算
+	\item \texttt{LDAUTYPE}=1:~采用\textrm{Liechtenstein}的\textrm{DFT+}$U$方法
+	\item \texttt{LDAUL}:~对于加入在位相互作用计算的体系指定角动量$l$的量子数
+	\item \texttt{LDAUU}:~指定有效的在位\textrm{Coulomb}相互作用$U$的值
+	\item \texttt{LDAUJ}:~指定有效的在位交换相互作用$J$的值
+	\item \texttt{LDAUPRINT}:~控制\textrm{DFU+}$U$的计算输出的详略
+\end{itemize}
+
+$\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}参数指定方法实现
 
