@@ -497,4 +497,29 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 	\item \textrm{pass self-energies, chemical\_potential, and DC}
 	\item \textrm{calculate the k-integrated spectral function/DOS} 
 \end{itemize}
-执行脚本，会有提示
+执行脚本，会有提示警告信息提醒用户使用其使用的设置
+\begin{itemize}
+	\item \textrm{UserWarning: The given Sigma is on a mesh which does not cover the band energy range. The Sigma MeshReFreq runs from -10.000000 to 10.000000, while the band energy (minus the chemical potential) runs from -6.978312 to 14.873137}
+	\item \textrm{UserWarning: lattice\_gf called with Sigma and given mesh. Mesh will be taken from Sigma.}
+\end{itemize}
+
+脚本首先指定\textrm{HDF5}文件的路径，所以第一个是指定变量\textsc{h5\_file}。脚本大约需要执行30\textrm{sec}。为了绘制结果的\textrm{DOS}图，可以将结果存入文件或直接从\textrm{h5}文件中读取。
+
+结果显示，\textrm{DFT+}$U$和\textrm{DFT+DMFT@Hartree}的结果非常类似，证明\textrm{DFT+}$U$和\textrm{DFT+DMFT@Hartree}是类似的方法，两者的带隙大约都是$\sim3\mathrm{eV}$。
+
+\subsubsection{\rm{DFT+DMFT}电荷自洽\rm{(Hartree)}}
+对反铁磁\ch{NiO}完成电荷自洽的\textrm{DFT+DMFT}计算
+
+在\textrm{DMFT}自洽条件$|G^{\mathrm{imp}}-G^{\mathrm{loc}}|\rightarrow0$之外，还有另一个\textrm{DFT+DMFT}的自洽条件。从晶格\textrm{Green}函数出发，密度矩阵可以通过\textrm{Green}函数表示
+\begin{displaymath}
+	N_{\nv\nv^{\prime}}(\vec k)=\dfrac1{\beta}\sum_{\mathrm{i}w_n}G_{\nv\nv^{\prime}}(\vec k,\mathrm{i}\omega_n)
+\end{displaymath}
+该式与\textrm{DFT}的密度关联关系可以表示为
+\begin{displaymath}
+	\rho(\vec r)=\sum_{\vec k}\sum_{\nv\nv^{\prime}}\langle\vec r|\Psi_{\nv\vec k}\rangle N_{\nv\nv^{\prime}}(\vec k)\langle\Psi_{\nv^{\prime}\vec k}|\vec r\rangle
+\end{displaymath}
+这表明\textrm{DFT}计算得到的电荷密度与D\textrm{DMFT}的密度矩阵必须相一致。这就是电荷密度自洽条件\textrm{(Charge-self-consistency condition)}。这意味着在每个\textrm{DMFT}计算步都要完成重新计算电荷密度(\\texttt{ICHARG}=5)。这称为电荷自洽的\textrm{DFT+DMFT}计算。在电荷自洽步，\textrm{DMFT}自能再代入到\textrm{DFT}计算中，电荷密度再次改变。
+
+与静态的\textrm{DFT+DMFT@Hartree}计算类似，\textrm{DMFT}计算配置文件位于计算目录下的\textrm{dmft\_config}.toml}文件中。
+
+
