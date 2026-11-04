@@ -528,17 +528,52 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 
 \textrm{DFT+}$U$方法完成\textrm{DFT}计算，强调某些计算控制参数
 \begin{itemize}
-	\item \texttt{EFERMI}:~设置\textrm{Fermi}能级的计算方法，\texttt{MIDGAP}参数设置带隙的中心位置
-	\item \texttt{LASPH}:~对于磁性计算属于基本设置。在\textrm{PAW}球中，要求在梯度校正中包含非球形部分的贡献
-	\item \texttt{ISPIN}=2:~为了磁性计算，要求设置自旋极化
-	\item \texttt{MAGMOM}:~设置每个原子的初始磁矩
-	\item \texttt{LDAU}:~指定采用\textrm{DFT+}$U$方法计算
-	\item \texttt{LDAUTYPE}=1:~采用\textrm{Liechtenstein}的\textrm{DFT+}$U$方法
-	\item \texttt{LDAUL}:~对于加入在位相互作用计算的体系指定角动量$l$的量子数
-	\item \texttt{LDAUU}:~指定有效的在位\textrm{Coulomb}相互作用$U$的值
-	\item \texttt{LDAUJ}:~指定有效的在位交换相互作用$J$的值
-	\item \texttt{LDAUPRINT}:~控制\textrm{DFU+}$U$的计算输出的详略
+	\item \texttt{NELMIN}:~设置电子步最少的迭代次数。该值较大(类似的还有\texttt{NELM})因此\textrm{VASP}不会提前终止，因为\textrm{TRIQS}必须在此计算结束后才开始
+	\item \texttt{IMIX}:~指定电荷密度的混合类型，本算例中采用\textrm{Broyden}的第二类方法和\textrm{Pulay}混合方法
+	\item \texttt{AMIX}:~指定线性混合的参数值
+	\item \texttt{BMIX}:~指定混合的截断波矢
+	\item \texttt{LSYNCHS}:~指定计算执行过程中是否\textrm{vaspout.h5}与\textrm{VASP}同步输出。在计算进行过程中，同步输出到\textrm{vaspout.h5}的内容，可以由\textrm{Py4vasp}或\textrm{solid\_dmft}监控
+	\item \texttt{LWAVE}:~确定计算执行结束时是否写波函数数据
+	\item \texttt{LCHARGE}:~确定是否写电荷密度数据
 \end{itemize}
 
 $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}参数指定方法实现
 
+进入执行目录，检查所有必要的输入文件(\textrm{INCAR}，\textrm{POSCAR}，\textrm{POTCAR}和\textsc{plo.cfg}和\textrm{dmft\_config.toml})是否全都存在。需要确保\textrm{VASP}有此前收敛的\textrm{WAVECAR}和\textrm{CHGCAR}文件，因此可以执行\textrm{Bash}命令，创建符号链接，可以开始\textrm{solid\_dmft}
+
+计算大约耗时10-15分钟。注意，如果在本地机器上执行计算，建议用4核并行以节约时间。
+
+在计算执行过程中，检查\textrm{dmft\_config.toml}文件与之前单次计算时不同的参数。为了将单次的\textrm{DFT+DMFT}计算作为起始点，引入新的参数。
+\begin{itemize}
+	\item \textsc{load\_sigma}=\textrm{true}
+	\item \textsc{path\_to\_sigma}=``../e06\_dmft\_os/beta20-hartree-afm/vasp.h5''
+\end{itemize}
+除此之外，还需要指定在每个循环中执行多少\textrm{DMFT}计算步，即
+\begin{itemize}
+	\item \textsc{n\_iter\dmft\_first}=2
+	\item \textsc{n\_iter\dmft\_per}=2
+	\item \textsc{n\_iter\dmft}=10
+\end{itemize}
+这里通过参数首先执行两个\textrm{DMFT}迭代，然后再开始要求每次2个\textrm{DMFT}迭代完成\textrm{CSC}更新，最后总共完成10\textrm{DMFT}迭代；\textcolor{red}{最后再指定完成\textrm{DFT}计算的部分}：
+
+该文件的输出文件中，可以看到\textrm{VASP}和\textrm{solid\_dmft}的计算输出，当软件执行的时候，可以通过输出文件看到每次迭代中\textrm{VASP}和\textrm{solid\_dmft}如何彼此相继，计算完成后，运行之前的后处理脚本，再处理输出的\textrm{h5}文件。
+
+当看到\textrm{solid\_dmft}计算的输出文件\textrm{out}中有\textcolor{red}{Stopping VASP}提示时，计算就已经结束了。如果此时\textrm{VASP}并未结束还在计算，用户可以通过\textrm{Bash}命令\textrm{kill -9 \%1}或\textrm{pkill -9 vasp\_std}来强行终止计算。一旦\textrm{VASP}和\textrm{TRIQS}计算结束，可以开始数据分析。利用\textrm{Py4vasp}模块绘制\textrm{DOS}曲线。
+
+不出所料，相比于单词\textrm{DMFT}计算，\textrm{DMFT}的\textrm{CSC}计算的带隙稍有减小。单次\textrm{DMFT}典型地高估了相关效应，而\textrm{CSC}计算则会降低相关效应。相比于\textrm{DFT+}$U$的带隙，带隙也是稍有减小，但带隙依然差不多在$\sim3\mathrm{eV}$，该值比起实验值报导的$4.3\mathrm{eV}$\upcite{PRL53-2339_1984}还是要小一些。
+
+\subsubsection{对比反铁磁和顺磁，\textrm{Hartree}和\textrm{QMC}}
+对顺磁\ch{NiO}完成连续时间量子\textrm{Monte Carlo~(continuous-time Quantum Monte Carlo, CT-QMC)}并与\textrm{DFT+}$U$和\textrm{DMFT}的\textrm{DOS}对比。
+
+在这部分，将反铁磁态的\textrm{Hartree}(静态和平均场)与之间计算的顺磁态的含时杂化展开量子\textrm{Monte Carlo~(continuous hybridization expansion Quantum Monte-Carlo, CT-HYB)}的\textrm{DMFT}计算\upcite{RMP83-349_2011}。如果完成该计算，大约要几小时。这两种计算的关键差别是由\textrm{AFM}的长程有序，\textrm{Hartree}计算使自旋对称性破缺:~两个\ch{Ni}原子拥有相反的静态的局域自旋。相反，在顺磁计算中要求体系的平均自旋对称性满足约束条件$\langle n_{\uparrow}\rangle=\langle n_{downarrow}\rangle$，但是动态局域自旋仍然存在涨落\textrm{(fluctuation)}，但静态平均场计算并不考虑涨落。通过完全频率相关的自能$\Sigma(\omega)$，\textrm{CT-HYB}可以细致刻画涨落现象:~即使没有长程有序，强的在位\textrm{Coulomb}排斥$U$压制了双粒子占据，而\textrm{Fermi}面附近电子的占据态权重也分化为\textrm{Hubard}能量较高和能量较低的两部分，由此出现\textrm{Mott}带隙。在\textrm{N\'eel}温度$(T_{\mathrm{N}}\approx520\mathrm{K})$以上，这反应了重要的物理本质:~顺磁态的\ch{NiO}保持绝缘体态不是因为磁有序，而只需要电子关联驱动的局域化就足以保证出现带隙结构。
+
+在计算目录中执行\textrm{DFT+DMFT}计算的输入文件。而控制\textrm{solid\_dmft}计算的仍然是一个构型文件\textrm{dmft\_confit.toml}。
+
+对比\textrm{Hartree}和\textrm{QMC}求解器的区别
+\begin{itemize}
+	\item \textrm{Hartree}:~计算静态自能，能反映对称性破缺和静态能带移动/裂分
+	\item \textrm{CT-QMC}:~数值精度(有统计误差)的杂质求解器，能反映动态相关(包含了\textrm{Hubbard}能带，粒子寿命，频率相关的自能)
+\end{itemize}
+顺磁态\textrm{QMC}计算结果保存在文件\textsc{dmft\_os\_qmc/UcRPA-beta20-qmc1e+7/vasp.h5}中。这是一种\textrm{Monte Carlo}求解器，通过将杂化函数展开杂质\textrm{Hamiltonian}，在有限温度$T$和虚时间$\tau=\mathrm{i}t$内对杂质\textrm{Green}函数$G^{\mathrm{imp}}(\tau)$采样，这将使得杂质与环境耦合。在本算例的计算中，取温度的倒数\textcolor{red}{\textsc{beta}=20}，对应于$T\approx580\mathrm{K}$，这里有$\beta=\dfrac1{k_{\mathrm{B}}T}$。因为虚时间区间$0,\beta$随$\beta=1/k_{\mathrm{B}}T$收缩，减少了收敛杂质\textrm{Green}函数所需要的\textrm{Monte Carlo}采样点，因此\textrm{QMC}方法在高温计算时开销更小。该\textrm{QMC}求解器是用\textrm{C++}开发并且可以完全\textrm{MPI}并行。
+
+\textrm{QMC}求解器的精度完全由执行的\textrm{Monte Carlo}移动的总步数，以及对$G^{\mathrm{imp}}(\tau)$进行连续测量的数目所确定。该精求解度由输入文件\textrm{solid\_dmft}
