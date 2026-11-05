@@ -617,4 +617,19 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 
 将三类理论分别处理\ch{NiO}得到的\textrm{DOS}曲线集中在一起。三种方法,\textrm{DFT+}$U$，\textrm{DFT+DMFT@Hartree}和顺磁\textrm{CT-HYB}，都会打开带隙，但三者物理本质完全不同，谱函数的形状也表现出定性的差别。
 
-\textrm{DFT+}$U$和\textrm{DFT+DMFT@Hartree}形成基本相同的谱函数，两者都采用静态平均场近似
+\textrm{DFT+}$U$和\textrm{DFT+DMFT@Hartree}形成基本相同的谱函数，因为两者都采用静态平均场近似，都是通过反铁磁对称性破缺形成带隙。自旋占据的$e_g$轨道被推到\textrm{Fermi}面以下，而自旋未占据的$e_g$轨道则在\textrm{Fermi}面以上，对应少量准粒子在$\sim3\mathrm{eV}$附近产生了清晰、尖锐的的峰。两者结果的一致性证明了\textrm{DFT+DMFT@Hartree}的适用范围，在静态极限下，\textrm{DFT+DMFT@Hartree}将退化为\textrm{DFT+}$U$。
+
+顺磁\textrm{CT-HYB}与前两者有着质的区别。它不再要求长程的磁有序结构，但依然能够产生明确的带隙。只是由于相关驱动的局域化，导致了完全频率相关的自能$\Sigma(\omega)$，足以在\textrm{N\'eel}温度以上($T_{\mathrm{N}}\approx520\mathrm{K}$，计算设置的温度$T\approx580\mathrm{K}$)形成带隙，这是顺磁\textrm{Mott}绝缘体的标志。这种谱函数的特点是更宽，表明准粒子的寿命是有限的。准粒子寿命与$\Sigma$(\Omega)$的虚部有关。在更高的成键能量$(\sim6-8\mathrm{eV})$存在额外的非相关谱权重，这对应于\textrm{Hubbard}能带出现在更低的位置，而该特征在静态\textrm{Hartree}谱函数中是完全没有的，被视为是动态相关的典型特征。
+
+如果用户有意学习更多的\textrm{TRIQS}软件的使用或\textrm{Green}函数理论，可以参见其教程。
+
+\subsection{\rm{Bethe-Salpeter}方程的计算}
+\subsubsection{$G_0W_0$的电子结构}
+通过\textrm{PBE+}$U$($U=6.181$，$J=1.134$)和$3\times3\times3$\vec k$空间网格剖分计算$G_0W_0$准粒子能量和屏蔽相互作用。
+
+另一种模拟强关联体系的方法是采用多体微扰理论\textrm{(Many-Body Perturbation Theory, MBPT)}校正带隙并模拟反铁磁\ch{NiO}的光学性质。
+
+第一步，需要确定$GW$近似下\textrm{Hedin}方程解，即准粒子。准粒子中包含了当电子在介质中传播时，由于周围粒子的诱导形成的电荷。在\textrm{RPA}近似下，计算$GW$近似中屏蔽自能的极化函数$\chi$的定义为
+\begin{displaymath}
+	\chi(1.2)=-\mathrm{i}\int\mathrm{d}(3,4)G(1,3)G(4,1)\Gamma(3,4,2)
+\end{displaymath}
