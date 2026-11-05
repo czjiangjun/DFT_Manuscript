@@ -576,4 +576,45 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 \end{itemize}
 顺磁态\textrm{QMC}计算结果保存在文件\textsc{dmft\_os\_qmc/UcRPA-beta20-qmc1e+7/vasp.h5}中。这是一种\textrm{Monte Carlo}求解器，通过将杂化函数展开杂质\textrm{Hamiltonian}，在有限温度$T$和虚时间$\tau=\mathrm{i}t$内对杂质\textrm{Green}函数$G^{\mathrm{imp}}(\tau)$采样，这将使得杂质与环境耦合。在本算例的计算中，取温度的倒数\textcolor{red}{\textsc{beta}=20}，对应于$T\approx580\mathrm{K}$，这里有$\beta=\dfrac1{k_{\mathrm{B}}T}$。因为虚时间区间$0,\beta$随$\beta=1/k_{\mathrm{B}}T$收缩，减少了收敛杂质\textrm{Green}函数所需要的\textrm{Monte Carlo}采样点，因此\textrm{QMC}方法在高温计算时开销更小。该\textrm{QMC}求解器是用\textrm{C++}开发并且可以完全\textrm{MPI}并行。
 
-\textrm{QMC}求解器的精度完全由执行的\textrm{Monte Carlo}移动的总步数，以及对$G^{\mathrm{imp}}(\tau)$进行连续测量的数目所确定。该精求解度由输入文件\textrm{solid\_dmft}
+\textrm{QMC}求解器的精度完全由执行的\textrm{Monte Carlo}移动的总步数，以及对$G^{\mathrm{imp}}(\tau)$进行连续测量的数目所确定。该求解器的精度由输入文件\textrm{solid\_dmft}中的输入文件中\textrm{[section]}的配置参数确定。这部分的内容比起\textrm{Hartree}计算的参数更复杂，其中很重要地包含
+\begin{displaymath}
+	\mathrm{n\_warnup\_cycles}=1\mathrm{e}+4\\
+	n\_cycles\_tot=1e+7\\
+	length\_cycle=60
+\end{displaymath}
+其中第一个参数\textsc{n\_warup\_cycle}是非常重要的，表示在对体系作任何处理之前，先对其进行加热。该加热过程落实到\textrm{Monte Carlo}``行走''的每一步，即在每个\textrm{MPI}并行进程\textrm{(rank)}上都会执行，而\textsc{n\_warup\_cycle}的数值则与体系密切相关。对于较高温度的简单问题，一个介于$5000\sim10000$的数值通常是足够的。下一个参数，\textsc{n\_cycles\_tot}确定了执行测量的次数，该值对于全部的\textrm{Monte Carlo}行走来说是固定的，但分配到每个\textrm{MPI}并行进程上的负载则会随着并行进程数变化。最后一个参数是\textsc{length\_cycle}对于精度同样非常关键。该值是两次测量之间\textrm{Monte Carlo}行走的步数。因此总的行走步数将是\textsc{n\_cycle\_tot}*\textsc{length\_cycle}。测量间隔的行走步数对于两次测量的去相关\textrm{(decorrelate)}非常重要。如果测量间隔的行走步数不够大，这些测量会彼此相关，总体的精度会下降。%用户可参考\textrm{TRIQS}中\textrm{QMC}的收敛教程，学习如何针对\textrm{QMC}杂质求解器选择参数。
+
+因为在32核的服务器上，计算中每个\textrm{DMFT}步耗时大约要15分钟，这里直接给出结果，但如果用户有时间，应该尝试去学着完成计算。
+
+如果用户打算学着完成计算，首先完成\textrm{VASP}计算，以提供后续计算所需的输入数据。进入目录\textsc{e08\_dmft\_os\_qmc/scf\_plo}，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+完成\textrm{VASP}计算后，通过\textrm{Python}脚本\textrm{converter.py}执行转换。
+
+将计算结果\textrm{vasp.h5}复制到\textsc{e08\_dmft\_os\_qmc}目录，这时如果想要计算，就有了\textrm{solid\_dmft}计算所需要的输入文件。
+
+\textrm{DMFT}的自能$\Sigma(\mathrm{i}\omega)$是\textrm{QMC}杂质求解器的核心输出。这属于单粒子谱的多体重整化，已经超越静态平均场。因为\textrm{CT-QMC}的处理对象是虚时间或Matsubara-频率轴，首先在\textrm{Matsubara}轴上直接检查$-\Im\Sigma(\mathrm{i}\omega)$。注意两个特征
+\begin{itemize}
+	\item 低频行为:~在\textrm{Fermi}液体中，当$\omega_n\rightarrow0$$，-\Im\Sigma(\mathrm{i}\omega_n)\prop\omega_n\rightarrow0$。存在大的或者发散的值，表明存在强的散射或出现\textrm{Mott}行为
+	\item 轨道分化:~\ch{NiO}的立方晶体常将$d$轨道分裂为$t_{2g}$(三重简并，$l=0$属于立方对称性，用\textsc{up\_0}表示)和$e_g$(二重简并，用\textsc{up\_2}表示)两类。可以推测强关联将出现在$e_g$轨道，因为$e_g$中的电子与\ch{O}原子的杂化更少。
+\end{itemize}
+完成\textrm{CT-QMC}求解器计算后，应用最大熵方法\textrm{(Maximum Entropy Method, MaxEnt)}对虚频自能$\Sigma(\mathrm{i}\onega)$的解析延拓可以得到实频自能$\Sigma(\omega)$。根据实频自能可以确定准粒子权重$Z=(1-\partial\Re\Sigma/\partial\omega|_{\omega&=0})^{-1}$和散射速率$\Gamma\prop-\Im\Sigma(\Omega=0)$。应用\textrm{Python}脚本可以绘制实频和虚频自能
+
+\textrm{CT-QMC}求解器产生$\Sigma(\mathrm{i}\omega_n)$，沿着\textrm{Matsubara}轴可以绘制自能曲线。实频自能$\Sigma(\omega)$与谱函数直接相关，并且可以与实验结果关联。为了得到实频自能，需要对虚频自能进行解析延拓得到实频曲线。因此必须采用噪声\textrm{QMC}中的标准方法，即\textrm{MaxEnt}方法来完成解析延拓。结果保存在\textrm{h5}格式的文件\textsc{Sigma\_maxent\_*}中。通过执行\textrm{Python}脚本\textrm{sigma\_maxent.py}，就可以很简单地完成对\textrm{solid\_dmft}的后处理。脚本和\textrm{Bash}命令如下
+
+该后处理步骤读取杂质求解结果和自能$\Sigma(\mathrm{i}\omega)$大约要好几分钟。
+
+下面两个图分别是对$t_{2g}$和$e_g$轨道的自能实部$\Re\Sigma(\omega)$和虚部$-\Im\Sigma(\omega)$。其中虚部与准粒子散射绿有关，而实部平移了准粒子能量。注意解析延拓是不适定逆问题\textrm{(Ill-posed inverse problem)}。\footnote{不适定逆问题，是指不满足解存在、唯一或稳定(解的连续依赖依据)中任何一条的逆问题。}所以对高频区的精细特征的解读要特别注意。与前面计算类似，实频自能可用于评估在实频网格点上的\textrm{Green}函数。采用\textrm{Python}脚本\textrm{calc\_Aw\_hartree.py}脚本可以完成曲线绘制。
+
+有了实频自能，可以针对顺磁\textrm{QMC}计算，完成全$\vec k$空间积分的谱函数$A(\omega)=-\dfrac1{\pi}\sum_{\limits k}\Im G(k,\omega)$，并与前面\textrm{Hartree}计算的结果对比。
+
+注意主要不同
+\begin{itemize}
+	\item \textrm{Hubbard}能带:~\textrm{CT-QMC}能给出动态相关，而动态相关会在准粒子能带区(在\textrm{Hubbard}能带的上下附近)产生非相干谱权重\textrm{(Incoherent spectral weight)}。
+	\item 带隙特征:~在反铁磁\textrm{Hubbard}算例中，由对称性破缺产生带隙。在顺磁\textrm{QMC}计算和中，不再要求长程有序，而带隙是由温度在$T\approx580~\mathrm{K}$时的局域强关联动态形成的\textrm{Mott}带隙，该温度比\textrm{N\'eel}温度约$\sim520\mathrm{K}$高。所以在温度$T_{\mathrm{N}}$以上，\textrm{NiO}是顺磁\textrm{Mott}绝缘体
+	\item 谱权重再分布:~对比\textrm{DFT+}$U$，\textrm{QMC}谱函数在更高的成键能位置，表现出更宽的特征和额外的非相干权重，这与光电子发射谱结果一致
+\end{itemize}
+而$\vec k$分辨谱函数还给出\textrm{Hubbard}能带的色散关系和靠近带边的任何剩余准粒子能带。采用\textrm{Py4vasp}模块绘制相关全部三类\textrm{DOS}曲线。
+
+将三类理论分别处理\ch{NiO}得到的\textrm{DOS}曲线集中在一起。三种方法,\textrm{DFT+}$U$，\textrm{DFT+DMFT@Hartree}和顺磁\textrm{CT-HYB}，都会打开带隙，但三者物理本质完全不同，谱函数的形状也表现出定性的差别。
+
+\textrm{DFT+}$U$和\textrm{DFT+DMFT@Hartree}形成基本相同的谱函数，两者都采用静态平均场近似
