@@ -633,3 +633,50 @@ $\vec k$空间网格剖分方案按照\textrm{INCAR}文件中\texttt{KSPACING}�
 \begin{displaymath}
 	\chi(1.2)=-\mathrm{i}\int\mathrm{d}(3,4)G(1,3)G(4,1)\Gamma(3,4,2)
 \end{displaymath}
+这里顶点函数\textrm{(vertex function)}是$\Gamma(3,4;2)=\delta(3-2)\delta$，而$G$表示\textrm{Green}函数。
+
+在\textrm{RPA}近似下，以\textrm{PBE}计算为出发点来描述电子屏蔽的做法，很发一部分程度上依赖于误差的抵消。不难看出，在\textrm{PBE}方法得到的带隙偏小表明该方法高估了屏蔽作用，而缺少顶点函数则会低估屏蔽作用。因此反而是对于半导体体系，因为其价带和导带主要是离域的$s$和$p$态轨道，误差抵消得比较干净，所以\textrm{PBE}方法在描述屏蔽效应的时候是一个好的方法。\upcite{PRL99-246403_2007}
+
+但是，对于体系的能带主要由局域的$d$轨道贡献时，这种抵消非常有限。以反铁磁的\ch{NiO}为例，相比于实验结果，\textrm{PBE}计算得到的带隙严重低估，因此\textrm{RPA}近似导致对屏蔽效应的高估。具体到介电常数的结果，实验值大约是5.7，而理论计算值大约是15。\upcite{PRM2-073803_2018}这个问题在\textrm{Mott}绝缘体材料中尤为严重，\textrm{PBE}计算得到的是导体(金属)态。
+
+已经发展了很多方法来修正描述屏蔽的误差。最复杂的方法如\textrm{QS$GW$}近似\upcite{PRB108-165104_2023,PRL99-246403_2007}，要自洽求解\textrm{Hedin}方程，并在极化函数中包括顶点函数。但是，该方法非常吃计算量，相关方法也超出本讲义的范围。一种更可行的方案是从相比于\textrm{PBE}的计算结果有较大提升的电子结构出发。本讲义中采用\textrm{PBE+}$U$近似，其中的\textrm{Hubbard}$U$值则是来自之前的\textrm{cRPA}计算。
+
+在本算例中，由\textrm{PBE+}$U$的波函数出发，计算$G_0W_0$准粒子能量和屏蔽相互作用$W$。一般地，如果从完成的标准\textrm{PBE}计算出发，再开始\textrm{PBE+}$U$计算，有助于加速计算的收敛。在本算例的介绍中，将跳过前面的标准\textrm{PBE}计算步骤，直接从\textrm{PBE+}$U$计算开始。
+
+具体计算包括三步
+\begin{itemize}
+	\item 对反铁磁\ch{NiO}，完成\textrm{PBE+}$U$的基态电子结构计算
+	\item 包括大量未占据电子态后，计算轨道波函数的导数
+	\item 由\textrm{PBE+}$U$方法得到的电子结构出发，完成$G_0W_0$计算
+\end{itemize}
+本算例将对反铁磁的\ch{NiO}完成$G_0W_0$的准粒子能量计算。
+
+\textrm{DFT}基态计算的输入文件中
+
+为了能够描述反铁磁有序，\ch{NiO}的结构文件中的原子增加到4个(2个\ch{Ni}和2个\ch{O})
+
+计算参数控制文件\textrm{dft/INCAR}
+
+采用\textrm{PBE+}$U$方法完成的\textrm{DFT}计算，需要强调的计算控制参数:
+\begin{itemize}
+	\item \texttt{ISPIN}:~考虑自旋极化计算
+	\item \texttt{LASPH}:~磁性计算中是必要设置计算控制参数。要求\textrm{PAW}球内的梯度校正中包括非球形部分的贡献
+	\item \texttt{MAGMOM}:~针对具体的计算对象，设置初始磁矩。本算例就是反铁磁计算
+	\item 因为是重启计算，所以对含$d$电子体系，将\texttt{LMAXMIX}设置为4(相应地，如果含有$f$电子体系，该参数设置为6)。否则写入\textrm{CHGCAR}文件中写入的电荷密度是不完整的。而且无论哪种情况，当计算包括的电荷密度混合的角动量量子数达到\texttt{LMAXMIX}，计算有可能加速收敛。
+	\item \texttt{LDAU}:~开启\textrm{DFT+}$U$计算
+	\item \texttt{LDAUTYPE}:~指定\textrm{DFT+}$U$方法为\textrm{Dudarev}方法
+	\item \texttt{LDAUL}:~制定考虑在位相互作用的角动量$l$的数量
+	\item \texttt{LDAUU}:~指定有效的在位\textrm{Coulomb}相互作用的数值
+	\item \texttt{LDAUJ}:~指定有效的在位交换作用
+\end{itemize}
+
+作为计算实例，$\vec k$空间网格剖分采用$3\times3\times3$方案。如果要得到合理的计算收敛结果，应该对采用的$\vec k$点作全面的收敛测试。
+
+为了后续的$G_0W_0$计算，计算采用的原子数据集应该采用带有\textrm{\_GW}版本。相比于传统的原子数据集中的势函数，该数据集中的势函数可以在更大范围内描述原子的散射性质。当含有大量未占据能带体系计算中，这是原子数据集的必备条件。用户可以通过原子数据集文件\textrm{POTCAR}中的计算控制参数\textrm{TITEL}确定使用的原子数据集版本。
+%一般地，如果原子数据集改用包含半芯层的$s$-和$p$-电子态的版本(带有\textrm{\_sv}和\textrm{\_pv})，也可以用来改进计算结果。
+
+在计算目录下，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+在\textrm{OUTCAR}文件中检索关键词\textsc{fundamental gap}或采用\textrm{Py4vasp}模块，可以确定带隙。
+
+实验得到的反铁磁的\ch{NiO}的基础带隙为\textrm{4.3~eV}\upcite{PRL53-2339_1984}，由于\textrm{PBE}交换-相关泛函大大地低估了带隙，得到的带隙值是\textrm{0.95~eV}(关闭$U$值计算测试或参阅文献\cite{JPCA121-3318_2017})。引入\textrm{Hubbard}校正，可将带隙提升到约$\sim3.6~\nathrm{eV}$，但即便如此，这样得到的带隙还是偏小。
