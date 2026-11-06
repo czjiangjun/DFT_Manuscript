@@ -1,0 +1,44 @@
+根据计算，可以成功得到\textrm{WAVECAR}文件，通过这些\textrm{WAVECAR}文件可以产生$GW$计算所需要的虚轨道。
+
+接下来的计算中，会得到大量未占据态，并计算轨道对$\vec k$的导数(存在文件\textrm{WAVEDER})，这些数据都是$G_0W_0$计算必需的。
+
+所有的计算输入文件都保存在\textrm{unoccupied}目录下，所有的\textrm{POSCAR}、\textrm{KPOINTS}和\textrm{POTCAR}都与\textrm{DFT}目录下的相同。
+
+而\textrm{INCAR}文件则在前一步计算的内容基础上，考虑计算大量未占据态计算和轨道导数计算的参数。
+\begin{itemize}
+	\item \texttt{ALGO}:~设定电子最小化算法，其值\textrm{Exact}表示对\textrm{Kohn-Sham}的\textrm{Hamiltonian}实行精确对角化，这也是小体系中包含大量未占据轨道时优先考虑的算法。
+	\item \texttt{LOPTICS}:~完成基态计算后计算频率相关的介电函数矩阵，并且计算轨道的导数\textrm{(WAVEDER)}
+	\item \texttt{NBANDS}:~确定能带数目，即所有关注的占据和未占据能带数目的总和。在$GW$计算中，为了得到精确的准粒子能量，能带数目必须比\textrm{DFT}计算时大大增加。
+\end{itemize}
+在\textrm{unoccupied}目录下，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+计算完毕后，会在\textrm{unoccupied}目录下有\textrm{WAVECAR}和\textrm{WAVEDER}两个文件存在。
+
+\texttt{LOPTIC}=\textrm{.TRUE.}表示在独立粒子近似下计算轨道导数和介电函数。可以通过\textrm{Py4vasp}模块来绘制介电函数。
+
+在介电函数曲线中，包含介电函数$\varepsilon$的实部和虚部两部分。可以看到$\varepsilon$的实部在$\omega=0$处的值，即介电常数。与实验值5.7相比，计算得到的介电常数属于高估，本质上这也是带隙低估的后果。如果计算得到的带隙是正确的，独立粒子近似下的介电常数则会因为没有考虑电子-空穴相互作用而被低估。
+
+下一步，通过已经得到的\textrm{WAVECAR}和\textrm{WAVEDER}数据，采用$G_0W_0$计算反铁磁\ch{NiO}的准粒子能量和屏蔽\textrm{Coulomb}相互作用势$W$。
+
+与前面的计算类似，计算的目录为\textrm{g0w0}，文件\textrm{POSCAR}，\textrm{KPOINTS}和\textrm{POTCAR}与之前的计算相同。
+
+计算控制参数\textrm{g0w0/INCAR}文件中，计算使用的能带数目与前一次计算未占据态和导数时的相同。这里注意，在$G_0W_0$计算中，不考虑\textrm{Hubbard}相关的贡献。相关计算控制参数:
+\begin{itemize}
+	\item \texttt{NOMEGA}:~指定在极化率和自能计算中的实数频率采样点的数目
+	\item \texttt{ALGO}:~指定$G_0W_0$计算的算法\textrm{(EVGW0)}，并确定计算控制参数\texttt{NELM}=1
+	\item 在本计算中，\texttt{PREFOCK}和\texttt{ENCUTGW}取默认值。对于高精度计算，所有的计算控制参数应该完成收敛测试与分析。
+\end{itemize}
+在\textrm{g0w0}目录下，应用\textrm{Bash}命令完成\textrm{VASP}计算。
+
+准粒子能量写入\textrm{OUTCAR}文件。通过检索字符串\textsc{spin component 1}，注意到此后的\textsc{QP-energies}，由此确定$G_0W_0$的带隙。
+
+本算例中带隙值是\textrm{4.6~eV}，与实验值\textrm{4.3~eV}接近。但是一定要记住，考虑到当前计算中$\vec k$空间网格剖分方案，频率采样点数目，能带数目等参数都并未完全收敛。因此，实际计算中必须有合理的收敛分析。
+
+类似地，应用\textrm{Py4vasp}模块可以绘制介电函数，并可以确定\textrm{RPA}介电常数的值。
+
+\textrm{RPA}的介电常数为5.76,与实验值相比只是略高。
+
+不过，如果对$\vec k$点、计算控制参数\texttt{NBANDS}、\texttt{NOMEGA}的值，采用更严格的收敛标准，然后再完成相同的计算，则\textrm{RPA}的介电常数值是5.2，而带隙则是\textrm{4.25~eV}。比起实验值，计算的介电常数是被低估的，因为没有考虑激子效应。由此得出结论，在\textrm{PBE+}$U$方法中，考虑\textrm{Hubbard}相关可以改进标准F\textrm{PBE}计算的电子结构。由\textrm{PBE+}$U$出发计算的$G_0W_0$计算得到的电子结构(基本带隙)和屏蔽相互作用$W$都描述得较好。关于屏蔽相互作用$W$，会在后续的\textrm{BSE}计算中完成。
+
+\subsection{\ch{NiO}的光学性质}
+
