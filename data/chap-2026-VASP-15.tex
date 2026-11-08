@@ -170,4 +170,59 @@
 \begin{displaymath}
 	\sigma_{ij}(\mathbf{R})=-\dfrac{\partial B_i^{\mathrm{ind}}(\mathbf{R})}{\partial B_j^{\mathrm{ext}}}
 \end{displaymath}
+这里$B^{\mathrm{inc}}$是诱导磁场。
 
+本算例中，计算金刚石结构的\ch{C}元素的各向同性的化学屏蔽值随着平面波截断能和$\vec k$点网格的收敛情况。
+
+计算所需要的输入文件在\textrm{shielding}目录下。
+
+金刚石的初基原胞结构文件\textrm{POSCAR}
+
+计算参数控制文件\textrm{INCAR.nmr}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS.nmr}
+
+采用$4\times4\times4$的网格剖分精度。
+
+检查\textrm{INCAR}文件中的控制计算参数。参数\texttt{ENCUT}、\texttt{ISMEAR}、\texttt{SIGMA}、\texttt{EDIFF}、\texttt{PREC}和\texttt{LASPH}就是一般的\textrm{DFT}计算的设置。需要说明的是，对于\textrm{NMR}计算，电子态结构计算的精度要比较高(\texttt{PREC}=\textrm{A}，\texttt{EDIFF}$\glantleq$1E-8和高的\texttt{ENCUT})。
+
+其余的计算参数用于化学屏蔽的计算。\texttt{LCHIMAG}表示通过线性响应计算化学屏蔽。\texttt{LNMR\_SYM\_RED}表示当采用线性响应方法计算化学屏蔽时，放弃与$\vec k$空间求导不一致的对称操作。\texttt{NLSPLINE}要求\textrm{PAW}方法的投影函数在倒空间是可微分的。\texttt{KPAR}用于极速计算，确定的是\textrm{VASP}并行计算中每一次同时处理的$\\vec k$点数目。
+
+首先检查计算化学屏蔽随平面波截断能的收敛情收敛情况。为了在不同截断能下执行\textrm{VASP}计算，\textrm{INCAR}需要作相应调整。采用\textrm{Bash}脚本\textrm{encut\_shielding.sh}，分别用\textrm{500-900~eV}间，步长依次为\textrm{100~eV}的值依次替代原来\textrm{INCAR}文件中的\texttt{ENCUT}=\textrm{400~eV}。在执行目录下，执行该脚本。
+
+计算完毕后，脚本还会通过\textrm{Bash}命令
+\fbox{\textrm{grep -A 5``iso\_shield'' OUTCAR | tail -1 | awk '\{print \$6\}'}}
+就可以在\textrm{OUTCAR}文件中提取\ch{13C}的化学屏蔽值。
+
+在计算过程中，标准输出在不同阶段的输出，首先是\textrm{DFT}计算的电荷\textrm{(CHGCAR)}和波函数\textrm{(WAVECAR)}的收敛。随后沿着磁场轴向线性响应的输出，\textsc{BDIR}表示外加磁场，\textsc{IDIR}表示诱导磁场。数值表示\textrm{Cartesian}轴向(1:$x$-轴；2-$y$-轴；$3$-轴)。\textsc{IQ}是有限差分下的格点的值。格点的定义由计算控制参数\texttt{ICHIBARE}定义，取值范围是-\texttt{ICHIBARE}到+\texttt{ICHIBARE}。在本算例中，因为\texttt{ICHIBARE}取的是默认值1，因此有3个\texttt{IQ}点。
+
+\textrm{Bash}脚本\textrm{encut\_shielding.sh}执行过程中，不同能量截断下执行\textrm{VASP}计算化学屏蔽的数据保存在文件\textrm{encut\_shielding.dat}。在\textrm{OUTCAR}文件中，关于化学屏蔽的输出为
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}
+        \toprule
+	名称 &含义\\
+\midrule
+\texttt{EXCLUDING G=0 CONTRIBUTION} & 排除宏观长程贡献的化学屏蔽，该参数对于分子很有用\\
+\texttt{INCLUDING G=0 CONTRIBUTION} & 包含宏观长程贡献的化学屏蔽，特别是对于表面电流，该参数对于晶体很有用\\
+\texttt{ion} & \textrm{POSCAR}文件中排序的原子数目\\
+\texttt{BDIR} & 施加磁场的方向(即\textsc{B0})，比如，这里\texttt{BDIR}=1 表示沿$x$轴方向。每一列的外加磁场可以分解为$x$，$y$，$z$方向的贡献，所以对每个原子来说，这才是整个化学屏蔽张量 \\
+\texttt{iso\_shield} & 化学屏蔽张量之后，括号里给出各向同性的化学屏蔽，跨度\textrm{(Span)}和斜度\textrm{(Skew)}。各向同性的化学屏蔽，即化学屏蔽张量的对角元平均值($\sigma_{\mathrm{iso}}=\mathrm{Tr}(\sigma)/3=(\sigma_{11}+\sigma_{22}+\sigma_{33})/3$) \upcite{SSNMR2-28590010_1993}\\
+\texttt{span} & 跨度\textrm{(Span)}$\Omega$定义为 $\Omega=\sigma_{33}-\sigma_{22}$ \upcite{SSNMR2-28590010_1993}\\
+\texttt{skew} & 斜度\textrm{(Skew)}$\kappa$定义为 $\kappa=3(\sigma_{\mathrm{iso}}-\sigma_{22})/(\sigma_{33}-\sigma_{11})=3(\sigma_{\mathrm{iso}}-\sigma_{22})/\Omega$ \upcite{SSNMR2-28590010_1993}
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{OUTCAR}文件中关于\textrm{NMR}的参数}}
+\label{Tab:-Tag}
+\end{table}
+
+注意这里的化学屏蔽包含了主要的贡献，这些是最后与实验对比的重要的数据项。这些数据涵盖了下一个算例的内容。
+
+通过\textrm{Py4vasp}绘制每个能量截断下的化学屏蔽
+
+截断能达到\textrm{500~eV}以上，总能量收敛会达到\textrm{10~meV}。如果截断能低于该值，对波函数来说，平面波数目太少，不再是好的展开基组。对于化学屏蔽来说，达到收敛的截断能会需要取得很高，截断能达到\textrm{500~eV}，化学屏蔽快速收敛到\textrm{1~ppm}，但是，如果要将化学屏蔽收敛到\textrm{0.1 ppm}，截断能至少要\textrm{800~eV}。
+
+注意，计算所能达到的精度与元素也有关系。例如，对于\ch{1H}来说，典型的化学屏蔽范围是\textrm{0-14~ppm}，而对于\ch{13C}，化学屏蔽的范围是\textrm{0-250~ppnm}。这些值并不与化学屏蔽严格对应，但给出了数量级上的参考。化学屏蔽可以给出到\textrm{0.1~ppm}的精度。对于重元素，化学屏蔽的范围更大，比如\ch{195Pt}，范围将会达到-7000到\textrm{+7000~ppm}，这种情况下，\textrm{0.1~ppm}不是一个可行的精度要求，必须另外选取精度(如\textrm{1~ppm})。
+
+一般地，这里并不推荐计算参数随总能的收敛。
