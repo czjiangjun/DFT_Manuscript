@@ -115,4 +115,32 @@ $\vec k$空间网格选择$\Gamma$点。
 
 \textrm{INCAR}文件与前面计算的算例相同，只是加了计算控制参数\texttt{WRT\_NMRCUR}确保电流输出沿$x$轴的数据到文件\textrm{NMRCURBX}，相应的$y$轴和$z$轴的数据依次到\textrm{NMRCURBY}文件和\textrm{NMRCURBZ}。
 
+\textrm{KPOINTS}文件将网格指定为$\Gamma$点，考虑孤立分子的计算，需要有足够大的晶胞，也因此选择仅有$\Gamma$点的$\vec k$点网格。注意单个分子周围要有足够大的真空区域。在计算化学屏蔽时，需要扩大真空的大小以检验该参数是否收敛。
 
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}查看计算的\ch{C6H6}分子的结构。
+
+不难看出\ch{C6H6}是高度对称性的分子，由\ch{CH}单元的平面具有六种对称轴。在\textrm{OUTCAR}文件中，可以看到化学屏蔽。当外加磁场时，在$x$，$y$和$z$向产生的诱导电流会保存在文件\textrm{NMRCURBX}，\textrm{NMRCURBY}和\textrm{NMRCURBZ}中。
+
+得到诱导电流数据后，通过\textrm{Python}脚本\textrm{plot\_nmrcur\_silce.py}脚本将电流可视化。\textrm{Python}脚本\textrm{plot\_nmrcur\_slice.py}有四个变量
+\begin{itemize}
+	\item 沿$x$-，$y$-，$z$-的诱导电流文件\textrm{NMRCURBX}，\textrm{NMRCURBY}和\textrm{NMRCURBZ}，三者之一
+	\item 确定电流采样点包含点数的参数$n$，即:~\textsc{1}是每一个点，\textsc{2}是每两个点，\textsc{3}是每三个点
+	\item 选定$yz$-面的位置在$x$轴向截距的坐标，即:\textsc{0.5}是所选晶胞的一半位置
+	\item 标注电流大小的箭头的方式，这里数值\textsc{4.5}缩放箭头长度$L$，计算公式是$(L/10^{4.5})\times W$，这里$W$是箭头的宽。
+\end{itemize}
+提取诱导电流并采用\textrm{Python}脚本\textrm{plot\_nmrcur\_slice\_c6h6.py}绘制诱导电流。这里\textrm{Python}脚本\textrm{plot\_nmrcur\_slice\_c6h6.py}就是\textrm{plot\_nmrcur\_slice.py}，但就是呈现\ch{C6H6}分子的原子的位置。
+
+\fbox{\textrm{python3 plot\_nmrcur\_slice\_C6H6.py NMRCURBX 2 0.5 0.9}}
+
+确保调节\textrm{0.9}处的值，确定最合适的箭头能最容易可视化诱导电流。只要箭头是可视的，一般只需要微小的调整。
+
+执行脚本绘制的诱导电流存入文件\textrm{fig\_nmrcurbx-sclice.png}。
+
+用户也可以通过\textrm{Py4vasp}模块绘制\textrm{NMR}的诱导电流。
+
+用户可以看到电流在\ch{C6H6}分子的平面附近形成环形的移动。电子位于分子所处平面的上下，这个环就是芳香环。当存在磁场时，电子沿芳香环流动形成电流。环电流产生很强的磁场，该磁场与芳香环外的磁场方向相反。结果\ch{C6H6}中的\ch{H}原子表现出很强的去屏蔽。这是芳香化合物的\textrm{NMR}谱的典型特征。
+
+\subsubsection{与实验化学移动的对比}
+对\ch{BaSnO3}、\ch{MgO}、\ch{SrO}和\textrm{SrTiO3}的化学屏蔽，并对实验得到的化学屏蔽作线性拟合。
