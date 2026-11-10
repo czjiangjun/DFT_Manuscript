@@ -173,4 +173,85 @@ $\vec k$空间网格选择$\Gamma$点。
 
 $\vec k$空间网格剖分为$6\times6\times6$网格
 
+以\ch{MgO}为例，在其目录下，执行\textrm{Bash}命令，完成化学屏蔽的\textrm{VASP}计算。因为化学屏蔽计算是非常耗时的，所以这里只计算\ch{MgO}。
 
+如果时间允许，用户可以利用\textrm{Bash}脚本\textrm{0\_shielding.sh}自行完成全部计算。脚本\textrm{0\_shielding.sh}会依次进入四个目录，执行\textrm{VASP}计算，计算完毕，会提取各向同性的屏蔽值，并将数据存入\textrm{0\_shielding.dat}，这部分数据后续会用来绘制\textrm{NMR}曲线。
+
+具体到\ch{MgO}计算中，化学屏蔽的数据也保存在输出文件\textrm{OUTCAR}中。用户可以在一个\textsc{CSA tensor}的表格中，看到化学屏蔽张量的全部信息。
+
+在\ch{MgO}中，\ch{O}是第二个原子，用户可以看到第二个粒子对应的化学屏蔽张量。
+
+%注意，由于算例中的计算参数可以有更严格的设置要求，所以可能数值与这里并非严格一致。
+
+对于\ch{O}元素，前三行是化学屏蔽张量。最后一行包括各向同性的屏蔽。因为当前的算例是固体，所以应该选择\textsc{INCLUDING G=0 CONTRIBUTION}对应的数据，所以应该选择这一行的第四个数值。
+
+\textcolor{red}{相应地，可以采用以下\textrm{Bash}命令提取屏蔽数据。
+
+一旦对\ch{MgO}提取了化学屏蔽数值，如果不做其他几个化合物的计算，可以通过以下命令将\ch{BaSnO3}，\ch{SrO}和\ch{SrTiO3}的数据写入数据文件。}
+
+对于具体的元素$N$，各向同性化学屏蔽$\sigma_{\mathrm{iso}}$是通过参考化合物的化学移动$\delta_{\mathrm{ref}}$与各向同性的化学移动$\delta_{\mathrm{iso}}$相关联的。
+\begin{displaymath}
+	\delta_{\mathrm{iso}}[N]=\delta_{\mathrm{ref}}[N]-\sigma_{\mathrm{iso}}[N]
+\end{displaymath}
+在实验中，首先选择参照标定(内标)，对\ch{1H}，内标就是选定为四甲基硅烷\textrm{(Tetramethylsilane, TMS)}，因为\textrm{TMS}有独特的\textrm{NMR}峰或特殊的化学性质。
+
+在计算中则没有类似的标准参照物。任何单次的计算如果选为内标，由于计算方法或者误差的缘故，会有对照化学位移失真的潜在风险。相反，通过绘制多次实验的化学位移，对照计算化学屏蔽，可以确定两者的关系，抵消任何单次计算的影响。\upcite{JCP146-064115_2017}
+\begin{displaymath}
+	\delta_{\mathrm{iso}}^{\mathrm{exp}}[N]=\delta_{\mathrm{ref}}[N]+m\sigma_{\mathrm{iso}}^{\mathrm{calc}}[N]
+\end{displaymath}
+这里$\delta_{\mathrm{iso}}^{\mathrm{exp}}$是实验的化学位移，$\delta_{\mathrm{ref}}$是内标物质的化学位移(即$y$轴截距),$m$是梯度，$m\sigma_{\mathrm{iso}}^{\mathrm{calc}}$是计算的化学屏蔽，而$N$是对应的元素名称，这里是\ch{O}，通过\textrm{Py4vasp}模块作图。
+
+注意，\textrm{Pearson}系数$r$用来估计拟合的质量。如果该值的绝对值低于$\sim0.95$，检查在数据文件\textsc{0\_shielding.dat}和\textsc{experiment.dat}的化合物顺序相同，确保绘制的点是彼此对应的。
+
+现在根据绘制的图，用户可以尝试对化合物得到化学屏蔽，预测实验的化学位移的大小。后续算例中就要完成该计算，并与参考文献对比。
+
+\subsubsection{根据理论预测实验结果}
+对\ch{BaZrO3}和\ch{CaO}的初基原胞，计算化学屏蔽，并与基于不同化合物\ch{BaSnO3}、\ch{MgO}、\ch{SrO}和\ch{SrTiO3}拟合直线预测化学位移作对比。
+
+正如前面的算例所示，根据不同化合物\ch{BaSnO3}、\ch{MgO}、\ch{SrO}和\ch{SrTiO3}，可以得到实验的化学位移和计算的化学屏蔽间的线性关系。这里拟合的\ch{O}元素的化学屏蔽与化学位移作了对比。化合物\ch{BaSnO3}、\ch{MgO}、\ch{SrO}和\ch{SrTiO3}\textcolor{red}{属于\textrm{Laskowski}系列化合物的子集。}\upcite{JCP146-064115_2017}在\textrm{Laskowski}的论文中，也对比了\ch{F}的实验的化学屏蔽，并且在与全电子基对比中验证了\textrm{PAW}方法的有效性，最后得到每个组成元素的线性方程
+\begin{displaymath}
+	\delta_{\mathrm{iso}}^{\mathrm{exp}}[N]=\delta_{\mathrm{ref}}[N]+m\sigma_{\mathrm{iso}}^{\mathrm{calc}}[N]
+\end{displaymath}
+由拟合方程出发，有可能从计算的化学屏蔽，预测实验化学位移。
+
+在本算例中，计算两个含\ch{O}元素的化合物\ch{BaZrO3}和\ch{CaO}的化学屏蔽。用户可以基于化合物\ch{BaSnO3}、\ch{MgO}、\ch{SrO}和\ch{SrTiO3}线性拟合，预测化学位移，并与实验值对比。
+
+\textrm{BaZrO3}的结构文件的保存位置\textrm{BaZrO3/POSCAR}
+
+\textrm{CaO}的结构文件的保存位置\textrm{CaO/POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINS}中是$6\times6\times6$
+
+与之前的计算类似，因为\ch{BaZrO3}的计算很耗时，推荐只计算\ch{CaO}。
+
+同样，如果时间允许，用户可以利用\textrm{Bash}脚本\textrm{0\_shielding.sh}自行完成全部计算。脚本\textrm{0\_shielding.sh}会依次进入两个目录，执行\textrm{VASP}计算，计算完毕，会提取各向同性的屏蔽值，并将数据存入\textrm{0\_shielding.dat}，这部分数据后续会用来绘制\textrm{NMR}曲线。
+
+\textcolor{red}{在对\ch{CaO}提取屏蔽时，确保将其余化合物的屏蔽值已经输入\textrm{0\_shielding.dat}文件。
+
+利用\textrm{Bash}脚本提取\ch{CaO}中\ch{O}的化学屏蔽值。}
+
+之前的算例已经得到实验与计算的线性拟合关系。这里又计算了两个新的含\ch{O}化合物:\ch{BaZrO3}和\ch{CaO}。这里取计算的化学位移预，并且通过\textrm{Python}脚本，输入化合物得到测期待的实验的化学屏蔽的值。
+
+预测与实验得到的化学位移的误差大于作为拟合标准的化合物。
+
+应用\textrm{Py4vasp}模块绘图，可以看得更清楚。
+
+对\ch{BaZrO3}，预测的偏离是由于非冻芯的$5s$和$5p$半芯态，即窄的芯态在晶体场中可以被极化。优于已知的原因，在\textrm{DFT}计算中，空的\ch{CaO}$3d$电子态离价带最大值过于近，使\ch{CaO}的屏蔽离直线更远。过于紧邻的$3d$电子态使得\ch{O}元素的位移偏离。\upcite{JCP146-064115_2017}
+
+图中，$y$轴截距$\sigma_{\mathrm{ref}}$梯度$m$和\textrm{Pearson}系数$r$可以由拟合得到，\textcolor{red}{还可以提升曲线的质量}。运行以下的\textrm{Python}脚本确定本算例的拟合值，并与文献值对比。
+
+$y$轴截距$\sigma_{\mathrm{ref}}$梯度$m$和\textrm{Pearson}系数$r$可以由拟合得到，\textcolor{red}{还可以提升曲线的质量}。%运行以下的\textrm{Python}脚本确定本算例的拟合值，并与文献值对比。
+
+四化合物系列的截距和梯度，与优化的\textrm{Laskowski}系列化合物接近，误差是\textrm{1ppm}和0.02。.\textrm{Pearson}系数也接近于1,这是一个好的拟合。当引入更多\textcolor{red}{不同}的化合物\ch{BaZrO3}和\ch{CaO}，构成六化合物系列，不难看出结果与文献之偏离。$y$轴截距变得更小，梯度离文献值更远。\textrm{Pearson}系数的下降，也说明拟合变得更差。
+
+\textrm{Laskowski}的\ch{O}-系列化合物共有10个化合物。``标准''\textrm{DFT}计算参数应该设置比本算例大的截断能\textrm{700~eV}和硬的\textrm{(\_h)}的\textrm{POTCAR}(更小的原子半径)``优化''\textrm{DFT}使用的截断能是\textrm{900~eV}，并采用改经的\textrm{POTCAR}。毫无疑问，由两个系列的结果对当前的粗糙计算是一种提升。四化合物系列包含``表现良好''的\textrm{Laskowski}系列化合物中的子集，而六化合物系列中引入了额外的复杂性。
+
+有必要指出的是，根据计算和实验的差异，只是通过参考化学位移(即$\sigma_{\mathrm{ref}}$)，因此$m$的值应该是-1。而$m$对-1的偏离是源自\textrm{DFT}的局限性，即交换-相关能泛函的表现精度的影响。
+
+当计算化学屏蔽时，不仅必须考虑参数的收敛性，而且\textrm{PAW}原子数据集中的赝势的选择是否合适更是第一位的。在绝大多数情况下，普通的赝势已经足够。在有些情况下，比如\ch{BaZrO3}，需要更硬一点的赝势和更小的冻芯电荷半径。
+
+\subsection{耦合常数与双中心相关}
+\subsubsection{超精细常数}
+采用\textrm{PBE}和\textrm{HSE06}泛函，$10\times10\times10\mathrm{\AA}^3$的晶胞中，计算气相\ch{CH3}$\cdot$自由基的径向超精细耦合张量。
