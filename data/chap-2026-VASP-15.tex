@@ -101,7 +101,7 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS.nmr}
 \end{displaymath}
 这里$\vec r^{\prime}$是空间位置。
 
-诱导电流$\mathbf{j}^{(1)}(\vec r^{\prime})$可以写成三部分之和:~来自赝化价电子波函数$\mathbf{j}_{\mathrm{bare}}^{(1)}(\vec r^{\prime})$，抗磁项$\mathbf{j}_{\Delta d}^{(1)}(\vec r^{\prime})$和顺磁项$\mathbf{j}_{\Delta p}^{(1)}(\vec r^{\prime})$。后两者考虑的是在近原子核区域赝化价电子波函数对真实全电子波函数的偏离：\upcite{PRB76-024401_2007}
+诱导电流$\mathbf{j}^{(1)}(\vec r^{\prime})$可以写成三部分之和:~来自净赝化价电子波函数$\mathbf{j}_{\mathrm{bare}}^{(1)}(\vec r^{\prime})$，抗磁项$\mathbf{j}_{\Delta d}^{(1)}(\vec r^{\prime})$和顺磁项$\mathbf{j}_{\Delta p}^{(1)}(\vec r^{\prime})$。后两者考虑的是在近原子核区域赝化价电子波函数对真实全电子波函数的偏离：\upcite{PRB76-024401_2007}
 \begin{displaymath}
 	\mathbf{j}^{(1)}(\vec r^{\prime})=\mathbf{j}_{\mathrm{bare}}^{(1)}(\vec r^{\prime})+\mathbf{j}_{\Delta d}^{(1)}(\vec r^{\prime})+\mathbf{j}_{\Delta p}^{(1)}(\vec r^{\prime})
 \end{displaymath}
@@ -144,3 +144,33 @@ $\vec k$空间网格选择$\Gamma$点。
 
 \subsubsection{与实验化学移动的对比}
 对\ch{BaSnO3}、\ch{MgO}、\ch{SrO}和\textrm{SrTiO3}的化学屏蔽，并对实验得到的化学屏蔽作线性拟合。
+
+化学屏蔽不是可观测的物理量。在\textrm{NMR}中，测量的是进动频率$\omega_L$。$\omega_L$依赖磁场强度$\mathbf{B}$和旋磁比\textrm{(gyromagnetic ratio)}$\gamma$
+\begin{displaymath}
+	\omega_L=-\gamma B_z
+\end{displaymath}
+在现代\textrm{NMR}谱仪中，设备产生的磁场强度大致在\textrm{1–20~T}之间。在越强的磁场中，不同自旋态的能量差越大，随着更稳定自旋态的占据数偏置\textrm{(population bias)}增加，有效提升了设备的信噪比\textrm{(Signal-to-Noise Ratio, SNR)}。不过，更强的磁场也会改变测试样品的频率$\omega_{\mathrm{sample}}$。为了对比不同\textrm{NMR}谱仪的数据，引入参考化合物的频率$\omega_{\mathrm{ref}}$\upcite{PAC80-59_2008}，由此可以计算相对化学移动$\delta$:
+\begin{displaymath}
+	\delta=\dfrac{\omega_{\mathrm{ref}}-\omega_{\mathrm{sample}}}{\omega_{\mathrm{sample}}}\times10^6
+\end{displaymath}
+实际计算的时候，是通过线性响应理论计算化学屏蔽$\sigma$而非直接采用化学移动$\delta$。通过\textrm{Biot-Savart}定律，由诱导电流(参见上一个算例)来导出相应的诱导磁场(分别包括净诱导项$\mathbf{B}_{\mathrm{bare}}^{(1)}(\vec r^{\prime})$，抗磁项$\mathbf{B}_{\Delta\mathrm{d}}^{(1)}(\vec r^{\prime})$和顺磁项$\mathbf{B}_{\Delta\mathrm{p}}^{(1)}(\vec r^{\prime})$)。由此得到对应的化学屏蔽(同样净诱导项$\sigma_{\mathrm{bare}}$，抗磁项$\sigma_{\Delta\mathrm{d}}$和顺磁项$\sigma_{\Delta\mathrm{p}}$)并将各项求和，叠加近核处不变化学屏蔽的$\sigma_{\mathrm{core}}$后，可得总的化学屏蔽$\sigma_{\mathrm{tot}}$
+\begin{displaymath}
+	\sigma_{\mathrm{tot}}=\sigma_{\mathrm{bare}}+\sigma_{\Delta\mathrm{d}}+\sigma_{\Delta\mathrm{p}}+\sigma_{\mathrm{core}}
+\end{displaymath}
+本算例中，对一系列含有\ch{O}原子的化合物的化学屏蔽，并与绘制的实验化学屏蔽对照，挖掘两者的关系。
+
+各类材料的结构文件
+
+\ch{BaSnO3}的结构文件位于\textrm{BaSnO3/POSCAR}
+
+\ch{MgO}的结构文件位于\textrm{MgO/POSCAR}
+
+\ch{SrO}的结构文件位于\textrm{SrO/POSCAR}
+
+\ch{SrTiO3}的结构文件位于\textrm{SrTiO3/POSCAR}
+
+对应的各自目录下的计算控制参数文件\textrm{INCAR}，与之前的计算相同
+
+$\vec k$空间网格剖分为$6\times6\times6$网格
+
+
