@@ -255,3 +255,67 @@ $y$轴截距$\sigma_{\mathrm{ref}}$梯度$m$和\textrm{Pearson}系数$r$可以�
 \subsection{耦合常数与双中心相关}
 \subsubsection{超精细常数}
 采用\textrm{PBE}和\textrm{HSE06}泛函，$10\times10\times10\mathrm{\AA}^3$的晶胞中，计算气相\ch{CH3}$\cdot$自由基的径向超精细耦合张量。
+
+原子核并不是原子中唯一具有自旋的组成，电子也有自旋。在原子内部，电子运动形成的磁场和原子核的磁矩相互作用引起核自旋的简并能级的裂分，这种裂分成为超精细裂分\textrm{(Hyperfine splittiing)}。
+
+用于描述超精细裂分的\textrm{Hamiltonian}$\hat{H}_{\mathrm{D}}$由磁场$\mathbf{B}$和磁场中的磁偶极矩$\mathbf{\mu}_I$共同定义
+\begin{displaymath}
+	\hat{H}_{\mathrm{D}}=-\mathbf{\mu}_I\cdot\mathbf{B}
+\end{displaymath}
+在这种情况下，磁场是个内磁场，描述的是电子轨道角动量磁矩和自旋角动量磁矩贡献的$\mathbf{B}_{el}^l$和$\mathbf{B}_{el}^s$
+\begin{displaymath}
+	\mathbf{B}=\mathbf{B}_{el}^l+\mathbf{B}_{el}^s
+\end{displaymath}
+原子核的自旋$S^I$和电子的自旋$S^e$通过超精细张量$A^I$关系，相互作用引起的精细裂分能量\upcite{PRB88-075202_2013}为
+\begin{displaymath}
+	E=\sum_{ij}S_i^eA_{ij}^IS_j^I
+\end{displaymath}
+在本算例中，通过\textrm{PBE}泛函计算甲基自由基(\ch{CH3}$\cdot$)的超精细张量$A^I$并与\textrm{HSE06}泛函的计算结果对比。
+
+甲基自由基\ch{CH3}的结构文件\textrm{POSCAR}
+
+\textrm{PBE}泛函下的计算控制文件\textrm{INCAR.pbe}
+
+\textrm{HSE06}泛函下的计算控制文件\textrm{INCAR.hse06}
+
+$\vec k$空间网格剖分文件选择\textrm{\Gamma}点。
+
+计算采用的\textrm{INCAR}文件与此前计算的控制参数类似，尽管已经有计算控制参数\texttt{NGYROMAG}提供离子的核旋磁比\textrm{(nuclear gyromagnetic ratios)}，可用于计算超精细耦合\textrm{(hyperfine couplin)}，不过为了计算超精细耦合张量，还需要额外的计算控制参数\texttt{LHYPERFINE}=\textrm{.TRUE.}。在本算例中，选定的元素是\ch{13C}和\ch{1H}。因为包含未成对电子，选择\texttt{ISPIN}=2实施自旋极化计算。
+
+在\textrm{INCAR.hse06}文件中包括的其余参数，如\texttt{LHFCALC}=\textrm{.TRUE.}，\texttt{GGA}=\textrm{PE}和\texttt{HFSCREEN}=0.2用来构建\textrm{HSE06}泛函。当\texttt{LHFCALC}=\textrm{.TRUE.}时，采用推荐的阻尼速度摩擦算法，因此计算控制参数\texttt{ALGO}=\textrm{Damped}。
+
+在计算目录下，为了解超精细计算的大致规模，将\textrm{INCAR.pbe}选择为\textrm{INCAR}，执行\textrm{Bash}脚本，完成\textrm{VASP}计算。
+
+计算完成后，超精细耦合参数分裂为各向同性部分\textrm{(Isotropic part)}，即\textrm{Fermi}接触项\textrm{(Fermi contact term)}和各向异性部分\textrm{(Anistropic part)}，即偶极贡献。在\textrm{OUTCAR}文件中的字符串\textrm{Fermi contact (isotropic) hyperfine coupling parameter (MHZ)}之后，可以看到有关数据。
+
+列出的各元素贡献，按照\textrm{POSCAR}文件中的元素顺序排列，各部分贡献分解后列入下表(以\textrm{MHZ}为单位)。
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}}
+        \toprule
+	名称 &含义\\
+\midrule
+\texttt{A\_pw} & 平面波项对\textrm{Fermi}接触项的贡献\\
+\texttt{A\_1PS} & 赝单中心项对\textrm{Fermi}接触项的贡献\\
+\texttt{A\_1AE} & 全电子中心项对\textrm{Fermi}接触项的贡献\\
+\texttt{A\_1c} & 单中心项的芯层部分对\textrm{Fermi}接触项的贡献 \\
+\texttt{A\_tot} & 忽略了\texttt{A\_1c}之后，其余部分对\textrm{Fermi}接触项的贡献 
+        \bottomrule
+    \end{tabular*}
+    \caption{\textrm{OUTCAR}文件中关于\textrm{NMR}的参数}}
+\label{Tab:-Tag}
+\end{table}
+紧随这些输出之后，给出偶极对超精细张量$A_{ij}$的贡献
+
+最后对角化完成后，输出总的超精细张量
+
+现在用户就能大致了解，完成超精细计算后的\textrm{OUTCAR}文件的内容结构。注意，三个\ch{H}原子(质子)(原子顺序2-4)接近理想值。应用\textrm{Py4vasp}模块绘制\ch{CH3}的结构。
+
+不难看出，\ch{CH3}自由基有三种对称轴，所以三个\ch{1H}原子核是等价的。
+
+应用\textrm{Bash}命令，提取输出文件\textrm{OUTCAR}中的超精细耦合参数。
+
+这里重点围绕在\ch{13C}的原子核，注意输出文件\textrm{OUTCAR}中字符串\textsc{Fermi contact (isotropic) hyperfine coupling parameter}部分。总的超精细耦合参数$A_{tot}$和芯层区域的贡献$A_{1c}$保存到\textrm{hyperfine.dat}文件中。因为$A_{tot}$并不包括$A_{1c}$，所以这两项必须加在一起。采用以下\textrm{Python}脚本,最后依次给出$A_{tot}$(第一行)，$A_{1c}$(第二行)和两者的和$A_{tot}+A_{1c}$(第三行)。
+
+尽管不代表普遍情况，超精细耦合参数随能量截断参数的收敛是很快速的。与化学屏蔽形成鲜明对比，本算例中，超精细耦合参数在\textrm{500~eV}达到收敛。在固体计算中，$\vec k$空间网格
+
