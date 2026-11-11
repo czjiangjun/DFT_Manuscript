@@ -317,5 +317,54 @@ $\vec k$空间网格剖分文件选择\textrm{\Gamma}点。
 
 这里重点围绕在\ch{13C}的原子核，注意输出文件\textrm{OUTCAR}中字符串\textsc{Fermi contact (isotropic) hyperfine coupling parameter}部分。总的超精细耦合参数$A_{tot}$和芯层区域的贡献$A_{1c}$保存到\textrm{hyperfine.dat}文件中。因为$A_{tot}$并不包括$A_{1c}$，所以这两项必须加在一起。采用以下\textrm{Python}脚本,最后依次给出$A_{tot}$(第一行)，$A_{1c}$(第二行)和两者的和$A_{tot}+A_{1c}$(第三行)。
 
-尽管不代表普遍情况，超精细耦合参数随能量截断参数的收敛是很快速的。与化学屏蔽形成鲜明对比，本算例中，超精细耦合参数在\textrm{500~eV}达到收敛。在固体计算中，$\vec k$空间网格
+尽管不代表普遍情况，超精细耦合参数随能量截断参数的收敛是很快速的。与化学屏蔽形成鲜明对比，本算例中，超精细耦合参数在\textrm{500~eV}达到收敛。在固体计算中，还要考虑$\vec k$空间的网格收敛，如对于金刚石晶格中带负电荷的\ch{N}-空位缺陷(色心)\upcite{PRB88-075202_2013}。鉴于耦合参数已经收敛，以下看一下方法对参数的影响。
 
+对比总的超精细耦合参数$A_{tot}$和芯电荷贡献$A_{1c}$与文献和实验值对比。通过电子顺磁共振\textrm{(Electron Paramagnetic Resonance, EPR)}测量实验参照数据，在\textrm{EPR}中，对于未成对电子来说，类似\textrm{NMR}。而在上述文献参考值$A_{tot}$是计算得到的，值为\textrm{182.5~MHz}。
+
+用户得到的值与文献值的差，可以用计算控制参数中包括\texttt{LASPH}=\textrm{.TRUE.}来解释，因为在上述参考文献中并未包括计算控制参数\texttt{LASPH}。计算控制参数\texttt{LASPH}打开了在\textrm{PAW}球区域内，非球形部分对梯度的贡献。如果用户设置\texttt{LASPH}=\textrm{.FALSE.}，得到的结果与文献值匹配得很好，除了因为对分子选择更大的晶胞$20\times20\times20\mathrm{\AA}^3$，而当前计算$10\times10\times10\mathrm{\AA}^3$晶胞，导致微小的差别。
+
+实验值是\textrm{1o7.4~MHz}，$A_{tot}$的实验值与计算值差别很大，因为后者没有包括芯区的贡献。一旦包括了芯区的贡献($A_{tot}+A_{1c}$)，文献值变为\textrm{86.1~MHz}，与实验值更接近，这里的值应该在$\sim70\mathrm{MHz}$。
+
+不过，剩下还有约$20\sim30\mathrm{MHz}$的差值依然很显著。而采用杂化泛函\textrm{HSE06}有望改善结果。\upcite{JCP125-224106_2006}
+
+采用\textrm{INCAR.hse06}作为\textrm{HSE06}计算的计算控制参数文件\textrm{INCAR}，并采用\textrm{Bash}命令完成计算。
+
+计算结束后采用\textrm{Bash}命令从输出文件中提取超精细耦合参数。
+
+为对比实验结果，可以通过\textrm{Python}脚本输出\textrm{HSE06}泛函的计算结果。
+
+$A_{tot}+A_{1c}$的文献值是\textrm{101.9~MHz}。用户得到的值与文献值的差，依然可以用计算控制参数中包括\texttt{LASPH}=\textrm{.TRUE.}来解释，因为在上述参考文献中并未包括计算控制参数\texttt{LASPH}。计算控制参数\texttt{LASPH}打开了在\textrm{PAW}球区域内，非球形部分对梯度的贡献。如果用户设置\texttt{LASPH}=\textrm{.FALSE.}，得到的结果与文献值匹配得很好，除了因为对分子选择更大的晶胞$20\times20\times20\mathrm{\AA}^3$，而当前计算$10\times10\times10\mathrm{\AA}^3$晶胞，导致微小的差别。
+
+与实验值\textrm{107.4~MHz}相比，显然\textrm{HSE06}泛函很好地提升了\textrm{PBE}泛函的结果。
+
+因为杂化泛函包含了精确的交换泛函，这有助于电子或缺陷的局域化。\upcite{JCP125-224106_2006}
+
+\subsubsection{电场梯度}
+对四方相碘铅甲胺，采用$\vec k$点为$\Gamma$点空间布点，计算原子核的四极矩。检查自洽迭代收敛的能量标准对四极矩的影响。
+
+原子核位置的电场梯度\textrm{(ELectric Field Gradient, EFG)}描述了电场改变比例。四极核\textrm{(Quadrupolar nuclei)}是指自旋量子数$>1/2$ 的原子核。\footnote{这一类原子核的核电荷分布偏离球对称，具有电四极矩。在\textrm{NMR}中非常重要，因为电四极矩与周围电场梯度相互作用，导致谱线显著增宽，也提供了独特的结构信息。}\textrm{EFG}是原子核位置$x$处静电势$V$的两阶导数
+\begin{displaymath}
+	V_{ij}=\dfrac{\partial^2V}{\partial x_i\partial x_j}
+\end{displaymath}
+\textrm{EFG}本身是不可测量的，但是原子核的四极矩耦合常数$C_q$可以通过各种谱学技术测量，包括\textrm{NMR}，\textrm{EPR}或核四极共振\textrm{(Nuclear Quadrupole Resonance, NQR)}谱等。$C_q$定义为
+\begin{displaymath}
+	C_q=\dfrac{eQV_{zz}}/h
+\end{displaymath}
+这里$e$是电子电荷，$Q$是元素和同位素的特征四极矩，$h$是\textrm{Planck}常数。
+
+对于碘铅甲胺\ch{MAPbI3}\footnote{碘铅甲胺是一种用于太阳能电池的钙钛矿材料。}来说核的四极矩是非常重要的。\upcite{JPCL8-61_2017}。在本算例中，对\ch{MAPbI3}的\ch{I}和\ch{N}计算核的四极矩，并观察随着迭代循环收敛标准(\texttt{EDIFF})逐步变严格的时候对结果的影响。
+
+\ch{MAPbI3}的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR.efg}
+
+$\vec k$空间网格文件采用$\Gamma$点。
+
+在计算参数控制文件\textrm{INCAR}文件中，需要说明额外的两个参数
+
+\texttt{LEFG}用于标识考虑电场梯度计算，\texttt{QUAD\_EFG}表示对\textrm{POTCAR}文件中包含的原子类别计算四极矩(\textrm{millbarn}单位)。
+
+在电子步计算中，改变能量收敛参数\texttt{EDIFF}，检查电场梯度随能量收敛参数变化的情况。针对不同收敛标准的设置下运行\textrm{VASP}，\textrm{INCAR}文件中的\texttt{EDIFF}数据需要变化，算例中依次选择\texttt{EDIFF}=\textrm{1E-4}，\textrm{1E-5}，\textrm{1E-6}，\textrm{1E-7}，\textrm{1E-8~eV}。该过程运行\textrm{Bash}脚本\textrm{ediff\_efg.sh}完成。
+
+运行\textrm{ediff\_efg.sh}脚本完成不同精度的计算，然后通过\textrm{grep}命令在\textrm{OUTCAR}文件中提取四极矩参数$C_q$。
+\fbox{grep -A 30 'Cq(MHz)' OUTCAR}
