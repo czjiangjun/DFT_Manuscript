@@ -401,3 +401,72 @@ $\vec k$空间网格文件采用$\Gamma$点。
 本算例中，将对\ch{14N}和\ch{127I}计算四极矩耦合常数，并考察耦合常数随$\vec k$空间布点和平面波截断能变化的变化情况，并与实验结果对比。
 
 \ch{MAPbI3}的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR.efg}
+
+\textrm{INCAR}文件与之前的计算控制参数相同
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS.efg}
+
+$\vec k$空间网格点是以$\Gamma$点为中心的$2\times2\times2$分布的。
+
+首先考察计算化学屏蔽岁平面波截断能的收敛情况。为了使用不同能量截断参数来完成\textrm{VASP}计算，\textrm{INCAR}文件必须相应地修改参数。\textrm{Bash}脚本\textrm{encut\_efg.sh}将计算控制参数\texttt{ENCUT}=\textrm{200~eV}依次替换为300到\textrm{600~eV}，步长为\textrm{100~eV}(为了节省计算时间，参数\textrm{500~eV}和\textrm{600~eV}的计算结果直接给出)。注意:~计算过程中\texttt{ENCUT}的值不应该低于\textrm{POTCAR}文件中规定的\texttt{ENMAX}的值，这里选择\texttt{ENCUT}=\textrm{200~eV}这样的值，只是为了说明收敛。
+
+执行\textrm{encut\_efg.sh}脚本，完成各类\textrm{VAPSP}计算，用户可以在\textrm{OUTCAR}文件中确定元素\ch{N}和轴取向\ch{I}和赤道取向\ch{I}的耦合常数，可以通过\textrm{Bash}命令\textrm{grep}查找相关数值。
+
+通过\textrm{Py4vasp}模块，可以看到\ch{MAPbI3}的结构
+\textcolor{red}{\ch{I}:紫色，\ch{Pb}:黑色，\ch{N}:蓝色，\ch{C}:灰色，\ch{H}:白色}
+
+执行\textrm{Bash}脚本\textrm{encut\_efg.sp}，在不同截断能条件下\textrm{VASP}计算得到的四极矩耦合常数保存到文件\textrm{encut\_efg.dat}。
+
+采用\textrm{Python}脚本可视化计算得到的四极矩耦合常数，再通过\textrm{Py4vasp}在不同截断能下的耦合常数。
+
+在\textrm{300~eV}，赤道取向\ch{I}的耦合常数$C_q$实现了快速收敛，轴取向\ch{I}也以类似的速度达到收敛。注意收敛的范围是$\sim0.1\mathrm{MHz}$。考虑到数量级的差别，\ch{N}的耦合常数需设置更严格的收敛标准，差不多$0.01\mathrm{MHz}$以内，这样的完全收敛，截断能要到\textrm{400~eV}到\textrm{500~eV}左右。对于当前的\textrm{INCAR}设置。推荐截断能最低是\textrm{400~eV}，最好应该达到\textrm{500~eV}。
+
+在给定$\vec k$空间网格布点，平面波截断能是唯一的重要计算控制参数。当截断能选择为\textrm{400~eV}时，测试$\vec k$空间网格布点的影响。在实际应用中，计算控制参数需要依次收敛，所以应该选择截断能参数\textrm{500~eV}，再测试$\vec k$空间网格布点。
+
+为了选择不同的$\vec k$空间网格布点来完成\textrm{VASP}计算，\textrm{KPOINTS}文件要不断地改变。对每个计算中，\textrm{KPOINTS}文件中2 2 2(这里N N N对应一个$\mathrm{N}\times\mathrm{N}\times\mathrm{N}$$\vec k$空间网格布点)替换为1 1 1和2 2 2，由于时间关系，另外还提供了4 4 4和6 6 6网格布点的计算结果，尽管这这里并未计算这部分数据。构建\textrm{Bash}脚本\textrm{kpoints\_efg.sh}并完成计算，然后提取四极矩耦合常数，并将数据保存到\textrm{kpoints\_efg.dat}文件。执行该\textrm{Bash}脚本\textrm{kpoints\_efg.sh}。
+
+采用下面两个\textrm{Python}脚本，查看计算得到的四极矩耦合常数，并用\textrm{Py4vasp}在每种$\vec k$空间网格布点下绘制耦合常数。
+
+从画的图中很清楚，仅有$\Gamma$点时，结果离收敛很远。在$2\times2\times2$的$\vec k$空间网格点时，\ch{N}原子收敛到\textrm{0.001~MHz}，而\ch{I}原子要更严格的$6\times6\times6$的网格布点才能收敛到\textrm{1~MHz}。将数据列入表格就看得清楚，即\textrm{Brillouin}区需要更密更多的网格点来刻画。这里需要注意的是不同的元素有不同的收敛标准，对\ch{N}是\textrm{0.001~MHz}，而相比之下\ch{I}的收敛标准是低于\textrm{1~MHz}，即四极矩耦合常数的数量级是一个关键因素。
+
+据\textrm{Franssen}等的研究文章报导\textrm{JPCL8-61_2017}，图\textrm{2(B)}通过核四极矩共振谱\textrm{(Nuclear Quadrupolar Resonance, NQR)}\ch{14N}的实验的$C_q$。温度由-100到$75~^{\circ}C$，$C_q$由0.11下降到\textrm{0.00~MHz}，与计算结果差别很大。\ch{MAPbI3}的甲胺结构来自实验结构，文献中计算的是\textrm{0.45~MHz}(参考图\textrm{S2})，与本算例计算相近。
+
+与实验对比，得到已经收敛的计算结果，还只是解决了一部分问题，必须作进一步考虑。在\textrm{NMR}的时间尺度上，甲胺在毫秒\textrm{(milliseconds, ms)}级别的自我重定向属于快的。如果考虑四个构象取平均，在-100到$50^{\circ}\mathrm{C}$范围内，按照实验的趋势，计算$C_q$由0.09衰减到\textrm{0.00~MHz}。当包含未期待动力学后，实验与理论的值再一次匹配。
+
+\subsubsection{双中心屏蔽贡献}
+在$15\times15\times15\mathrm{\AA}^3$晶胞中，分别在包含和不包含双中心校正后，计算\ch{LiH}的化学屏蔽，并检查其对截断能的收敛。
+
+化学屏蔽是典型的被假设为元素的单中心性质。一般地，这是一种合理的假设，来自近邻\textrm{PAW}球形区域的缀加电流的贡献是可以忽略的。不过双中心贡献有时候是显著的\upcite{JCP139-014109_2013}。特别是当计算中包含前两周期的元素(如\ch{H}，\ch{B}，\ch{C}，\ch{N}，\ch{O}，\ch{F})，且化学键特别短时，原子数据集中包括更硬的原子\textrm{PAW}赝势\textrm{(*\_h)}。双中心贡献就很重要。
+
+\ch{LiH}的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR.llraug}
+
+$\vec k$空间剖分网格文件，取$\Gamma$点作为网格点。
+
+\textrm{INCAR}文件中的计算参数和之前的保持相同，设置\texttt{LLRAUG}，表示在化学屏蔽张量计算中的双中心贡献。
+
+根据\textrm{Bash}脚本\textrm{llraug.sh}，针对截断能为\textrm{400~eV}计算包括和不包括双中心贡献的化学屏蔽张量(分别为\texttt{LLRAUG}=\textrm{.FALSE.}和\textrm{.TRUE.})。计算完化学屏蔽后，通过\textrm{Bash}命令\textrm{grep}从输出文件\textrm{OUTCAR}中分别提取\ch{Li}和\ch{H}的化学屏蔽。
+
+为了表明收敛情况，在\textrm{Bash}脚本\textrm{llraug.sh}的最后，截断能分别为500和\textrm{600~eV}的计算结果直接给出。每个计算执行完毕，化学屏蔽的数值写道\textrm{llraug.dat}数据文件中。
+
+执行\textrm{Bash}脚本\textrm{llraug.sh}
+
+当计算执行的过程中，通过\textrm{Py4vasp}模块展示计算对象\ch{LiH}的结构。
+
+计算结束，通过\textrm{Py4vasp}模块绘制化学屏蔽数据，并观察是否包含双中心贡献的不同。
+
+对\ch{Li}，包含和不包含双中心贡献的化学屏蔽的差别很小，对\ch{H}元素，差别则大得多。执行\textrm{Python}脚本绘制数据表，并提取化学屏蔽的精确值。
+
+对\ch{Li}，无论双中心贡献是否包含在内，化学屏蔽在截断能为\textrm{600~eV}时大致收敛。对\ch{H}元素也是对的。元素\ch{Li}和\ch{H}的主要区别是双中心贡献大小的量级。
+
+对\ch{Li}，双中心项的变化很小，近似为\textrm{~0.004ppm}，基本可以忽略。但是对于\ch{H}，其双中心项的量级大得多，当截断能由\textrm{400~eV}到\textrm{600~eV}，双中心项的范围差不多是$\sim1.1$到$\sim1.6\mathrm{ppm}$。这两者的差别表明双中心贡献有多重要。
+
+只有在计算中考虑\textrm{PAW}球的贡献，才有必要考虑双中心校正。在完备的原子中心基函数中，屏蔽分别是\textrm{88.12~ppm}(对\ch{Li})和26.34\textrm{26.34~ppm}(对\ch{H})\upcite{PCCP18-21145_2016}。当使用双中心方法，可以看到计算的值有多接近。
+
+\subsection{芳香性}
+对$8\times8\times8~\mathrm{\AA}^3$晶胞内的苯分子平面，计算核无关化学屏蔽\textrm{(Nucleus-independent Chemical Shift, NICS)}的等高线图。
+
+外加磁场$\mathbf{B}_{ext}$感生电流$\mathbf{j}^{1}$，感生电流感应磁场$\mathbf{B}_{in}{(1)}$。
