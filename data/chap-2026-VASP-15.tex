@@ -368,3 +368,36 @@ $\vec k$空间网格文件采用$\Gamma$点。
 
 运行\textrm{ediff\_efg.sh}脚本完成不同精度的计算，然后通过\textrm{grep}命令在\textrm{OUTCAR}文件中提取四极矩参数$C_q$。
 \fbox{grep -A 30 'Cq(MHz)' OUTCAR}
+
+采用\textrm{edfiff\_efg.sh}脚本，选择不同截断能的\textrm{VASP}计算得到的四极矩耦合常数保存在\textrm{ediff\_efg.dat}文件中。在\textrm{OUTCAR}文件中可以找到电场梯度。
+
+
+\textcolor{red}{字符串中\textsc{v\_ii}表示$i$方向的电场梯度分量。}
+
+在\textrm{OUTCAR}文件中，电场梯度的后面，也有四极矩的数据。
+
+通过\textrm{Py4vasp}模块，可以得到\ch{MAPbI3}的结构。
+\textcolor{red}{\ch{I}:紫色，\ch{Pb}:黑色，\ch{N}:蓝色，\ch{C}:灰色，\ch{H}:白色}
+
+不难看出，晶胞中有两类\ch{I}离子:~有两个\ch{I}在同一平面内，沿着\ch{Pb}的轴向(与\ch{CH3NH3}分子，即甲胺，在同一平面内)；有四个\ch{I}在\ch{Pb}的赤道取向(在两个甲胺层之间)。通过\textrm{Py4vasp}模块绘制每个\ch{I}原子和甲胺中的\ch{N}原子的四极矩耦合常数随着不同\texttt{EDIFF}值而变化的情况。
+
+先通过\textrm{Python}脚本给出$C_q$值。
+
+再通过\textrm{Py4vasp}绘制曲线
+
+可以看出，随着自洽迭代收敛标准由$10^{-4}~\mathrm{eV}$提升到$10^-5~\mathrm{eV}$，轴向\ch{I}和赤道向\ch{I}的四极矩耦合常数会有一些改变。在$10^-5~\mathrm{eV}$之后，耦合常数的改变小于\textrm{0.1~MHz}，可以认为达到了收敛。根据上面的结果，$N$在$10^-4~\mathrm{eV}$已经达到收敛。耦合常数(或更一般地，某个物理量)随计算控制参数的变化的程度与计算的体系密切相关，所以每一次都必须要进行测试。\textrm{EFG}常常容易受到\texttt{EDIFF}的影响。用户每进行一个新的计算，这类收敛测试往往是必要的``规定动作''，这里\textrm{EFG}和耦合常数是用于描述自旋$>\dfrac12$的原子核的四极电场。
+
+注意:~尽管本算例中没有讨论，但\textrm{POTCAR}的选择对四极矩耦合常数的计算值有重要影响，所以实际计算中必须考虑。例如，对于含有$GW$赝势和包含半芯层电子(即\textrm{*\_pv}和\textrm{*\_sv}的\textrm{POTCAR})的原子数据集，其影响就很大。所以在完成四极矩耦合常数对其他计算参数达到收敛测试之前，先应该考虑\textrm{POTCAR}的影响有多大。
+
+完成\textrm{SCF}计算的参数收敛测试，然后是对截断能和$\vec k$空间布点的收敛测试。
+
+\subsubsection{四极矩耦合常数}
+对四方相碘铅甲胺计算核四极矩，计算原子核，检查四极矩随着$\vec k$空间布点和能量截断的收敛情况。
+
+在碘铅甲胺\ch{MAPbI3}中，有两个元素具备高比例的四极矩的原子核:~\ch{14N}(99.9(6)\% 丰度)和\ch{127I}(100\% 丰度)。诸如核四极矩共振谱\textrm{(Nuclear Quadrupole Resonance Spectroscopy, NQR)}实验就能在固体中观察到这些核的四极矩。
+
+在\ch{MAPbI3}总有两类不同的\ch{I}原子，以八面体配位分布在\ch{Pb}的周围。轴取向的，与\ch{Pb}原子在同一平面内(每个晶胞内有4个这种\ch{I}原子)和赤道取向的，与甲胺分子\ch{CH3NH3}在同一平面内(每个晶胞内有2个这种\ch{I}原子)。这6个\ch{I}原子在\ch{Pb}原子周围构成八面体配位场。在\textrm{NQR}实验中，可以分辨出两类不同化学环境的的\ch{I}原子。\upcite{JPCL8-61_2017}。但是对于\ch{N}，因为化学环境非常相似，所以很难通过\\textrm{NQR}实验进行分辨。
+
+本算例中，将对\ch{14N}和\ch{127I}计算四极矩耦合常数，并考察耦合常数随$\vec k$空间布点和平面波截断能变化的变化情况，并与实验结果对比。
+
+\ch{MAPbI3}的结构文件\textrm{POSCAR}
