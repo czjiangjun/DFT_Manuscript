@@ -469,4 +469,35 @@ $\vec k$空间剖分网格文件，取$\Gamma$点作为网格点。
 \subsection{芳香性}
 对$8\times8\times8~\mathrm{\AA}^3$晶胞内的苯分子平面，计算核无关化学屏蔽\textrm{(Nucleus-independent Chemical Shift, NICS)}的等高线图。
 
-外加磁场$\mathbf{B}_{ext}$感生电流$\mathbf{j}^{1}$，感生电流感应磁场$\mathbf{B}_{in}{(1)}$。
+外加磁场$\mathbf{B}_{ext}$感生电流$\mathbf{j}^{1}$，感生电流感应磁场$\mathbf{B}_{in}{(1)}$。在芳香环分子中，因为存在共轭双键，分子的稳定性很高，在芳香环中电子的运动能构成闭合回路。
+
+在磁场条件下形成环形电流，会使得质子(\ch{H}核)感受到强烈的去屏蔽，这是芳香化合物的\textrm{NMR}的典型性质。在芳香环内，原子核又受到强烈的屏蔽，分子感受到的磁场就是整个屏蔽覆盖的区域。分子中非原子化学屏蔽称为核独立化学位移\textrm{(Nucleus-Independent Chemical Shift, NICS)}。\upcite{CR105-3842_2005}通常，芳香环中心的单个\textrm{NICS}点用来确定芳香性。而\textrm{NICS}等高线图可以表征分子的各项同性，诱导磁场等信息。\upcite{JPCA117-518_2013}
+
+本算例中，通过单个$\vec k$空间网格点计算\textrm{NICS}形成\textrm{NICS}的等高线图，并通过该图来表征苯的芳香性。
+
+苯的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件选取$\Gamma$点作为网格点。
+
+\textrm{INCAR}文件的内容与之前的类似，只增加了计算控制参数\texttt{NUCIND}=\textrm{.TRUE.}，用于开始计算\textrm{NICS}。计算控制参数\texttt{LPOSNICS}=\textrm{.TRUE.}表示所需要计算的\textrm{NICS}的位置，将由\textrm{POSNICS}文件提供。后续会学习如何产生\textrm{POSNICS}文件。
+
+为了完成\textrm{NICS}计算，首先规定芳香环中在哪些位置计算\textrm{NICS}。这些位置保存在\textrm{POSNICS}文件中。在该文件中，首先给出的是所需计算的\textrm{NICS}的点数，随后是直接坐标给出的各点$x$-，$y$-和$z$-方向的坐标值。例如，本算例中，所选取的点从原点所在的$xy$-平面起，到晶胞$z$-方向上截取一半止。点数先沿$y$-方向逐步增加，然后再沿$x$-方向增加。
+
+用户可以通过\textrm{Python}脚本生成\textrm{POSNICS}。
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+类似地，应用\textrm{Py4vasp}模块，将苯的结构可视化。
+
+计算得到的\textrm{NICS}的值遍及整个分子平面，首先从\textrm{OUTCAR}文件中提取全部\textrm{NICS}值，相应的\textrm{Bash}脚本为
+
+再从\textrm{POSNICS}文件中提取计算\textrm{NICS}的位置。再通过\textrm{Python}脚本读取位置和屏蔽值，然后就可以绘制等高线。
+
+在等高线图中，可以清楚地看到，在\ch{C}原子核的周围存在红色区域，表示存在去屏蔽，而\ch{H}原子核的周围是蓝色区域，表示存在屏蔽。在芳香环的中心位置，有最清晰的芳香性表征，芳香环的中心有很大的屏蔽。在前面的计算已经说明，该屏蔽是由抗磁电流产生的。
+
+下一个算例，将示范四元环环丁二烯\ch{C4H4}的计算。
+
+\subsubsection{反芳香电流}
+计算在$8\times8\times8\mathrm{\AA}^3$晶胞内的气相矩形环丁二烯的诱导电流，并绘制电流曲图。
