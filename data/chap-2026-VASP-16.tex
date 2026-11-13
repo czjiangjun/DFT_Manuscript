@@ -6,4 +6,46 @@
 
 给定体积下弛豫石墨烯的原子位置和晶胞形状。
 
-标准第一原理计算采用静态晶格模型，在该模型中，原子/离子构成一套固定、刚性且也不允许整体移动的周期性结构。基于此，可以采用\textrm{Born-Oppenheimer}近似，将离子和电子的运动自由度分离。为了确定体系的稳定结构，依次要完成如下三步。
+标准第一原理计算采用静态晶格模型，在该模型中，原子/离子构成一套固定、刚性且也不允许整体移动的周期性结构。基于此，可以采用\textrm{Born-Oppenheimer}近似，将离子和电子的运动自由度分离。为了确定体系的稳定结构，依次要完成如下三步:
+\begin{enumerate}
+	\item 选择初始结构
+	\item 通过量子力学计算电子态
+	\item 基于第一原理计算的原子受力，更新离子位置(\textrm{Hellmann-Feyman}定理)
+\end{enumerate}
+静态晶格模型可以描述很多现象，但如果晶格动力学不能忽略时，静态晶格模型表现出相当的局限性。例如，对很多材料来说，声子对比热的贡献比电子的贡献大。而且静态晶格模型不能描述热膨胀，热导率，压电效应，融化，声音的传播，温度相关的\textrm{X}-射线衍射强度，中子散射的某些问题和光学介电函数。对于最后的一种情况的一个例子是晶体在能量远低于带隙的区域，反射率会出现共振峰。
+
+石墨烯的结构文件\textrm{POSCAR}
+
+\textrm{POSCAR}文件确定了石墨烯的结构，单层碳原子构成的蜂窝状晶格。在$z$方向，相邻重复单元间的\textrm{8-\AA}厚的真空层减少了层间相互作用。计算控制参数\textrm{selective dynamics}的方案是阻断$z$方向的弛豫，又不会影响弛豫后的石墨烯。
+
+计算控制参数文件\textrm{INCAR}
+
+在\textrm{INCAR}文件中指定的计算控制参数主要围绕了电子和离子的最小化计算。在迭代过程中，电子和离子的自由度不断更新。
+\begin{enumerate}
+	\item 对于给定的结构，\textrm{Kohn-Sham}方程确定电子的基态
+	\item 电子态的能量梯度(\textrm{Hellmann-Feyman}定理)产生作用于当前结构的力和应力
+	\item 计算控制参数\textrm{IBRION}确定晶胞结构的优化算法(这里选择的是共轭梯度)，用于确定新的晶胞结构
+	\item \textrm{VASP}重复1-3步，直到满足收敛标准(\texttt{EDIFFG})
+\end{enumerate}
+注意，计算控制参数\texttt{EDIFF}必须设置得足够小，避免出现虚假收敛。如果\texttt{EDIFF}太大，电子密度可能没有达到足够的收敛，可以满足力和应力的计算精度。结果\textrm{VASP}的结构出现振荡地收敛，或者可能最后收敛到错误的结果。因此，选择严格的\texttt{EDIFF}收敛截断条件，确保最后力和应力都足够小是一个好的选择。
+
+计算控制参数\texttt{ISIF}=4，即使晶胞体积固定，晶格参数也允许改变。这样会引入\textrm{Pulay}应力，因为满足能量截断\texttt{ENCUT}的$\vec G$矢量的数目可能变化。如果晶胞形状出现大的改变，特别是当几个离子步后重新开始计算时出现这种情况，就要注意\textrm{Pulay}应力。或者通过增加\texttt{ENCUT}来减少\textrm{Pulay}应力的影响。
+
+输出文件\textrm{OUTCAR}的内容的详略由计算控制参数\texttt{NWRITE}确定。这里期望的一个比较简短的包含电子步和离子步计算。\textcolor{red}{所以通过参数\texttt{NWRITE}控制输出内容的详略，可以确定输出文件\textrm{OUTCAR}中输出内容与哪些参数相关。}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+\textrm{KPOINTS}文件确定的是以$\Gamma$点为中心的均匀空间剖分$\vec k$空间布点。作为单层石墨烯，不需要在垂直表面方向分配$\vec k$点。在表面垂直方向增加额外的$\vec k$点，仅仅是描述单层的石墨烯之间的相互作用。
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块，观察石墨烯结构的弛豫。
+
+为了观察典型的石墨烯层，通过\textrm{Py4vasp}模块绘制$3\times3\times1$超晶胞。
+
+在\textrm{OUTCAR}文件中，找到每个离子步迭代计算的力的信息。默认情况下，\texttt{EDIFFG}的默认大小是10倍的\texttt{EDIFF}，这里\texttt{EDIFF}=\textrm{1e-7}。在输出文件\textrm{OUTCAR}中，搜索字符串\textsc{TOTAL-FORCE (eV/Angst)}，可以看到，在每一步的力都已经归零，当前结构已经属于(亚)稳态结构。
+
+\subsubsection{有限差分方法计算的力常数}
+对石墨烯计算力常数。
+
+考虑\textrm{Born-Oppenheimer}近似下的能量面$E(\{\mathbf{R}\})$
