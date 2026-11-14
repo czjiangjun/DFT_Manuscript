@@ -48,4 +48,179 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 \subsubsection{有限差分方法计算的力常数}
 对石墨烯计算力常数。
 
-考虑\textrm{Born-Oppenheimer}近似下的能量面$E(\{\mathbf{R}\})$
+考虑\textrm{Born-Oppenheimer}近似下的能量面$E(\{\mathbf{R}\})$。电子体系的基态能量与离子位置$\mathbf{R}_I=\mathbf{R}_I^0+\mathbf{u}_I$。这里$\mathbf{u}_I$是离子$I$相对基态时的位移。在总能为$E^0$非微扰体系附近，总能$E$可以表示为
+\begin{displaymath}
+	E(\{\mathbf{R}\})=E(\{\mathbf{R}^0\})-\sum_{I\alpha}F_{I_{\alpha}}(\{\mathbf{R}^0\})u_{I_{\alpha}}+\sum_{I_{\alpha}J_{\beta}}\Phi_{I_{\alpha}J_{\beta}}(\{\mathbf{R}^0\})u_{I_{\alpha}}u_{J_{\beta}}+\mathcal{O}(\mathbf{R}^3)
+\end{displaymath}
+这里$\alpha$和$\beta$遍历全部\textrm{Cartesian}坐标轴向。简谐近似下，总能对离子位移的导数近似展开到两阶。当离子在平衡位置附近发生小的偏移时，这种近似是合理的。
+
+\textcolor{red}{展开系数的名字和符号，习惯上与其物理解释有关。}一阶系数就是力$F$，两阶系数称为\textrm{Hessian}或力常数矩阵$\Phi$:
+\begin{displaymath}
+	\begin{aligned}
+		F_{I_{\alpha}}(\{\mathbf{R}^0\})=&-\left.\dfrac{\partial E(\{\mathbf{R}\})}{\partial R_{I_{\alpha}}}\right|_{\mathbf{R}=\mathbf{R}^0}\\
+		\Phi_{I_{\alpha}J_{\beta}}(\{\mathbf{R}^0\})=&\left.\dfrac{\partial E(\{\mathbf{R}\})}{\partial R_{I_{\alpha}}\partial R_{J_{\beta}}}\right|_{\mathbf{R}=\mathbf{R}^0}=-\left.\dfrac{\partial F_{I_{\alpha}}(\{\mathbf{R}\})}{\partial R_{J_{\beta}}}\right|_{\mathbf{R}=\mathbf{R}^0}
+	\end{aligned}
+\end{displaymath}
+力的计算利用\textrm{Hellmann-Feynman}定理。
+
+为了俘获振动模大于初基原胞的声子，\textrm{VASP}要求选择合理的超晶胞进行计算。请记住:~全部声子的计算都要对超晶胞收敛。当超晶胞的尺度增加若干倍，相应地，$\vec k$空间网格点就要缩减相应的倍数，只有这样，空间的采样密度才能保持不变。
+
+当前计算中，输入文件是石墨烯的前面弛豫得到的初基原胞。采用以下\textrm{Python}脚本，用户可依次产生$3\times3$、$4\times4$、$5\times5$和$6\times6$的单层状石墨烯超晶胞。运行脚本并检查产生的各种\textrm{POSCAR}文件。
+
+计算控制参数\textrm{INCAR}文件。
+
+在\textrm{INCAR}文件中，计算控制参数\texttt{IBRION}=6启动了有限差分方法计算力常数和声子振动模的方案。
+
+对应不同的超晶胞，相应的$\vec k$空间网格剖分文件\textrm{KPOINTS}依次为：
+
+执行\textrm{Bash}脚本，依次完成不同超晶胞的\textrm{VASP}计算。
+
+在终端上，用户会看到\textrm{VASP}代码自动产生的计算建议:
+
+对于本算例中较大的$5\times5\times1$和$6\times6\times1$超晶胞，力常数和声子振动模计算需要一定的耗时(大约分别为5和12分钟左右)。%
+
+%在计算进行的同时，讨论\textrm{VASP}代码建议中提到的投影算符和计算控制参数\texttt{LREAL}的意义。
+
+通过\textrm{Py4vasp}模块绘制超晶胞结构图。
+
+\textcolor{red}{\textrm{Py4vasp}绘制的是一个基态石墨烯结构和四个扰动结构来构建有限差分算法来计算力常数。}当针对这些结构完成循环计算，可以看到有一个原子在摆动。结构0是未经扰动的结构。\textrm{VASP}检查体系对称性，并通过小的粒子偏离来得到整个体系的力常数。
+
+%更大的超晶胞会有更多的自由度。
+
+%同样是共有五个结构:~一个平衡结构，以及两个离子各自在两个自由度($xy$平面内)上的偏离。对称操作可以使得石墨烯中的\ch{C}原子彼此重合，对于大的晶胞，对晶格的平移可以使得全部原子都与仅有两个\ch{C}原子的初基原胞重合。在初基原胞中的对称操作也需要考虑。
+
+%石墨烯有六方结构，因此在平面内晶格矢量长度相同。在$xy$平面内，石墨烯晶格矢量夹角为$60^{\circle}$，并且有六重旋转对称性。六重旋轴的点群操作使得体系的自由度由6降为4，因为每个位点在平面内只允许一重自由度。由于倒反对称性的存在，只有一个位点允许偏移，所以自由度的数目再减一半。
+
+如果计算控制参数\texttt{IBRION}=5(而不是6)，有限差分方法无法利用对称性。
+
+应用\textrm{Py4vasp}模块，可以提取力常数矩阵。只需依次执行以下\textrm{Python}命令
+fbox{supercell3.force\_constant.print}
+fbox{supercell4.force\_constant.print}
+fbox{supercell5.force\_constant.print}
+fbox{supercell6.force\_constant.print}
+
+\textrm{VASP}在\textrm{Cartesian}坐标下计算力常数。在石墨烯和其他\textrm{2D}材料中，平面内的力常数与平面外的力常数并无耦合(不存在相互作用)，在数学形式上表现为力常数矩阵中涉及$xy$平面内与平面外($z$方向)的非对角元项为0。
+
+以$z$方向的力常数作为不同原子核距离的函数作图。依据以下\textrm{Python}函数，选定一个原子，计算在\textrm{Cartesian}坐标下，该原子到其他原子的距离，并在最小镜像约定\textrm{(Minimum Image Convention, MIC)}\footnote{在周期性边界条件下，模拟体系周围分布自身的镜像。计算两个粒子的距离时，不直接用它们在盒子内的坐标差，而是比较粒子与所有镜像中对应粒子的距离，选取最小的作为实际相互作用距离。}条件下，确定最小原子间距离。将所得到的原子间距离按距离数值排序，由此可以得到$z$向力常数曲线。
+
+不难看出，当近邻\ch{C}原子位于不同距离，力常数在零附近的正、负值来回振荡。
+
+两阶力常数是总能dui两个离子位置的两阶导数。力常数的符号确定了当两个离子相对运动时，总能是增大的还是减少。这引发了一个问题，就是是否负的力常数意味着晶体结构处于亚稳态\textrm{(Meta-stable)}。这里亚稳态意味着此时晶胞结构的受力为零，但由于晶胞畸变，能量仍在下降。但是某些时候，存在负的力常数并不是出现亚稳态的充分条件。虽然两个离子同时发生偏移，有可能会降低体系总能，但正的力常数与不同离子对的耦合也可能抵消其相互作用，从而形成总体稳定的结构。
+
+对于平面内的力常数，基于两个离子间的相对位置定义局域参考框架。将以离子对$(I,J)$表示的$3\times3$力常数矩阵$(\Phi)$变换到按单层平面作正则化的新坐标系中，参考坐标矢量点分别称为纵向和横向。这里纵向矢量$\hat{\mathbf{r}}_L$点由一个原子指向另一个原子，而横向矢量$\hat{\mathbf{r}}_T$是在平面内与之垂直的。矩阵$\mathbf{R}=(\hat{\mathbf{r}}_L,\hat{\mathbf{r}}_z,\hat{\mathbf{z}})$和力常数变换矩阵是$\tilde{\Phi}=\mathbf{R}^T\Phi\mathbf{R}$。这里通过\textrm{Python}脚本绘制矩阵$\tilde{\Phi}$的纵向矢量和横向矢量作为原子间距离的函数曲线。
+
+再用\textrm{Python}脚本，按照找超晶胞大小，绘制力常数曲线。
+
+当晶胞尺度增大，就需要计算更多原子间相互作用的力常数。
+
+如果扩大超晶胞原子数目(即考虑更多相互作用的离子间距离)，就可以提升计算的声子色散(声子能带)的精度。因为两个原子间的力常数大小随着原子间距离的不断增加而减少。所以随着晶胞的大小到达一定的尺寸后，声子的色散曲线将会收敛到特定的值。但也有些例外的情况值得注意:
+\begin{enumerate}
+	\item 当具有不同电荷的一对离子移动时，离子间的偶极会与缓慢衰减的力常数相互作用
+	\item 对金属和半金属，原子核的运动将会改变\textrm{Fermi}能级，进而导致总能的改变。这一相互作用关系，通常是长程的，称为\textrm{Kohn}异常\textrm{(Kohn Anomally)}。
+\end{enumerate}
+
+\subsubsection{声子色散}
+计算石墨烯的声子色散。
+
+在谐振子近似下，离子\textrm{Hamiltonian}可以写成
+\begin{displaymath}
+	H=\dfrac12\sum_{I_{\alpha}}M_I\dot{u}_{I_{\alpha}}^2+\dfrac12\sum_{I_{\alpha}J_{\beta}}\Phi_{I_{\alpha}J_{\beta}}u_{I_{\alpha}}u_{J_{\beta}}
+\end{displaymath}
+可有运动方程
+\begin{displaymath}
+	M_I\ddot{u}_{I_{\alpha}}=-\Phi_{I_{\alpha}J_{\beta}}u_{J_{\beta}}
+\end{displaymath}
+如果方程的解用平行于波矢$\vec q$的平面波表示，可有
+\begin{displaymath}
+	\mathbf{u}_{I_{\alpha}}^{\mu}(\vec q,t)=\dfrac12\dfrac1{\sqrt{M_I}}\left\{A^{\mu}(\vec q)\varepsilon_{I_{\alpha}}^{\mu}\mathrm{e}^{\mathrm{i}[\vec q\cdot\mathbf{R}_I-\omega_{\mu}(\vec q)t]}+A^{\mu\ast}(\vec q)\varepsilon_{I_{\alpha}}^{\mu\ast}\mathrm{e}^{-\mathrm{i}[\vec q\cdot\mathbf{R}_I-\omega_{\mu}(\vec q)t]}\right\}
+\end{displaymath}
+则声子振动模能量$\varepsilon_{I_{\alpha}}^{\mu}(\vec q)$和振动频率$\omega^{\mu}(\vec q)$满足方程
+\begin{displaymath}
+	\sum_{J_{\beta}}\dfrac1{\sqrt{M_IM_J}}\Phi_{I_{\alpha}J_{\beta}}\mathrm{e}^{\mathrm{i}\vec q\cdot(\mathbf{R}_J-\mathbf{R}_I)}\varepsilon_{J_{\beta}}^{\mu}(\vec q)=\omega^{\mu}(\vec q)^2\varepsilon_{I_{\alpha}}^{\mu}(\vec q)
+\end{displaymath}
+这里$\Phi_{I_{\alpha}J_{\beta}}$是\textrm{Hessian}矩阵，$I$，$J$是离子位置，离子的质量为$M_{I/J}$，而$\alpha,\beta=x,y,z$，$A(\vec q)$是声子振幅，$\varepsilon_{I_{\alpha}}^{\mu}(\vec q)$是声子的正则振动模。$N$是超晶胞中的离子数目，所以动力学矩阵的维度$\dfrac1{\sqrt{M_IM_J}}\Phi_{I_{\alpha}J_{\beta}}\mathrm{e}^{\mathrm{i}\vec q\cdot(\mathbf{R}_J-\mathbf{R}_I)}$是$3N$。对每个波矢$\vec q$，由此可得到$3N$个齐次方程\textrm{(Homogeneous Equations)}。
+
+求解本征值问题，可以得到本征矢$\varepsilon_{I_{\alpha}}^{\mu}(\vec q)$和本征值$\omega^{\mu}(\vec q)$。
+
+将超晶胞中的原子位置$\mathbf{R}_I$写成整数乘以元胞的晶格矢量$\mathbf{L}_i$，因此可有$\mathbf{R}_I=\mathbf{L}_i+\mathbf{r}_i$，其中$\mathbf{r}_i$是元胞中的原子位置。由此元胞中的声子满足方程
+\begin{displaymath}
+	\sum_{L_iL_j}\sum_{i\beta}\dfrac1{\sqrt{M_iM_j}}\Phi_{I_{\alpha}J_{\beta}}\mathrm{e}^{\mathrm{i}\vec q\cdot(\mathbf{L}_j-\mathbf{L}_i+\mathbf{r}_j-\mathbf{r}_i)}\varepsilon_{j\beta}^{\mu}(\vec q)=\omega_{j\beta}^{\mu}(\vec q)^2\varepsilon_{i\alpha}^{\mu}(\vec q)
+\end{displaymath}
+在这种情况下，动力学矩阵是$3n$维的，其中$n$是元胞中的原子数目。
+
+初基原胞中的声子频率与$\vec q$点成正比，$\vec q$可以表示为
+\begin{displaymath}
+	\vec q=\dfrac{s_1}{n_1}\vec b_1+\dfrac{s_2}{n_2}\vec b_2+\dfrac{s_3}{n_3}\vec b_3
+\end{displaymath}
+这里$s_i=1,2,\cdots,n$。这里$n_i$是每个方向重复的元胞数目，$\vec q$限于第一\textrm{Brillouin}区内的矢量。第一\textrm{Brillouin}区的空间由矢量$\vec b_1$，$\vec b_2$和$\vec b_3$张开。
+
+超晶胞结构\textrm{POSCAR}文件
+
+$3\times3\times1$的晶胞的\textrm{POSCAR}文件
+$4\times4\times1$的晶胞的\textrm{POSCAR}文件
+$5\times5\times1$的晶胞的\textrm{POSCAR}文件
+$6\times6\times1$的晶胞的\textrm{POSCAR}文件
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{VASP}可以读的\textrm{vasp.h5}文件，其中包含力常数。
+
+声子色散(能带)曲线的$\vec q$点取值文件\textrm{QPOINTS}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+$3\times3\times1$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+$4\times4\times1$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+$5\times5\times1$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+$6\times6\times1$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+
+在当前各超晶胞目录下，依次复制前面计算得到的\textrm{vasp.h5}文件和\textrm{POSCAR}文件，然后启动\textrm{VASP}计算，整个过程可以由\textrm{Bash}脚本完成。
+
+计算完毕，可以通过\textrm{Py4vasp}模块绘制声子色散分布图。
+
+采用\textrm{Python}脚本，可以将不同晶胞尺度下的声子分布曲线绘制到同一声子谱图中。
+
+临近$\Gamma$点，当超晶胞过小时，会出现鞍点。对于更大的超晶胞尺度，这些小的虚频振动模会再次出现。不过当超晶胞足够大，虚频振动模会消失。这种二维材料中的近二次曲线的柔性声子模特别难于收敛，所以在计算过程中要特别小心。
+
+声子曲线中出现负的声子频率则显示结构的不稳定性。在平衡结构，虽然原子受力为零，但由于某些声子模导致的畸变会降低能量。这表明此时的结构是亚稳态(考虑到目前方法的近似与极限:~\textrm{0K}和谐振子近似)。有时候出现这种不稳定性是计算不够精确的标志或者\textcolor{red}{采用一套截断实空间力常数(有限超晶胞尺度)得到的伪插值的声子分布}。有时候，这些虚频是有物理意义的，声子振动模引起的畸变，而离子弛豫又引起结构对称性变化而导致能量降低。
+
+目前的计算(在绝大多数情况下也是如此)，接近$\Gamma$点的负的振动模标志着计算中存在问题，可能是超晶胞尺寸不够大或者计算控制参数\texttt{ENCUT}太低。
+
+查看不同超晶胞尺寸时$\Gamma$点的声子频率。
+
+对于$3\times3$，$4\times4$和$6\times6$超晶胞中，$\vec k$空间网格剖分方案保持相同(即随着晶胞尺度的增加，$\vec k$点降低)，而对于$5\times5$超晶胞不满足这一点，所以采用了更粗的网格布点。对$5\times5$的超晶胞，当$\vec k$空间采样点足够密集，则在$\Gamma$点处的频率与其他超晶胞此处的频率差别很小。
+
+正如之前所指出的，只有当$\vec q$点与超晶胞匹配，声子频率的计算才是精确的。而其他点上的值都是通过内插值得到的。为了更好地说明这个问题，这里给出如何通过增加超晶胞尺寸达到在\textrm{Brillouin}区增加以$\Gamma$点为中心的$\vec k$空间采样的网格点。下面给出的与某些超晶胞尺寸相对应的倒空间\textrm{Brillouin}区图，其中的$\vec k$点是由\textrm{Brillouin}区规范采样得到的。
+
+对于给定的超晶胞，如果沿着上面图中倒空间中蓝色条点内插得到动力学矩阵，并将其对角化，将会得到蓝色点上的精确声子频率(考虑当前的近似:~\textrm{0K}，谐振子近似，\textrm{DFT}，等等)。其余点上的结果是通过插值得到的。
+
+在$M$点声子频率所需的最小超晶胞尺寸为$2\times2$
+
+在$K$点声子频率所需的最小超晶胞尺寸为$3\times3$
+
+现在可以使用\textrm{phononwebsite}\footnote{https://henriquemiranda.github.io/phononwebsite/}，互动地可视化声子振动模。
+
+执行如下\textrm{Python}脚本，实现声子振动模的可视化。首先由\textrm{Python}脚本完成\textrm{vasp.h5}文件创立得到\texjtrm{.json}文件的过程。
+
+该脚本会在当前目录下产生\textrm{graphene.json}文件。下载该文件并通过网页\textrm{\url{https://henriquemiranda.github.io/phononwebsite/phonon.html}}的\textsc{Choose-file}选项可视化该结果。
+
+在绘图网页的左侧，可以看到可选的结构信息，选择显示重复的元胞数目，改变相机，改变振动振幅或原子移动方向的偏移矢量。
+
+绘图网页的中间显示根据某些声子模对应的晶格振动。%用户可以通过鼠标拖曳或滚轮缩放移动。
+
+绘图网页的右侧呈现的是声子色散曲线。通过点击选定区域的任何点，中间显示区将会看到声子动画。
+
+\subsection{\ch{MgO}}
+\subsubsection{晶格参数}
+考察晶格参数作为$\vec k$空间网格点密度的函数的收敛情况。
+
+为了得到精确的晶格参数，有足够大的基组(由计算控制参数\texttt{ENCUT})非常重要。而且，在第一\textrm{Brillouin}区足够多的空间采样也是需要的。推荐检查用户关心的物理量(当前算例是弛豫的晶格参数)随着$\vec k$点密度的改变情况，确保用最少的$\vec k$点密度得到精确的晶格参数，以节省计算开销。所以根据计算开销排序，如在超晶胞中通过有限差分计算力常数就需要大的计算开销，就应该往后排，这样才能有效提升计算效率。
+
+\ch{MgO}的晶胞结构\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+按照不同的$\vec k$空间网格点计算若干晶格弛豫，检查$\vec k$点的收敛情况。该计算可以通过\textrm{Bash}脚本实现。
+
+脚本会建立$N\times N\times N$的$\vec k$(这里$N=\{4,6,8,10,12\}$)空间网格剖分方案，执行\textrm{VASP}计算后，将会得到的\textsc{vaspout.h5}文件，并将该文件复制到\textrm{vaspout\_\$N.h5}中
+
