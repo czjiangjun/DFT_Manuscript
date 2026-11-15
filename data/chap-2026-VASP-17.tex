@@ -11,8 +11,40 @@
 
 本算例中相关的定量计算都以\textrm{HDF5}文件格式保存在文件\textsc{phelel\_params.hdf5}中。在本算例的第二步，采用上述电子-声子耦合势计算元胞中的$g_{mnv}(\vec k,\vec q)$，再来计算电子-声子耦合和由此引起的带隙重整化。最后，在零温和有限温度下计算金刚石的直接带隙和间接带隙(基础带隙)的重整化。
 
-$2\times2\times2$金刚石结构
+$2\times2\times2$金刚石结构\textrm{POSCAR}
+
+\textrm{POSCAR}定义的是金刚石超晶胞结构。在本算例中，共有$2\times2\times2$的初基原胞的复本。之所以需要超晶胞，是因为计算中需要使用有限原子偏移。
+
+同样出于计算开销的原因，这里选择相对较小的$2\times2\times2$超晶胞。在实际计算过程中，超晶胞的大小要审慎地选取，根据所计算的物理量和超晶胞大小的收敛测试结果来确定。如针对带隙重整化，依次采用$2\times2\times2$，$3\times3\times3$，$4\times4\times4$逐渐增大的超晶胞来做收敛测试。
 
 计算控制参数文件\textrm{INCAR}
 
+在\textrm{INCAR}文件中，有两个关于电子-声子相互作用势的重要计算控制参数
+\begin{itemize}
+	\item \texttt{IBRION}:~确定\textrm{VASP}计算中选取的具体的有限差分方法
+	\item \texttt{ELPH\_POT\_GENERATE}:~指定计算电子-声子相互作用势
+\end{itemize}
+
 $\vec k$空间网格剖分文件\textrm{KPOINTS}，这里只选择$\Gamma$点。
+
+进入计算目录，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+\textrm{VASP}首先完成电子结构的最小化，得到超晶胞中的基态。然后\textrm{VASP}分别沿着\textrm{Cartesian}坐标的三个方向每次偏移一个原子，再计算对应的\textrm{Kohn-Sham}相互作用势的改变。计算结果写入文件\textsc{phelel\_params.hd5}。%注意，当前计算中只用$\Gamma$点，所以计算中采用\textrm{vasp\_gam}版本完成计算。
+
+因为设置了计算控制参数\texttt{ELPH\_POT\_GENERATE}，所以会产生输出文件\textrm{CONTAR\_ELPH}。该文件类似于\textrm{CONTCAR}文件，不过文件内容是初基原胞的晶体结构信息。对照\textrm{POSCAR}文件和\textrm{CONTCAR\_ELPH}文件的内容。
+fbox{\mathrm{vim -O POSCAR CONTCAR\_ELPH}}
+
+后续的电子-声子计算中，\textrm{CONTCAR\_ELPH}就是作为输入文件\textrm{POSCAR}来使用。如果用户不希望\textrm{CONTCAR\_ELPH}保存的是初基原胞的结构，只要在\textrm{INCAR}文件中设置计算控制参数\texttt{ELPH\_POT\_LATTICE}。
+
+由超晶胞体系的\textrm{VASP}计算得到的电子-声子相互作用势戏被写入文件\textsc{phelele\_params.hd5}，该相互作用势是基于一个$\vec k$空间网格，对元胞计算得到的。根据计算控制参数\texttt{ELPH\_POT\_FFT\_MESH}的设定，电子-声子相互作用势是在精密\textrm{FFT}网格(超晶胞)上计算的，但输出时作为\textrm{FFT}网格(元胞)形式完成的。默认条件下，在电子-声子计算过程中，计算控制参数\texttt{ELPH\_POT\_FFT\_MESH}网格必须是和\textrm{FFT}网格(元胞)有完全相同空间划分。
+
+对于元胞计算，\textrm{VASP}选定的\textrm{FFT}网格点的影响因素有
+\begin{itemize}
+	\item 首先，\textrm{FFT}网格点依赖电子截断能量\textrmENCUT
+	\item 通过计算控制参数\texttt{PREC}确定\textrm{FFT}网格的数目
+	\item 直接设置计算控制参数\texttt{NGX},\texttt{NGY}和\texttt{NGZ}
+\end{itemize}
+所以如果计算过程中，对超晶胞和元胞计算，没有改变计算控制参数\texttt{ENCUT}和\texttt{PREC}，那么这两套网格点将会自动匹配，不需要进一步的输入处理。
+
+不过，在有些情况下，由精密\textrm{FFT}网格(对超晶胞)计算得到电子-声子相互作用势，再通过默认的\textrm{FFT}网格(对元胞)表示，则并不一定完全收敛，包括其他的电子-声子性质(如带隙重整化)也有类似情形。如果试图通过改变\texttt{ENCUT}来定义一套新的\textrm{FFT}网格(对元胞)过于复杂，留待后续讨论。相反，通过计算控制参数\texttt{ELPH\_POT\_FFT\_MESH}，可以在新的一轮超晶胞计算过程中再定义的一套新\textrm{FFT}网格，显然，代价是需要重新完成一次完整的超晶胞计算。
+
