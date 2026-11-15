@@ -156,10 +156,10 @@ fbox{supercell6.force\_constant.print}
 
 超晶胞结构\textrm{POSCAR}文件
 
-$3\times3\times1$的晶胞的\textrm{POSCAR}文件
-$4\times4\times1$的晶胞的\textrm{POSCAR}文件
-$5\times5\times1$的晶胞的\textrm{POSCAR}文件
-$6\times6\times1$的晶胞的\textrm{POSCAR}文件
+$3\times3\times1$超晶胞的\textrm{POSCAR}文件
+$4\times4\times1$超晶胞的\textrm{POSCAR}文件
+$5\times5\times1$超晶胞的\textrm{POSCAR}文件
+$6\times6\times1$超晶胞的\textrm{POSCAR}文件
 
 计算控制参数文件\textrm{INCAR}
 
@@ -224,3 +224,131 @@ $6\times6\times1$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
 
 脚本会建立$N\times N\times N$的$\vec k$(这里$N=\{4,6,8,10,12\}$)空间网格剖分方案，执行\textrm{VASP}计算后，将会得到的\textsc{vaspout.h5}文件，并将该文件复制到\textrm{vaspout\_\$N.h5}中
 
+可以通过\textrm{Python}脚本从不同的\textsc{vaspout\_\$N.h5}文件中读入晶格参数，将晶格参数对各自的$\vec k$空间网格点作图。
+%计算完成后执行该\textrm{Python}脚本
+
+从图中可以看出，对晶格参数来说，$\vec k$点网格的布点$N=6$时，晶格参数已经达到收敛。
+
+执行\textrm{Python}脚本，根据计算结果得到，将达到收敛的晶格参数写入\textrm{POSCAR}文件中。
+
+\subsubsection{有限差分法计算力常数}
+通过有限差分方法，对体相\ch{MgO}计算力常数和声子振动模。
+
+首先创建计算所需要的超晶胞的结构文件\textrm{POSCAR}。因为计算的对象是体相材料，在初基原胞所在的\textrm{Cartesian}坐标系中三个方向都可以扩展。因此\ch{MgO}满足立方对称性，所以可以采用各个方向可以采用通用的标度因子。应用\textrm{Python}脚本，可以快速地建立$2\times2\times2$，$3\times3\times3$和$4\times4\times4$的超晶胞。同时创建的\textrm{KPOINTS}文件中，对应初基原胞的$\vec k$空间网格剖分方案为$6\times6\times6$。%运行脚本，检查生成的\textrm{POSCAR}文件和\textrm{KPOINTS}文件。
+
+超晶胞结构\textrm{POSCAR}文件
+
+$2\times2\times2$超晶胞的\textrm{POSCAR}文件
+$3\times3\times3$超晶胞的\textrm{POSCAR}文件
+$4\times4\times4$超晶胞的\textrm{POSCAR}文件
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+$2\times2\times2$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+$3\times3\times3$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+$4\times4\times4$的$\vec k$空间网格剖分\textrm{KPOINTS}文件
+
+为了计算力常数，在\textrm{INCAR}文件中，计算控制参数\texttt{IBRION}=6。执行\textrm{Bash}脚本，完成上述计算。
+
+对$3\times3\times3$和$4\times4\times4$超晶胞的计算需要一段时间。后续讨论，将基于$2\times2\times2$的计算结果进行。但是请读者切记，这样计算得到的声子色散曲线是不精确的，不能拿来和实验结果对比。%用户可以在单独完成$3\times3\times3$和$4\times4\times4$超晶胞的计算，在后续部分，还会在更大的超晶胞上计算力常数。
+
+\subsubsection{声子色散关系和\rm{DOS}}
+对\ch{MgO}计算声子色散关系和声子\textrm{DOS}
+
+采用之前完成的$2\times2\times2$超晶胞计算，继续计算声子色散关系和声子\textrm{DOS}。计算方案是对超晶胞到初基原胞的力常数进行\textrm{Fourier}插值，构建任意$\vec q$点上的动力学矩阵。
+
+为了计算声子色散关系，需要之前计算的超晶胞的力常数，这些力常数数据存在\textsc{vaspout.h5}文件。当\textrm{INCAR}文件中有计算控制参数\texttt{LPHON\_READ\_FORCE\_CONSTANTS}，\textrm{VASP}将从\textsc{vaspin.h5}文件中读取力常数，并按照\textrm{QPOINTS}文件指定的$\vec q$点绘制声子色散曲线。所以需要将之前计算的\textsc{vaspout.h5}文件复制到当前目录并将文件名改为\textsc{vaspin.h5}。
+
+此外的输入文件包括
+$2\times2\times2$的\ch{MgO}超晶胞的\textrm{POSCAR}文件
+
+计算控制参数文件\textrm{INCAR}
+
+声子能带路径文件\textrm{QPOINTS}
+
+通过\textrm{Bash}命令完成\textrm{VASP}计算，
+
+通过\textrm{py4vasp}模块绘制声子色散关系曲线。
+
+类似地，为了检查声子\textrm{DOS}随$\vec q$点采样的收敛情况，同样把之前计算的力常数文件\textrm{vaspout.h5}复制到声子\textrm{DOS}计算目录下，重命名为\textrm{vaspin.h5}。
+
+在声子\textrm{DOS}计算目录下，执行textcolor{red}{如下的}\textrm{Bash}脚本\textrm{run.sh}。
+
+该脚本将通过对若干不同的\textrm{QPOINTS}文件中指定的若干声子频率点$\vec q$进行线性插值，计算声子态密度，并将结果存入不同的\textsc{vaspout\_*.h5}文件。在\textrm{QPOINTS}指定的$\vec q$点网格分布种类包括包括$10\times10\times10$，$20\times20\times20$，$30\times30\times30$和$40\times40\times40$。
+
+在此基础上，可以通过\textrm{py4vasp}模块绘制在不同$\vev q$点网格分布声子\textrm{DOS}，并对比计算结果。
+
+随着声子频率$\vec q$点网格的密度增加，通过对声子频率插值分别计算得到声子\textrm{DOS}。当$\vec q$点网格密度达到一定程度后，无论怎么增加$\vec q$点，声子\textrm{DOS}曲线就不再有显著变化。在本算例中，基于$\vec q$点网格密度$10\times10\times10$和$20\times20\times20$，插值得到的声子\textrm{DOS}有肉眼可见的差别，而当$\vec q$点网格密度$30\times30\times30$和$40\times40\times40$，插值得到的声子\textrm{DOS}间的区别可以忽略。%声子振动模插值方法计算声子\textrm{DOS}的速度很快，在$\times4-\times40$的$\vec q$网格密度下，取$2\times2\times2$超晶胞的力常数，声子\textrm{DOS}的计算时间是5秒。
+
+在此基础上，同样可以通过\textrm{Py4vasp}模块，得到按原子分解的声子\textrm{DOS}图。
+
+对比原子分解的声子\textrm{DOS}图，可以看到在低声子频律区间，主要来自\ch{Mg}原子的声子振动模，而在高声子频率区间，则主要是\ch{O}原子的声子振动模的贡献。
+
+因为\ch{O}的原子质量小于\ch{Mg}原子，因此在谐振区域，\ch{O}声子振动频率更高。另一个影响声子频率大小的因此是力常数，而力常数的大小又与声子振动模中的化学键的形变强度有关。
+
+\subsubsection{长程偶极-偶极相互作用(\rm{LO-TO}裂分)}
+对\ch{MgO}计算静态介电张量和\textrm{Born}有效电荷。
+
+对于半导体或绝缘体，离子周围的电子屏蔽是不完全的，导致原子间存在长程\textrm{(Long-rangle, LR)}相互作用力常数。要想精确地计算原子间长程相互作用力常数，就需要考虑很大的超晶胞。实际计算中，晶胞的大小都是有限的，由此会导致声子色散曲线中出现\textrm{Gibbs}振荡。幸运的是，这种长程相互作用力可以通过总能量中离子-离子贡献的解析形式模拟得到。
+
+为此，按照\textrm{Gonze}等\upcite{PRB55-10355_1997}提出的方法，首先将两阶力常数分别为短程和长程部分
+\begin{displaymath}
+	\Phi_{I_{\alpha}J_{\beta}}=\Phi_{I_{\alpha}J_{\beta}}^{\mathrm{SR}}+\Phi_{I_{\alpha}J_{\beta}}^{\mathrm{LR}}
+\end{displaymath}
+力常数的长程部分可以通过对总能中来自长程的离子-离子相互作用的贡献$E_{\mathrm{ion-ion}}$的解析求导得到。离子-离子间长程相互作用一般通过\textrm{Ewald}求和来计算。\textrm{Ewald}求和将总能中的离子-离子相互作用分解为实空间项(用于描述短程的离子间相互作用)和倒空间项长程(来自长程的离子间相互作用)。$E_{\mathrm{ion-ion}}=E_{\mathrm{ion-ion}}^{\mathrm{SR}}+E_{\mathrm{ion-ion}}^{\mathrm{SR}}$。\textrm{Ewald}求和中通过控制参数$\lambda$来表示计算的截断长度，用来调节实空间项和倒空间项的分配。
+
+根据该思想，可以得到长程相互作用力常数的解析表达形式
+\begin{displaymath}
+	\Phi_{I_{\alpha}J_{\beta}}^{\mathrm{LR}}=\dfrac{4\pi e^2}{\Omega_0}\sum_{\mathbf{G}}\dfrac{(\mathbf{G}\cdot Z_{I_{\alpha}}^{\ast})(\mathbf{G}\cdot Z_{J_{\beta}}^{\ast})}{\mathbf{G}\cdot\mathbf{\epsilon}^{\infty}\cdot\mathbf{G}}\mathrm{e}^{\mathrm{i}\mathbf{G}\cdot(\mathbf{R}_J-\mathbf{R}_I)}\exp\left[ \dfrac{-\mathbf{G}\cdot\mathbf{\epsilon}^{\infty}\cdot\mathbf{G}}{4\lambd^2} \right]
+\end{displaymath}
+这里$\mathbf{\epsilon}^{\infty}$是阻尼离子介电张量，$Z_{I_{\alpha}}^{\ast}$是\textrm{Born}有效电荷，$\lambda$是\textrm{Ewald}参数，调节该值使得来自$\exp\left[ \dfrac{-\mathbf{G}\cdot\mathbf{\epsilon}^{\infty}\cdot\mathbf{G}}{4\lambd^2} \right]$一项的贡献——在计算控制参数\texttt{PHON\_G\_CUTOFF}指定的某个截断$\mathbf{G}$矢量条件下——可以忽略。
+
+为了计算力常数的长程部分，需要计算阻尼离子静态介电张量和\textrm{Born}有效电荷，因此需要在\textrm{INCAR}文件中，将计算控制参数\texttt{LEPSILON}=\textrm{.TRUE.}。
+
+\ch{MgO}初基原胞的结构文件\textrm{POSCAR}
+
+计算参数控制文件\textrm{INCAR}
+
+$\vec k$-空间网格剖分文件\textrm{KPOINTS}
+
+首先在\textrm{Bash}命令执行\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块，从输出文件\textsc{vaspout.h5}中读取介电张量和\textrm{Born}有效电荷。
+
+得到的这些数据用于计算声子色散关系。为此，需要在\textrm{INCAR}文件中提供计算控制参数\texttt{PHON\_DIELECTRIC}和\texttt{PHON\_BORN\_CHARGES}分别指定介电张量和\textrm{Born}有效质量。在后续计算中，用于长程力常数的具体计算。
+
+通过以下\textrm{Python}脚本读取\textsc{vaspout.h5}文件中的数据，并得到计算控制参数\texttt{PHON\_DIELECTRIC}和\texttt{PHON\_BORN\_CHARGES}各自对应的数据。
+
+\subsubsection{长程偶极-偶极作用的声子色散关系和\rm{DOS}(\rm{LO-TO}裂分)}
+对\ch{MgO}，通过静电介电函数和\textrm{Born}有效电荷，对极化材料计算相互作用力常数的长程部分。
+
+前面描述的力常数分解可以将动力学矩阵同样分解为短程和长程部分
+\begin{displaymath}
+	D_{I_{\alpha}J_{\beta}}=D_{I_{\alpha}J_{\beta}}^{\mathrm{SR}}+D_{I_{\alpha}J_{\beta}}^{\mathrm{LR}}
+\end{displaymath}
+这里动力学矩阵的长程部分
+\begin{displaymath}
+	D_{I_{\alpha}J_{\beta}}^{\mathrm{LR}}=\dfrac{4\pi e^2}{\Omega_0}\sum_{\mathbf{G}}\sum_l\dfrac{[(\mathbf{G}+\vec q)\cdot Z_{I_{\alpha}}^{\ast}][(\mathbf{G}+\vec q)\cdot Z_{J_{\beta}}^{\ast}]}{(\mathbf{G}+\vec q)\cdot\mathbf{\epsilon}^{\infty}\cdot(\mathbf{G}+\vec q)}\mathrm{e}^{\mathrm{i}(\vec q+\mathbf{G})\cdot(\mathbf{l}+\mathbf{r}_i-\mathbf{r}_j)}\mathrm{e}^{\dfrac{-(\mathbf{G}+\vec q)\cdot\mathbf{\epsilon}^{\infty}\cdot(\mathbf{G}+\vec q)}{4\lambd^2}}
+\end{displaymath}
+上述等式给出通过适当大小的超晶胞计算声子动力学矩阵中包含的长程力常数的可行方案，计算过程主要包括
+\begin{itemize}
+	\item 对于有限尺度超晶胞计算$\Phi_{I_{\alpha}J_{\beta}}$
+	\item 计算$\Phi_{I_{\alpha}J_{\beta}^{\mathrm{SR}}}=\Phi_{I_{\alpha}J_{\beta}}-\Phi_{I_{\alpha}J_{\beta}^{\mathrm{LR}}}$
+	\item 通过对$\Phi_{I_{\alpha}J_{\beta}^{\mathrm{SR}}}$的\textrm{Fourier}的插值，计算$D_{I_{\alpha}J_{\beta}^{\mathrm{SR}}}$
+	\item 在元胞中计算$\D_{I_{\alpha}J_{\beta}^{\mathrm{LR}}}$，并加上$D_{I_{\alpha}J_{\beta}^{\mathrm{SR}}}$
+\end{itemize}
+在\textrm{VASP}中，只要\textrm{INCAR}文件中包含计算控制参数\texttt{LPHON\_POLAR}=\textrm{.TRUE.}，并且\texttt{PHON\_DIELECTRIC}指定了介电张量数据，\texttt{PHON\_BORN\_CHARGES}指定了\textrm{Born}有效电荷，上述计算流程就会自行完成。
+
+将声子色散曲线和声子\textrm{DOS}绘图，将会包含长程偶极-偶极相互作用的专门处理的信息。可以与之前的声子色散关系和态密度图对比。
+
+执行\textrm{Bash}的命令，将$2\times2\times2$超晶胞计算中输出的\textsc{vaspout.h5}分别复制到当前声子色散关系和声子\textrm{DOS}计算的目录下，并且重命名为\textsc{vaspin.h5}
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}绘制声子色散曲线。
+
+与前面的声子\textrm{DOS}计算类似，通过\textrm{Bash}脚本\textrm{run.sh}，完成若干不同的$\vec q$点网格，计算声子\textrm{DOS}。
+
+通过\textrm{Py4vasp}绘制具有最密$\vec q$点网格得到的\textrm{DOS}曲线。
