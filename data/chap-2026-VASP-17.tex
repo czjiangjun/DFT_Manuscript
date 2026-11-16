@@ -48,3 +48,76 @@ fbox{\mathrm{vim -O POSCAR CONTCAR\_ELPH}}
 
 不过，在有些情况下，由精密\textrm{FFT}网格(对超晶胞)计算得到电子-声子相互作用势，再通过默认的\textrm{FFT}网格(对元胞)表示，则并不一定完全收敛，包括其他的电子-声子性质(如带隙重整化)也有类似情形。如果试图通过改变\texttt{ENCUT}来定义一套新的\textrm{FFT}网格(对元胞)过于复杂，留待后续讨论。相反，通过计算控制参数\texttt{ELPH\_POT\_FFT\_MESH}，可以在新的一轮超晶胞计算过程中再定义的一套新\textrm{FFT}网格，显然，代价是需要重新完成一次完整的超晶胞计算。
 
+在准备计算前，先将此前计算的超晶胞计算的数据复制到当前计算目录下。
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{INCAR}文件与之前的超晶胞计算的内容大致相同。注意计算控制参数\texttt{ENCUT}个\texttt{PREC}与前者完全相同。不过这里引入计算控制参数\texttt{ELPH\_MODE}=\textcolor{red}{\textsc{renorm}}来计算电子-声子相互作用并完成能带结构的重整化。在引入其余涉及电子-声子相互作用的计算控制参数时，即默认\texttt{ELPH\_MODE}=\textrm{renorm}，完成重整化。比如
+\begin{itemize}
+	\item \texttt{ELPH\_RUN}开启电子-声子计算
+	\item \texttt{ELPH\_SELFEN\_GAPS}对于带隙自动化计算重整化
+	\item \texttt{ELPH\_SELFEN\_FAN}和\texttt{ELPH\_SELFEN\_DW}在总能中包含\textrm{FM}和\textrm{DW}的贡献
+\end{itemize}
+此外，通过计算控制参数\texttt{ELPH\_SELFEN\_TEMPS}指定一系列的温度(\textrm{K}为单位)。\textrm{VASP}在一次运行过程中完成全部温度下带隙重整化计算并输出结果。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+电子-声子耦合的$\vec q$网格文件\textrm{KPOINTS\_ELPH}
+
+为了完成典型的自洽电子步最小化，采用的\textrm{KPOINTS}文件中包含相对稀疏的$\vec k$点。为了计算电子-声子相互作用的物理，在\textrm{KPOINTS\_ELPH}文件中提供了一套更密集的$\vec k$点网格。在自能计算过程中，需要在密集的$\vec k$点上定量计算电子-声子相互作用矩阵元，电子态能量和声子频率。
+
+在计算目录下，首先完成将前面的超晶胞计算目录下得到的\textsc{phelel\_params.hdf5}文件复制到当前目录，以备\textrm{VASP}执行时读取文件中的数据。类似地，复制\textrm{CONTCAR\_ELPH}文件作为当前的\textrm{POSCAR}文件。到此完成全部\textrm{VASP}的计算文件的准备。全部操作可以由\textrm{Bash}命令完成。
+
+\textrm{VASP}计算过程中会在三个不同的地方输出有关电子-声子相互作用的计算
+\begin{itemize}
+	\item 标准输出:~在此仅能看到计算中最简略的概要信息，包括对直接带隙和间接带隙(基本带隙)完成的温度相关的带隙重整化
+	\item 在输出文件\textrm{OUTCAR}的末尾:~这里的输出信息比标准输出的信息详尽得多，包含很多额外信息
+	\item \textsc{phelel\_params.hdf5}文件。该文件是非格式输出的二进制字符，只能被\textrm{Py4vasp}这样的后处理工具读取。
+\end{itemize}
+\textcolor{red}{通过\textrm{Bash}命令可从\textrm{OUCAR}文件中提取带隙重整化的数量。}
+
+也可以通过\textrm{Py4vasp}模块给出带隙。
+
+\textcolor{red}{\textrm{Python}脚本中使用了数组\textsc{calc.electron\_phonon.bandgap[0]}，因为\textrm{VASP}单次计算时，通过不同收敛设置(能带数目和展宽参数)得到了多个带隙。}
+
+由于基态的量子涨落\textrm{(Quantum Fluctuationa)}，即使温度降到\textrm{0K}，仍然会存在晶格振动，也就是零点振动，因此导致零点重整化\textrm{(Zero-Point Renormalization, ZPR)}。这表明即使在基态，考虑电子-声子相互作用对于得到正确的带隙，也非常重要。
+
+带隙重整化时数值带有负号，这意味着准粒子带隙(重整化带隙)是比\textrm{Kohn-Sham}带隙更小的带隙。换言之，考虑\textrm{ZPR}后，会引起带隙的缩减，这也是常见的情形。
+
+通过\textrm{Py4vasp}绘制温度和金刚石的重整化直接带隙的关系。
+
+更高的温度意味着在散射过程中将会出现更多的声子态。在这种情况下，电子态因为出现的这些散射过程而重整化，所以带隙不断缩减。
+
+\subsubsection{金刚石的零点重整化收敛}
+在若干给定$\vec q$点数目$N_q$，能带数目$N_b$和展宽参数$\delta$的约束条件下，对面心立方的金刚石完成电子-声子相互作用下自能的收敛测试。
+
+在本算例中，只讨论零点重整化\textrm{(ZPR)}。因为自能$\Sigma$对温度的依赖，只是通过\textrm{Fermionic}分布和\textrm{Bosonic}分布函数关联。而\textrm{ZPR}的收敛研究得到的结果对于有限温度下也成立。电子自能计算中有三个重要的收敛参数，本算例中将说明，在高质量计算中，如何控制这些作为变量的参数，得到好的数值精度。
+
+在$T=0$使，\textrm{Fan-Migdal(FM)}自能可以简化成
+\begin{displaymath}
+	\Sigma_{n\vec k}^{\mathrm{FM}}(T=0)=\dfrac1{N_q}\sum_q^{N_q}\sum_m^{N_b}\sum_v\dfrac{|g_{mnv}(\vec k,\vec q)|^2}{\varepsilon_{n\vec k}-\varepsilon_{m\vec k+\vec q}\pm\omega_{v\vec q}+\mathrm{i}\delta}
+\end{displaymath}
+第一个收敛参数是$\vec q$点的数目$N_q$，或者更准确的说法，是用于计算自能积分的$\vec q$点网格点数目。这里分别采用$4\times4\times4$，$6\times6\times6$，$8\times8\times8$，$10\times10\times10$的$\vec q$点网格完成电子-声子相互作用下的自能计算。然后考察随着$\vec q$-点增加，\textrm{ZPR}如何变化。
+
+第二个收敛参数是总的电子态求和中有关自能计算电子态数目$N_b$。由于高能量电子态的散射过程收敛会越来越慢，因为物理上相关性越来越少。因此考察\textrm{ZPR}作为自能计算所及的电子态的数目的函数的收敛情况。
+
+第三个收敛参数是\textcolor{red}{表达式}中分母项里描述虚部偏移大小的$\delta$。该参数是多体微扰理论的残量，是为了确保传播子具有正确的偶极结构而引入的。在数值计算里，参数$\delta$可以视为展宽参数，用来处理积分中的(近)简并态问题。一般地，$\delta$的值应该取得尽可能小，因为该值会在自能中引入非物理的贡献。但是请注意，如果$\delta$的值取得过小，在通用硬件上完成有限精度的浮点运算，又会引入数字噪声。一般情况下，默认的\textrm{0.01~eV}是好的折中和起点。本算例将通过计算\textrm{ZPR}作为$\delta$参数的函数，考察不同的$\delta$值对结果的影响。
+
+\textcolor{red}{考察$\vec q$网格点对收敛的影响}
+
+通过\textrm{KPOINTS\_ELPH}文件指定不同的$\vec q$网格点。
+
+金刚石初基原胞的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+$4\times4\times4$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
+$6\times6\times6$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
+$8\times8\times8$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
+$10\times10\times10$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
+
+因为超晶胞的\textrm{POSCAR}文件和\textsc{phelel\_params.hdf5}文件已经有了，因此不再做超晶胞计算。这里通过\textrm{INCAR}中的计算控制参数\texttt{ELPH\_SELFEN\_TEMPS}指定只计算\textrm{0~K}的结果。
+
+为了检查计算是否
