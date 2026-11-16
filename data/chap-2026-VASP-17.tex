@@ -144,4 +144,30 @@ $10\times10\times10$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
 
 从结果看，即使达到200个能带，体系也只是勉强收敛。一个问题是这种收敛是非单调，所以很难判断体系是否真的达到收敛。不同的体系和使用的\textrm{POTCAR}原子数据集(赝势)不同，有些收敛可能需要好几百到几千个电子态才能收敛得比较好。所以增加能带数目检查是否达到收敛就显得尤为重要。
 
-当计算控制参数\texttt{ELPH\_MODE}设置为\textrm{renorm}，通过设置计算控制参数\texttt{ELPH\_NBANDS}为-2，\textrm{VASP}在电子-声子相互作用的计算中使用了所有可能的能带。这意味着在计算中的能带数目等于到平面波系数的数目。这样又回归到了超晶胞计算。因为元胞计算中的能带数目受到平面波数目的限制，唯一的增加平面波的办法是通过\texttt{ENCUT}来提升平面波的数目
+当计算控制参数\texttt{ELPH\_MODE}设置为\textrm{renorm}，通过设置计算控制参数\texttt{ELPH\_NBANDS}为-2，\textrm{VASP}在电子-声子相互作用的计算中使用了所有可能的能带。这意味着在计算中的能带数目等于到平面波系数的数目，这种情况下，就要重新进行超晶胞计算。因为元胞计算中的能带数目受到平面波数目的限制，唯一的增加平面波的办法是通过\texttt{ENCUT}来提升平面波的数目。不过这意味着\textrm{FFT}网格维度(元胞)很可能改变，因此不再与来自超晶胞计算的\textsc{phelel\_params.hdf5}文件中的网格点匹配。对于这种情况，必须通过更高的\texttt{ENCUT}来重新完成超晶胞，然后对元胞计算可以在\textsc{phelel\_params.hdf5}文件内得到更精细的实空间网格点，可以与元胞的\textrm{FFT}网格匹配。计算过程中，必须使得超晶胞和元胞计算的\texttt{ENCUT}和\texttt{PREC}相同。在此基础上，可以增加能带数目直到达到收敛。或者用户可以通过\texttt{NGX}，\texttt{NGY}和\texttt{NGZ}来修改\textrm{FFT}网格点(元胞计算)。
+
+\textcolor{red}{一般地，在初始超晶胞计算，推荐采用高一点的截断能，以便使得元胞可以在给定的能带下达到合适的收敛，以免多次启动开销巨大的超晶胞计算。}
+
+\textcolor{red}{考察展宽参数对收敛的影响}
+
+金刚石初基原胞的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+$10\times10\times10$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
+
+与之前的电子态数目(能带)收敛类似，\textrm{VASP}的\textrm{INCAR}中有计算控制参数\texttt{ELPH\_SELFEN\_DELTA}指定一系列的展宽参数。
+
+计算流程与之前的计算类似，在展宽参数目录下，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通过\textrm{Py4vasp}模块，绘制\textrm{ZPR}对$\delta$的收敛情况。
+
+根据结果判断，当展宽参数从\textrm{0.01~eV}下降到\textrm{0.1~meV}，并未引起重整化的数据很显著的改变，因此可以推断对金刚石，默认值已经足够了。
+
+不过对于更复杂的体系，$\delta$参数的必须审慎。一般地，展宽参数的选择应该和用于积分自能计算的$\vec q$点网格相匹配。加密的$\vec q$点网格会引入更多能量上相近的电子态，从而出现自能的微小重整化。当同时改变$\vec q$点网格和展宽参数时，进行双重收敛来研究。对每个$\vec q$点网格，都应该设置计算控制参数\texttt{ELPH\_SELFEN\_DELTA}有一系列的数值。实际应用中，这就意味着，比如在\textrm{INCAR}文件中增加参数\texttt{ELPH\_SELFEN\_DELTA}=0.0001 0.001 0.01 0.1 1。
+
+对于极化材料，电子-声子相互作用矩阵元对应于长波极限下，因为长程的静电相互作用，引起纵向光学模的发散。\upcite{JCP143-102813_2015}。在这种情况下，需要的$\vec q$点网格会非常密集，而展宽系数也应该选择得较为一致。
+
+\subsubsection{极化材料\ch{MgO}的能带重整化}
