@@ -215,4 +215,139 @@ $\vec k$-空间网格剖分方案文件\textrm{KPOINTS}
 \textrm{Python}脚本中\textrm{.print()}函数是便捷可靠的检查数据的方式。当脚本和工作流程交织在一起时，横便捷的数据处理方法是采用\textrm{.read()}函数。
 
 \textcolor{red}{带隙重整化}
+为了在不同的$\vec q$点网格密度下完成重整化计算，在计算目录下分别对每一类$\vec q$点网格建子目录，依次是$4\times4\times4$,$6\times6\times6$，$8\times8\times8$，$10\times10\times10$。
 
+前面的超晶胞计算已经得到\ch{MgO}的\textrm{Born}有效电荷和介电张量，相比于之前的金刚石计算，这里的\textrm{INCAR}文件不需要引入额外的计算控制参数。
+
+首先从之前的超晶胞计算步骤复制\textsc{phelel\_params.hdf5}文件到各个$\vec q$点网格子目录中。类似地，复制\textrm{CONTCAR\_ELPH}来作为电子-声子相互作用的\textrm{POSCAR}文件。
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在计算目录下，通过\textrm{Bash}脚本，依次在各个$\vec q$点子目录下完成\textrm{VASP}计算。不要忘记从超晶胞计算中复制输入文件(\textrm{phelel\_params.hdf5}和\textrm{CONTCAR\_ELPH})。
+
+计算结束后，在每个子目录下都有计算输出文件\textrm{OUTCAR}。\ch{MgO}只有一个直接带隙，所以在输出数据中，不存在直接带隙和基本带隙的数值区别。因此检查带隙的\textrm{Bash}命令是
+\fbox{grep -A 2 ``Direct gap'' */OUT*}
+
+计算最重要的结果是\textrm{ZPR}，在\textrm{OUTCAR}文件中对应的字符串是\textcolor{red}{\textsc{KS-QP gap (meV)}}，但是给出的数据是准粒子(重整化)带隙减去\textrm{Kohn-Sham}带隙。根据当前的计算结果，不难看出，当前的$\vec q$点网格还不能使体系很好地收敛。为了使结果看得更清楚，采用\textrm{Py4vasp}模块绘制\textrm{ZPR}随$\vec q$点网格密度的函数曲线。
+
+从图中很清楚地看到，\textrm{ZPR}还没有收敛。不过即使增加$\vec q$点网格密度(读者可以自行尝试)，\textrm{ZPR}也不会收敛。因为在长波极限下($\vec q\rightarrow0$)，电子-声子相互作用矩阵元伴随纵向光学枝声子振动模的发散。幸运的是，该发散是可积分的，所以(非绝热)自能依然是有限的，\textrm{ZPR}仍有明确的定义。
+
+考虑到此，再次检查电子-声子相互作用矩阵元的长程部分，对于$\vec q\rightarrow0$，分母是发散的，因为
+\begin{displaymath}
+	g_{mnv}^{\mathrm{LR}}(\ve k,\vec q)\prop\dfrac{|\vec q|}{|\vec q|^2}=\dfrac1{|\vec q|}
+\end{displaymath}
+因此，对于$\vec q\rightarrow0$进行自能积分，其行为类似
+\begin{displaymath}
+	\int\mathrm{d}^3q|g_{mnv}^{\mathrm{LR}}(\vec k,\vec q)|^2\prop\int\mathrm{d}^3q\dfrac1{|\vec q|^2}
+\end{displaymath}
+该函数在原点附近是可积分的，并且在小的$\vec q$值使也仍有好的定义，所以通过$\vec q$点网格的迭代精密化，可以估计自能积分值。将$\vec q$点网格增大($N_q\rightarrow\infty$)，可以外推得到自能的值。
+
+为了外推\textrm{ZPR}的值，要求$\vec q$点网格趋向无穷($N_q\rightarrow\infty$)，通过\textrm{Py4vasp}模块绘制\textrm{ZPR}作为$\vec q$点网格倒数的函数曲线，对数学有兴趣的读者不难证明，这样的外推极限就是合理的\textrm{ZPR}值。
+
+特别说明，在本算例中，证明了函数曲线进入线性区域，就可以通过外推到极限得到\textrm{ZPR}值。但是实际操作中，需要比当前算例多得多的$\vec q$点网格才能使函数到达线性区域。基本上$\vec q$点网格要到$32\times32\times32$或更高的网格密度，再外推到极限，才有可能得到比较较可靠的结果。
+
+\subsection{统计采样计算电子-声子相互作用}
+\subsubsection{金刚石中的单点计算}
+采用单次法对金刚石的电子-声子相互作用完成计算。
+
+在给定温度$T$，物理量$O(T)$的观测值，可以通过坐标系中不同点$x_T^{\mathrm{MC},i}$上观测样本(权重为$n$)的统计平均得到。在完全\textrm{Monte-Carlo}统计采样中，每一套$i$的坐标位置，都可由平衡原子位置$x_{\mathrm{eq}}$的偏移得到
+\begin{displaymath}
+	x_T^{\mathrm{MC},i}=x_{\mathrm{eq}}+\Delta\tau^{\mathrm{MC},i}
+\end{displaymath}
+这里偏移量$\Delta\tau$分别由\textrm{Cartesian}坐标(包括原子数)，原子质量$M_{\kappa}$和原子$\kappa$的声子本征模$\nv$，声子本征频率$\omega_{\nv}$和正态分布随机变量$\mathcal{N}$确定。声子本征振动模和本征频率可由谐振子近似计算得到。
+
+但是\textrm{Monte Carlo (MC)}要求多次计算以得到一套偏移量，所以计算开销极其可观。受到经验观测的启发，对于超晶胞体系，如果扩大超晶胞尺寸，对应于\textrm{MC}方法，所需要的观测结构数目可以减少。\textrm{Zacharias}和\textrm{Giustino}\upcite{PRB94-075125_2016}提出单次\textrm{(One-shot, OS)}方法，即只采用一套偏移量，也被称为\textrm{ZG}构型\textrm{(ZG-configuration)}
+\begin{displaymath}
+	\Delta\tau^{\mathrm{OS}}=\sqrt{\frac1{M_{\kappa}}}\sum_{\nv}^{3(N-1)}(-1)^{\nv-1}\varepsilon_{\kappa,\nv}\sigma_{nv,T}
+\end{displaymath}
+这里的求和按照本征振动频率的升序，遍历全部本征振动模，$T$是设定温度，$\varepsilon_{\kappa,\nv}$是原子$\kappa$上的本征振动模$\nv$的单位矢量。每个偏移量$\sigma$由式
+\begin{displaymath}
+	\sigma_{\nv,T}=\sqrt{(2n_{\nv,T}+1)\dfrac{\hbar}{2\omega_{\nv}}}
+\end{displaymath}
+计算，而其中
+\begin{displaymath}
+	n_{\nv,T}=[\exp(\hbar\omega_{\nv}/k_{\mathrm{B}}T)-1]^{-1}
+\end{displaymath}
+表示\textrm{Bose-Einstein}占据数。应用单次方法，\textrm{Monte-Carlo}对可观测物理量$\langle O(T)\rangle$的求和，可以约化为单次计算。\upcite{NJP20-123008_2018}
+
+对于给定的超晶胞，计算的动力学矩阵和本征矢用于计算确定\textrm{POSCAR}文件，其中的原子位置按照单次方法发生偏移。\upcite{NJP20-123008_2018}。然后分别对初始结构和单次法偏移后的结构完成标准的\textrm{DFT}基态计算。在谐振子近似下，单次法偏移后的结构包含电子-声子相互作用的影响。通过对称性破缺的本征态梳理，可以看出电子-声子耦合的影响。
+
+在计算目录下检查输入文件
+
+金刚石$2\times2\times2$超晶胞结构文件\textrm{POSCAR}
+
+采用\textrm{PBE}泛函的基态计算的控制文件\textrm{INCAR}即\textrm{(INCAR.dft)}
+
+单次法计算控制文件\textrm{INCAR}\textrm{(INCAR.os\_disp)}的配置
+
+为了得到动力学矩阵的本征矢，设置\texttt{IBRION}=6，设置\texttt{PHON\_LMC}=\textrm{.TRUE.}表示采用单次法的\textrm{Monte-Carlo}计算。\texttt{PHON\_NSTRUCT}>0设置\textrm{Monte-Carlo}计算中所需的结构数目。对计算控制参数\texttt{PHON\_NSTRUCT}=0，代码将开启单次计算。单次法还可以同时得到不同温度下的结构文件\textrm{POSCAR}(动力学矩阵只需要计算一次)。多个温度值通过计算参数\texttt{PHON\_TLIST}给出。而计算控制参数\texttt{PHON\_NWRITE}和\texttt{PHON\_DOS}用于绘制声子\textrm{DOS}。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}，选择$\Gamma$点。
+
+声子态密度计算文件\textrm{QPOINTS}
+
+\textrm{QPOINTS}是声子态密度计算所需要的，但单次法或随机采样计算电子-声子相互作用则并非必须的。
+
+在计算目录下执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+计算结束将会产生根据单次法发生偏移后的\textrm{POSCAR}格式的结构文件，因为在\textrm{0K}，所以文件名为\textrm{POSCAR.T=0}。检查新生成的\textrm{POSCAR}文件，会发现其中只是原子位置被移动过。在此次计算中，也完成的声子\textrm{DOS}计算。可以通过\textrm{Py4vasp}生成声子\textrm{DOS}曲线。
+
+单次法得到的声子\textrm{DOS}图中，峰位表示的是对应于本征振动模$\varepsilon_{\kappa,\nv}$的本征态能量，该值用于偏移值的计算
+\begin{displaymath}
+	\Delta\tau^{\mathrm{OS}}=\sqrt{\frac1{M_{\kappa}}}\sum_{\nv}^{3(N-1)}(-1)^{\nv-1}\varepsilon_{\kappa,\nv}\sigma_{nv,T}
+\end{displaymath}
+所以单次法计算的声子\textrm{DOS}中，峰位尤为重要。
+
+为了考察电子-声子相互作用对电子态本征值的影响，首先对原始结构完成标准的\textrm{DFT}基态计算，
+
+类似地，通过\textrm{Bash}命令，可以对单次法产生的原子偏移晶胞完成标准的\textrm{DFT}计算。
+
+原始晶胞计算的输出文件是\textrm{OUTCAR.$2\times2\times2$}，检索能量本征值。
+
+可以看到带隙(对应的电子占据数由2.0变为0.0的位置)，由于晶体对称性的约束，体系的能量本征值有不少是简并的，带隙是\textrm{4.54~eV}。
+
+单次法得到的构型的本征态(保存在输出文件\textrm{OUTCAR.$2\times2\times2$\_T0中)，原则上，此时能带占据数由\textrm{Bose-Einstein}分布确定。%注意，由于数值误差的存在，用户的计算值可能与这里的结果略有出入。
+
+由于对称性破缺，原始的简并态不在简并，带隙也变成了\textrm{3.57~eV}，比原始晶胞的带隙小了约\textrm{1~eV}。
+
+在文献中，经常不通过最高价带和最低导带的能量差来计算带隙。\upcite{NJP20-123008_2018}相反，为了提升和实验结果对照的符合程度，选择对应原始是简并的价带电子态(这里是\textrm{No.30-32})的平均值和对应简并的导带电子态(这里是\textrm{No.33-38})的平均值之差作为带隙。%以简便为原则，本算例略去这一计算过程。
+
+\subsubsection{金刚石中超晶胞大小对单次法收敛的影响}
+对金刚石，计算零点带隙重整化随着晶胞大小的变化。
+
+为了包含晶胞中所有的声子，声子计算的$\vec q$点网格就应该取得足够大。\textrm{VASP}计算中，单点法和\textrm{Monte-Carlo}方法的电子-声子相互作用计算，都是通过调节晶胞大小来控制的$\vec q$点网格的大小。用户可以开始就选择大的超晶胞，但是计算量会随着超晶胞尺寸暴增。所以先完成收敛测试，然后选择最小的必要大小的超晶胞是明智的做法。
+
+在本算例中，按照升序依次完成$2\times2\times2$，$3\times3\times3$，$4\times4\times4$三种超晶胞计算。首先对原始晶胞的基态计算，确定带隙；第二次计算确定新的，来自单次法确定的原子位置的\textrm{POSCAR}文件；第三次计算对于当前的\textrm{POSCAR}计算重整化带隙，于是得到原始晶胞的重整化带隙和单次法得到的超晶胞的重整化带隙。随着超晶胞的增大，这些计算反复完成，由此考察计算的带隙重整化随超晶胞的大小收敛的情况。
+
+在计算目录下，计算的起点是金刚石的原始结构(初基原胞)。在同一目录下，由初基原胞构建的$2\times2\times2$，$3\times3\times3$，$4\times4\times4$三种超晶胞，结构文件分别命名为\textrm{POSCAR.$2\times2\times2$}，\textrm{POSCAR.$3\times3\times3$}和\textrm{POSCAR.$4\times4\times4$}。
+
+原始的金刚石初基原胞\textrm{POSCAR.pristine}
+
+相应地，金刚石超晶胞结构文件有
+
+$2\times2\times2$超晶胞\textrm{POSCAR.$2\times2\times2$}
+$3\times3\times3$超晶胞\textrm{POSCAR.$3\times3\times3$}
+$4\times4\times4$超晶胞\textrm{POSCAR.$4\times4\times4$}
+
+以及对应的
+
+$2\times2\times2$超晶胞\textrm{POSCAR.$2\times2\times2$\_T0}
+$3\times3\times3$超晶胞\textrm{POSCAR.$3\times3\times3$\_T0}
+$4\times4\times4$超晶胞\textrm{POSCAR.$4\times4\times4$\_T0}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计算。
+
+采用\textrm{PBE}泛函的基态计算的控制文件\textrm{INCAR}即\textrm{(INCAR.dft)}
+
+单次法计算控制文件\textrm{INCAR}\textrm{(INCAR.os\_disp)}的配置
+
+带隙和参考超晶胞大小绘图数据\textrm{gap\_vs\_supercell\_size\_ref.dat}
+
+在计算目录下，执行\textrm{Bash}脚本，对于每一类超晶胞构型($2\times2\times2$，$3\times3\times3$，$4\times4\times4$)，完成三类计算
+\begin{enumerate}
+	\item 原始超晶胞的基态计算(产生输出文件\textrm{OUTCAR.$2\times2\times2$}，$\cdots$)
+	\item 计算温度\textrm{T=0}时，单次法的超晶胞结构(产生输出文件\textrm{POSCAR.$2\times2\times2$\_T0}，$\cdots$)
+	\item 针对单次法产生的含有原子偏移的超晶胞结构，完成基态计算(产生输出文件\textrm{OUTCAR.$2\times2\times2$\_T0}，$\cdots$)
+\end{enumerate}
