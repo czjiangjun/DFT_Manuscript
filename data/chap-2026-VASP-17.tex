@@ -171,3 +171,48 @@ $10\times10\times10$的$\vec q$点网格文件\textrm{KPOINTS\_ELPH}
 对于极化材料，电子-声子相互作用矩阵元对应于长波极限下，因为长程的静电相互作用，引起纵向光学模的发散。\upcite{JCP143-102813_2015}。在这种情况下，需要的$\vec q$点网格会非常密集，而展宽系数也应该选择得较为一致。
 
 \subsubsection{极化材料\ch{MgO}的能带重整化}
+对\ch{MgO}初基原胞计算\textrm{Born}有效电荷和介电张量，随后计算$2\times2\times2$\ch{MgO}的超晶胞电子-声子相互作用势函数，以及零点带隙重整化，并外推收敛的$\vec q$点网格数。
+
+\ch{MgO}是一种极化材料，正如前面提到的，这类材料的\textrm{ZPR}计算更有挑战性。在极化材料中，对某些声子振动模，长程的静电相互作用会导致电子-声子相互作用矩阵的矩阵元发散，类似于极化材料中声子的纵向光学枝-横向光学枝\textrm{(Longitudinal Optical-Transverse Optical, LO-TO)}的裂分。这种情况需要通过更密集的$\vec q$点网格和慎重的收敛测试才能精确计算\textrm{ZPR}。和声子类似，在\textrm{VASP}计算的电子-声子相互作用矩阵元里，也存在专门的校正方法，可以引入长程相互作用。
+
+对于极化材料，电子-声子相互作用矩阵元的长程部分(仅考虑偶极的贡献)可以写成
+\begin{displaymath}
+	g_{mnv}^{\mathrm{LR}}(\vec k,\vec q)=\mathrm{i}\dfrac{4\pi}{V_{\mathrm{pc}}}\sum_k\sqrt{\dfrac{\hbar}{2m_{\kappa}\omega_{v\vec q}}}\sum_{\mathbf{G}}\dfrac{(\vec q+\mathbf{G})\cdot\mathbf{Z}_{\kappa}^{\ast}\cdot\mathrm{e}_{\kappa,v\vec q}}{\vec q+\mathbf{G}\cdot\mathbf{\epsilon}_{\infty}\cdot(\vec q+\mathbf{G})}\langle\Psi_{m\vec k+\vec q}|\mathrm{e}^{\mathrm{i}(\vec q+\mathbf{G})\cdot(\vec r+\tau_{\kappa})}|\Psi_{n\vec k}\rangle
+\end{displaymath} 
+这里$\mathbf{Z}_{\kappa}^{\ast}$是\textrm{Born}有效电荷张量,$\mathbf{\epsilon}_{\infty}$是高频介电函数张量，$m_{\kappa}$是原子$\kappa$的原子质量，$\omega_{v\vec q}$是声子频率，$e_{\kappa,vq}(\vec q)$是声子态的本征矢。
+
+在电子-声子相互作用计算中，\textrm{VASP}可以计算声子频率和本征矢和电子态的\textrm{Bloch}轨道，但是\textrm{Born}有效电荷和介电张量需要预先计算，在这里作为输入数据给出。
+
+本算例中完成的任务包括
+\begin{enumerate}
+	\item 通过元胞的线性响应计算\textrm{Born}有效电荷与介电张量
+	\item 根据已知介电性质，计算电子-声子相互作用势函数
+	\item 通过偶极修正计算带隙\textrm{ZPR}，并考察其随$\vec q$-点网格的收敛情况。
+\end{enumerate}
+%缩写\textrm{NAC}表示非解析项校正\textrm{(Non-Analytic-term Correction, NAC)}，用于处理\textrm{Brillouin}区的动力学矩阵的非解析行为。\upcite{PRB55-10355_1997}。因为\textrm{Born}有效电荷和介电张量用于\textrm{NAC}计算，类似的概念也存在于电子-声子相互作用中，这里借用了该名词。
+
+\textcolor{red}{计算介电性质}
+
+\ch{MgO}初基原胞的结构文件\textrm{POSCAR}文件
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{INCAR}文件中引入计算控制参数\texttt{LEPSILON}，表明\textrm{VASP}将通过密度泛函微扰理论\textrm{(Density Functional Perturbation Theory)}计算对电场的响应函数。其中包括\textrm{Born}有效电荷张量和静态离子阻尼介电张量。
+
+$\vec k$-空间网格剖分方案文件\textrm{KPOINTS}
+
+在当前的工作目录\textcolor{red}{\textrm{nac}}，执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+计算结束后，检查输出文件\textrm{OUTCAR}，通过\textrm{Bash}命令在文件末尾查找字符串\\
+\fbox{\textrm{grep -A 6 ``MACROSCOPIC STATIC DIELECTRIC TENSOR (including local field effects in DFT)'' OUTCAR}}
+
+和
+
+\fbox{\textrm{grep -A 10 ``BORN EFFECTIVE CHARGES (including local field effects) (in |e|, cummulative output)'' OUTCAR}}
+
+或者上述信息也可以通过\textrm{Py4vasp}模块，在文件\textrm{vaspout.h5}中得到。
+
+\textrm{Python}脚本中\textrm{.print()}函数是便捷可靠的检查数据的方式。当脚本和工作流程交织在一起时，横便捷的数据处理方法是采用\textrm{.read()}函数。
+
+\textcolor{red}{带隙重整化}
+
