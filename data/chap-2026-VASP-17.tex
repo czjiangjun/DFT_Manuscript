@@ -351,3 +351,40 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计
 	\item 计算温度\textrm{T=0}时，单次法的超晶胞结构(产生输出文件\textrm{POSCAR.$2\times2\times2$\_T0}，$\cdots$)
 	\item 针对单次法产生的含有原子偏移的超晶胞结构，完成基态计算(产生输出文件\textrm{OUTCAR.$2\times2\times2$\_T0}，$\cdots$)
 \end{enumerate}
+
+完成计算的时候，输入参数能确保计算收敛非常关键。用于收敛测试的物理量一般是正在关心的物理量。如带隙、力、声子振动模式。通常带隙的收敛比能量收敛会快一些。当一个物理量取导数，则求导后的变量的误差会放大。对能量求一阶导数就是力；能量的两阶导数就是动力学矩阵。误差会组合累积，与之相关的物理性质，如声子振动模也是如此。在单次法中，旧的结构文件\textrm{POSCAR.$N\times N\times N$}中的原子位置发生偏移，形成新的结构文件\textrm{POSCAR.$N\times N\times N$\_T0}。如果采用非常不严格的计算控制参数，计算很快就完成。而由于计算平台和\textrm{CPU}核引起的小的数值误差很可能会累积，导致得到的结构文件\textrm{POSCAR.$N\times N\times N$\_T0}出现\textrm{10m\AA}的误差。当计算\textrm{ZPR}时，会产生显著有的误差\textrm{($\sim$0.05~eV)}。为了得到收敛的\textrm{ZPR}计算，不能只通过带隙对初始结构文件\textrm{POSCAR.$N\times N\times N$}的收敛测试，相反声子振动模也需要参与收敛测试，确保\textrm{POSCAR.$N\times N\times N$\_T0}结构不发生改变。因为误差累积的缘故，\textrm{POSCAR.$N\times N\times N$\_T0}微小的差别，会引起\textrm{ZPR}很大的差别。
+
+前面讨论过如何关联实际计算的带隙和文献带隙。这里\textrm{INCAR}中的计算参数为例，说明提升结果收敛准确性的方法，即增加截断能\texttt{ENCUT}或提升计算精度\texttt{PREC},采用更好的最小化算法\texttt{ALGO}，或采用更严格的全局能量收敛条件\texttt{EDIFF}。因为计算中采用了少量$\vec k$点网格和低的能量截断，所以\textrm{Pulay}应力会很大，即基组不完备，所以力并未收敛，因此声子振动模存在未收敛的问题。可以通过\textrm{Bash}命令\textcolor{red}{\textrm{grep ``external pressure OUTCAR.*''}}。
+
+这里给出一个参考的\textrm{INCAR文件}。注意如何提高能量截断参数\texttt{ENCUT}，增加计算精度参数\texttt{PREC}，电子态的最小化算法\texttt{ALGO}由\textrm{Fast}改为\textrm{Normal}，全局能量收敛控制参数\texttt{EDIFF}变得更严格。
+
+在本算例中，通过计算原本简并的价带和导带的平均能带值的差来计算带隙重整化。该方案得到结果和实验数据比，符合程度和收敛程度都得到了提升。
+
+在检查带隙重整化之前，先通过\textrm{Python}脚本检查单次法如何引起原子位置的改变。在给出的可视化结构文件中，原始的$2\times2\times2$的超晶胞中原子是红色，而原子偏置后的超晶胞原子淡蓝的。
+
+为了得到带隙，执行\textrm{Bash}命令\textrm{grep 'fundamental gap' OUTCAR.xxx}。通过计算原子偏移后的结构的带隙和原始结构的带隙差，就得到带隙重整化的值。该过程可以通过\textrm{Bash}脚本\textrm{evaluate\_gap.sh}来完成。
+
+脚本\textrm{evaluate\_gap.sh}取三个简并的占据能带的平均能量和六个简并的导带能带的平均能量，通过两者的能量差计算带隙。在文献中这是标准做法，对于带隙收敛到实验值也是必要的。\upcite{NJP20-123008_2018}
+
+输出结果类似
+
+输出结果保存到文件\textrm{gap\_vs_supercell\_size.dat}中。可以通过\textrm{Python}脚本，借助\textrm{Py4vasp}对比参照数据。
+
+带隙重整化对超晶胞大小的收敛的很慢，而且并非单调变化。在本算例中，并不严格的计算控制参数使得计算完成得很快。\textcolor{red}{根据文献\cite{NJP20-123008_2018}，通过更高的截断能参数\texttt{ENCUT}，提升计算精度\texttt{PREC}，改进电子态最小化算法\texttt{ALGO}，更严格的全局收敛控制参数\texttt{EDIFF}，对间接带隙(已经计算了直接带隙)可以在表2中看到金刚石的收敛，对于其他化合物则列于表3。}
+
+\subsubsection{金刚石的带隙对温度的依赖}
+计算金刚石的带隙在考虑电子-声子相互作用后，在\textrm{0-700~K}范围内，随温度的依赖关系。
+
+电子-声子相互作用对带隙的影响，会随着温度变化。取$4\times4\times4$超晶胞作为起点，通过单次法得到考虑电子-声子相互作用而偏离的多个温度下的\textrm{POSCAR}。在计算控制参数文件\textrm{INCAR}中，设置计算控制参数\texttt{PhON\_TLIST}确定不同的温度，对于每个计算结构，都将通过遵从先完成基态计算，再计算带隙的技术路线，然后再绘制带隙对温度的依赖关系曲线，并与实验模型对比。\upcite{Phydica34-149_1967}
+
+原始的$4\times4\times4$超晶胞金刚石结构文件\textrm{POSCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计算。
+
+采用\textrm{PBE}泛函的基态计算的控制文件\textrm{INCAR}即\textrm{(INCAR.dft)}
+
+单次法计算控制文件\textrm{INCAR}\textrm{(INCAR.os\_disp)}的配置
+
+带隙对温度依赖的参考绘图数据\textrm{gap\_vs\_temp\_ref.dat}
+
+在计算目录下，执行\textrm{Bash}脚本，对于每一类超晶胞构型$4\times4\times4$，完成三类计算
