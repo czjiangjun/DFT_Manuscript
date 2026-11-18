@@ -483,4 +483,88 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}，采用$4\times4\times4$网格
 
 这里给出的是沿着第一\textrm{Brillouin}区的特定路径的矩阵元是如何计算的。从文件中提取的信息按照类似的方式绘制成曲线，如电子能带结构(绘图1)，声子能带结构(绘图2)。$\vec k$点位于$\Gamma$点的电子态$n$和位于$\vec k+\vec q$的电子态$m$沿着$\vec q$点路径，通过电子-声子相互作用势发生相互作用，吸收或释放一个波矢为$\vec q$的声子，标记为$\nv$。
 
+\textcolor{red}{绘图3给出沿着$\vec q$点路径，绘制的电子态$\varepsilon_{m,\vec k+\vec q}$当$\vec k=\Gamma$，声子态$\omega_{\nv,\vec q}$和相互作用矩阵元$g_{mn\vec k,\nv\vec q}$}。绘图3给出的是$\vec k=\Gamma$点上，全部能带$m=n=4$的全部简并态(由于简并，这里包括n=2,3,4)，$g_{mn\vec k,\nv\vec q}$的平均值，类似电子能带结构作图。%关于求平均值的更多的细节，见\textrm{Python}脚本\textrm{elph\_mels.py}或参见文献\cite{PRB100-174304_2019}式\textrm{(97)}。
+
+根据声子能带结构中标记为$\nv=6$声子的路径，绘制$g_{mn\vec k,\vec q}$的曲线图(绘图4)。如果保持声子的标号$\nv$不变，在声子和能带标记的交叉位置，导数存在突变，因此$g_{mn\vec k,\nv\vec q}$存在不连续。类似地，可以沿着物理态通过交叉位置，则必须要改变声子指标$\nv$，不过也不会有不连续了。
+
+\subsubsection{金刚石的能带}
+对金刚石的初基原胞，采用\textrm{velph}构建\textrm{VASP}计算，距离为0.6的$\vec k$密度。并且对$2\times2\times2$的超晶胞计算能带和\textrm{DOS}。
+
+与之前的计算模式不同，那边是先在各个计算目录下准备输入文件，这里的\textrm{velph}的工作流由单个配置文件\textrm{(velph,toml)}管理，配置文件自动包含所有不同计算和目录所需要信息。\textrm{velph.toml}文件可以通过命令\textrm{velph init}产生，可以让用户选择超晶胞的大小，$\vec k$点采样方式和确保电子截断能在整个计算中保持一致。前面已经学习了\textrm{VASP}通过\texttt{ELPH\_POT\_GENERATE}来完成电子-声子相互作用计算。而这里是一个简单而直接的方案，但这个方法也有其不足。
+
+\textrm{phelel}软件包为\textrm{VASP}提供了高层次的接口，可以在电子-声子相互作用计算中自动完成很多繁琐的步骤。\textrm{velph}命令行工工具属于\textrm{phelel}软件生态工具的一部分，其自动化部分包括
+\begin{itemize}
+	\item 启动\textrm{Born}有效电荷和介电张量计算，用于非解析项校正\textrm{(Non-analytic term Correction, NAC)}
+	\item 产生超晶胞并计算电子-声子相互作用势
+	\item 准备初基原胞电子-声子相互作用的计算
+	\item 完成文件管理，确保两个计算之间计算参数设置保持一致性
+\end{itemize}
+这一套集成的工作流程，降低了由于初始设置和不同步骤间数据转移可能出错的概率。此外，\textrm{phelele}软件为设置原子偏移量提供了很大的灵活性。在构造电子-声子势函数时，利用了对称操作以减少计算时间。
+
+本算例可以看到，可以证明对于金刚石体系，只需要有初基原胞和原子数据集文件\textrm{POTCAR}就可以完成全部的\textrm{VASP+phelel}工作流。
+
+在工作目录下，对于\textrm{velph}工作流，只要有两个基本文件，初基原胞结构文件\textrm{POSCAR}和原子数据集文件\textrm{POTCAR}。
+
+和之前的算例类似，\textrm{POSCAR}文件确定了金刚石的初基原胞。
+
+金刚石的初基原胞结构文件\textrm{POSCAR}
+
+计算配置参数模板文件\textrm{template.toml}
+
+\textrm{template.toml}文件用于提供需要修改\textrm{velph}配置的默认计算控制参数值，如\texttt{ENCUT}。
+
+在此基础上可以通过\textrm{velph}构建计算参数。%花一点时间熟悉\textrm{velph}的命令行操作。主要是\textrm{velph --help}和\textrm{velph hints}
+
+第一步是初始化计算任务，并产生\textrm{velph.toml}配置文件。这可以通过命令\textrm{velph init}来完成。%这里，仍然可以通过命令行操作\textrm{velph init --help}来熟悉子命令。
+
+除了\textrm{POSCAR}文件，\textrm{velph init}会需要用户指定任务的计算目录和超晶胞大小。对于任务目录，默认为当前目录，对于超晶胞的尺寸，采用计算选项\textrm{--max-num-atoms}。因此具体的命令是
+\fbox{\textrm{velph init POSCAR  --max-num-atom=100 --kspacing=0.6 --force --template-toml template.toml}}
+通过计算选项\textrm{--kspaceing}就是设置\textrm{INCAR}中的计算控制参数\textrm{KSPACING}，这个参数指定了在倒空间中，$\vec k$点网格的格点间距，等价于形成$\vec k$点网格剖分文件\textrm{KPOINTS}。一套\textrm{--kspacing=0.6}的参数设置，等价于超晶胞中$2\times2\times2$的$\vec k$点网格。这与此前计算的\ch{MgO}计算类似。如果没有{--kspacing=0.6}的参数设置，将会采用\textrm{velph}规定的默认值。
+
+\textrm{velph}现在根据输入的晶胞结构参数和选项，构建\textrm{velph.toml}配置文件。该文件包含后续各步的所有的计算输入设置参数，并要求启动计算。建议通读全部计算配置。
+
+在配置文件\textrm{velph.toml}内，所有的计算控制文件，都可以修正和调整。绝大部分计算控制参数与\textrm{INCAR}文件中的参数``一一对应''。子命令\textrm{velph phelel init}表示采用当前的参数，生成\textrm{INCAR}文件。
+
+在\textrm{velph.toml}文件，可以看到以\textrm{[vasp.*.incar]}和\textrm{[vasp.*.kpoints]}区分的有若干行参数，都是设置产生\textrm{INCAR}和\textrm{KPOINTS}文件。在文件的末尾，可以看到关于对称性的描述\textrm{[symmetry]}，元胞\textrm{[unitcell.*]}和晶胞参数\textrm{[lattice]}。对于当前计算，还有计算细节的参数位于\textrm{[vasp.el\_band.incar]}以下。用户可以通过命令产生能带计算所需要的文件。
+fbox{\textrm{velp el\_bands generate}}
+
+当所有计算的初始文件都准备好，则可以通过\textrm{Bash}脚本，完成\textrm{VASP}计算。
+
+这就是通过\textrm{vvelph}完成的计算。通过\textrm{Py4vasp}模块，可以检查能带结构。
+
+前面介绍的命令\textrm{velph el\_bands generate}会产生两套文件，分别是已经得到的\textrm{bands}计算，可以试试通过\textrm{Bash}命令完成\textrm{VASP}的F\textrm{DOS}计算。
+
+同样地，计算结束后，通过\textrm{Py4vasp}模块绘制\textrm{DOS}曲线。
+
+还可以在\textrm{Python}脚本中，利用\textrm{velph}模块，将能带图和\textrm{DOS}图绘制在一起，形成对比。
+
+本算例中，读者可以学到\textrm{phelel}软件和配置文件\textrm{velph.toml}的基本简介。当前已经学会了几个工作流
+\begin{itemize}
+	\item 初始化\textrm{velph.toml}构型文件
+	\item 产生计算目录\textrm{el\_bands/bands}和\textrm{el\_bands/dos}
+	\item 完成能带和\textrm{DOS}计算
+\end{itemize}
+有了这些工作流，用户只需要有合适的\textrm{PISCAR}文件和\textrm{POTCAR}文件即可。
+
+%下面，会学习对于金刚石晶体，通过完整的\textrm{VASP+phelel}的工作流计算带隙重整化。
+
+\subsubsection{极化材料\ch{MgO}的介电性质}
+对于\ch{MgO}，在温度范围\textrm{0-700~K}范围内，采用\textrm{velph}产生\textrm{velph.toml}文件\texrm{(kspacing=0.6)},计算\textrm{Born}有效电荷和介电张量，并自动产生$2\times2\times2$超晶胞，计算电子-声子相互作用势，然后在初基原胞中，完成最终的电子-声子相互作用计算，并计算带隙重整化。
+
+已经学习了如何使用\textrm{phelel}来启动\textrm{VASP}的基本能带计算。该过程也是\textrm{phelel}如何启动计算的简介。与之前的手工方法不同，那必须要预先在各个目录下准备输入文件。\textrm{velph}工作流可以通过一个配置文件\textrm{(velph.toml)}管理全部计算流程，配置文件中包含了为不同计算所有需要创建的参数信息。其中\textrm{velph.toml}由命令\textrm{velph init}产生。该命令可以选定超晶胞大小，$\vec k$点采样方案和整个计算中要求保持一致的截断能参数\textrm{ENCUT}。
+
+通过本算例，可以学习对于\ch{MgO}的初基原胞和原子数据集，如何产生\textrm{Born}有效电荷和介电张量。由此可以继续计算零点带隙重整化。%对照之前手动计算的结果，两种方法将得到相同的结果。
+
+在工作目录下，对于\textrm{velph}工作流，只要有两个基本文件，初基原胞结构文件\textrm{POSCAR}和原子数据集文件\textrm{POTCAR}。
+
+和之前的算例类似，\textrm{POSCAR}文件确定了\ch{MgO}的初基原胞。
+
+金刚石的初基原胞结构文件\textrm{POSCAR}
+
+%计算配置参数模板文件\textrm{template.toml}
+
+采用\textrm{velph}生成计算控制参数。第一步是初始化计任务，并产生\textrm{velph.toml}配置文件。这可以通过命令\textrm{velph init}来完成。%这里，仍然可以通过命令行操作\textrm{velph init --help}来熟悉子命令。
+
+%除了\textrm{POSCAR}文件，\textrm{velph init}会需要用户指定任务的计算目录和超晶胞大小。对于任务目录，默认为当前目录，对于超晶胞的尺寸，采用计算选项\textrm{--max-num-atoms}。因此具体的命令是
+\fbox{\textrm{velph init POSCAR  --max-num-atom=100 --kspacing=0.6 --force --template-toml template.toml}}
 
