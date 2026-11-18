@@ -377,7 +377,7 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计
 
 电子-声子相互作用对带隙的影响，会随着温度变化。取$4\times4\times4$超晶胞作为起点，通过单次法得到考虑电子-声子相互作用而偏离的多个温度下的\textrm{POSCAR}。在计算控制参数文件\textrm{INCAR}中，设置计算控制参数\texttt{PhON\_TLIST}确定不同的温度，对于每个计算结构，都将通过遵从先完成基态计算，再计算带隙的技术路线，然后再绘制带隙对温度的依赖关系曲线，并与实验模型对比。\upcite{Phydica34-149_1967}
 
-原始的$4\times4\times4$超晶胞金刚石结构文件\textrm{POSCAR}
+原始的$4\times4\times4$超晶胞金刚石结构文件\textrm{POSCAR.pristine}
 
 $\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计算。
 
@@ -387,4 +387,100 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计
 
 带隙对温度依赖的参考绘图数据\textrm{gap\_vs\_temp\_ref.dat}
 
-在计算目录下，执行\textrm{Bash}脚本，对于每一类超晶胞构型$4\times4\times4$，完成三类计算
+在计算目录下，执行\textrm{Bash}命令，完成原始结构的\textrm{VASP}计算，将会产生不同温度下的结构文件\textrm{(POSCAR.T=XXX)}，该文件会用于单点法的计算中。
+
+在此基础上，执行脚本\textrm{run\_calcs.sh}来完成带隙重整化计算。为了节省计算开销和计算时间，脚本中注释了部分温度。
+
+该脚本后半部分，依次对每个\textrm{POSCAR}完成\textrm{DFT}的标准计算，输出结果保存到\textrm{OUTCAR.xxx}文件中。
+
+为了基于每个温度下的\textrm{OUTCAR}文件来计算带隙重整化，执行\textrm{Bash}脚本\textrm{gap\_vs\_temp.sh}。
+
+执行完该脚本产生的数据会写入文件\textrm{gap\_vs\_temp.dat}，该文件包含每个温度下的带隙重整化。
+
+在半导体和绝缘体中，带隙重整化与温度的关系可以通过修正\textrm{Varshni}关系\textrm{(Moditied-Varshni Relation)}\upcite{Physica34-149_1967}描述
+\begin{displaymath}
+	E_{\mathrm{GAP}}(T)=E_{\mathrm{GAP}}(0)-\dfrac{AT^4}{(B+T)^2}
+\end{displaymath}
+这里\texttt{A}和\texttt{B}是给定材料的你和参数。
+
+为了针对得到的数据拟合该函数，并通过\textrm{Py4vasp}绘制重整化的带隙对温度的关系曲线，执行以下的\textrm{Python}脚本。
+
+可以看到计算的带隙与\textrm{Varshni}关系描述的曲线非常接近。%注意，在上述曲线中，温度膨胀的影响被完全忽略，温度对晶格的影响可以由准谐振计算(Quasi-Harmonic Calculation)得到。
+
+\subsubsection{在金刚石中的\rm{Monte Carlo}采样与单次法计算的对比}
+通过\textrm{Monte Carlo}采样对金刚石计算带隙。
+
+通过完全\textrm{Monte Carlo}采样计算带隙，并与单次法得到的结果对比。采用谐振分布的密度矩阵，建立了30个随机结构\upcite{PSSA188-1209_2001}。对于这些随机结构，逐一完成基态计算。对每个结构的带隙取算术平均，就可以得到\textrm{MOnte Carlo}带隙。\upcite{NJP20-123008_2018}
+
+原始的$4\times4\times4$超晶胞金刚石结构文件\textrm{POSCAR.pristine}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}中，只采用$\Gamma$点来计算。
+
+采用\textrm{PBE}泛函的基态计算的控制文件\textrm{INCAR}即\textrm{(INCAR.dft)}
+
+单次法计算控制文件\textrm{INCAR}\textrm{(INCAR.elphon\_oneshot)}的配置
+
+\textrm{Monte Carlo}方法计算控制文件\textrm{INCAR}\textrm{(INCAR.elphon\_mc)}的配置
+
+这里计算控制参数\texttt{PHON\_NSTRUCT}确定了由\textrm{Monte Carlo}采样产生的结构文件\textrm{POSCAR}的数目。与单次法不同，在\textrm{Monte Carlo}方法中，温度是由计算控制参数\texttt{TEBEG}确定的。
+
+执行\textrm{Bash}命令，完成\textrm{VASP}的单次法计算。
+
+计算完成后得到\textrm{0~K}的单次法计算结构。然后对单次法得到的结构完成基态(\textcolor{red}{采用的结构是\textrm{POSCAR.oneshot\_T0}})
+
+将输出文件\textrm{OUTCAR}完整地保存为\textrm{OUTCAR.oneshot\_T0}，因为后续会计算单次法的带隙时\textrm{Bash}脚本\textrm{evalute\_gap.sh}会使用该文件。
+
+以下执行\textrm{Bash}命令，通过\textrm{VASP}产生\textrm{Monte-Carlo}的采样结构文件。
+
+由此会在\textrm{0~K}时产生30个结构文件(\textrm{POSCAR.T=0.X})，为了对这30个结构完成基态计算，执行\textrm{Bash}脚本\textrm{run\_calc.sh}
+为了计算\textrm{Monte Carlo}采样的平均带隙以及单次法的带隙，执行脚本\textrm{evalute\_gap.sh}
+
+根据脚本输出，可以看到，相对与\textrm{Monte Carlo}方法对30个随机采样结构的带隙平均值，当包含20个随机采样结构时，计算的带隙结果，数值收敛到两位有效数字。而且单次法得到的带隙与\textrm{Monte Carlo}方法采样的平均带隙非常接近。两种方法的带隙计算值都表现出随着超晶胞的增大而收敛的趋势(这里并未给出具体的数据证明，因为相关计算非常耗时)。\upcite{NJP20-123008_2018}
+
+由于在绝大多数情况下，对于足够大的晶胞，完全\textrm{Monte Carlo}采样和单次法的到的结果类似，所以实际应用总是采用单次法。\textrm{Monte Carlo}方法只是在极偶尔的情况下才使用。例如，在有限温度下，作为分子动力学计算起点的来自谐振子模型的多\textrm{POSCAR}随机采样或与之类似的情况。
+
+\subsection{电子-声子相互作用矩阵元和\rm{VASP}结合\rm{phelel}的使用}
+\subsubsection{电子-声子相互作用矩阵元的计算}
+采用$4\times4\times4$$\vec k$空间网格，对金刚石初基原胞计算平均电子-声子相互作用矩阵元，并沿$\Gamma-X-U-K-\Gamma-L-W-X$路径绘制曲线。
+
+电子和晶格振动(声子)的相互作用会引起电子态能量的改变，这一改变一般通过自能描述。通过两阶微扰理论，电子态的自能可以分解为两部分的贡献，分别称为\textrm{Fan-Migdal~(FM)}项和\textrm{Debye-Waller~(DW)}项。实际应用中，这两项都可以通过电子-声子相互作用矩阵元$g_{mn\vec k,\nv\vec q}$来计算。而矩阵元$g_{mn\vec k,\nv\vec q}$由\textrm{Kohn-Sham}轨道$\Psi_{n\vec k}$和电子-声子相互作用势$\partial_{\nv\vec q}V_{\mathrm{KS}}$表示
+\begin{displaymath}
+	g_{mn\vec k,\nv\vec q}=\langle\Psi_{m\vec k+\vec q}|\partial_{\nv\vec q}V_{\mathrm{KS}}|\Psi_{n\vec k}\rangle
+\end{displaymath}
+这里$(\nv,\vec q)$是声子振动模的序号指标$\nv$和波矢$\vec q$，$m$和$n$分别是波矢为$\vec k$和$\vec k+\vec q$的电子能带。
+
+为了提升计算效率，很多时候这些电子-声子相互作用的矩阵元属于即用即抛型数据，只在必要时才计算，用完即行删去，不予保留。但是在有些时候，如分析或绘制电子-声子相互作用矩阵元曲线时，也会需要输出电子-声子矩阵元。
+
+%本算例学习如何得到并绘制电子-声子相互作用矩阵元。
+
+计算采用的金刚石初基原胞结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+在\textrm{INCAR}文件中有一些计算控制参数是之前从未遇见的。这里只重点描述电子-声子相互作用相关的。\texttt{elph\_run}表示开启电子-声子相互作用计算；\texttt{elph\_driver}=\textrm{mels}表示将计算的电子-声子相互作用矩阵元写入\textrm{Vaspelph.h5}文件中；\texttt{elph\_selfen\_ikpt}确定对哪个$\vec k$点计算电子自能。在当前算例中，只计算$\Gamma$点。\texttt{elph\_selfen\_band\_start}和\texttt{elph\_selfen\_band\_stop}定义电子-声子计算中包含的电子态起始和终了的能带序号。因此在本算例中包含的能带序号是1,2,3,4。最后\texttt{elph\_nbands}确定必须在电子-声子相互作用计算所使用的精密$\vec k$点网格上计算的能带数目。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}，采用$4\times4\times4$网格点。
+
+用于能量色散曲线绘制的沿高对称性$\vec k$点路径文件\textrm{KPOINTS\_ELPH}
+
+与之前的算例类似，为了避免超晶胞计算，本算例直接提供了通过包含电子-声子相互作用势函数的\textrm{phelel\_params.hdf5}文件。并采用\textrm{Python}脚本\textrm{elph\_mels.py}来绘制相互作用矩阵元。%在\textrm{INCAR}文件中，还有几个计算控制参数，如\texttt{elph\_selfen\_ikpt}指定需要计算电子自能的$\vec k$点的序列；\texttt{elph\_selfen\_band\_start}和\texttt{elph\_selfen\_band\_stop}规定需要计算由于电子-声子相互作用贡献的自能的电子态起始和终了的能带序号。计算控制参数\texttt{ELPH\_DRIVER}=\textrm{mels}表示把电子-声子相互作用矩阵元写到文件中。
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+通常当完成声子诱导的电子自能计算时，电子-声子相互作用矩阵元随用随删，这样做可以充分有效地利用自能，确保计算过程中只计算必要的矩阵元。但是在某些情况下，还是需要直接保存电子-声子相互作用的矩阵元，比如在分析矩阵元数据和绘制矩阵元曲线时。
+
+一旦计算结束，可以通过\textrm{Python}脚本\textrm{elph\_mels.py}来提取电子-声子矩阵元并绘制曲线，将曲线与电子能带和声子能带结构相对比。
+
+电子能带结构
+
+声子能带结构
+
+平均的电子-声子相互作用矩阵元$g$
+
+对能带序号为6的平均电子-电子相互作用矩阵元$g$
+
+当计算控制参数\texttt{ELPH\_DRIVER}=\textrm{mels}，电子-声子相互作用矩阵元会写到文件中。这种情况下，\textrm{VASP}并不计算自能表达式，而是按照\textrm{INCAR}规定的法则，将特定的矩阵元集中起来写入\textrm{HDF5}文件\textrm{vaspelph.h5}。
+
+这里给出的是沿着第一\textrm{Brillouin}区的特定路径的矩阵元是如何计算的。从文件中提取的信息按照类似的方式绘制成曲线，如电子能带结构(绘图1)，声子能带结构(绘图2)。$\vec k$点位于$\Gamma$点的电子态$n$和位于$\vec k+\vec q$的电子态$m$沿着$\vec q$点路径，通过电子-声子相互作用势发生相互作用，吸收或释放一个波矢为$\vec q$的声子，标记为$\nv$。
+
+
