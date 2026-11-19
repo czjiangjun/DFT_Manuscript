@@ -568,3 +568,44 @@ fbox{\textrm{velp el\_bands generate}}
 %除了\textrm{POSCAR}文件，\textrm{velph init}会需要用户指定任务的计算目录和超晶胞大小。对于任务目录，默认为当前目录，对于超晶胞的尺寸，采用计算选项\textrm{--max-num-atoms}。因此具体的命令是
 \fbox{\textrm{velph init POSCAR  --max-num-atom=100 --kspacing=0.6 --force --template-toml template.toml}}
 
+\textrm{velph.toml}配置文件包含了所有\textrm{VASP}计算的全部预定义参数。
+
+在\textrm{vasp.toml}配置文件中，检查\textrm{[vasp.nac]}部分的内容的\textrm{Bash}命令
+\fbox{\textrm{grep -A 14 ``\[vasp.nac\]'' velph.toml}}
+
+在\textrm{vasp.nac.incar}部分，可以有基本的收敛控制参数\texttt{LEPSILON}=\textrm{True}。此外，在\textrm{vasp.nac.kpoints}部分定义了计算用的$\vec k$空间网格剖分方案。在本算例中，采用了粗的$\vec k$点网格作为示例，即在初始化的时候指定$\vec k$点网格距离\textrm{(velph init --kspacing=0.6)}，产生的$\vec k$点网格剖分方案是$4\times4\times4$。为了使的计算结果与之前的结果一致，修改配置\textrm{velph.toml}文件，使得$\vec k$点网格密度增大为$6\times6\times6$。\textcolor{red}{相应的\textrm{Python}脚本。}
+
+有了\textrm{velph}软件，就不必再依赖手工生成输入文件以确保计算过程计算参数的一致性的繁琐。现在就可以通过\textrm{velph}来生成\textrm{VASP}的输入文件。为此，执行\textrm{Bash}命令\textrm{velph nac generate}，就可以创建一个新的\textrm{nac}目录，该目录下包含所有\textrm{VASP}计算的输入文件
+
+\fbox{\textrm{velph nac generate}}
+
+执行完了\textrm{Python}脚本，进入到\textrm{nac}目录，检查\textrm{INCAR}文件中包含的计算控制参数是否是合适，\textrm{KPOINS}文件中包含的$\vec k$空间网格点是$6\times6\times6$。运行\textrm{Bash}命令，完成\textrm{VASP}计算，得到体系的\textrm{Born}有效电荷和介电张量。
+
+到这里，完成了电子-声子计算工作流的\textrm{NAC}部分就完成了。
+
+该工作流的输出主要就是之前完成的介电计算。可以通过\textrm{Py4vasp}模块输出节点函数的性质。
+
+并可以通过\textrm{Py4vasp}模块，与之前的计算结果对比
+
+结果显示两种计算得到的结果是相同的，唯一的区别只是一个是采用了工作流，另一个是手工计算。
+
+%借助\textrm{velph.toml}配置文件，
+到这一步，\textrm{velph}软件这时能够自动地查找\textrm{Born}有效电荷和介电张量，在后续计算中，将可以包含这些数据。
+
+再利用\textrm{velph}软件开启超晶胞计算。再一次可以通过\textrm{Bash}命令\textrm{velph hints}来了解和学习如何完成这一步。\textrm{velph}软件中，对应超晶胞计算的命令是\textrm{velph phelel}(因为\textrm{velph}采用\textrm{phelel}来实现超晶胞中的有限差分计算)。如果想了解关于该计算的更多，则可以使用\textrm{Bash}命令\textrm{velph phelel --help}。
+
+等到用户熟悉了各类可得到的文档，可以初始化超晶胞计算并产生\textrm{VASP}的输入文件。在\textrm{velph.toml}文件所在目录(即计算的根目录)，执行\textrm{Bash}命令\textrm{velph phelel init}，该命令会找到指定的每个原子的偏移，并生成超晶胞计算所需要的新的目录\textrm{phelel}。在\textrm{phelel}目录下包含唯一的配置文件\textrm{phelel\_disp.yml}文件，该文件中明确指定了哪些原子发生偏移，哪些对称操作仍保留。
+
+具体操作的时候，首先执行初始化\textrm{Bash}命令\textrm{velph phelel init}
+
+然后基于当前的信息产生输入文件，执行\textrm{Bash}命令\textrm{velph phelel generarte}
+
+因此在\textrm{phelel}目录下，\textrm{velph}软件会自动地产生一套子目录，每一个对应超晶胞的一种具体的原子偏移。每个子目录包含特定偏移所有必要的\textrm{VASP}计算的输入文件，还包含一个未经偏移的原始结构文件。这样的文件分布形式，可以对每一套偏移结构进行独立地计算。
+
+在初始化过程中，依赖于选定的对称操作设置，所以生成的子目录的数目数会有不同，用户应该检索\textrm{phelel}目录下新生成的子目录，确认其中的输入文件是否正确的生成。这里各子目录的输入文件的唯一区别是\textrm{POSCAR}，\textrm{POSCAR}中的原子偏移量不同。注意，在每个目录下的\textrm{INCAR}文件中有新的计算控制参数\texttt{ELPH\_PREPARE}。该计算控制参数会将必要的信息(如局域势函数)写入\textrm{vaspout.h5}文件。
+
+下一步，会针对每一套偏移执行\textrm{VASP}，然后再采用\textrm{phelel}来处理结果。
+
+执行\textrm{Bash}脚本，进入到\textrm{phelel}目录下，在每个子目录下完成\textrm{VASP}计算。
+
+不难看出\textrm{VASP+phelel}结合比起仅用\textrm{VASP}软件可以更灵活地选择原子的位置偏移。
