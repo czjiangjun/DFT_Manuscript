@@ -608,4 +608,39 @@ fbox{\textrm{velp el\_bands generate}}
 
 执行\textrm{Bash}脚本，进入到\textrm{phelel}目录下，在每个子目录下完成\textrm{VASP}计算。
 
-不难看出\textrm{VASP+phelel}结合比起仅用\textrm{VASP}软件可以更灵活地选择原子的位置偏移。
+不难看出\textrm{VASP+phelel}结合比起单纯仅用\textrm{VASP}软件，可以更灵活地选择原子的位置偏移。
+
+等全部超晶胞计算都结束后，再执行\textrm{phelel}命令汇集计算结果，完成有限差分计算并生成\textrm{phelel\_params.hdf5}文件。不过，除了手工执行\textrm{phelel}命令，也可以执行\textrm{velph}命令完成上述计算。为此则需要进入到本算例的根目录，不要忘记这里有配置文件\textrm{velph.toml}。则这里计算命令非常简单，即\textrm{velph phelel differentiate}
+
+这个\textrm{Bash}命令会提供\textrm{phelel}计算的正确设置，并告知该软件在何处完成\textrm{VASP}计算，然后再完成有限差分计算并产生\textrm{phelel\_Params.hdf5}文件。等到所有计算都完成，就万事俱备，只差最后一步——电子-声子相互作用计算。
+
+\textcolor{red}{采用\textrm{velph}完成初基原胞的电子-声子相互作用计算}
+
+采用\textrm{velph}为最后的电子-声子相互作用计算作准备，主要的计算任务是零点重整化对温度的依赖关系。在开启计算之前，建议读者花一点时间再研究一下配置文件\textrm{velph.toml}，不过这回的重点是其中的\textrm{[vasp.selfenergy.incar]}部分。这部分包含了\textrm{INCAR}文件中电子-声子相互作用计算的控制参数。在产生输入文件之前，可以更改任何设置参数。
+
+本算例将在固定的$\vec k$点网格采样条件下，计算带隙重整化对温度的函数。为此修改\textrm{velph.toml}文件中的某些输入参数，以满足需要。
+
+首先，将$\vec k$点网格加密到$8\times8\times8$。与其他算例类似，该$\vec k$点网格不会产生收敛的结果，但是用于计算得到合理的数值已经足够。在配置文件\textrm{velph.toml}中找到\textrm{[vasp.selfenergy.kpoints\_dense]}部分，并将$\vec k$点网格改为$\vec k$点网格加密到$8\times8\times8$。
+
+然后，某些\textrm{INCAR}文件中的计算控制参数尚未对该过程优化。在计算配置文件\textrm{[vasp.selfenergy.kpoints\_dense]}部分，将此前的\textrm{INCAR}文件中计算控制参数\texttt{ELPH\_SELEFEN\_TEMPS}设置的温度系列，变成\textrm{0-700~K}的区间
+
+\textrm{\texttt{elph\_selfen\_temps = [0, 100, 200, 300, 400, 500, 600, 700]}}
+
+因为本算例中，重点不在于研究对应于计算能带数目的收敛情况，所以去除计算控制参数\texttt{ELPH\_NBANDS\_SUM}。相反本算例将使用全部可获取的能带，所以设\texttt{ELPH\_NBANDS}=-2。
+
+通过设置的调整，将会产生\textrm{VASP}计算输入文件。再次确认在计算的根目录下，该目录下有\textrm{velph.toml}文件。一旦所有文件与目录都确认无误，执行\textrm{Bash}命令\textrm{velph selfenergy generate}。
+
+\textrm{velph}已经创建了新的目录\textrm{selfenergy}，在该目录下，会产生最后的步骤。进入到\textrm{selfenergy}目录内，确认\textrm{INCAR}文件包含全部必要的计算控制参数。同时也检查\textrm{KPOINTS\_ELPH}文件，看其中的$\vec k$点网格是否为$8\times8\imtes8$，当一切准备停当，通过\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+最后通过\textrm{py4vasp}模块检查带隙重整化的情况。
+
+在之前的算例中，绘图中只有第一个点的结果，但重点在于计算对$\vec k$点网格的收敛。这里不难看出，在\textrm{0K}时两个结果相等。这里的绘图时\textrm{ZPR}随温度变化的曲线，随着温度升高，\textrm{ZPR}将会下降。%希望这个算例让用户详细，\textrm{velph}软件可以通过等价的工作流完成相同的计算。
+
+单纯的\textrm{VASP}工作流适合熟悉\textrm{VASP}执行参数和过程的用户，\textrm{VAP+phelel}复合工作流适合已经熟悉声子计算软件\textrm{phonpy}，又开始学习\textrm{VASP}的用户。目前，\textrm{VASP+phelel}提供了更为灵活的计算策略。至于是选择仅用\textrm{VASP}或\textrm{VASP+phelel}，很大程度上还是取决于用户，所谓``应用之妙，存乎一心''。
+
+\subsection{铁的电导率}
+\subsubsection{常数弛豫时间法计算电导率}
+采用常数弛豫时间近似\textrm{(the Constant Relaxation-Time Approximation, CRTA)}，分别在考虑自旋极化和不考虑自旋极化条件下，计算体心立方\textrm{(Body-Centered Cubic, BCC)}的\ch{Fe}随输运系数计算所用的$\vec k$点网格的收敛情况。
+
+在很多体系下，电子和振动自由度(声子)是分别处理的。\textrm{}<++>
+
