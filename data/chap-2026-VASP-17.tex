@@ -642,5 +642,89 @@ fbox{\textrm{velp el\_bands generate}}
 \subsubsection{常数弛豫时间法计算电导率}
 采用常数弛豫时间近似\textrm{(the Constant Relaxation-Time Approximation, CRTA)}，分别在考虑自旋极化和不考虑自旋极化条件下，计算体心立方\textrm{(Body-Centered Cubic, BCC)}的\ch{Fe}随输运系数计算所用的$\vec k$点网格的收敛情况。
 
-在很多体系下，电子和振动自由度(声子)是分别处理的。\textrm{}<++>
+在很多体系下，电子和振动自由度(声子)是分别处理的，因为电子的运动比原子核的运动快得多。对于电导率来说，电子-声子耦合是普遍存在的。在金属中，电输运源于外电场下，载流子(即电子和空穴)的运动。电导率$\sigma$表征电流通过材料的容易程度，可以取为电阻$\rho$的倒数，即$\sigma=1/\rho$%(注意这里的$\rho$不是材料的密度，不宜混淆)
+根据线性\textrm{Boltzmann}方程，输运的分布函数可以表示为
+\begin{displaymath}
+	\Tau(\epsilon)=\dfrac{e^2}{N_{\vec k\Omega}\sum_{n\vec k}\tau_{n\vec k}\mathbf{v}_{n\vec k}\otimes\mathbf{v}_{n\vec k}\delta(\epsilon_{n\vec k}-\epsilon)
+\end{displaymath}
+这里$\alpha$和$\beta$是\textrm{Cartesian}坐标，$e$是单位电荷，$N_{\vec k}$是$\vec k$点数目，$\Omega$是体积，$\tau_{n\vec k}$是电子态$(n,\vec k)$的弛豫时间，这里$(n,\vec )$表示位于$\vec k$点的能带序号$n$的电子态，$\mathbf{v}_{n\vec k}$是群速度分量，而$\epsilon_{n\vec k}$是电子能量。
+
+\textrm{Onsager}输运系数$\mathcal{L}_{ij}$是一个$(2\times2)$的矩阵(即$i,j\in\{1,2\}$)，其定义为\upcite{JMZ-EAP_2001}
+\begin{displaymath}
+	\mathcal{L}_{ij}=\int\mathrm{d}\epsilon\mathcal{T}(\epsilon)(\epsilon-\mu)^{i+j-2}\bigg(-\dfrac{\partial f^0}{\partial\epsilon}\bigg)
+\end{displaymath}
+利用$\mathcal{L}_{ij}$，可以计算如下输运系数
+\begin{displaymath}
+	\begin{aligned}
+		电子电导率: &\sigma=\mathcal{L}_{11}\\
+		\mathrm{Seebeck}系数: &S=\dfrac{\mathcal{L}_{11}}{\mathcal{L}_{12}}\\
+		电子热导率: &\kappa_e=\dfrac1{T}(\mathcal{L}_{22}-\mathcal{L}_{21}\mathcal{L}^{-1}\mathcal{L}_{12})
+	\end{aligned}
+\end{displaymath}
+
+这里忽略了晶格振动对热导率的贡献。\upcite{PRB85-024102_2012}
+
+在\textrm{CRTA}，假设在\textrm{Fermi}面上的全部电子具有相同的平均散射寿命$\tau$(也因此称为弛豫时间)。$\tau$是整个\textrm{Fermi}面电子速度平均值的标度因子，\textcolor{red}{在\textrm{CRTA}中引入$\tau$使得这一近似是快速优雅的方式展现能带结构部分如何控制电导率。}对于金属，因为没有带隙，\textrm{Fermi}面上的电子运动是自由的，所以\textrm{CRTA}是合理的模型。在详细讨论散射前，可以通过\textrm{CRTA}模拟纯的电子组分。
+
+本算例中，将\textrm{CRTA}应用于\ch{Fe}，计算电导率并考察$\vec k$点网格和自旋极化对电导率的影响。
+
+\textrm{BCC}结构的\ch{Fe}的初基原胞文件\textrm{POSCAR}
+
+计算控制文件\textrm{INCAR}
+
+%\textrm{INCAR}文件中的很多计算控制参数前面都介绍过。
+这里略去\textrm{INCAR}文件中的标准设置，直奔电子-声子相互作用有关的部分。\texttt{elph|_run}设定电子-声子相互作用计算，\texttt{ELPH\_MODE}=\textrm{TRANSPORT}意味着启动输运计算。%读\textrm{wiki}
+在弛豫时间近似下，载流子(即空穴和电子)密度由计算控制参数\texttt{ELPH\_SELFEN\_CHARRIER\_DEN}，弛豫时间近似由计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}设定。输运弛豫时间由计算控制参数\texttt{TRANSPORT\_RELATEXATION\_TIME}设定。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}，$\vec k$空间网格设置为$12\times12\times12$
+
+$\vec q$空间网格文件\textrm{KPOINTS\_ELPH}，网格设置为$24\times24\times24$
+
+执行\textrm{Bash}命令，完成\textrm{VASP}计算
+
+在继续讨论之前，\textcolor{red}{将计算过程分解为若干步骤}
+\begin{enumerate}
+	\item 完成电子步最小化得到电子基态的节
+	\item 准备另一套$\vec k$点网格\texttt{KPOINTS\_ELPH}(或\texttt{ELPH\_KSPACING})，这一套$\vec k$点往往比基态计算的$\vec k$点更密集，在这套$\vec k$点上完成非自洽计算
+	\item 通过对易位置算符和\textrm{Hamiltonian}，计算电子的群速度
+	\item 在\textrm{Gauss-Legendre}积分网格点上计算输运函数，并计算\textrm{Onsager}系数
+	\item 计算输运系数
+\end{enumerate}
+所有的步骤都是在一次\textrm{VASP}计算中完成的
+
+通过数据文件\textrm{OUTCAR}，可以看到关于计算的更多细节。%第一部分，延续到字符串\textsc{electron-phonon calculation}，是电子基态的最小化，即第一步。计算的各种参数是
+
+%这里绝大部分的计算控制参数在输入部分已经定义过，剩下的都是默认值或由计算控制参数\texttt{ELPH\_MODE}=\textrm{TRANSPORT}确定，这是一种方便的办法开启输运计算。然后就来到为第二步计算选择需要的电子能带和$\vec k$点
+
+%最后，给出详细的计算细节，包括载流子数目，弛豫时间和积分点等(第三-第四步)
+
+%接下来的输出，可以通过查找字符串 \textrm{Sigma S/m}得到电导率的值 (第五步)
+
+%在电子-声子相互作用子程序结尾处
+
+其中的关键物理量是
+\begin{itemize}
+	\item \texttt{sigma S/m}:~电导率%(单位 S/m)
+	\item \texttt{Seebeck $\mu V/K$}:~Seebeck系数 
+	\item \texttt{kappa\_e W/(m.K)}:~电子热导率
+\end{itemize}
+在这个\textrm{300~K}的具体算例中，电导率$9.2\times10^6\mathrm{S}\times\mathrm{m}^{-1}$，而\ch{Fe}的电阻是$97.1\mathrm{n}\Omega m$\upcite{CRC-HCP}，对应的电导率是$1.03\times10^7\mathrm{S}\times\mathrm{m}^{-1}$。%读者可以自行检验
+
+电子对热导率的贡献是$80.4\mathrm{Wm}^{-1}K^{-1}$，计算的结果是$70.4\mathrm{Wm}^{-1}K^{-1}$，与实验结果较为符合。
+
+%计算与实验结果相吻合，
+计算结果证明\textrm{CRTA}在\textrm{300~K}时与实验结果吻合得很好。%后面算例会学习怎样才能得到关心的材料的正确值。
+
+首先研究电导率随$\vec k$空间网格剖分的布点采样的收敛情况。
+
+\textcolor{red}{随$\vec k$点采样的收敛}
+
+这部分介绍如何计算电导率随$\vec k$点网格密度变化。当增加$\vec k$点，计算结果变得更精确，%想像模糊的\textrm{Fermi}面随着分辨率提高变得尖锐}
+更密的$\vec k$点网格为输运性质提供了必要的更精细的细节，但也会消耗更多的计算资源。具体讨论电导率随着$\vec k$点密度增加的变化情况。
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS\_ELPH}
 
