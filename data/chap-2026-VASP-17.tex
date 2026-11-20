@@ -724,7 +724,151 @@ $\vec q$空间网格文件\textrm{KPOINTS\_ELPH}，网格设置为$24\times24\ti
 
 计算控制参数文件\textrm{INCAR}
 
+\textrm{INCAR}文件中的输运相关的计算控制参数与基本计算相同，除了引入了计算控制参数\texttt{ELPH\_ISMEAR}，该参数给出在电子-声子计算前确定\textrm{Fermi}能级的展宽方法和化学式。
+
 $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 $\vec k$空间网格剖分文件\textrm{KPOINTS\_ELPH}
 
+本计算与之前计算最的不同，是通过不同的$\vec k$-点网格来研究计算的收敛状况
+\begin{itemize}
+	\item \textrm{KPOINTS}:~用于\textrm{DFT}的基态自洽计算
+	\item \textrm{KPOINTS\_ELPH}:~用于非自洽的\textrm{DFT}计算并计算输运性质
+\end{itemize}
+
+除了\textrm{KPOINTS\_ELPH}文件，也可以类似计算控制参数\texttt{KSPACING}之于\textrm{KPOINTS}文件的等价性质，通过参数\texttt{ELPH\_KSPACING}来指定$\vec k$-点网格。因为本算例关注的是输运计算随着$\vec k$收敛的情况。
+
+输运性质，特别是电导率，对$\vec k$点采样的数目非常敏感。因为
+\begin{enumerate}
+	\item 电导率计算涉及\textrm{Fermi}面积分，所以非常依赖\textrm{Fermi}面的几何结构的精确计算
+	\item \textrm{Dirac}的\textrm{delta}函数$\delta(\varepsilon_{n\vec k}-\varepsilon_{\mathrm{F}})$提取\textrm{Fermi}能级的电子态
+\end{enumerate}
+因此在\textrm{CRTA}近似下，精确的电导率计算随$\vec k$点密度的收敛研究是非常关键的。
+
+在计算目录下，执行$\vec k$点收敛的\textrm{Bash}脚本\textrm{kpoints.sh}脚本
+
+脚本会通过相同的$12\times12\times12$的$\vec k$点网格\textrm{(KPOINTS)}来完成体系基态能量，因此\textcolor{red}{从此前的11.2.2计算的\textrm{WAVECAR}文件}，然后再用多个$\vec k$点网格来计算输运性质(\textrm{KPOINTS\_ELPH})。
+
+输运系数会在输出到标准输出和输出文件\textrm{OUTCAR}文件中。查找字符串\textrm{``Transport for self-energy accumulator''}
+
+对于每个$\vec k$点网格，可以通过\textrm{Bash}命令提取\textrm{300K}的电导率的值。
+
+通过\textrm{Py4vasp}模块读取输运性质后，绘制电导率随着$\vec k$点网格的收敛。
+
+电导率计算需要比较密的$\vec k$点网格，因为
+\begin{enumerate}
+	\item \textrm{Fermi}面采样:~电导率由\textrm{Fermi}面上的电子态确定，所以对\textrm{Fermi}面的精确刻画非常重要
+	\item 积分收敛:~输运积分随$\vec k$点密度收敛缓慢，特别是\textrm{Fermi}面复杂的金属体系尤甚。
+\end{enumerate}
+当$\vec k$点网格加密，电导率的计算值会收敛。注意到即使采用$60\times60\times60$的网格，电导率也没有完全地平滑，而是有微小的增加，所以收敛极其缓慢。特别是
+\begin{itemize}
+	\item 复杂的\textrm{Fermi}面:~有复杂的\textrm{Fermi}面拓扑结构的金属体系，会需要密集的$\vec k$点采样
+	\item 材料的各向异性:~沿不同晶体方向的收敛速度是不同的(\textrm{BCC-Fe}则不属于该情况)
+	\item 轻的有效质量:~高度弯曲的能带(有效质量较轻)体系需要更密集的$\vec k$点网格
+\end{itemize}
+为了完成计算，要考察电导率如何随$\vec k$点网格采样数目变化。对于电导率收敛，要求的是计算值收敛，并非要求收敛到实验值。在本算例中一般要求计算值与收敛的结果(参见$\vec k$点网格大于$50\times50\times50$和$60\times60\times60$的计算结果)误差小于5\%就足够了，所以对于\textrm{BCC-Fe}来说，\textrm{KPOINTS\_ELPH}文件采用$30\times30\times30$或更密集的$\vec k$点网格即可。
+
+\textcolor{red}{磁性}
+
+以上的计算都忽略了一点，\ch{Fe}是具有磁性的材料，其磁矩差不多是$2.2\mu_{\mathrm{B}}$。%这意味着前面的计算中漏掉了关键的部分，属于``阴差阳错''。
+这部分将重新回到电导率计算，但是这一次考虑共线磁性(铁磁构型)，考虑包含磁性后，会对电导率会有哪些影响。
+
+计算控制参数文件\textrm{INCAR}
+
+对前前面的计算，\textrm{INCAR}文件中的引入了多个新的计算控制参数。\texttt{ISPIN}和\texttt{MAGMOM}开启了自旋极化计算并对每个磁性原子指定初始磁矩。\texttt{KPAR}确定并行时分配的$\vec k$点数目。\texttt{IBRION}=6，表示采用采用有限差分方法计算原子偏移。\texttt{ELPH\_POT\_GENERATE}表示通过有限的原子偏移计算电子-声子相互作用势，\texttt{LPHON\_DISPERSION}要沿着\textrm{QPOINTS}文件指定的$\vec q$点路径计算声子色散曲线。
+
+进入计算目录，重启前面类似的计算，执行\textrm{Bash}脚本\textrm{kpoints.sh}。不过这次是考虑自旋极化后的计算，在\textrm{BCC-Fe}中考虑了铁磁取向效应。
+
+分别计算$\vec k$点网格为$10\times10\times10$，$20\times20\times20$，$30\times30\times30$，并与前面的$40\times40\times40$的结果对比。
+
+通过\textrm{Py4vasp}模块，对比磁性和非磁性计算的电导率收敛情况。
+
+不难看出非磁性结果收敛值更接近实验结果，但是对于\ch{Fe}的性质描述，磁性是非常重要的物理考虑。对于\textrm{Fermi}面拓扑结构复杂的金属来说，需要非常高的$\vec k$点密度采样，因此在本算例的情况下，毫无疑问，为了达到收敛，需要更密集的$\vec k$点网格。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS\_ELPH}
+\subsubsection{自能弛豫时间近似计算电导率}
+对$2\times2\times2$超晶胞的\ch{Fe}，采用自能弛豫时间近似\textrm{(Self-Energy Relaxation-Time Approximation, SERTA)}对$\vec k$点网格计算作为输运性质的电导率。
+
+到这里有了一套理想的$\vec k$点网格，可以精确地计算电导率，并由第一原理计算弛豫时间。该计算将涉及超晶胞中的\textrm{Kohn-Sham}势函数对原子偏移的导数计算，这样处理，所有的声子计算也都可以包括在内。最后还可以根据计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}=\textrm{SERTA}\upcite{PRB97-121201R_2018}计算输运计算。
+\begin{displaymath}
+	\begin{aligned}
+		\dfrac1{\tau_{n\vec k}^{\mathrm{SERTA}}}=\sum_{n^{\prime}\nv\vec k^{\prime}}\dfrac{2\pi}{\hbar}w_{n\vec k,n^{\prime}\vec k^{\prime}}|g_{n\vec k,n^{\prime}\vec k^{\prime}}^{\nv}|^2\bigg[&(n_{\nv\vec q}+1-f_{n^{\prime}\vec k^{\prime}})\delta(\varepsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k^{\prime}}-\hbar\omega_{\nv\vec q})\\
+			+&(n_{\nv\vec q}+f_{n^{\prime}\vec k^{\prime}})\delta(\varepsilon_{n\vec k}-\varepsilon_{n^{\prime}\vec k^{\prime}}+\hbar\omega_{\nv\vec q})\bigg]
+	\end{aligned}
+\end{displaymath}
+这里$\tau_{n\vec k}^{\mathrm{SERTA}}$是\textrm{SERTA}下电子态$(n,\vec k)$的弛豫时间(也称为散射时间、散射寿命)，$w_{n\vec k,n^{\prime}\vec k^{\prime}}$是求和权重(在\textrm{SERTA}下，权重为1)，$g_{n\vec k,n^{\prime}\vec k^{\prime}}^{\nv}$是电子-声子耦合矩阵的矩阵元，$f_{n\vec k}$是电子态的占据数(服从\textrm{Fermi-Dirac}分布)，$n_{\nv\vec q}$是声子态的占据数(服从\textrm{Bose-Einstein}分布)，$\varepsilon_{n\vec k}$是电子能带的能量，$\omega_{\nv\vec q}$是声子频率，$\delta$是\textrm{Dirac}函数。
+
+散射寿命$\tau_{n\vec k}^{\mathrm{SERTA}}$关联输运分布函数(\textcolor{red}{参见方程11.1})，该函数可以用来完成\textrm{Onsager}系数的计算(\textcolor{red}{参见方程11.2})，由此得到电导率(\textcolor{red}{参见方程11.3})，因此在\textrm{SERTA}框架下，电子态能带的能量$\varepsilon_{n\vec k}$会影响电导率。
+
+%首先计算超晶胞中，在自旋极化条件下\textrm{Kohn-Sham}势函数的导数。
+
+\textcolor{red}{超晶胞中的电子-声子相互作用势计算}
+
+第一步完成超晶胞计算。
+
+$2\times2\times2$的\ch{Fe}的结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{INCAR}文件中的计算控制参数在之前的算例中都介绍过，除了计算控制参数\texttt{ELPH\_POT\_GENERATE}，这是通过有限的原子偏移来计算电子-声子的相互作用势。\texttt{LPHON\_DISPERSION}是对声子按照\textrm{QPOINTS}指定的$\vec q$点路径，计算声子的色散曲线。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在计算目录下，为了对超晶胞完成电子-声子耦合计算，执行\textrm{Python}脚本\textrm{kpath.py}脚本，产生$\vec q$点路径文件\textrm{QPOINTS}。
+
+然后执行\textrm{Bash}命令完成\textrm{VASP计算}
+
+计算完毕，会产生\textrm{phelel\_params.hdf5}文件，这个文件的数据对于后续电子-声子相互作用和输运计算都是必需的。
+
+通过\textrm{Py4vasp}查看声子分布曲线。
+
+\textcolor{red}{声子限制的电输运计算}
+最后，完成考虑电子的声子散射条件下的电子输运。计算过程与之前完成的\textrm{CRTA}计算过程非常相似，只是这里需要设置计算计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}=\textrm{SERTA}，并提供数据文件\textrm{phelel\_params.hdf5}。
+
+的\ch{Fe}的初基原胞结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+\textrm{INCAR}文件中，计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}=\textrm{SERTA}开启自能弛豫时间近似\textrm{(SERTA)}计算。\texttt{ELPH\_SESELF\_CARRIER\_DEN}确定在$\mathrm{cm}^{-3}$单位体积内引入的外加载流子数目。
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+用于$\vec k$点网格收敛测试的若干的$\vec k$点网格分布文件\textrm{KPOINS\_ELPH}
+
+这里提供了四个$\vec k$点网格分布文件\textrm{KPOINTS\_ELPH}。实际计算中只针对最小的两个$\vec k$点网格计算，其余的都太耗时了，这里直接给出对应的\textrm{vaspout.h5}文件以备后续绘图用。%如果读者有时间，可以自行尝试$20\times20\times20$，$30\times30\times30$和$40\times40\times40$网格点的计算。计算时间上，前两个大约\textrm{15~min}，最后一个大约\textrm{1h}。
+
+将超晶胞计算得到的\textrm{phelel\_params.hdf5}文件复制到各个$\vec k$-点网格文件中，然后再不同$\vec k$点网格采样目录($10\times10\times10$，$15\times15\times15$)下，执行\textrm{Bash}脚本\textrm{kpoints.sh}
+
+等到计算结束，可以通过\textrm{grep}等\textrm{Bash}命令，提取电导率计算数据信息，并得到电导率随$\vec k$点网格数目变换的曲线。
+
+%为了节约计算时间，这里预先完成$20\times20\times20$，$30\times30\times30$和$40\times40\times40$网格点的计算结果。
+通过\textrm{Python}脚本可以绘制结果曲线
+
+当前计算得到的电导率比实验值高出约\textrm{40\%}，包含声子散射后的结果与实验结果偏差得更严重，对于计算来说，``多做多错''(考虑的物理影响越多，错得越多)也是很常见的事情。
+
+回忆计算表达式\textcolor{red}{\textrm{11.1，11.2和11.3}}，可以看出，散射寿命通过式\textcolor{red}{\textrm{12.1}}与输运分布函数\textcolor{red}{\textrm{11.1}}关联
+\begin{displaymath}
+	\Tau(\epsilon)=\dfrac{e^2}{N_{\vec k\Omega}\sum_{n\vec k}\tau_{n\vec k}\mathbf{v}_{n\vec k}\otimes\mathbf{v}_{n\vec k}\delta(\epsilon_{n\vec k}-\epsilon)
+\end{displaymath}
+该式可用于\textrm{Onsager}系数计算
+\begin{displaymath}
+	\mathcal{L}_{ij}=\int\mathrm{d}\epsilon\mathcal{T}(\epsilon)(\epsilon-\mu)^{i+j-2}\bigg(-\dfrac{\partial f^0}{\partial\epsilon}\bigg)
+\end{displaymath}
+因此可得电导率
+\begin{displaymath}
+	\sigma=\mathcal{L}_{11}
+\end{displaymath}
+因此散射寿命的改变会改变电导率。利用\textrm{Py4vasp}模块，在\textrm{300~K}，将散射寿命作为\textrm{Kohn-Sham}能量(即电子态的能带能量)的函数绘图。
+
+紫色的直线表示假设全部载流子具有相同的寿命$\tau$($10^{-14}\mathrm{s}$)。该常数弛豫时间由\textrm{CRTA}计算得到的。在这个图中，载流子的寿命在很大的范围内变动，很多载流子的寿命偏离了$\tau$，特别是载流子能量比较高时。在\textrm{SERTA}计算中，允许载流子的寿命发生变化，$\tau$不再是一个常数，而是可以许可很多值(相比之下，\textrm{CRTA}的载流子寿命是固定的，与材料的能量无关)。
+
+在图中，绝大部分载流子寿命小于$2\times10^{-14}\mathrm{s}$，但也有不少载流子的位于图中的右上部分，寿命高达$\sim9\times10^{-14}\mathrm{s}$。寿命越长的载流子，拥有越高的电导率。一旦包含了这部分的载流子，电导率就会增大一些，因此\textrm{SERTA}计算结果就偏离实验结果更明显。\textrm{CRTA}无法考虑更高能量的载流子贡献，所以反而与实验值符合得较好，但这并不意味着\textrm{CRTA}对相关的物理描述得更准确。恰恰是\textrm{SERTA}预测了包含更高能量和更高迁移率的载流子会有有更高的电导率，这一点恰恰是被\textrm{CRTA}所忽略的。
+
+考察电导率随$\vec k$点网格变化的收敛情况，\textrm{KPOINTS}文件确定的$\vec k$点网格直接影响的是电子结构的收敛(即自洽电子步)。对于电子-声子相互作用计算，$\vec k$点和$\vec q$点网格都是由相同的\textrm{KPOINTS\_ELPH}文件确定，因此加密的$\vec k$点网格有更多的$\varepsilon_{n\vec k}$和相应的粒子寿命，同时散射概率的量也会增加，\textcolor{red}{最终提升图像的分辨率}。
+
+下面将学习如何选择赝势，交换-相关泛函和晶格参数，这些变量也都会对电导率发生影响。
+
+\subsubsection{晶格参数、交换-相关饭盒和赝势的影响}
+对实验晶格参数下的\textrm{BCC-Fe}，变化赝势(包括标准化的和$GW$)和交换-相关泛函(\textrm{CA}和\textrm{PBE})产生电子-声子相互作用势，然后采用\textrm{SERTA}计算电导率($\vec q$点网格分别取$10\times10\times10$，$20\times20\times20$，$30\times30\times30$)
