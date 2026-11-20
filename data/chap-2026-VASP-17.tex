@@ -872,3 +872,60 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 \subsubsection{晶格参数、交换-相关饭盒和赝势的影响}
 对实验晶格参数下的\textrm{BCC-Fe}，变化赝势(包括标准化的和$GW$)和交换-相关泛函(\textrm{CA}和\textrm{PBE})产生电子-声子相互作用势，然后采用\textrm{SERTA}计算电导率($\vec q$点网格分别取$10\times10\times10$，$20\times20\times20$，$30\times30\times30$)
+
+金属电导率内禀地与电子的能带结构相关联，而电子结构又与晶体结构相关。如果将晶格参数(由此也就改变了晶胞的体积)由\textrm{PBE}泛函计算得到的值改成实验值\upcite{CRC-HCP}。会产生一些影响
+\begin{itemize}
+	\item \textbf{能带的改变}:~改变晶格参数也就改变了原子间轨道的重叠程度，影响了导带底的能带宽度
+	\item \textbf{Fermi面的变动}:~伴随体积变化，\textrm{Fermi}面的大小和形状都改变了，直接影响了电荷载流子的数目和其速度
+	\item \textbf{DOS变化}:~电子在\textrm{Fermi}面上的\textrm{DOS}$N(\varepsilon_{\mathrm{F}})$随着体积发生变化，影响了电导率
+\end{itemize}
+赝势的选择会严重地影响了计算的电子性质和输运系数。不同的赝势变化
+\begin{enumerate}
+	\item \textbf{芯-价电子分配}:~哪些作为价电子精确处理，哪些作为芯电荷冻结在芯层
+	\item \textbf{截断能要求}:~硬的芯电荷会需要更高的平面波截断能
+	\item \textbf{能带计算的精度}:~对于输运性质来说，\textrm{Fermi}能级附近的能带计算精度特别重要。
+\end{enumerate}
+通过每一类势函数计算电导率以确定
+\begin{itemize}
+	\item 由于选择不同精度的赝势导致最后结果的不同
+	\item 由于选择不同的交换-相关泛函引起的相对误差估计
+\end{itemize}
+第一步与之前相同:~完成超晶胞计算。不过之前采用的是\textrm{PBE}计算得到的基态晶格参数，这一次，使用的是晶格参数的实验值。本算例所使用的输入文件分别在各目录下，可以通过\textrm{Bash}命令\textrm{tree -d}查看。
+
+这里\textrm{exp\_PP\_DF}表示当前计算中，晶格参数选取的是实验值，标准的或$GW$的\textrm{POTCAR}，交换-相关泛函选择\textrm{LDA}或\textrm{PBE}。然后\textrm{serta\_exp\_PP\_DF\_$N\times N\times N$}确定的是采用$N\times N\times N$的$\vec k$点网格(由\textrm{KPOINTS\_ELPH}文件)完成\textrm{SERTA}计算。\textcolor{red}{此外还有\textrm{supercell\_exp\_PP\_DF}。}因为其余的计算要花费更多的时间，这里的计算只针对$\vec k$点网格为$10\times10\times10$。其余的之前已经执行过了，其相应的\textrm{vaspout.h5}也给出，后面作为对比。为了节约存储空间，不再反复地备份文件，相反是根据上述数目标注目录。
+
+用于超晶胞计算\ch{Fe}$2\times2\times2$的\textrm{POSCAR}文件
+
+用于\textrm{SERTA}计算\ch{Fe}的初基原胞\textrm{POSCAR}文件
+
+使用超晶胞计算的计算控制参数文件\textrm{INCAR}
+
+用于\textrm{SERTA}计算的计算控制参数文件\textrm{INCAR}
+
+使用超晶胞计算的$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+用于\textrm{SERTA}计算的$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+用于$10\times10\times10$的计算的$\vec k$点网格文件\textrm{KPOINTS\_ELPH}
+
+赝势文件\textrm{POTCAR}
+\begin{itemize}
+	\item \textrm{LDA}+$GW$计算:~\textrm{PAW \ch{Fe}\_sv\_GW 05Dec2013}
+	\item \textrm{PBE}+$GW$计算:~\textrm{PAW\_PBE \ch{Fe}\_sv\_GW 05Dec2013}
+	\item \textrm{LDA+std}计算:~\textrm{PAW \ch{Fe} 05Dec2013}
+	\item \textrm{PBE+std}计算:~\textrm{PAW\_PBE \ch{Fe} 05Dec2013}
+\end{itemize}
+所有的\textrm{INCAR}计算控制参数在之前都已经遇到过。\textbf{注意}计算中的交换-相关泛函默认的就是\textrm{POTCAR}文件中定义的，所以无须在\textrm{INCAR}文件中指定交换-相关泛函。
+
+因为算例中提供了\textrm{phelel\_params.hdf5}文件，所以不再重复完成超晶胞计算。
+在本算例中，将对于通过\textrm{SERTA}计算的电导率，计算这些电导率包括2类交换-相关泛函\textrm{CA(LDA)和PBE(GGA)}，2类不同的\textrm{POTCAR}(标准的和$GW$)以及3种不同的$\vec k$点网格($10\times10\times10$，$20\times20\times20$，$30\times30\times30$)，总共有16类计算(12个\textrm{SERTA}计算和4个超晶胞计算)。\textcolor{red}{为了完成该算例的目标}，已经预先完成了超晶胞计算，所以\textrm{phelel\_params.hdf5}文件已经准备好。这里将示范$10\times10\times10$的$\vec k$点网格，分别使用\textrm{LDA}和\textrm{PBE}交换-相关泛函，标准的和$GW$的赝势，同工有4类计算。运行\textrm{Bash}脚本\textrm{conductiivity.sh}来完成计算任务。
+
+对于\textrm{Bash}脚本\textrm{conductivity.sh}，如果对脚本命令行\textrm{\#mpirun -np 3 vasp\_std | tee vasp.out}，删去注释(即去除\#)，则会完成超晶胞计算。这部分计算需要$\sim5\mathrm{min}$;
+
+如果对脚本命令行\textrm{for mesh in 10 \#20 30}，则$\vec k$点网格$20\times20\times20$，$30\times30\times30$也将计算，其中$20\times20\times20$计算大约\textrm{3-5~min}，$30\times30\times30$计算大约\textrm{10-30~min}，全部计算需要\textrm{20-30~min}完成全部计算。
+
+一旦计算结束，可以通过\textrm{Py4vasp}模块，绘制计算结果。
+
+本算例完成的输运计算分别采用$10\times10\times10$，$20\times20\times20$，$30\times30\times30$的网格点。之前计算的\textrm{CRTA}结果已经包含在内。电导率岁$\vec k$点网格密度随$\vec k$点收敛(衰减)非常线性(输出的$R^2$的值表明是合理的拟合)。可以得到将$\vec k$点外推到无穷大极限时电导率的值。
+
+对比使用的两类赝势，
