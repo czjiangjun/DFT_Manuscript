@@ -928,4 +928,218 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 本算例完成的输运计算分别采用$10\times10\times10$，$20\times20\times20$，$30\times30\times30$的网格点。之前计算的\textrm{CRTA}结果已经包含在内。电导率岁$\vec k$点网格密度随$\vec k$点收敛(衰减)非常线性(输出的$R^2$的值表明是合理的拟合)。可以得到将$\vec k$点外推到无穷大极限时电导率的值。
 
-对比使用的两类赝势，
+对比使用的两类原子数据集，\textrm{std}(图中蓝色和紫色)和$GW$(图中红色和湖蓝色)，可以看出，随着$\vec k$点密度增加，相比于实验值，标准原子数据集低估了电导率，而$GW$原子数据集则会高估。当$\vec k$点趋于无穷大的极限时，依然如此，不过$GW$的结果将会更趋近实验结果。$GW$原子数据集更精确，可以用于包含更多未占据态的激发，描述更高能量的全电子散射。
+
+实际上，本算例中原子数据集最主要的影响因素，当交换-相关泛函由\textrm{LDA}换成\textrm{GGA}，分别是\textrm{CA}(图中蓝色和红色)和\textrm{PBE}(紫色和湖蓝色)，相比于实验值，两者都出现低估，但差别更小，但是接近收敛时，误差更大。在$\vec k$点趋于极限时，两者几乎没有差别。\textrm{LDA}一般对于金属计算结果比较理想，所以\textrm{LDA}和\textrm{PBE}结果一致也是意料之中的。但是如果应用\textrm{LDA}来弛豫结构，得到的晶胞参数就会比较差，所以无论哪种计算，都要慎重选择交换-相关泛函。
+
+本算例中，晶格参数差别的对比。可以看到\textrm{SERTA}计算\textrm{(PBE+std PP)}计算的晶格参数(图中的绿色)与之前得到的实验的晶格参数(途中紫色)的对比。计算结果与实验的晶格参数的误差接近\textrm{50\%}，这样大的误差，足以将低估变为高估。
+
+而当$\vec k$点网格书增加到趋于极限(绘图第三)，变化趋势就更为显著。(注意到``\textrm{SERTA}-\textrm{a(Calc)}的值来自于$40\times40\times40$的$\vec k$点网格，已经是达到收敛的结果，所以对该值的外推只会让该值偏离并趋于一个非收敛的点上)图中，采用标准原子数据集，尽管对电导率的估计的数量级大小正确，但是对具体数值的低估约一半(图中蓝色和紫色)。不过有必要指出的是，这里差一半相对于数量级$10^7$是一个相对小的误差。理想中，采用实验的晶格参数，希望结果(这里是电导率)。不过正如这里的结果展示的，情况并非总是如此。目前应用上尚未有统一的评判标准，可以判定是否使用实验的晶胞参数就会好或者指定某个交换-相关泛函结果会更好(因为不同的泛函对结果也有影响)。
+
+上述讨论说明一点，前面\textrm{CRTA}计算(图中灰色)的结果与实验值吻合，完全是巧合或错误的推论。在该近似下，存在常数弛豫时间，所以根根不包含\textrm{SERTA}(图中绿色)可以描述的物理。$\vec k$点网格并不收敛，而且当$\vec k$点网格增加时，结果变得更差。而标准的原子数据集的赝势对当前的研究是不适用的，计算的晶格参数也与实验值不匹配。而所有的这些因素，对于达到与实验相一致的结果都很重要。通过错误的原因达到与实验吻合的结果很容易，只要仔细测试影响数值收敛的主要因素，并确定每个因素对误差起多大贡献。如果读者有时间，可以通过本算例学到的影响因素，尝试完成\textrm{CRTA}计算，看看达到收敛的参数设置，得到的结果与实验差别有多大。
+
+和实验结果对比，还有其他因素需要考虑，包括超晶胞大小，不同的磁学相，缺陷的影响，自洽计算的$\vec k$点网格和电子-电子散射(如后-\textrm{DFT}方法)。
+
+\subsection{声子限制的半导体声子迁移率和热点优值}
+\subsubsection{常数弛豫时间近似下的迁移率计算}
+对立方金刚石结构\ch{Si}，在常数弛豫时间近似\textrm{(CRTA)}下计算电子迁移率并检查其对用于\textrm{Onsager}系数计算的能量网格点(线性\textrm{Gauss-Legendre}积分)和$\vec k$点网格的收敛情况。
+
+在金属中，零带隙位置会有很多带电荷的载流子存在。与金属不同，$T\neq0$，半导体则在零带隙位置没有带电荷的载流子。通过对半导体掺杂引入载流子，增加电荷密度(电子或空穴，分别对应的是$n$-或$p$-型半导体)。带电的载流子在材料中运动的难易程度可由迁移率$\mu_{\mathrm{e}}$或$\mu_{\mathrm{h}}$(分别表示电子或空穴)描述。在电子器件中迁移率是半导体性能的一个关键指标，与其电导率$\sigma$相关。而电导率可由输运分布函数$\mathcal{T}(\varepsilon)$确定\textcolor{red}{(参见式11.1)}。
+
+如果将能带的求和限制在价带和导带部分，则电导率可以分解为电子部分$\sigma_{\mathrm{e}}$和空穴部分$\sigma_{\mathrm{h}}$的贡献，因此电子和空穴的迁移率可以定义成
+\begin{table}[h!]
+    \centering
+    \begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}c@{\extracolsep{\fill}@{\extracolsep{\fill}}c}
+        \toprule
+	名称 &定义 &载流子能带\\
+\midrule
+电子迁移率$\mu_{\mathrm{e}}$ & $\mu_{\mathrm{e}}=\dfrac{\sigma_{n\in\mathrm{CB}}}{n_{\mathrm{e}}}$ & $n_e=\dfrac1{\Omega N_{\vec k}}\sum_{\vec k n\in\mathrm{CB}}f(\varepsilon,T,\mu)$ \\
+空穴迁移率$\mu_{\mathrm{h}}$ & $\mu_{\mathrm{e}}=\dfrac{\sigma_{n\in\mathrm{VB}}}{n_{\mathrm{h}}}$ & $n_e=\dfrac1{\Omega N_{\vec k}}\sum_{\vec k n\in\mathrm{VB}}[1-f(\varepsilon,T,\mu)]$ \\
+        \bottomrule
+    \end{tabular*}
+    \caption{电导率和迁移率的定义}}
+\label{Tab:Hyperparameter-Tag}
+\end{table}
+其中$\sigma_{n\in\mathrm{CB}}$和$\sigma_{n\in\mathrm{VB}}$表示电导率的计算，电子态的求和分别限制在价带部分和导带部分。$f_{n\vec k}$是\textrm{Fermi-Dirac}分布，$\mu$是指定稳定下的化学势。
+
+%注意:~化学势一般总写成$\mu$，迁移率则带有下标，即$\mu_{\mathrm{e}$或$\mu_{\mathrm{h}}$。
+
+在本算例介绍如何通过线性\textrm{Boltznamnn}输运方程\textrm{(Boltzmann Transport Equation, BTE)}计算半导体的电子迁移率，并且重点关注电子-声子相互作用的影响。\upcite{RPP83-036501_2020}。在\textrm{CRTA}近似中，迁移率只受到电子能带结构(即载流子的轻重，能带曲线的各向异性以及应力引起的能带序列的重排)的影响。所以\textrm{CRTA}计算得到的迁移率标志了没有散射时的晶体行为，所以也视为能带结构的``指纹''。
+
+\textcolor{red}{\textrm{CRTA}计算输运系数}
+立方金刚石结构的\ch{Si}的初基原胞结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+电子-声子耦合的$\vec q$网格文件\textrm{KPOINTS\_ELPH}
+
+计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}=\mathrm{CRTA}表示无须事先计算超晶胞中的电子-声子相互作用势。后面的讨论将会看到，对半导体来说，因为其态密度存在尖锐的峰，导致\textrm{CRTA}是非常粗糙的近似。计算控制参数\texttt{ELPH\_TRANSPORT\_DRIVER}=2确定了输运分布函数计算中，对能量采用\textrm{Gauss-Legendre}积分。\texttt{ELPH\_SELFEN\_TEMPS}给定温度，在该温度下，计算由于电子-声子散射导致的自能。\texttt{ELPH\_ISMEAR}=-24，选择在计算电子-声子相互作用前，确定\textrm{Fermi}能级和化学势的方法。-24是是四面体积分方法中开销更多内存但效率更高的选项(用户也可以取\texttt{ELPH\_ISMEAR}=-15，不过代价是时间花费要$\sim6-7$倍)。\texttt{ELPH\_SELFEN\_CARRIER\_DEN}列出外加载流子的数目。注意\texttt{ELPH\_SELFEN\_CARRIER\_DEN}表示当半导体的载流子为正电荷时，进行$n$型掺杂(为了加入电子），载流子为负电荷时，进行$p$型掺杂(为了加入空穴)，这与文献的习惯相反。
+
+在计算目录下执行\textrm{Bash}命令，完成\textrm{VASP}计算
+
+该计算会同时计算本征值和电子群速度，并在各个不同的\textrm{Gauss-Legendre}能量网格点上，计算输运分布函数。输运系数计算中对积分的能量网格点积分的收敛测试特别重要，特别是积分中包含\texttt{ELPH\_SELFEN\_CARRIER\_DENSIRY}项时。
+
+在这一点上，因为采用\textrm{CRTA}计算，不同网格点的密度激素的开销很小。一旦计算完成，可以通过\textrm{Py4vasp}模块，绘制不同能量网格采用下，迁移率对载流子密度的函数曲线。
+
+不同温度下\ch{Si}的电子迁移率
+
+迁移率是依赖载流子密度的。当载流子密度高时，这就是正确的迁移率行为；当载流子密度低时，迁移率与载流子密度无关。\textcolor{red}{高起的峰表明对\textrm{ELPH\_TRANSPORT\_NEDOS}应该进行收敛处理。}
+
+和实验值相比，通过\textrm{CRTA}得到的迁移率结果很差。电子迁移率的实验平均值差不多是\textrm{1400~cm/Vs}，空穴迁移率的实验平均值差不多是\textrm{500~cm/Vs}。\upcite{PRB97-121201R_2018}，而通过\textrm{CRTA}得到结果差不多分别是\textrm{99~cm/Vs}和\textrm{72~cm/Vs}。如果考虑到弛豫时间设置为常数\textrm{1E-14}，\textrm{CRTA}的结果也是意料之中的。如果修改参数，\textrm{CRTA}计算也有可能得到与实验值吻合的结果。
+
+\textcolor{red}{线性网格和F\textrm{Simpson}积分}
+\textrm{Onsager}系数$\mathcal{L}_{ij}$可用于输运系数的计算，其定义为
+\begin{displaymath}
+	\mathcal{L}_{ij}=\int\mathrm{d}\epsilon\mathcal{T}(\epsilon)(\epsilon-\mu)^{i+j-2}\bigg(-\dfrac{\partial f^0}{\partial\epsilon}\bigg)
+\end{displaymath}
+这里$\mathcal{T}(\epsilon)$是输运分布函数，$\mu$是化学势，$f^0$是\textrm{Fermi-Dirac}分布函数，这里的积分采用\textrm{Simpson}积分。
+
+这部分介绍如何完成输运分布函数的能量积分的数值解法，并得到输运系数。
+
+态密度为51个能量点的计算控制参数文件，\textrm{51/INCAR}
+
+态密度为501个能量点的计算控制参数文件，\textrm{501/INCAR}
+
+态密度为5001个能量点的计算控制参数文件，\textrm{5001/INCAR}
+
+态密度为10001个能量点的计算控制参数文件，\textrm{10001/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+电子-声子耦合的$\vec q$网格文件\textrm{KPOINTS\_ELPH}
+
+在\textrm{INCAR}文件中有一些不太熟悉的计算控制参数。\texttt{ELPH\_TRANSPORT\_DRIVER}=1，取线性能量网格点计算\textrm{Onsager}系数，\texttt{ELPH\_FERMI\_NEDOS}和\texttt{ELPH\_TRANSPORT\_NEDOS}确定线性能量网格点的数目，\texttt{ELPH\_TRNASPORT\_DFERMI\_TOL}定义计算\textrm{Onsager}系数的能量积分范围。
+
+该计算也需要同时计算能量本征值和电子群速度，并对不同的能量积分网格点计算输运分布函数。为的是考察不同的能量积分网格点对于输运系数的数值精度的影响，特别是当积分中包含\texttt{ELPH\_SELFEN\_CARRIER\_DENSITY}项时。
+
+因为计算很快，可以通过\textrm{CRTA}测试不同网格点的数值差分。一套收敛的\textrm{CRTA}网格点将是\textrm{SERTA}计算的最小网格点。
+
+在计算目录下，执行\textrm{Bash}脚本\textrm{linear\_grid.sh}
+
+计算结束后，通过\textrm{Py4vasp}模块绘制不同能量网格点采样方案下，迁移率作为载流子密度的函数。
+
+在\textrm{300K}，\textrm{CRTA}计算\ch{Si}的电子迁移率
+
+从图中可以看到，蓝色、湖蓝和红色线结果是一致的，表明对于每个载流子密度，能量积分点网格已经达到收敛。
+
+该方法主要的缺陷是计算控制参数\texttt{ELPH\_TRANSPORT\_DFERMI\_TOL}指定了积分上下限。\textcolor{red}{特别是能量积分范围要扣除\textrm{Fermi-Dirac}分布在化学势周边部分的导数积分的某些分数部分。}结果，简单地增加积分能量点并不足以确保迁移率收敛，有必要检查对\texttt{ELPH\_TRANSPORT\_DFERMI\_TOL}参数的收敛。
+
+作为可选的练习，尝试在\textrm{INCAR}文件中将计算控制参数\texttt{ELPH\_TRANSPORT\_DFERMI\_TOL}=\textrm{1e-6}变成\texttt{ELPH\_TRANSPORT\_DFERMI\_TOL}=\textrm{1e-8}，然后再次运行计算，并绘制结果曲线，并观察参数修改的影响。
+
+\textcolor{red}{通过严格的收敛标准，忽略的积分减少，所以当载流子密度是低密度时，迁移率并不依赖于载流子密度。在$10^{16}$之前的陡峰表明数值收敛存在问题。}
+
+为了避免这种不便的双重收敛，对输运计算采用\textrm{Gauss-Legendre}积分方法。下一部分，将应用\textrm{Gauss-Legendre}积分网格点来计算迁移率，并对比计算结果。
+
+\textcolor{red}{\textrm{Gaiss-Legendre}积分}
+
+态密度为51个能量点的计算控制参数文件，\textrm{51/INCAR}
+
+态密度为501个能量点的计算控制参数文件，\textrm{501/INCAR}
+
+态密度为5001个能量点的计算控制参数文件，\textrm{5001/INCAR}
+
+态密度为10001个能量点的计算控制参数文件，\textrm{10001/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+电子-声子耦合的$\vec q$网格文件\textrm{KPOINTS\_ELPH}
+
+在\textrm{CRTA}近似下，再次计算迁移率，不过这次采用\textrm{Gauss-Legendre}积分。在计算控制参数中\texttt{ELPH\_TRANSPORT\_DRIVER}=2，该值也是默认值。
+
+采用\textrm{Gauss-Legendre}的积分网格点完成相同的计算。
+
+执行\textrm{Bash}脚本\textrm{gauss\_legendre.sh}
+
+在计算过程中，查看\texttt{ELPH\_TRANSPORT\_DRIVER}=2的文本输出，熟悉能量积分的网格点如何选择，以及这种选择如何改变计算输运分布函数计算能量。
+
+在输出文件\textrm{OUTCAR}中的电子-声子相互作用计算部分，可以确定选用了哪个网格点，并作为线性网格点写在电子-声子积分的最后一行之后
+
+当计算结束后，可以通过\textrm{Py4vasp}模块，绘制不同积分网格点下，电子迁移率作为载流子掺杂的函数曲线。
+
+在\textrm{300K}，\textrm{CRTA}计算\textrm{Gauss-Legendre}积分网格的\ch{Si}的电子迁移率
+
+不难看出，尽管对于能量积分网格点，收敛变慢，没有必要调节另外的参数选定能量范围\textrm{(当计算控制参数\texttt{ELPH\_TRANSPORT\_DRIVER}=1时，需要\texttt{ELPH\_TRANSPORT\_DFERMI\_TOL})}。当计算参数的数目由两个变为一个，使得积分更易于收敛。线性网格积分点可以加速计算，但要求更多的经验和专业技能。
+
+如果考虑散射，如\texttt{ELPH\_SCATTERING\_APPROX}=\texttt{SERTA}，\textcolor{red}{对第一原理计算得到的电子的寿命，该积分收敛特别重要}。当采用\textrm{CRTA}计算的网格点必须收敛，而该网格点则是\textrm{SERTA}计算的最少网格点。而载流子寿命的计算更耗时，因为对每个$\tau_{n\vec k}$的载流子寿命计算都隐含了对$\vec q$的求和。通过面向更小能带和$\vec k$点计算小的子空间的$\tau_{n\vec k}$，大大压缩计算量。能量范围用来确定哪个$\tau_{n\vec k}$需要计算，因此可以大大减少计算开销。\textrm{Gauss-Legendre}方法的优点在于积分网格可以自动地适应\textrm{Fermi}窗口的能量宽度，无须手工定义能量窗口(即\texttt{ELPH\_TRANSPORT\_DFERMI\_TOL}，\texttt{ELPH\_TRANSPORT\_EMIN}和\texttt{ELPH\_TRANSPORT\_EMAX})，因此数值计算更有效。相反，只需要通过\texttt{TRANSPORT\_NEDOS}确定上述\textrm{DOS}点的求和。
+
+\textcolor{red}{$\vec k$点收敛}
+计算不同能量积分方法下，通过积分输运分布函数得到输运系数，很容易完成$\vec k$点积分采样点的收敛测试。
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+电子-声子耦合的$\vec q$点$12\times12\times12$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$18\times18\times18$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$24\times24\times24$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$32\times32\times32$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$48\times48\times48$网格文件\textrm{KPOINTS\_ELPH}
+
+针对不同的$\vec k$点网格，执行\textrm{Bash}脚本\textrm{kpoints.sh}
+
+通过\textrm{Py4vasp}模块，绘制电子和空虚迁移率随$\vec k$点的收敛曲线
+
+在\textrm{300K}，\textrm{CRTA}计算\ch{Si}的电子迁移率
+
+可以看到初始的$\vec k$点网格是$12\times12\times12$，而空穴和电子的迁移率都开始收敛了，尽管真正计算收敛要比现在更高密度网格点。
+
+\textcolor{red}{更方便的办法达到无限$\vec k$点网格的策略是绘制迁移率作为用于产生$\vec k$点网格的空间剖分数量的倒数的函数并外推。}通过\textrm{Py4vasp}模块，可以根据绘制曲线线得到性外推迁移率随无限$\vec k$点采样。
+
+在\textrm{300K}，\textrm{CRTA}计算\ch{Si}的电子迁移率
+
+由$\vec k$点采样的倒数，可以很清楚将迁移率外推到无限多的$\vec k$时的极限值。
+
+上述讨论针对理想晶体，在实际体系中，还有杂质离子(缺陷)存在，杂质会影响载流子的散射比例。在高缺陷密度下，半导体的迁移率降低。在掺杂体系，增加了载流子和缺陷，也增加了载流子密度。不过跨过某个临界点后，缺陷数量的增加会限制带电载流子的迁移率，\textcolor{red}{进而导致边际效应递减。 }
+
+\subsubsection{\rm{SERTA}计算迁移率}
+对于$2\times2\times2$的超晶胞，计算电子-声子相互作用的势函数，然后在\textrm{SERTA}近似下对立方金刚石结构的\ch{Si}计算迁移率岁$\vec k$点和$\vec q$点网格的收敛情况。
+
+在\textrm{CRTA}计算中，电子的寿命(弛豫时间)是常数，换到\textrm{SERTA}，迁移率会受到第一原理计算的电子-声子耦合的影响。为此，第一步还是和之前一样，计算超晶胞中的电子-声子相互作用势，然后完成收敛测试。
+
+\textcolor{red}{超晶胞中的电子-声子相互作用势}
+
+在每个子目录里包含不同的由\textrm{KPOINTS\_ELPH}文件指定的$\vec q$点网格.
+
+$2\times2\times2$超晶胞的\ch{Si}的晶格结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+在计算目录下执行\textrm{Bash}脚本，完成\textrm{VASP}计算。
+
+由于超晶胞计算会有一些时间开销($\sim5\textrm{min}$)，本算例中忽略该计算过程。所有的文件已经都在计算目录下。当然，如果读者有时间，可以自行计算。这里提供\textrm{phelel\_params.hdf5}文件，用于后续电子-声子计算。
+
+\textcolor{red}{对于$\vec k$点网格和$\vec q$点网格的收敛}
+
+已经完成超晶胞的电子-声子相互作用势函数计算，准备完成完整的第一原理迁移率计算。通过明确规定计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}=\textrm{SERTA}，会从\textrm{phelel\_params.hdf5}文件读取电子-声子相互作用势函数。然后会对与\textrm{KPOINTS\_ELPH}文件规定的$\vec k$点关联的一套$\vec q$点上插值。结果在\textrm{KPOINTS\_ELPH}文件中的网格点发生改变，同时有一套$\vec k$点和$\vec q$点网格作相应调整。这就可以系统地研究迁移率随$\vec k$点密度网格收敛情况。
+
+$2\times2\times2$超晶胞的\ch{Si}的晶格结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}
+
+电子-声子耦合的$\vec q$点$12\times12\times12$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$18\times18\times18$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$24\times24\times24$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$32\times32\times32$网格文件\textrm{KPOINTS\_ELPH}
+
+电子-声子耦合的$\vec q$点$48\times48\times48$网格文件\textrm{KPOINTS\_ELPH}
+
+在计算目录下，采用\textrm{Bash}脚本\textrm{qpoints.sh}，完成每个$\vec q$点网格的的电子-声子计算。
+
+由于时间约束，这里只计算了$12\times12\times12$和$18\times18\times18$两套网格点。其余的计算已经预先完成，时间开销超过\textrm{10+min}。
+
+当计算执行时，用户可以自行熟悉在不同可能的近似下计算散射率的方法，注意计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}。
+
+计算完毕，尝试通过\textrm{Py4vasp}模块绘制电子迁移率对载流子密度的曲线。
