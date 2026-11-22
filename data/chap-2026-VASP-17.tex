@@ -940,7 +940,7 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 
 和实验结果对比，还有其他因素需要考虑，包括超晶胞大小，不同的磁学相，缺陷的影响，自洽计算的$\vec k$点网格和电子-电子散射(如后-\textrm{DFT}方法)。
 
-\subsection{声子限制的半导体声子迁移率和热点优值}
+\subsection{声子限制的半导体声子迁移率和热电优值}
 \subsubsection{常数弛豫时间近似下的迁移率计算}
 对立方金刚石结构\ch{Si}，在常数弛豫时间近似\textrm{(CRTA)}下计算电子迁移率并检查其对用于\textrm{Onsager}系数计算的能量网格点(线性\textrm{Gauss-Legendre}积分)和$\vec k$点网格的收敛情况。
 
@@ -1143,3 +1143,101 @@ $\vec k$空间网格剖分文件\textrm{KPOINTS}
 当计算执行时，用户可以自行熟悉在不同可能的近似下计算散射率的方法，注意计算控制参数\texttt{ELPH\_SCATTERING\_APPROX}。
 
 计算完毕，尝试通过\textrm{Py4vasp}模块绘制电子迁移率对载流子密度的曲线。
+
+在\textrm{300K}，\ch{Si}的电子迁移率
+
+对比于之前的迁移率曲线，前面计算中始终存在的数值积分困难已经解除了，在载流子密度较低的时候，迁移率与之无关。
+
+可以看出，当$\vec k$点网格增加，电子迁移率也会增大，直至收敛。可以通过\textrm{Py4vasp}模块分别绘制空穴和电子迁移率。
+
+在\textrm{300K}，\ch{Si}的载流子迁移率
+
+显然，因为有效质量的差别和平均弛豫时间的不同，所以电子的迁移率比空穴的要大得多。\upcite{PRB68-12510_2003}。检查计算输出数据，可以看到空穴收敛后的迁移动量比电子的要低一些。计算中，与\textrm{CRTA}计算相比，散射寿命由常数变成通过第一原理计算得到。\textcolor{red}{在$\vec q$点网格上，}动量为$\vec q$的声子散射电子。这表明，上涨的$\vec q$点网格，增加了散射电子的声子振动模。如果采用更大的$\vec q$点网格，计算开销会很大，所以计算中可行的策略是用尽可能少的$\vec q$点网格来达到$\vec q$点网格的收敛。
+
+\subsubsection{热电和\rm{ZT}热电优值}
+计算\ch{Bi2Te3}的初基原胞(分别在不考虑和考虑旋-轨耦合两种情况)，然后通过\textrm{CRTA}计算不同的输运系数，并绘制\textrm{300~K}时，电导率，\textrm{DOS}图，\textrm{Seebeck}系数，功率因子\textrm{(power factor)}和\textrm{ZT}热电优值\textrm{(figure of merit)}对化学势的曲线。绘制载流子浓度和温度为变量的\textrm{ZT}热电优值的热力图\textrm{(heatmap)}。
+
+热电材料\textrm{(thermoelectric material)}是将热能转化为电能的一类材料。热电材料的热电转化效率取决于其结构和热电优值\textrm{(thermoelectric figure of merit)}$Z$，热电优值与温度$T$有关，所以表示为$ZT$，即著名的\textrm{ZT}热电优值:
+\begin{displaymath}
+	ZT=\dfrac{\sigma S^2T}{\kappa_{\mathrm{e}}+\kappa_{\mathrm{l}}}
+\end{displaymath}
+这里$\sigma$是电导率，$S$是\textrm{Seebeck}系数，$\kappa_{\mathrm{e}}$是电子的热导率，$\kappa_{\mathrm{l}}$是晶格热导率，晶格热导率可以通过\textrm{M\"uller-Plathe}方法或\textrm{phon3py}来计算。
+
+介绍一点背景材料，典型的热电材料的\textrm{ZT}热电优值的取值范围是$1\sim1.5$。随着\textrm{ZT>2}的热电新材料的研发，将证明发展新的能源采集技术、回收原本被浪费的废热以及制造紧凑型无活动部件的冷却器的重要性，。
+
+\textrm{ZT}热电优值公式将几类输运系数，包括电导率，\textrm{Seebeck}系数和热导率，都汇集到一起。每个输运系数都可以通过\textrm{Onsager}系数导出，进而可以由输运分布函数计算。而输运分布函数表征\textcolor{red}{电子在材料中的传导方式有多快(或慢)}。
+
+改变热电优值以提升热电材料的性能是经典的优化问题。\upcite{PNAS93-7436_1996}本算例将参照\textrm{Sfo}等的方式通过\textrm{CRTA}计算\ch{Bi2Te3}的电子输运系数.\upcite{PRB68-125210_2003}
+
+\textcolor{red}{分别在不考虑和考虑旋-轨耦合计算\ch{Bi2Te3}的能带结构}
+
+分别在两个计算目录下计算不考虑和考虑旋-轨耦合\textrm{(SOC)}的能带结构\textrm{bands}和\textrm{bands\_soc}，可以帮助理解旋-轨耦合效应对\ch{Bi2Te3}的能带结构的影响。
+
+两个目录下的\ch{Bi2Te3}的初基原胞结构文件\textrm{bands*/POSCAR}
+
+不考虑旋轨耦合的计算控制参数文件\textrm{bands/INCAR}
+
+考虑旋轨耦合的计算控制参数文件\textrm{bands\_soc/INCAR}
+
+$\vec k$空间网格剖分文件\textrm{bands*/KPOINTS}
+
+绘画能带的$\vec k$空间能带路径\textrm{bands*/KPOINTS\_OPT}
+
+在旋-轨耦合计算中，通过计算控制参数\texttt{LSORBIT}和\texttt{MAGMOM}分别开启旋-轨耦合计算和指定每个原子的初始磁矩。
+
+在两个目录下，分别通过\textrm{Bash}命令，完成\textrm{VASP}计算。
+
+$\vec k$空间网格剖分文件\textrm{bands*/KPOINTS}
+一旦计算介绍，可以通过\textrm{Py4vasp}模块可以很容易可视化和分析结果。\textrm{Py4vasp}是用户友好的\textrm{VASP}后处理工具，用于直接从\textrm{VASP}数据文件中提取、处理数据，并根据绘制图像。只需要几行\textrm{Python}代码，就可以绘制能带、\textrm{DOS}和输运性质的曲线。
+
+\textrm{Py4vasp}的典型工作流程包括
+\begin{enumerate}
+	\item 通过\textrm{py4vasp.Calculation}导入计算结果
+	\item 提取关键数据，如能带结构、\textrm{DOS}或输运系数等数据
+	\item 通过内置绘图函数将数据变成函数曲线或图像，或者分析图像和数据，作进一步分析
+\end{enumerate}
+\textrm{Py4vasp}的流线型方法简化了\textrm{VASP}的后处理，用户可以有效地提取材料的电子和输运性质。
+
+该能带图较为粗疏，因为用于绘图的$\vec k$点路径的分布点非常有限。只要增加$\vec k$点路径上点数量，就可以提升能带的解析能力。当计算中包含旋-轨耦合后能带的移动，伴随了价带顶的``电子口袋''由未考虑旋-轨耦合的能带中的$\Gamma$点，移动到旋-轨耦合的能带中的$T$点。由于引入旋-轨耦合改变了简并多重度，有效电荷，因此也会改变电导率。
+
+\textcolor{red}{作为化学势函数的输运系数和\rm{ZT}热电优值}
+
+\ch{Bi2Te3}的初基原胞结构文件\textrm{POSCAR}
+
+计算控制参数文件\textrm{INCAR}
+
+$\vec k$空间网格剖分文件\textrm{KPOINTS}\\
+对应计算控制参数\texttt{KSPACING}=0.3，对$\vec k$空间网格剖分为$[6,6,1]$
+
+$\vec q$点网格剖分文件\textrm{KPOINTS\_ELPH}\\
+对应计算控制参数\texttt{KSPACING}=0.08，对$\vec k$空间网格剖分为$[21,21,3]$
+
+在\textrm{INCAR}文件中，唯一的新计算控制参数是\texttt{ELPH\_SELFEN\_MU\_RANGE}，该参数将化学势设定为相对\textrm{Fermi}能级的能量移动，当$T\rightarrow0$且没有额外的载流子，就得到化学势的极限。
+
+在计算目录下，执行\textrm{Bash}脚本，完成\textrm{VASP}非共线计算。
+
+计算结束，通过\textrm{Py4vasp}模块，绘制不同的输运系数曲线。
+
+所有的输运量都与\textrm{Onsager}系数有关，该图与\textrm{Sofo}等\upcite{PRB68-125210_2003}的\textrm{Fig. 6}非常相似。随着$\vec k$点网格的增加并采用实验的晶格参数，计算结果的一致性会进一步提升。
+
+第一张绘图的电导率$\sigma$本质是第二张绘图\textrm{DOS}因为考虑温度平滑后的曲线。\textcolor{red}{在电导率中，由于存在更多的载流子，所以在\textrm{Fermi}面附近，电导率曲线离\textrm{Fermi}能级稍远。}
+
+回忆有关计算公式
+\begin{displaymath}
+\begin{aligned}
+	&\mbox{电导率:} \sigma =&\mathcal{L}_{11}\\
+	&\mbox{\textrm{Seebeck}系数:} S =&\dfrac{\mathcal{L}_{11}}{\mathcal{L}_{12}}\\
+	&\mbox{电子热导率:} &\kappa_{\mathrm{e}}=&\dfrac1{T}(\mathcal{L}_{22}-\mathcal{L}_{21}\mathcal{L}_{11}^{-1}\mathcal{L}_{12})
+\end{aligned}
+\end{displaymath}
+可以在第三张绘图看出\textrm{Seebeck}系数$S$与电导率相关
+\begin{displaymath}
+	\sigma=a(\varepsilon-\mu)+b
+\end{displaymath}
+其中$a$是斜率，$b$是位于某点的电导率，且$b$满足
+\begin{displaymath}
+	\sigma S^2\prop\dfrac{a^2}{b^2}
+\end{displaymath}
+\textrm{Seebeck}系数的峰位与功率因子的峰位并不一致。在最后一张绘图中，可以看到在\textrm{ZT}热电优值中有两个峰，一个对应正的化学势(相比于\textrm{Fermi}能级)，而另一个对应负的化学势，也就是这两个载流子峰，分别是空穴峰和电子峰。
+
+所有这些绘图中，化学势的值是根据其对应于\textrm{Fermi}能级的移动表示的，在实验中，对本征半导体\textrm{(intrinsic semiconductor)}加入杂质离子，以增加载流子(电子或空穴)数量。
