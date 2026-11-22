@@ -1209,7 +1209,7 @@ $\vec k$空间网格剖分文件\textrm{bands*/KPOINTS}
 $\vec k$空间网格剖分文件\textrm{KPOINTS}\\
 对应计算控制参数\texttt{KSPACING}=0.3，对$\vec k$空间网格剖分为$[6,6,1]$
 
-$\vec q$点网格剖分文件\textrm{KPOINTS\_ELPH}\\
+电子-声子耦合的$\vec q$点网格剖分文件\textrm{KPOINTS\_ELPH}\\
 对应计算控制参数\texttt{KSPACING}=0.08，对$\vec k$空间网格剖分为$[21,21,3]$
 
 在\textrm{INCAR}文件中，唯一的新计算控制参数是\texttt{ELPH\_SELFEN\_MU\_RANGE}，该参数将化学势设定为相对\textrm{Fermi}能级的能量移动，当$T\rightarrow0$且没有额外的载流子，就得到化学势的极限。
@@ -1241,3 +1241,60 @@ $\vec q$点网格剖分文件\textrm{KPOINTS\_ELPH}\\
 \textrm{Seebeck}系数的峰位与功率因子的峰位并不一致。在最后一张绘图中，可以看到在\textrm{ZT}热电优值中有两个峰，一个对应正的化学势(相比于\textrm{Fermi}能级)，而另一个对应负的化学势，也就是这两个载流子峰，分别是空穴峰和电子峰。
 
 所有这些绘图中，化学势的值是根据其对应于\textrm{Fermi}能级的移动表示的，在实验中，对本征半导体\textrm{(intrinsic semiconductor)}加入杂质离子，以增加载流子(电子或空穴)数量。
+
+所以挖掘化学势的移动载流子浓度的关系就非常有用了。如果指定计算控制参数\texttt{ELPH\_SELFEN\_MU}，就在不同温度下，计算满足化学势移动的载流子数目。
+
+化学势和载流子的数量关系一般总是需要计算的:~如果用户指定计算控制参数\texttt{ELPH\_SELFEN\_MU}，计算的是满足化学势移动的载流子数目；相反，如果用户通过计算控制参数\texttt{ELPH\_SELFEN\_CARRIER\_CELL}指定载流子数目，或更一般地，通过计算控制参数\texttt{ELPH\_SELFEN\_CARRIER\_DEN}指定载流子密度，就可以计算化学势的移动。
+
+用户可以通过\textrm{Py4vasp}模块，读取输出文件\textrm{vaspout.h5}中的化学势和载流子密度，绘制载流子目睹作为化学势的函数曲线。
+
+根据绘图，可以得到载流子和化学势$\mu$的函数关系，而两者并非线性关系。在此基础上，所有前面的绘图可以通过载流子密度而非化学势表示，两种曲线唯一的不同就是$x$轴的变量。因为化学势和载流子电荷密度并非独立，所以在计算中要么选择载流子电荷密度(\texttt{\ELPH\_SELFEN\_CARRIER\_DEN})或者化学势(\texttt{ELPH\_SELFEN\_MU})作为自变量，至于选哪个，取决于用户关心的测量物理量的数量关系。
+
+\textcolor{red}{\rm{ZT}热电优值作为载流子密度和温度的函数绘制的热力图}
+前面讨论的是在确定的温度\textrm{(300~K)}，计算\textrm{ZT}热电优值作为化学势的函数。这里将讨论\textrm{ZT}热电优值同时作为化学势和温度的函数关系。在绘图表示时，将采用热力图，通过颜色深浅来表示热电优值的大小。
+
+算例提供的\textrm{Python}脚本(位于\textrm{kmesh\_pocar\_spglib/py})可以生成电子-声子耦合的\textrm{KPOINTS\_ELPH}文件
+
+\fbox{\textrm{python3 kmesh\_poscar\_spglib.py -kspacing 0.4 -o KPOINTS\_ELSH}}
+
+分别在两个目录下依次完成对化学势和温度的计算
+
+两个目录下的\ch{Bi2Te3}的初基原胞结构文件，分别是\textrm{0.2\_mu/POSCAR}和\textrm{0.2\_carrier/POSCAR}
+
+对化学势关系的计算控制参数文件\textrm{0.2\_mu/INCAR}
+
+对载流子浓度的计算控制参数文件\textrm{0.2\_carrier/INCAR}
+
+两个目录下的$\vec k$空间网格剖分文件，分别是\textrm{0.2mu\_/KPOINTS}和\textrm{0.2\_carrier/KPOINTS}\\
+对应计算控制参数\texttt{KSPACING}=0.3，对$\vec k$空间网格剖分为$[6,6,1]$
+
+两个目录下的电子-声子耦合计算的$\vec q$点网格文件，分别是\textrm{0.2mu\_/KPOINTS\_ELPH}和\textrm{0.2\_carrier/KPOINTS\_ELPH}\\
+对应计算控制参数\texttt{KSPACING}=0.2，对$\vec k$空间网格剖分为$[9,9,2]$
+
+注意到\textrm{INCAR}文件中，与之前的计算最大的不同是，之前的是计算控制参数是指定单一温度\texttt{ELPH\_SELFEN\_TEMPS}=300，而本算例中，则是通过计算控制参数\texttt{ELPH\_SELFEN\_TEMPS\_RANGE}=0 700 41，指定了能量范围。这里依次给出的是最低温度、随后给出的是最高温度，紧随其后是温度区间的网格点。同时通过计算控制参数\texttt{ELPH\_SELFEN\_CARRIER\_DEN\_RANGE}，指定载流子密度。本算例中\textrm{-1e22 -1e17 51}表明对于空穴电荷密度，在指定的最高值和最低值之间，设置51个电荷密度网格点；\textrm{-1e17 -1e22 51}表明对于电子电荷密度，在指定的最低值和最高值之间，设置51个电荷密度网格点。
+
+\textcolor{red}{\ch{ZT}热电优值对化学势的函数}
+在对应的计算目录\textrm{0.2\_mu}目录下，执行\textrm{Bash}命令，完成\textrm{VASP}非共线计算。
+
+计算结束后，绘制热力图(在热力图中，设置$\kappa_{\mathrm{l}}$为1)
+
+上图中，再次计算\textrm{ZT}热电优值作为化学势的函数，但是这次考虑了不同温度的影响。在热力图中的红线就是此前在\textrm{300K}计算得到的\textrm{ZT}热电优值函数。在理论计算中，以化学势为自变量绘图是通行做法。不过在实验设置中，更典型的是直接通过测量或控制载流子浓度，如通过掺杂方式来控制载流子浓度。\textcolor{red}{如果已知掺杂载流子浓度或单位元胞内的载流子数目，可以很容易将实验数据与设计材料的对应目标属性数据对比。}\textcolor{red}{因此，绘制\textrm{ZT}热电优值函数时，自变量选择载流子而不非采用化学势，对于实际研究中来说更有实际意义，也更涉及问题的本质。}这样做，理论与实验有了更直接的对应关系，有助于指导热电材料的优化。
+
+在完成计算时，没有直接指定计算控制参数\texttt{ELPH\_SELF\_MU}，而是简单地指定载流子浓度，\texttt{ELPH\_SELFEN\_CARRIER\_DEN}。使用计算控制参数\texttt{ELPH\_SELFEN\_CARRIER\_DEN\_RANGE}，在对数网格布点上，分别对空穴和电子，指定产生一系列的电荷密度由$10^{22}$到$10^{17}$之间，和由$10^{17}$到$10^{22}$之间。用户也可以通过计算控制参数\texttt{ELPH\_SELFEN\_CARRIER\_DEN}，依次指定电荷密度的网格点来来实现该过程。
+
+\textcolor{red}{载流子密度计算}
+在计算目录\textrm{0.2\_carrier}内，执行\textrm{Bash}脚本，完成\textrm{VASP}非用线计算。
+
+计算结束后，可以通过\textrm{Py4vasp}模块绘制热力图。
+
+在前面的关于化学势的五个输运函数曲线中，可以看到\textrm{Seebeck}系数，电导率，功率因子和\textrm{ZT}热电优值随化学势作为\textrm{Fermi}能级的移动$\mu$的函数。这是理论计算中常用的方法，因为$\mu$是电子结构计算直接输出的物理量。
+
+在\textrm{ZT}热电优值的热力图中，将上述输运量表示为载流子(载流子密度对应单位体积内空穴或原子的数目)\textcolor{red}{的不同分布函数}。两者不同的关键在于$x$轴，不再用化学势作为自变量，而是载流子浓度，实验上，载流子浓度可以通过掺杂控制。从图中可以出整个\textrm{ZT}热电优值的热力图中，空穴和电子载流子分枝分拆分为不同的而部分。
+
+鉴于化学势和载流子浓度之间是高度非线性的，特别是位于低载流子密度的能带边上的时候。将载流子密度为自变量作图，可以与实验数据有更直观也更直接的对比。\textcolor{red}{所以为最大化\textrm{ZT}热电优值确定优化掺杂浓度也变得更容易了。}
+
+除了$x$轴的而变化，整个输运性质的趋势和特征基本基本相似。在\textrm{ZT}热电优值、\textrm{Seebeck}和电导率的峰谷作为$\mu$的函数对应载流子函数时也有类似的特征。这证明两类表示包含相同的物理信息，但从材料优化和实验对比的角度说，载流子浓度作图更有实际意义。
+
+如果有时间，用户可以通过\textrm{Python}脚本\textrm{kmesh\_poscar\_spglib.py}产生更密集的电子-声子耦合计算的$\vec k$点网格文件
+\fbox{\textrm{python3 kmesh\_potcar\_spglib.py -kspacing 0.2 -o KPOINTS\_ELSH}}
+然后重复上述计算，并查看绘图解析的变化。
